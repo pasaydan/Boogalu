@@ -1,0 +1,16 @@
+
+.style-name {
+    position: absolute;
+    left: 12px;
+    top: auto;
+    padding: 10px 15px;
+    font-size: 20px;
+    bottom: -16px;
+    border-top-right-radius: 4px;
+    background-color: #fff;
+    color: #111;
+}
+.master_styles{
+    background-color: #ebefef;
+    padding: 50px;
+}

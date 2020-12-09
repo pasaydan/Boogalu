@@ -1,20 +1,23 @@
-.section1{
+.section1 {
     padding: 40px;
 }
-.banner_img{
+
+.banner_img {
     z-index: 3;
     padding: 10px 50px;
     height: 80vh;
     border-radius: 15px;
-    background-size: auto,95%;
+    background-size: auto, 95%;
     background-image: url(https://global-uploads.webflow.com/5dbb40d6d8c97447e9450447/5dd7219c81d3e9f905e630b3_STEEZY_HERO_FULL_v3-min.jpg);
-    background-repeat: repeat,no-repeat;
+    background-repeat: repeat, no-repeat;
 }
-.banner_img img{
+
+.banner_img img {
     width: 100%;
     border-radius: 10px;
 }
-.banner_img h1{
+
+.banner_img h1 {
     font-size: 55px;
     width: 400px;
     font-weight: 900;
@@ -22,14 +25,16 @@
     margin-top: 30px;
     line-height: 1.1;
 }
-.banner_img h4{
+
+.banner_img h4 {
     font-size: 22px;
     font-weight: 400;
     width: 400px;
     margin: 0;
     margin-top: 10px;
 }
-.get_started{
+
+.get_started {
     margin-top: 30px;
     padding: 20px 36px;
     border-radius: 4px;
@@ -40,18 +45,31 @@
     text-transform: uppercase;
     font-weight: 600;
 }
-.section1 h1{
+
+.section1 h1 {
     font-size: 55px;
     margin: 0;
     margin-top: 40px;
 }
 
-.line1{
+.line1 {
     font-size: 20px;
     letter-spacing: 0.08em;
     margin: 20px 0 40px;
 }
-.iframe{
+
+.iframe {
     width: 100%;
     height: 234px;
+}
+
+.flex-basis-3 {
+    flex-basis: calc(100%/3 - 27px);
+    margin-bottom: 40px;
+    margin-right: 40px;
+    position: relative;
+}
+
+.flex-basis-3:nth-child(3n+3) {
+    margin-right: 0;
 }
