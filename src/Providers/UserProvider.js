@@ -9,7 +9,7 @@ export default (props) => {
     //     auth.onAuthStateChanged(async (user) => {
     //         const { displayName, email } = user;
     //         setuser({
-    //             displayName,
+    //             displayName  ,
     //             email
     //         })
     //     })

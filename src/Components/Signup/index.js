@@ -1,13 +1,12 @@
 import React, { useEffect, useContext, useState } from 'react';
-// import './Login.css'
 import { UserContext } from '../../Providers/UserProvider';
 import { Redirect } from 'react-router-dom';
-import { GoogleLogin, GoogleLogout } from 'react-google-login';
+import { GoogleLogout } from 'react-google-login';
 
-export default function Login() {
-    const user = useContext(UserContext)
+export default function Signup() {
+    const user = useContext(UserContext);
     const [redirect, setredirect] = useState(null)
-
+    
     useEffect(() => {
         if (user) {
             setredirect('/dashboard')
