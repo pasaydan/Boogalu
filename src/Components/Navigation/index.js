@@ -5,6 +5,10 @@ import { useHistory } from "react-router-dom";
 function Navigation() {
     const history = useHistory();
 
+    const logout = () => {
+        console.log('logout success');
+    }
+
     return (
         <>
             <nav className="flex-container">
@@ -17,7 +21,8 @@ function Navigation() {
                 </ul>
                 <div className="flex-2 signup-wrap" >
                     <button className="login" onClick={() => history.push('/login')}>Login</button>
-                    <button className="signup">Sign Up</button>
+                    <button className="signup" onClick={() => history.push('/signup')}>Sign Up</button>
+                    {/* <button className="signup" onClick={() => logout()}>Logout</button> */}
                 </div>
             </nav>
         </>

@@ -1,20 +1,20 @@
-import React, { useState, useEffect, createContext } from "react";
-// import { auth } from "../Services/firebase"
+import React, { useState, useReducer, createContext } from "react";
+import userReducer from "../Reducers/UserReducer";
 
-export const UserContext = createContext({ user: null })
+export const UserContext = createContext();
+
+const initialState = {
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    dob: "",
+    password: ""
+}
 
 export default (props) => {
-    const [user, setuser] = useState(null)
-    // useEffect(() => {
-    //     auth.onAuthStateChanged(async (user) => {
-    //         const { displayName, email } = user;
-    //         setuser({
-    //             displayName  ,
-    //             email
-    //         })
-    //     })
-    // }, [])
+    const [user, dispatch] = useReducer(userReducer, initialState);
     return (
-        <UserContext.Provider value={user}>{props.children}</UserContext.Provider>
+        <UserContext.Provider value={{ user, dispatch }}>{props.children}</UserContext.Provider>
     )
 }
