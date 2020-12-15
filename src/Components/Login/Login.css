@@ -1,0 +1,172 @@
+.login-wrap {
+    text-align: center;
+    width: 100%;
+    margin: 30px 0;
+}
+
+.login-wrap .form-wrap, .login-wrap .img-wrap {
+    text-align: center;
+    display: inline-block;
+    width: 40%;
+    float: left;
+}
+
+.login-wrap .form-wrap {
+    width: 60%;
+}
+
+.form-outer {
+    padding: 40px 0;
+    font-family: Regular;
+    padding-left: 100px;
+}
+
+.img-wrap {
+    overflow: hidden;
+}
+
+.img-wrap img {
+    filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
+    width: 120%;
+    padding-left: 14%;
+}
+
+.bio-input {
+    width: 100%;
+}
+
+.input-wrap {
+    padding: 10px 20px;
+    width: 44%;
+    filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
+    float: left;
+    display: inline-block;
+}
+
+.input-field {
+    width: 100%;
+}
+
+.heading1 {
+    padding: 30px 0 14px;
+    font-size: 30px;
+    font-family: Bold;
+    letter-spacing: 1px;
+}
+
+.heading2 {
+    font-size: 18px;
+    font-family: Regular;
+}
+
+.submit-btn {
+    padding: 30px;
+}
+
+.submit-btn Button {
+    font-size: 17px;
+    padding: 10px 17px;
+    filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
+}
+
+.already-login-wrap {
+    width: 100%;
+}
+
+.already-login-wrap .btn-wrap, .already-login-wrap .text-wrap {
+    display: inline-block;
+}
+
+.login-with {
+    padding: 25px;
+}
+
+.login-with-google {
+    display: inline-block;
+    width: 50%;
+    text-align: center;
+}
+
+.login-with-fb {
+    display: inline-block;
+    width: 50%;
+}
+
+.forgot-password {
+    width: 100%;
+    text-align: right;
+    float: left;
+    padding-bottom: 30px;
+}
+
+.forgot-password div:hover {
+    cursor: pointer;
+}
+
+.forgot-password div {
+    width: auto;
+    float: right;
+    padding-right: 30px;
+}
+
+.or-seprator {
+    padding-top: 20px;
+}
+
+.or-seprator span {
+    display: inline-block;
+    float: left;
+    border-bottom: 1px dotted black;
+    width: 45%;
+    padding-top: 12px;
+}
+
+.or-seprator div {
+    display: inline-block;
+    float: left;
+    width: 10%;
+}
+
+.google-login-btn {
+    color: black !important;
+    border-radius: unset !important;
+    text-align: center !important;
+    font-family: 'Regular' !important;
+    border: none !important;
+    letter-spacing: 1px !important;
+    filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
+    padding: 7px !important;
+    width: 220px;
+    opacity: unset !important;
+    box-shadow: unset !important;
+}
+
+.google-login-btn svg {
+    vertical-align: middle;
+}
+
+.facebook-login-btn {
+    background-color: #4050b5;
+    color: white;
+    text-align: center;
+    font-family: 'Regular';
+    border: none;
+    letter-spacing: 1px;
+    filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
+    padding: 16px;
+    width: 220px;
+}
+
+.google-login-btn:hover, .facebook-login-btn:hover {
+    cursor: pointer;
+}
+
+.facebook-login-btn svg {
+    color: white;
+    padding-right: 10px;
+    vertical-align: middle;
+}
+
+.login-error {
+    color: tomato;
+}

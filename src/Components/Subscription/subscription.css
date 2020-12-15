@@ -1,8 +1,11 @@
-.subscription-wrap{
+.subscription-wrap {
     padding: 40px;
     margin: 40px 0;
+    font-family: SemiBold;
+    background-color: #ebefef;
 }
-.plan{
+
+.plan {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,15 +15,18 @@
     margin: 0 20px;
     height: 180px;
 }
-.plan_tag{
+
+.plan_tag {
     letter-spacing: 0.05em;
     font-weight: 600;
 }
-.plan_price{
+
+.plan_price {
     font-size: 45px;
     font-weight: 600;
 }
-.plan_price span{
+
+.plan_price span {
     font-size: 25px;
     font-weight: 600;
 }

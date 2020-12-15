@@ -1,14 +1,33 @@
 import React, { createContext, useReducer, useContext } from 'react';
 import storeReducer from '../Reducers';
+import LocalstorageCache from '../Services/LocalstorageCache';
 
-const initialState = {};
+const loggedInUserState = {
+  name: '',
+  username: '',
+  email: '',
+  phone: '',
+  dob: '2017-05-24',
+  gender: '',
+  country: '',
+  state: '',
+  password: '',
+  confirmPassword: '',
+  bio: '',
+  tnc: true,
+  profileImage: '',
+  source: ''
+}
+
+const initialState = localStorage.getItem("Boogalu") ? JSON.parse(localStorage.getItem("Boogalu"))
+  : { loggedInUser: loggedInUserState };
 const store = createContext(initialState);
 const { Provider } = store;
 
 const useStoreConsumer = () => useContext(store);
 
 const StateProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(storeReducer, initialState);
+  const [state, dispatch] = useReducer(LocalstorageCache(storeReducer), initialState);
 
   return <Provider value={{ state, dispatch }}>{children}</Provider>;
 };

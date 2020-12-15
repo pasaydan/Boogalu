@@ -1,0 +1,111 @@
+.logout-wrap {
+    text-align: center;
+    width: 100%;
+    margin: 30px 0;
+}
+
+.logout-wrap .form-wrap, .logout-wrap .img-wrap {
+    text-align: center;
+    display: inline-block;
+    width: 40%;
+    float: left;
+}
+
+.logout-wrap .form-wrap {
+    width: 60%;
+}
+
+.form-outer {
+    padding: 30px 0;
+    font-family: Regular;
+    padding-left: 100px;
+}
+
+.img-wrap {
+    overflow: hidden;
+}
+
+.img-wrap img {
+    filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
+    padding-left: 14%;
+    width: 120%;
+}
+
+.bio-input {
+    width: 100%;
+}
+
+.input-wrap {
+    padding: 10px 20px;
+    width: 44%;
+    filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
+    float: left;
+    display: inline-block;
+}
+
+.input-field {
+    width: 100%;
+}
+
+.heading1 {
+    padding: 30px 0 14px;
+    font-size: 30px;
+    font-family: Bold;
+    letter-spacing: 1px;
+}
+
+.heading2 {
+    font-size: 18px;
+    font-family: Regular;
+}
+
+.dob-wrap {
+    border: 1px solid #c4c4c4;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.MuiSelect-select.MuiSelect-select {
+    padding-bottom: 32px;
+}
+
+.tnc-content {
+    width: 100%;
+    padding-left: 10px;
+}
+
+.tnc-content .checkbox-wrap {
+    width: auto;
+    display: inline-block;
+    float: left;
+}
+
+.tnc-content .note-wrap {
+    width: 80%;
+    display: inline-block;
+    float: left;
+    text-align: left;
+    line-height: 45px;
+}
+
+.submit-btn {
+    padding: 30px;
+}
+
+.submit-btn Button {
+    font-size: 17px;
+    padding: 10px 17px;
+    filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
+}
+
+.already-login-wrap {
+    width: 100%;
+}
+
+.already-login-wrap .btn-wrap, .already-login-wrap .text-wrap {
+    display: inline-block;
+}
+
+.login-error {
+    color: tomato;
+}

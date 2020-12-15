@@ -1,4 +1,3 @@
-
 .style-name {
     position: absolute;
     left: 12px;
@@ -10,7 +9,18 @@
     background-color: #fff;
     color: #111;
 }
-.master_styles{
+
+.master_styles h1 {
     background-color: #ebefef;
-    padding: 50px;
+    font-size: 40px;
+    width: 100%;
+    font-weight: 500;
+    margin-bottom: 25px;
+    font-family: Bold;
+    line-height: 1.5;
+    letter-spacing: 1px
+}
+
+.master_styles {
+    padding: 0 40px 40px;
 }

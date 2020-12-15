@@ -1,58 +1,260 @@
-import React, { useEffect, useContext, useState } from 'react';
-// import './Login.css'
-import { UserContext } from '../../Providers/UserProvider';
-import { Redirect } from 'react-router-dom';
-import { GoogleLogin, GoogleLogout } from 'react-google-login';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from "react-router-dom";
+import { useStoreConsumer } from '../../Providers/StateProvider';
+import { GoogleLogin } from 'react-google-login';
+import FacebookLogin from 'react-facebook-login';
+import FacebookIcon from '@material-ui/icons/Facebook';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import InputLabel from '@material-ui/core/InputLabel';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import FormControl from '@material-ui/core/FormControl';
+import TextField from '@material-ui/core/TextField';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
+import bgImg from '../../Images/bg1.svg';
+import { loginUser, signupUser } from '../../Actions/User/index'
+import './Login.css'
 
 export default function Login() {
-    const user = useContext(UserContext)
-    const [redirect, setredirect] = useState(null)
+    const { state, dispatch } = useStoreConsumer();
+    const history = useHistory();
+    const [loginCred, setloginCred] = useState({ username: "", password: "", showPassWord: false })
+    const [LoginError, setLoginError] = useState(null);
+    const [thirdPartyResponse, setThirdPartyResponse] = useState({ isLogginSuccess: false, data: null, source: '' })
 
     useEffect(() => {
-        if (user) {
-            setredirect('/dashboard')
-        }
-    }, [user])
-    if (redirect) {
-        <Redirect to={redirect} />
+        if (thirdPartyResponse.source == 'Facebook') signinUser('', 'Facebook');
+        if (thirdPartyResponse.source == 'Google') signinUser('', 'Google');
+    }, [thirdPartyResponse]);
+
+    const setLoginResponseToServer = () => {
+        // notify server that user is loggedin
+        console.log('Saved to db')
+
     }
-    const responseGoogle = (response) => {
+    const successResponseGoogle = function (response) {
         console.log(response);
-        var res = response.profileObj;
-        console.log(res);
-        setredirect('/dashboard')
-        // Name: res.profileObj.name,
-        // email: res.profileObj.email,
-        // token: res.googleId,
-        // Image: res.profileObj.imageUrl,
-        // ProviderId: 'Google'
-        // this.signup(response);
+        let loginResponse = {
+            data: {
+                name: response.profileObj.name,
+                email: response.profileObj.email,
+                token: response.googleId,
+                profileImage: response.profileObj.imageUrl,
+            },
+            source: 'Google'
+        }
+        setThirdPartyResponse(loginResponse);
     }
-  
+
+    const failureResponseGoogle = function (response) {
+        console.log(response);
+        setLoginError('Sorry there was a problem with your google login request.')
+        console.log("google login error", response);
+    }
+
+    const responseFacebook = (response) => {
+        console.log(response);
+        if (response && response.userID) {
+            let loginResponse = {
+                isLogginSuccess: true,
+                data: response,
+                source: 'Facebook'
+            }
+            setThirdPartyResponse(loginResponse);
+        } else {
+            setLoginError('Sorry there was a problem with your facebook login request.')
+            console.log("facebook login error", response);
+        }
+    }
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
+
+    const handleChange = (prop) => (event) => {
+        setLoginError(null);
+        setloginCred({ ...loginCred, [prop]: event.target.value });
+    };
+
+    const showPassword = () => {
+        setloginCred({ ...loginCred, showPassWord: (loginCred.showPassWord ? false : true) })
+    }
+
+    const getUserLoginData = (userData) => {
+        return new Promise((res, rej) => {
+            let registeredUser = localStorage.getItem('users') ? JSON.parse(localStorage.getItem('users')) : [];
+            if (registeredUser && registeredUser.length != 0) {
+                let isRegisteredUser = registeredUser.filter((user) => (user.username == userData.username || user.email == userData.email || user.phone == userData.phone || user.name == userData.name) && (thirdPartyResponse.data ? user.password == userData.password : true));
+                if (isRegisteredUser.length) {
+                    res(isRegisteredUser[0]);
+                } else {
+                    if (!thirdPartyResponse.source) {
+                        setLoginError('Please enter correct credentials.')
+                        rej();
+                    } else {
+                        setLoginError('Please enter correct credentials.')
+                        rej({ ...userData, isRegistered: false });
+                    }
+                }
+            } else {
+                rej({ ...userData, isRegistered: false });
+            }
+        })
+    }
+    const signinUser = (e, status) => {
+        setLoginError(null);
+        let userData = {};
+        switch (status) {
+            case 'cred':
+                setThirdPartyResponse({ isLogginSuccess: false, data: null, source: '' })
+                e.preventDefault();
+                e.stopPropagation();
+                userData = {
+                    ...loginCred,
+                    phone: loginCred.username,
+                    email: loginCred.username,
+                }
+                getUserLoginData(userData)
+                    .then((data) => {
+                        //user is registered
+                        //set to db 
+                        setLoginResponseToServer();
+                        data.source = 'Website';
+                        dispatch(loginUser(data));
+                        history.push('/')
+                    })
+                    .catch((data) => {
+                        if (data) {
+                            //user not registered
+                            history.push({
+                                pathname: '/signup',
+                                state: data
+                            })
+                        }
+                    })
+                break;
+            case 'Google': case 'Facebook':
+                userData = {
+                    name: thirdPartyResponse.data.name,
+                    email: thirdPartyResponse.data.email,
+                }
+                getUserLoginData(userData)
+                    .then((data) => {
+                        //user is registered
+                        //set to db 
+                        setLoginResponseToServer();
+                        data.source = thirdPartyResponse.source;
+                        dispatch(loginUser(data));
+                        history.push('/')
+                    })
+                    .catch((data) => {
+                        if (data) {
+                            data.source = thirdPartyResponse.source;
+                            //user not registered
+                            history.push({
+                                pathname: '/signup',
+                                state: data
+                            })
+                        }
+                    })
+                break;
+        }
+    }
+
     return (
-        <div className="login-section">
-            <GoogleLogin
-                clientId="417866547364-mesv7a9cn6bj4n3ge45s8b6hhl1vdam0.apps.googleusercontent.com"
-                buttonText="Login with google"
-                onSuccess={responseGoogle}
-                onFailure={responseGoogle} >
-            </GoogleLogin>
-            <div className="seprator-or">
-                <span>OR</span>
-            </div>
-            <div className="input-login">
-                <input placeholder="Enter email or phone" />
-                <input placeholder="Enter your password" />
-            </div>
-            <div className="forgot-password">
-                Forgot your password?
-            </div>
-            <div className="submit">
-                <button>Log In</button>
-            </div>
-            <div className="signup">
-                <div>Don't have an account? </div>
-                <div>Sign Up</div>
+        <div className="login-wrap clearfix">
+            <form className="form-wrap clearfix" onSubmit={(e) => signinUser(e, 'cred')}>
+                <div className="heading-outer">
+                    <div className="heading1">Welcome Back!</div>
+                    <div className="heading2">Login to your existant account of Boogalu.</div>
+                </div>
+                <div className="form-outer clearfix">
+                    <div className="input-wrap">
+                        <TextField className="input-field"
+                            required
+                            id="outlined-required-username"
+                            label="Username / Email / Phone"
+                            onChange={handleChange('username')}
+                            value={loginCred.username}
+                            variant="outlined"
+                        />
+                    </div>
+                    <div className="input-wrap">
+                        <FormControl className="" variant="outlined" style={{ width: '100%' }}>
+                            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                            <OutlinedInput
+                                required
+                                id="outlined-adornment-password"
+                                type={loginCred.showPassWord ? 'text' : 'password'}
+                                value={loginCred.password}
+                                onChange={handleChange('password')}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={showPassword}
+                                            onMouseDown={handleMouseDownPassword}
+                                            edge="end"
+                                        >
+                                            {loginCred.showPassWord ? <Visibility /> : <VisibilityOff />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                }
+                                labelWidth={70}
+                            />
+                        </FormControl>
+                    </div>
+                    <div className="forgot-password clearfix">
+                        <div>Forgot Password ?</div>
+                    </div>
+                    {LoginError && <div className="login-error">
+                        {LoginError}
+                    </div>}
+                    <div className="submit-btn">
+                        <Button variant="contained" type="submit" color="primary">Sign In
+                         <ArrowRightSharpIcon />
+                        </Button>
+                    </div>
+                    <div className="or-seprator clearfix">
+                        <span></span>
+                        <div>OR</div>
+                        <span></span>
+                    </div>
+                    <div className="login-with">
+                        <div className="login-with-google">
+                            <GoogleLogin
+                                className="google-login-btn"
+                                clientId="417866547364-3vcia5nnm9jal0kolmk70fk8ppjbri2q.apps.googleusercontent.com"
+                                buttonText="Login with Google"
+                                onSuccess={successResponseGoogle}
+                                onFailure={failureResponseGoogle} >
+                            </GoogleLogin>
+                        </div>
+                        <div className="login-with-fb">
+                            <div className="login-with-fb">
+                                <FacebookLogin
+                                    appId="481057589408437"
+                                    autoLoad={false}
+                                    fields="name,email,picture"
+                                    callback={responseFacebook}
+                                    cssClass="facebook-login-btn"
+                                    icon={<FacebookIcon />}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="already-login-wrap">
+                        <div className="text-wrap">New to Boogalu?</div>
+                        <Button color="primary" onClick={() => history.push('/signup')}>SIGN UP</Button>
+                    </div>
+                </div>
+            </form>
+
+            <div className="img-wrap">
+                <img src={bgImg} />
             </div>
         </div>
     );

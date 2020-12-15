@@ -1,38 +1,48 @@
-nav{
-    box-shadow: 1px 1px 10px 0 rgba(0,0,0,.25);
+nav {
+    box-shadow: 1px 1px 10px 0 rgba(0, 0, 0, .25);
+    background-color: white;
+    padding: 10px 0;
 }
-nav img{
+
+nav img {
     height: 70px;
 }
-.nav-ul{
+
+.nav-ul {
     list-style: none;
     display: flex;
     justify-content: space-between;
+    font-family: Regular;
     align-items: center;
     font-size: 15px;
     letter-spacing: 0.05em;
     text-transform: uppercase
 }
-.nav-ul li a{
+
+.nav-ul li a {
     text-decoration: none;
     color: inherit;
 }
 
-.signup-wrap{
+.signup-wrap {
     display: flex;
     justify-content: flex-end;
     align-items: center;
 }
-.login{
+
+.login {
     padding: 12px 26px;
     border-radius: 4px;
-    background-image: linear-gradient(180deg,#ebefef,#ebefef);
+    background-image: linear-gradient(180deg, #ebefef, #ebefef);
     border: none;
     cursor: pointer;
     text-transform: uppercase;
     font-weight: 600;
+    filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
 }
-.signup{
+
+.signup {
+    filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
     margin: 0 20px;
     padding: 12px 26px;
     border-radius: 4px;

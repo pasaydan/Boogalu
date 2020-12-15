@@ -3,11 +3,13 @@ import './section2.css'
 
 function Section2() {
     return (
-        <div className="master_styles">
-            <h1>
-                Master A Variety Of Styles
+        <div className="master_styles" id="Styles">
+            <div className="heading-wrap">
+                <h1>
+                    Master A Variety Of Styles
                 </h1>
-            <div className="line1">Learn moves, skills, and full routines in a range of popular styles.</div>
+                <div className="line1">Learn moves, skills, and full routines in a range of popular styles.</div>
+            </div>
 
             <div className="flex-container-wrap" >
                 <div className="flex-basis-3">
