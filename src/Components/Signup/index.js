@@ -21,6 +21,7 @@ import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
 export default function Signup() {
     const { state, dispatch } = useStoreConsumer();
     const history = useHistory();
+    // const [NeedToRegisterError, setNeedToRegisterError] = useState('');
     let loggedInUser = state.loggedInUser;
     // if user already login then redirect to home
     if (loggedInUser.name && loggedInUser.phone && loggedInUser.email && loggedInUser.username) history.push({
@@ -31,6 +32,7 @@ export default function Signup() {
     if (history.location.state && (history.location.state.source == 'Facebook' || history.location.state.source == 'Google')) {
         loggedInUser.email = history.location.state.email;
         loggedInUser.name = history.location.state.name;
+        // setNeedToRegisterError('You are not registered yet, Please register with Boogalu.')
     }
     const [userDetails, setUserDetails] = useState(loggedInUser);
     const [SignUpError, setSignUpError] = useState(null);
@@ -106,6 +108,9 @@ export default function Signup() {
                     <div className="heading1">Let's Get Started!</div>
                     <div className="heading2">Create an account to Boogalu to get all features.</div>
                 </div>
+                {/* {NeedToRegisterError && <div className="login-error">
+                    {NeedToRegisterError}
+                </div>} */}
                 <div className="form-outer clearfix">
                     <div className="input-wrap">
                         <TextField className="input-field"

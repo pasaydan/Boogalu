@@ -36,7 +36,6 @@ export default function Login() {
 
     }
     const successResponseGoogle = function (response) {
-        console.log(response);
         let loginResponse = {
             data: {
                 name: response.profileObj.name,
@@ -50,9 +49,9 @@ export default function Login() {
     }
 
     const failureResponseGoogle = function (response) {
-        console.log(response);
-        setLoginError('Sorry there was a problem with your google login request.')
-        console.log("google login error", response);
+        if (response.error != "idpiframe_initialization_failed") {
+            setLoginError('Sorry there was a problem with your google login request.')
+        }
     }
 
     const responseFacebook = (response) => {
@@ -227,7 +226,7 @@ export default function Login() {
                         <div className="login-with-google">
                             <GoogleLogin
                                 className="google-login-btn"
-                                clientId="417866547364-3vcia5nnm9jal0kolmk70fk8ppjbri2q.apps.googleusercontent.com"
+                                clientId="417866547364-mesv7a9cn6bj4n3ge45s8b6hhl1vdam0.apps.googleusercontent.com"
                                 buttonText="Login with Google"
                                 onSuccess={successResponseGoogle}
                                 onFailure={failureResponseGoogle} >
@@ -236,7 +235,7 @@ export default function Login() {
                         <div className="login-with-fb">
                             <div className="login-with-fb">
                                 <FacebookLogin
-                                    appId="481057589408437"
+                                    appId="813330422546108"
                                     autoLoad={false}
                                     fields="name,email,picture"
                                     callback={responseFacebook}
