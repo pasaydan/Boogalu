@@ -3,7 +3,7 @@ import "./subscription.css";
 
 function Subscription() {
     return (
-        <div className="flex-container-VC subscription-wrap" id="Suubscription">
+        <div className="flex-container-VC subscription-wrap" id="Subscription">
             <div className="flex-3">
                 <h1>Unlimited Classes For The Price Of One</h1>
                 <div className="line1">Dance to the music that makes YOU want to move at any skill level.</div>
