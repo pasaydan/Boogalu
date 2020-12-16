@@ -22,12 +22,14 @@ function Navigation() {
 
     return (
         <>
-            <nav className="flex-container">
-                <img onClick={() => history.push('/')} src="https://global-uploads.webflow.com/5de6c3f14dd1a7bf391687a4/5e30b3944081802b7050f546_STEEZY_WEB_LOGO.svg" alt="" className="image-14"></img>
+            <nav className="flex-container navigation-wrap">
+                <h1 onClick={() => history.push('/')} title="home" >
+                    Boogalu
+                </h1>
                 <ul className="flex-1 nav-ul">
-                    <li><a href="#Programs" onClick={(e) => onClickNav(e, 'Programs')}>Programs</a></li>
-                    <li><a href="#Features" onClick={(e) => onClickNav(e, 'Features')}>Features</a></li>
-                    <li><a href="#Styles" onClick={(e) => onClickNav(e, 'Styles')}>Styles</a></li>
+                    <li><a href="#Programs" onClick={(e) => onClickNav(e, 'Programs')}>Lessons</a></li>
+                    <li><a href="#Features" onClick={(e) => onClickNav(e, 'Features')}>Competitions</a></li>
+                    {/* <li><a href="#Styles" onClick={(e) => onClickNav(e, 'Styles')}>Styles</a></li> */}
                     <li><a href="#Suubscription" onClick={(e) => onClickNav(e, 'Subscription')}>Subscription</a></li>
                 </ul>
                 {!state.loggedInUser.phone && <div className="flex-2 signup-wrap" >

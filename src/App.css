@@ -48,3 +48,13 @@ button:focus {
 .flex-4 {
   flex: 4
 }
+
+/* Navigation custom style */
+.navigation-wrap h1 {
+  font-family: 'Oleo Script', cursive;
+  font-size: 36px;
+  line-height: 50px;
+  margin: 0 0 0 20px;
+  font-weight: 400;
+  cursor: pointer;
+}
