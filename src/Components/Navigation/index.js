@@ -1,12 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './navigation.css'
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { logoutUser } from '../../Actions/User';
 
+const SCROLL_TOP_LIMIT = 200;
 function Navigation() {
+    const [goingUpClass, setGoingUpClass] = useState('');
+    const [goingDownClass, setGoingDownClass] = useState('');
+
     const history = useHistory();
     const { state, dispatch } = useStoreConsumer();
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+            if (currentScrollY < SCROLL_TOP_LIMIT) {
+                setGoingUpClass('');
+                setGoingDownClass('');
+            } else {
+                setGoingUpClass('scrolled-up');
+                setTimeout(() => {
+                    setGoingDownClass('scrolled-down');    
+                }, 200);
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll, { passive: true });
+    }, []);
 
     const logout = () => {
         console.log('logout success');
@@ -22,7 +43,7 @@ function Navigation() {
 
     return (
         <>
-            <nav className="flex-container navigation-wrap">
+            <nav className={`flex-container navigation-wrap ${goingUpClass} ${goingDownClass}`}>
                 <h1 onClick={() => history.push('/')} title="home" >
                     Boogalu
                 </h1>
