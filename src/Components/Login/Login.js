@@ -168,7 +168,7 @@ export default function Login() {
             <form className="form-wrap clearfix" onSubmit={(e) => signinUser(e, 'cred')}>
                 <div className="heading-outer">
                     <div className="heading1">Welcome Back!</div>
-                    <div className="heading2">Login to your existant account of Boogalu.</div>
+                    <div className="heading2">Login to your existant account of Choreoculture.</div>
                 </div>
                 <div className="form-outer clearfix">
                     <div className="input-wrap">
@@ -246,7 +246,7 @@ export default function Login() {
                         </div>
                     </div>
                     <div className="already-login-wrap">
-                        <div className="text-wrap">New to Boogalu?</div>
+                        <div className="text-wrap">New to Choreoculture?</div>
                         <Button color="primary" onClick={() => history.push('/signup')}>SIGN UP</Button>
                     </div>
                 </div>

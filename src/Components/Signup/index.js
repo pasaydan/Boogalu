@@ -32,7 +32,7 @@ export default function Signup() {
     if (history.location.state && (history.location.state.source == 'Facebook' || history.location.state.source == 'Google')) {
         loggedInUser.email = history.location.state.email;
         loggedInUser.name = history.location.state.name;
-        // setNeedToRegisterError('You are not registered yet, Please register with Boogalu.')
+        // setNeedToRegisterError('You are not registered yet, Please register with Choreoculture.')
     }
     const [userDetails, setUserDetails] = useState(loggedInUser);
     const [SignUpError, setSignUpError] = useState(null);
@@ -106,7 +106,7 @@ export default function Signup() {
             <form className="form-wrap clearfix" onSubmit={setSignupUserCred}>
                 <div className="heading-outer">
                     <div className="heading1">Let's Get Started!</div>
-                    <div className="heading2">Create an account to Boogalu to get all features.</div>
+                    <div className="heading2">Create an account to Choreoculture to get all features.</div>
                 </div>
                 {/* {NeedToRegisterError && <div className="login-error">
                     {NeedToRegisterError}

@@ -1,7 +1,7 @@
 const LocalStorageCache = reducer => {
   return (state, action) => {
     const newState = reducer(state, action);
-    localStorage.setItem("Boogalu", JSON.stringify(newState));
+    localStorage.setItem("Choreoculture", JSON.stringify(newState));
     return newState;
   }
 };

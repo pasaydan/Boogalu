@@ -19,7 +19,7 @@ const loggedInUserState = {
   source: ''
 }
 
-const initialState = localStorage.getItem("Boogalu") ? JSON.parse(localStorage.getItem("Boogalu"))
+const initialState = localStorage.getItem("Choreoculture") ? JSON.parse(localStorage.getItem("Choreoculture"))
   : { loggedInUser: loggedInUserState };
 const store = createContext(initialState);
 const { Provider } = store;
