@@ -3,7 +3,7 @@ import './section2.css'
 
 function Section2() {
     return (
-        <div className="master_styles" id="Styles">
+        <div className="master_styles" id="Competitions">
             <div className="heading-wrap">
                 <h1>
                     Master A Variety Of Styles

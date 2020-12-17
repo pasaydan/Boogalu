@@ -22,7 +22,7 @@ function Navigation() {
             } else {
                 setGoingUpClass('scrolled-up');
                 setTimeout(() => {
-                    setGoingDownClass('scrolled-down');    
+                    setGoingDownClass('scrolled-down');
                 }, 200);
             }
         };
@@ -49,10 +49,10 @@ function Navigation() {
                     <img src={boogaluLogo} alt="Boogalu" />
                 </h1>
                 <ul className="flex-1 nav-ul">
-                    <li><a href="#Programs" onClick={(e) => onClickNav(e, 'Programs')}>Lessons</a></li>
-                    <li><a href="#Features" onClick={(e) => onClickNav(e, 'Features')}>Competitions</a></li>
+                    <li><a href="#Lessons" onClick={(e) => onClickNav(e, 'Lessons')}>Lessons</a></li>
+                    <li><a href="#Competitions" onClick={(e) => onClickNav(e, 'Competitions')}>Competitions</a></li>
                     {/* <li><a href="#Styles" onClick={(e) => onClickNav(e, 'Styles')}>Styles</a></li> */}
-                    <li><a href="#Suubscription" onClick={(e) => onClickNav(e, 'Subscription')}>Subscription</a></li>
+                    <li><a href="#Subscription" onClick={(e) => onClickNav(e, 'Subscription')}>Subscription</a></li>
                 </ul>
                 {!state.loggedInUser.phone && <div className="flex-2 signup-wrap" >
                     <button className="login" onClick={() => history.push('/login')}>Login</button>

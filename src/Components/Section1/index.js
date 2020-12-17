@@ -4,12 +4,12 @@ import './section1.css'
 function Section1() {
     return (
         <div className="section1">
-            <div className="banner_img" id="Programs">
+            <div className="banner_img">
                 <h1>Dance Classes for Everyone</h1>
                 <h4>The world’s best dance learning tools – at your fingertips. Start free for 7 days.</h4>
                 <button className="get_started">Get Started</button>
             </div>
-            <div className="learn_choreo" id="Features">
+            <div className="learn_choreo" id="Lessons">
                 <div className="heading-wrap">
                     <h1>
                         Learn Choreography To <br /> Your Favorite Songs
