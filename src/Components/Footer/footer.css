@@ -48,6 +48,13 @@ footer input {
 }
 
 .copyright-wrap img {
-    width: 60px;
-    margin-bottom: 20px;
+    width: 120px;
+    margin-bottom: 10px;
+}
+
+.copyright-wrap a {
+    color: #6b6b6b;
+    font-size: 12px;
+    line-height: 18px;
+    text-decoration: none;
 }
