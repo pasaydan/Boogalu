@@ -1,6 +1,9 @@
 :root {
   --primary-color: #2c0b8e;
   --secondary-color: #6d58ab;
+  --primary-dark-grey: #191313;
+  --secondary-dark-grey: #474747;
+  --primary-white: #ffffff;
 }
 
 .clearfix::after {
@@ -54,27 +57,11 @@ button:focus {
   padding-top: 73px;
 }
 
-/* Navigation custom style */
-.navigation-wrap {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 10;
+.main-content-wrapper {
+  opacity: 0;
   transition: all 0.5s ease-in-out;
 }
-.navigation-wrap.scrolled-up {
-  top: -100px;
-}
-.navigation-wrap.scrolled-down {
-  position: fixed;
-  top: 0;
-}
-.navigation-wrap h1 {
-  font-family: 'Oleo Script', cursive;
-  font-size: 36px;
-  line-height: 50px;
-  margin: 0 0 0 20px;
-  font-weight: 400;
-  cursor: pointer;
+
+.main-content-wrapper.visible-transition {
+  opacity: 1;
 }

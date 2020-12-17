@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './navigation.css'
+import boogaluLogo from '../../Images/Boogalu-logo.svg';
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { logoutUser } from '../../Actions/User';
@@ -45,7 +46,7 @@ function Navigation() {
         <>
             <nav className={`flex-container navigation-wrap ${goingUpClass} ${goingDownClass}`}>
                 <h1 onClick={() => history.push('/')} title="home" >
-                    Boogalu
+                    <img src={boogaluLogo} alt="Boogalu" />
                 </h1>
                 <ul className="flex-1 nav-ul">
                     <li><a href="#Programs" onClick={(e) => onClickNav(e, 'Programs')}>Lessons</a></li>

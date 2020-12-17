@@ -1,7 +1,9 @@
 nav {
     box-shadow: 1px 1px 10px 0 rgba(0, 0, 0, .25);
-    background-color: white;
     padding: 10px 0;
+    background-color: var(--secondary-dark-grey);
+    background-image: linear-gradient(to right, var(--secondary-dark-grey) , var(--primary-dark-grey));
+    color: var(--primary-white);
 }
 
 nav img {
@@ -53,3 +55,34 @@ nav img {
     text-transform: uppercase;
     font-weight: 600;
 }
+
+.navigation-wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    transition: all 0.5s ease-in-out;
+  }
+  .navigation-wrap.scrolled-up {
+    top: -100px;
+  }
+  .navigation-wrap.scrolled-down {
+    position: fixed;
+    top: 0;
+  }
+  .navigation-wrap h1 {
+    font-family: 'Oleo Script', cursive;
+    font-size: 36px;
+    line-height: 50px;
+    margin: 0 0 0 20px;
+    font-weight: 400;
+    cursor: pointer;
+    width: 166px;
+    height: 53px;
+  }
+
+  .navigation-wrap h1 img {
+      width: 100%;
+      height: 100%;
+  }
