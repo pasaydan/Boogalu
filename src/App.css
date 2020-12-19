@@ -16,6 +16,10 @@ button:focus {
   outline: unset;
 }
 
+.container-class {
+  padding: 40px;
+}
+
 .flex-container {
   display: flex;
 }
@@ -53,6 +57,7 @@ button:focus {
 }
 
 /* Main app custom style */
+
 .App {
   padding-top: 73px;
 }

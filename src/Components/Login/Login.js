@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
+import AnchorLink from 'react-anchor-link-smooth-scroll'
 import { GoogleLogin } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
 import FacebookIcon from '@material-ui/icons/Facebook';
@@ -17,6 +18,7 @@ import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
 import bgImg from '../../Images/bg1.svg';
 import { loginUser, signupUser } from '../../Actions/User/index'
 import './Login.css'
+import * as $ from 'jquery';
 
 export default function Login() {
     const { state, dispatch } = useStoreConsumer();
@@ -29,6 +31,12 @@ export default function Login() {
         if (thirdPartyResponse.source == 'Facebook') signinUser('', 'Facebook');
         if (thirdPartyResponse.source == 'Google') signinUser('', 'Google');
     }, [thirdPartyResponse]);
+
+    useEffect(() => {
+        $('html,body').animate({
+            scrollTop: 0
+        }, 500);
+    }, [])
 
     const setLoginResponseToServer = () => {
         // notify server that user is loggedin

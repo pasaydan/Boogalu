@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import AnchorLink from 'react-anchor-link-smooth-scroll'
 import './navigation.css'
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { logoutUser } from '../../Actions/User';
-
+import * as $ from 'jquery';
 const SCROLL_TOP_LIMIT = 200;
 function Navigation() {
     const [goingUpClass, setGoingUpClass] = useState('');
@@ -36,17 +37,37 @@ function Navigation() {
     }
 
     const onClickNav = (e, route) => {
-        if (history.location.pathname != '/') {
-            e.preventDefault();
-            history.push(`/#${route}`)
+        e.preventDefault();
+        if (route) {
+            history.push(`/#${route}`);
+            setTimeout(() => {
+                var target = $(`#${route}`);
+                if (target.length) {
+                    $('html,body').animate({
+                        scrollTop: target.offset().top - 30
+                    }, 700);
+                }
+            }, 100);
+        } else {
+            history.push(`/`);
+            setTimeout(() => {
+                var target = $(`.homepage`);
+                if (target.length) {
+                    $('html,body').animate({
+                        scrollTop: target.offset().top - 200
+                    }, 700);
+                }
+            }, 100);
         }
     }
 
     return (
         <>
             <nav className={`flex-container navigation-wrap ${goingUpClass} ${goingDownClass}`}>
-                <h1 onClick={() => history.push('/')} title="home" >
+                <h1 title="home" >
+                    <a href="/" onClick={(e) => onClickNav(e, '')}>
                     <img src={boogaluLogo} alt="Boogalu" />
+                    </a>
                 </h1>
                 <ul className="flex-1 nav-ul">
                     <li><a href="#Lessons" onClick={(e) => onClickNav(e, 'Lessons')}>Lessons</a></li>

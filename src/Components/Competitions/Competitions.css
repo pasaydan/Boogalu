@@ -21,6 +21,6 @@
     letter-spacing: 1px
 }
 
-.master_styles {
-    padding: 0 40px 40px;
+.master_styles>div {
+    padding-top: 40px;
 }

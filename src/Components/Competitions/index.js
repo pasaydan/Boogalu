@@ -1,14 +1,16 @@
 import React from 'react'
-import './section2.css'
+import './Competitions.css'
 
-function Section2() {
+function Competitions() {
     return (
-        <div className="master_styles" id="Competitions">
-            <div className="heading-wrap">
-                <h1>
-                    Master A Variety Of Styles
+        <div className="master_styles">
+            <div id="Competitions">
+                <div className="heading-wrap">
+                    <h1>
+                        Master A Variety Of Styles
                 </h1>
-                <div className="line1">Learn moves, skills, and full routines in a range of popular styles.</div>
+                    <div className="line1">Learn moves, skills, and full routines in a range of popular styles.</div>
+                </div>
             </div>
 
             <div className="flex-container-wrap" >
@@ -47,4 +49,4 @@ function Section2() {
     )
 }
 
-export default Section2
+export default Competitions

@@ -1,14 +1,9 @@
 import React from 'react'
-import './section1.css'
+import './Lessons.css'
 
-function Section1() {
+function Lessons() {
     return (
         <div className="section1">
-            <div className="banner_img">
-                <h1>Dance Classes for Everyone</h1>
-                <h4>The world’s best dance learning tools – at your fingertips. Start free for 7 days.</h4>
-                <button className="get_started">Get Started</button>
-            </div>
             <div className="learn_choreo" id="Lessons">
                 <div className="heading-wrap">
                     <h1>
@@ -36,4 +31,4 @@ function Section1() {
     )
 }
 
-export default Section1
+export default Lessons

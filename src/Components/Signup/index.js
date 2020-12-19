@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { signupUser } from '../../Actions/User';
@@ -17,6 +17,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import './signup.css';
 import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
+import * as $ from 'jquery';
 
 export default function Signup() {
     const { state, dispatch } = useStoreConsumer();
@@ -50,6 +51,12 @@ export default function Signup() {
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
+
+    useEffect(() => {
+        $('html,body').animate({
+            scrollTop: 0
+        }, 500);
+    }, [])
 
     const registerUser = () => {
         return new Promise((res, rej) => {
