@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import AnchorLink from 'react-anchor-link-smooth-scroll'
 import './navigation.css'
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
 import { useHistory } from "react-router-dom";
