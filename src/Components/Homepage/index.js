@@ -1,10 +1,13 @@
 import React from "react";
 import "./Homepage.css";
+import { useStoreConsumer } from '../../Providers/StateProvider';
 import bgImg from '../../Images/home_bg.png';
 import { useHistory } from "react-router-dom";
 
 export default function Homepage() {
     const history = useHistory();
+    const { state, dispatch } = useStoreConsumer();
+    let loggedInUser = state.loggedInUser;
     return (
         <div className="homepage clearfix">
             <div className="homepage-wrap clearfix">
@@ -26,7 +29,9 @@ export default function Homepage() {
                     <h1>Dance Classes for Everyone</h1>
                     <div className="get-started-wrap">
                         <h4>The world’s best dance learning tools – at your fingertips. Start free for 7 days.</h4>
-                        <button className="get_started" onClick={() => history.push('/login')}>Get Started</button>
+                        <button className="get_started" onClick={() => {
+                            loggedInUser ? history.push('/lessons') : history.push('/login');
+                        }}>Get Started</button>
                     </div>
                 </div>
             </div>

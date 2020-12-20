@@ -1,0 +1,86 @@
+.profile-details-wrap {
+    padding: 50px 20% 30px;
+}
+
+.profile-details-wrap .profile-img {
+    display: inline-block;
+    float: left;
+    width: 30%;
+    text-align: center;
+}
+
+.profile-details-wrap .profile-img svg {
+    font-size: 100px;
+}
+
+.profile-details-wrap .profile-details {
+    padding: 12px 0;
+    display: inline-block;
+    float: left;
+    width: 70%;
+}
+
+.username-wrap {
+    padding-bottom: 15px;
+}
+
+.username-wrap .username {
+    font-size: 30px;
+    font-family: 'Bold';
+    display: inline-block;
+    float: left;
+}
+
+.username-wrap .edit-profile {
+    font-size: 12px;
+    font-family: 'Regular';
+    display: inline-block;
+    margin-top: 6px;
+    float: right;
+    cursor: pointer;
+    border: 1px solid;
+    padding: 7px 10px;
+    border-radius: 7px;
+}
+
+.followers-wrap {
+    padding-bottom: 20px;
+}
+
+.followers-wrap span {
+    font-family: SemiBold;
+    padding-right: 7px;
+    font-size: 18px;
+}
+
+.followers-wrap div {
+    font-family: Regular;
+    display: inline-block;
+    float: left;
+    padding-right: 30px;
+    font-size: 16px;
+}
+
+.bio-wrap {
+    padding-bottom: 20px;
+}
+
+.bio-wrap .fullname {
+    font-size: 20px;
+    font-family: SemiBold;
+    padding-bottom: 7px;
+}
+
+.bio-wrap .bio {
+    font-size: 16px;
+    font-family: Regular;
+}
+
+.profile-content-wrap {
+    padding: 0 15%;
+}
+
+.MuiTabs-root {
+    border-bottom: 1px solid;
+    margin-bottom: 20px;
+}

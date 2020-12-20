@@ -7,9 +7,11 @@ import Navigation from "./Components/Navigation/index";
 import Homepage from "./Components/Homepage";
 import Footer from "./Components/Footer/index";
 import Signup from "./Components/Signup";
+import Profile from "./Components/Profile/Profile";
 import Lessons from "./Components/Lessons";
 import Competitions from "./Components/Competitions";
 import Subscription from "./Components/Subscription";
+import EditProfile from "./Components/EditProfile/EditProfile";
 
 function App() {
   const [isSplashVisible, toggleSplash] = useState(true);
@@ -38,6 +40,9 @@ function App() {
                 <Route exact path="/login">
                   <Login />
                 </Route>
+                <Route exact path="/profile/edit">
+                  <EditProfile />
+                </Route>
                 <Route exact path="/register">
                   <Signup />
                 </Route>
@@ -50,10 +55,13 @@ function App() {
                 <Route exact path="/subscription">
                   <Subscription />
                 </Route>
-                <Route path="/home">
+                <Route exact path="/profile">
+                  <Profile />
+                </Route>
+                <Route exact path="/home">
                   <Homepage />
                 </Route>
-                <Route path="/">
+                <Route exact path="/">
                   <Homepage />
                 </Route>
               </Switch>

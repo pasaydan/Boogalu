@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
-import Ripples from 'react-ripples'
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { signupUser } from '../../Actions/User';
 import bgImg from '../../Images/bg1.svg';
@@ -47,7 +46,6 @@ export default function Signup() {
 
     const handleChange = (prop) => (event) => {
         setUserDetails({ ...userDetails, [prop]: event.target.value });
-        console.log(userDetails)
     };
 
     const handleClickShowPassword = (prop) => {
@@ -69,6 +67,24 @@ export default function Signup() {
             let isAnySelected = stepData[activeStep].filter((data) => data.isSelected);
             if (isAnySelected.length != 0) setShowNextButton(true);
             else setShowNextButton(false);
+            // set selected options
+            let selectedOptions = [];
+            Object.entries(stepData).map(([parentKey, parentValue]) => {
+                parentValue.map((parentValueItem) => {
+                    if (parentValueItem.isSelected) {
+                        let selectionObj = { value: [parentValueItem.title], key: parentKey, heading: parentValueItem.heading };
+                        if (selectedOptions.length != 0) {
+                            let isAvl = selectedOptions.filter((data) => data.key == parentKey);
+                            if (isAvl.length != 0) {
+                                selectedOptions.map((item) => {
+                                    if (item.key == parentKey) item.value.push(parentValueItem.title);
+                                })
+                            } else selectedOptions.push(selectionObj);
+                        } else selectedOptions.push(selectionObj);
+                    }
+                })
+            })
+            setSelectedOptionsList(selectedOptions);
         }
     }, [activeStep])
 
@@ -298,9 +314,17 @@ export default function Signup() {
                                     <div key={i} className="list-item selected-item">
                                         <div className="title">{item.heading}</div>
                                         <div className="desc">
-                                            {item.value.map((listValue, j) => {
-                                                return <span key={j}>{listValue},</span>
-                                            })}
+                                            {item.value.length == 1 &&
+                                                item.value.map((listValue, j) => {
+                                                    return <span key={j}>{listValue} </span>
+                                                })
+                                            }
+                                            {item.value.length != 1 &&
+                                                item.value.map((listValue, j) => {
+                                                    return <span key={j}>{listValue}, </span>
+                                                })
+                                            }
+
                                         </div>
                                         <Checkbox
                                             required
