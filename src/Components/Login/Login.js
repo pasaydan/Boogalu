@@ -219,7 +219,7 @@ export default function Login() {
                     {LoginError && <div className="login-error">
                         {LoginError}
                     </div>}
-                    <div className="submit-btn">
+                    <div className="submit-btn clearfix">
                         <Button variant="contained" type="submit" color="primary">Sign In
                          <ArrowRightSharpIcon />
                         </Button>
@@ -254,7 +254,7 @@ export default function Login() {
                     </div>
                     <div className="already-login-wrap">
                         <div className="text-wrap">New to Choreoculture?</div>
-                        <Button color="primary" onClick={() => history.push('/signup')}>SIGN UP</Button>
+                        <Button color="primary" onClick={() => history.push('/register')}>SIGN UP</Button>
                     </div>
                 </div>
             </form>

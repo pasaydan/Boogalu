@@ -3,7 +3,7 @@ import "./subscription.css";
 
 function Subscription() {
     return (
-        <div className="subscription-outer">
+        <div className="subscription subscription-outer">
             <div id="Subscription">
                 <div className="flex-container-VC subscription-wrap">
                 <div className="flex-3">

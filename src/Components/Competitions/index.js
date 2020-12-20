@@ -3,7 +3,7 @@ import './Competitions.css'
 
 function Competitions() {
     return (
-        <div className="master_styles">
+        <div className="competitions master_styles">
             <div id="Competitions">
                 <div className="heading-wrap">
                     <h1>
