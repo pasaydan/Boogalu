@@ -136,7 +136,7 @@ export default function Login() {
                         if (data) {
                             //user not registered
                             history.push({
-                                pathname: '/signup',
+                                pathname: '/register',
                                 state: data
                             })
                         }
@@ -161,7 +161,7 @@ export default function Login() {
                             data.source = thirdPartyResponse.source;
                             //user not registered
                             history.push({
-                                pathname: '/signup',
+                                pathname: '/register',
                                 state: data
                             })
                         }

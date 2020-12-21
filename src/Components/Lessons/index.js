@@ -1,32 +1,125 @@
-import React from 'react'
-import './Lessons.css'
-
+import React, { useState, useRef, useEffect } from 'react'
+import './Lessons.css';
+import LessonsCategories from '../../Data/LessonsCategory';
+import Video from "../Vedio/Video";
+import FilterListIcon from '@material-ui/icons/FilterList';
+import ArrowDropDownOutlinedIcon from '@material-ui/icons/ArrowDropDownOutlined';
+import Button from '@material-ui/core/Button';
+import SortIcon from '@material-ui/icons/Sort';
+import SortByAlphaIcon from '@material-ui/icons/SortByAlpha';
 function Lessons() {
+    const [activeCategory, setActiveCategory] = useState(LessonsCategories[0]);
+    const [LessonsCategoriesList, setLessonsCategoriesList] = useState(LessonsCategories)
+    const [showCatDropDown, setShowCatDropDown] = useState(false);
+    const [showFilterDropDown, setShowFilterDropDown] = useState(false);
+    const [showSortingDropDown, setShowSortingDropDown] = useState(false);
+    const catRef = useRef();
+    const filterRef = useRef();
+    const sortingRef = useRef();
+    useOnClickOutside(catRef, () => setShowCatDropDown(false));
+    useOnClickOutside(filterRef, () => setShowFilterDropDown(false));
+    useOnClickOutside(sortingRef, () => setShowSortingDropDown(false));
+
+    function useOnClickOutside(ref, handler) {
+        useEffect(
+            () => {
+                const listener = event => {
+                    if (!ref.current || ref.current.contains(event.target)) {
+                        return;
+                    }
+                    handler(event);
+                };
+                document.addEventListener('mousedown', listener);
+                document.addEventListener('touchstart', listener);
+                return () => {
+                    document.removeEventListener('mousedown', listener);
+                    document.removeEventListener('touchstart', listener);
+                };
+            },
+            [ref, handler]
+        );
+    }
     return (
-        <div className="lessons">
-            <div className="learn_choreo" id="Lessons">
-                <div className="heading-wrap">
-                    <h1>
-                        Learn Choreography To <br /> Your Favorite Songs
-                </h1>
-                    <div className="line1">Dance to the music that makes YOU want to move at any skill level.</div>
+        <div className="lessons lessons-wrap" id="lessons">
+            <div className="lessons-heading-wrap">
+                <div className="lessons-title-wrap clearfix">
+                    <div className="title">Lessons</div>
+                    <div className="category-dropdown-wrap" ref={catRef}>
+                        <div className="category-dropdown" onClick={() => setShowCatDropDown(true)}>
+                            <div>{activeCategory.title}</div>
+                            <ArrowDropDownOutlinedIcon />
+                        </div>
+                        {showCatDropDown && <div className="dropdown-list-wrap">
+                            {LessonsCategoriesList.map((item, i) => {
+                                if (item.title != activeCategory.title) {
+                                    return <div className="category-item" key={i} onClick={() => { setActiveCategory(item); setShowCatDropDown(false) }}>{item.title}</div>
+                                }
+                            })}
+                        </div>}
+                    </div>
+                    <div className="filter-wrap clearfix">
+                        <div className="filters filters-dropdown-outer" ref={filterRef}>
+                            <div className="filters-content">
+                                <FilterListIcon onClick={() => setShowFilterDropDown(true)} />
+                            </div>
+                            {showFilterDropDown && <div className="filters-dropdown-wrap">
+                                <div className="heading">Level</div>
+                                <div className="level-list clearfix">
+                                    <div className="filter-item">Beginner</div>
+                                    <div className="filter-item">Intermediate</div>
+                                    <div className="filter-item">Advanced</div>
+                                </div>
+                                <div className="heading">Class Length</div>
+                                <div className="level-list length-list clearfix">
+                                    <div className="filter-item">20 min or less</div>
+                                    <div className="filter-item">20 to 50 min</div>
+                                    <div className="filter-item">50 to 1.5 hr</div>
+                                    <div className="filter-item">1.5 hr to more</div>
+                                </div>
+                                <div className="heading">Instructor</div>
+                                <div className="level-list instructor-list clearfix">
+                                    <div className="filter-item">A HURRIKANE LAUTURE</div>
+                                    <div className="filter-item">A HURRIKANE LAUTURE</div>
+                                    <div className="filter-item">A HURRIKANE LAUTURE</div>
+                                    <div className="filter-item">A HURRIKANE LAUTURE</div>
+                                    <div className="filter-item">A HURRIKANE LAUTURE</div>
+                                    <div className="filter-item">A HURRIKANE LAUTURE</div>
+                                </div>
+                                <div className="filters-buttons">
+                                    <Button variant="contained" color="primary" onClick={() => setShowFilterDropDown(false)}>Reset</Button>
+                                    <Button variant="contained" color="primary" onClick={() => setShowFilterDropDown(false)}>Save</Button>
+                                </div>
+                            </div>}
+                        </div>
+                        <div className="sortings sortings-dropdown-outer">
+                            <div className="sortings-content" ref={sortingRef}>
+                                <SortByAlphaIcon onClick={() => setShowSortingDropDown(true)} />
+                            </div>
+                            {showSortingDropDown && <div className="sortings-dropdown-wrap">
+                                <div className="sortings-dropdown">
+                                    <div className="heading">Sort By</div>
+                                    <div className="sorting-filter-list">
+                                        <div className="filter-item" onClick={() => setShowSortingDropDown(false)}>Shortest</div>
+                                        <div className="filter-item" onClick={() => setShowSortingDropDown(false)}>Longest</div>
+                                        <div className="filter-item" onClick={() => setShowSortingDropDown(false)}>Newest</div>
+                                        <div className="filter-item" onClick={() => setShowSortingDropDown(false)}>Oldest</div>
+                                        <div className="filter-item" onClick={() => setShowSortingDropDown(false)}>A to Z</div>
+                                        <div className="filter-item" onClick={() => setShowSortingDropDown(false)}>Z to A</div>
+                                    </div>
+                                </div>
+                            </div>}
+                        </div>
+                    </div>
                 </div>
-                <div className="flex-container" >
-                    <div className="flex-basis-3">
-                        <iframe className="iframe" src="//www.youtube.com/embed/i3yMXpeLPuU?wmode=transparent&amp;autoplay=0&amp;theme=dark&amp;controls=0&amp;autohide=0&amp;loop=0&amp;showinfo=0&amp;rel=0&amp;playlist=false&amp;enablejsapi=0" scrolling="no" title="Vimeo embed" frameborder="0" allow="autoplay; fullscreen" allowfullscreen="false">
-                        </iframe>
-                    </div>
-                    <div className="flex-basis-3">
-                        <iframe className="iframe" src="//cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fplayer.vimeo.com%2Fvideo%2F453549133%3Fapp_id%3D122963&amp;dntp=1&amp;display_name=Vimeo&amp;url=https%3A%2F%2Fvimeo.com%2F453549133%3Flazy%3D1&amp;image=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F951136340_1280.jpg&amp;key=96f1f04c5f4143bcb0f2e68c87d65feb&amp;type=text%2Fhtml&amp;schema=vimeo" scrolling="no" title="Vimeo embed" frameborder="0" allow="autoplay; fullscreen" allowfullscreen="false">
-                        </iframe>
-                    </div>
-                    <div className="flex-basis-3">
-                        <iframe className="iframe" src="//cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fplayer.vimeo.com%2Fvideo%2F453549133%3Fapp_id%3D122963&amp;dntp=1&amp;display_name=Vimeo&amp;url=https%3A%2F%2Fvimeo.com%2F453549133%3Flazy%3D1&amp;image=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F951136340_1280.jpg&amp;key=96f1f04c5f4143bcb0f2e68c87d65feb&amp;type=text%2Fhtml&amp;schema=vimeo" scrolling="no" title="Vimeo embed" frameborder="0" allow="autoplay; fullscreen" allowfullscreen="false">
-                        </iframe>
-                    </div>
+                <div className="category-description">
+                    {activeCategory.desc}
                 </div>
             </div>
-
+            <div className="lessons-vdo-wrap">
+                {activeCategory.vedios.map((item) => {
+                    return <Video vdoObj={item}></Video>
+                })}
+            </div>
         </div>
     )
 }

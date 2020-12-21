@@ -311,7 +311,7 @@ export default function Signup() {
                         <div className="list">
                             {selectedOptionsList.map((item, i) => {
                                 return (
-                                    <div key={i} className="list-item selected-item">
+                                    <div key={i} className="list-item selected-item" onClick={() => setActiveStep(item.key)}>
                                         <div className="title">{item.heading}</div>
                                         <div className="desc">
                                             {item.value.length == 1 &&
@@ -326,14 +326,14 @@ export default function Signup() {
                                             }
 
                                         </div>
-                                        <Checkbox
+                                        {/* <Checkbox
                                             required
                                             color="primary"
                                             className="selected-item-checkbox"
                                             checked={true}
                                             disabled={true}
                                             inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                        />
+                                        /> */}
                                     </div>
                                 )
                             })}
