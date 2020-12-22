@@ -110,7 +110,7 @@
     padding: 8px 38px;
     margin-bottom: 14px;
     border-radius: 10px;
-    filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
+    /* filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3)); */
 }
 
 .category-item:hover {
@@ -160,7 +160,7 @@
     padding: 8px 38px;
     margin-bottom: 14px;
     border-radius: 10px;
-    filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
+    /* filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3)); */
 }
 
 .sortings-dropdown-wrap .filter-item:hover {
@@ -207,7 +207,7 @@
     margin: 7px 20px 10px 0;
     border-radius: 7px;
     font-family: 'Regular';
-    filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
+    /* filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3)); */
     font-size: 15px;
 }
 
