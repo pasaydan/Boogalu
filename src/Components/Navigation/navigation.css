@@ -32,28 +32,8 @@ nav img {
     align-items: center;
 }
 
-.login {
-    padding: 12px 26px;
-    border-radius: 4px;
-    background-image: linear-gradient(180deg, #ebefef, #ebefef);
-    border: none;
-    cursor: pointer;
-    text-transform: uppercase;
-    font-weight: 600;
-    filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
-}
-
 .signup {
-    filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
     margin: 0 20px;
-    padding: 12px 26px;
-    border-radius: 4px;
-    background-color: #343a40;
-    color: #ffffff;
-    border: none;
-    cursor: pointer;
-    text-transform: uppercase;
-    font-weight: 600;
 }
 
 .navigation-wrap {
