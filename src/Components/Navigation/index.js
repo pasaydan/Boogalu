@@ -30,6 +30,17 @@ function Navigation() {
             }
         };
 
+        const pathName = history?.location?.pathname.split('/')[1];
+        const navLinks = document.querySelectorAll('.nav-ul a');
+        if (navLinks && navLinks.length) {
+            navLinks.forEach((ele) => {
+                const getHref = ele.getAttribute('href').toLocaleLowerCase();
+                if (getHref.includes(pathName)) {
+                    ele.classList.add('active');
+                }
+            });
+        }
+
         window.addEventListener("scroll", handleScroll, { passive: true });
     }, []);
 
@@ -42,10 +53,19 @@ function Navigation() {
 
     const onClickNav = (e, route) => {
         e.preventDefault();
+        const navLinks = document.querySelectorAll('.nav-ul a');
+        if (navLinks && navLinks.length) {
+            navLinks.forEach((ele) => {
+                if (ele.classList.contains('active')) {
+                    ele.classList.remove('active');
+                }
+            });
+        }
         if (route) {
             history.push(`/${route}`);
+            e.target.classList.add('active');
             setTimeout(() => {
-                var target = $(`.${route}`);
+                let target = $(`.${route}`);
                 $('html,body').animate({
                     scrollTop: target.offset().top - 200
                 }, 700);
@@ -53,7 +73,7 @@ function Navigation() {
         } else {
             history.push(`/`);
             setTimeout(() => {
-                var target = $(`.homepage`);
+                let target = $(`.homepage`);
                 if (target.length) {
                     $('html,body').animate({
                         scrollTop: target.offset().top - 200
