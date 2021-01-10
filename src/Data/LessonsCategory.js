@@ -34,6 +34,24 @@ const LessonsCategories = [
                 length: "2.5",
                 level: "Beginner"
             }
+        ],
+        upcoming: [
+            {
+                title: "Hip Hop Follow Along",
+                url: "https://www.youtube.com/embed/dM1ghaspLyc",
+                length: "2.5",
+                level: "Beginner"
+            }, {
+                title: "Hip Hop Follow Along",
+                url: "https://www.youtube.com/embed/dM1ghaspLyc",
+                length: "2.5",
+                level: "Beginner"
+            }, {
+                title: "Hip Hop Follow Along",
+                url: "https://www.youtube.com/embed/dM1ghaspLyc",
+                length: "2.5",
+                level: "Beginner"
+            }
         ]
     }, {
         title: "Breaking",

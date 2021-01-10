@@ -1,0 +1,195 @@
+nav {
+    box-shadow: 1px 1px 10px 0 rgba(0, 0, 0, .25);
+    padding: 10px 0;
+    background-color: var(--secondary-dark-grey);
+    background-image: linear-gradient(to right, var(--secondary-dark-grey), var(--primary-dark-grey));
+    color: var(--primary-white);
+}
+
+nav img {
+    height: 70px;
+}
+
+.nav-ul {
+    list-style: none;
+    display: flex;
+    padding: 0;
+    justify-content: space-between;
+    font-family: Regular;
+    align-items: center;
+    font-size: 15px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase
+}
+
+.nav-ul li a {
+    text-decoration: none;
+    color: inherit;
+    padding: 0 10px;
+    transition: all 0.5s ease-in-out;
+    opacity: 0.6;
+}
+
+.nav-ul li a:hover, .nav-ul li a.active {
+    color: var(--primary-link-color-blue);
+    opacity: 1;
+}
+
+.signup-wrap {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.signup {
+    margin: 0 20px;
+}
+
+.navigation-wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    transition: all 0.5s ease-in-out;
+}
+
+.navigation-wrap.scrolled-up {
+    top: -100px;
+}
+
+.navigation-wrap.scrolled-down {
+    position: fixed;
+    top: 0;
+}
+
+.navigation-wrap h1 {
+    font-family: 'Oleo Script', cursive;
+    font-size: 36px;
+    line-height: 50px;
+    margin: 0 0 0 20px;
+    font-weight: 400;
+    cursor: pointer;
+    width: 166px;
+    height: 53px;
+}
+
+.navigation-wrap h1 img {
+    width: 100%;
+    height: 100%;
+}
+
+.profile {
+    position: relative;
+    cursor: pointer;
+}
+
+.profile-tab-wrap {
+    position: absolute;
+    top: 31px;
+    right: 49px;
+    padding: 20px;
+    background-color: #e4ebf9;
+    color: black;
+    font-family: 'SemiBold';
+    filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
+    border-radius: 10px 0 10px 10px;
+}
+
+.profile-tab-wrap .profile {
+    padding: 16px 50px;
+    font-family: 'SemiBold';
+    font-size: 18px;
+    border-bottom: 1px solid black;
+    letter-spacing: 1px;
+}
+
+.profile-tab-wrap .logout {
+    padding: 16px 50px;
+    font-family: 'SemiBold';
+    font-size: 18px;
+    letter-spacing: 1px;
+}
+
+// Media queries for mobile
+@media screen and (max-width: 1023px) {
+    .navigation-wrap {
+        box-shadow: none;
+        background-image: none;
+        z-index: 99;
+        &.scrolled-down.scrolled-up {
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.25);
+        }
+        h1 {
+            width: 100px;
+            height: 40px;
+            margin-left: 10px;
+        }
+        .signup-wrap {
+            button {
+                padding: 8px 20px;
+                box-shadow: none;
+                filter: none;
+                &.signup {
+                    margin: 0 10px 0;
+                }
+            }
+        }
+    } 
+    .sticky-mobile-menu {
+        position: fixed;
+        bottom: 0;
+        z-index: 99;
+        width: 100%;
+        max-height: 58px;
+        padding: 0;
+        box-sizing: border-box;
+        box-shadow: 0 -4px 4px 0 rgba(0, 0, 0, 0.25);
+        background: var(--secondary-dark-grey);
+        .upload-btn {
+            color: var(--primary-white);
+            position: fixed;
+            width: 44px;
+            height: 44px;
+            right: 10px;
+            background: var(--secondary-dark-grey);
+            box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
+            bottom: 70px;
+            border-radius: 50%;
+            i {
+                font-size: 26px;
+                line-height: 26px;
+                height: 26px;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+        .nav-ul {
+            padding: 0;
+            margin: 0;
+            li {
+                flex-basis: calc(100% / 3);
+                text-align: center;
+                a {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    padding: 5px;
+                    position: relative;
+                    opacity: 1;
+                    i {
+                        font-size: 26px;
+                        line-height: 26px;
+                    }
+                    span {
+                        display: block;
+                        font-size: 12px;
+                        text-align: center;
+                    }
+                }
+            }
+        }
+    }
+}

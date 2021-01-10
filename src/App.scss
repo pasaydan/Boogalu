@@ -1,13 +1,19 @@
 :root {
   --primary-color: #2c0b8e;
   --secondary-color: #6d58ab;
+  --black: #000000;
   --primary-dark-grey: #191313;
   --secondary-dark-grey: #474747;
   --ternary-dark-grey: #2d2d2d;
+  --footer-text-grey: #535353;
+  --footer-background-grey: #333333;
+  --dark-grey-21: #212121;
+  --footer-list-text-grey: #777777;
   --primary-link-color-blue: #5ae8ff;
   --primary-white: #ffffff;
   --btn-primary-light-bg: #ebefef;
   --btn-primary-dark-bg: #343a40;
+  --copyright-grey: #6b6b6b;
   --box-dark-bg: rgba(41, 37, 37, 0.7);
 }
 
@@ -113,3 +119,25 @@ button:focus {
 .main-content-wrapper.visible-transition {
   opacity: 1;
 }
+
+
+// Media query 
+@media screen and (max-width: 1023px) {
+  .App {
+    padding-top: 58px;
+  }
+}
+
+@import './Components/Splash/splashscreen.scss';
+@import './Components/Navigation/navigation.scss';
+@import './Components/Homepage/Homepage.scss';
+@import './Components/Competitions/Competitions.scss';
+@import './Components/EditProfile/EditProfile.scss';
+@import './Components/Footer/footer.scss';
+@import './Components/Lessons/Lessons.scss';
+@import './Components/Login/Login.scss';
+@import './Components/Profile/Profile.scss';
+@import './Components/Signup/signup.scss';
+@import './Components/Subscription/subscription.scss';
+@import './Components/Upcoming/upcoming.scss';
+@import './Components/Vedio/Vedio.scss';

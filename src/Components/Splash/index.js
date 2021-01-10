@@ -1,6 +1,5 @@
 import React from 'react';
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
-import './splashscreen.css';
 
 function SplashScreen() {
     return (

@@ -16,7 +16,6 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
 import bgImg from '../../Images/bg1.svg';
 import { loginUser, signupUser } from '../../Actions/User/index'
-import './Login.css'
 import * as $ from 'jquery';
 
 export default function Login() {

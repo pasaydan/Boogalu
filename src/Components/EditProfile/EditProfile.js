@@ -15,7 +15,6 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Checkbox from '@material-ui/core/Checkbox';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import '../Signup/signup.css';
 import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
 import * as $ from 'jquery';
 

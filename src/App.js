@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import "./App.css"
+import "./App.scss"
 import Login from "./Components/Login/Login";
 import SplashScreen from './Components/Splash';
 import Navigation from "./Components/Navigation/index";
@@ -8,7 +8,7 @@ import Homepage from "./Components/Homepage";
 import Footer from "./Components/Footer/index";
 import Signup from "./Components/Signup";
 import Profile from "./Components/Profile/Profile";
-import Lessons from "./Components/Lessons";
+import Upcoming from "./Components/Upcoming";
 import Competitions from "./Components/Competitions";
 import Subscription from "./Components/Subscription";
 import EditProfile from "./Components/EditProfile/EditProfile";
@@ -47,7 +47,7 @@ function App() {
                   <Signup />
                 </Route>
                 <Route exact path="/lessons">
-                  <Lessons />
+                  <Upcoming />
                 </Route>
                 <Route exact path="/competitions">
                   <Competitions />

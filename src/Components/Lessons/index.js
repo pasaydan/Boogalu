@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react'
-import './Lessons.css';
 import LessonsCategories from '../../Data/LessonsCategory';
 import Video from "../Vedio/Video";
 import FilterListIcon from '@material-ui/icons/FilterList';

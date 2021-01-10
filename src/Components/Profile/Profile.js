@@ -5,7 +5,6 @@ import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined'
 import LoyaltyOutlinedIcon from '@material-ui/icons/LoyaltyOutlined';
 import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
 import CollectionsOutlinedIcon from '@material-ui/icons/CollectionsOutlined';
-import './Profile.css';
 import PropTypes from 'prop-types';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import SwipeableViews from 'react-swipeable-views';
