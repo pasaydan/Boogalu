@@ -93,9 +93,11 @@ function Navigation() {
             e.target.classList.add('active');
             setTimeout(() => {
                 let target = $(`.${route}`);
-                $('html,body').animate({
-                    scrollTop: target.offset().top - 200
-                }, 700);
+                if(target && target.offset()){
+                    $('html,body').animate({
+                        scrollTop: target.offset().top - 200
+                    }, 700);
+                }
             }, 100);
         } else {
             history.push(`/`);

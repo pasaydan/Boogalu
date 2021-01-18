@@ -1,41 +1,52 @@
-.style-name {
-   position: absolute;
-    left: 50%;
-    top: auto;
-    padding: 10px 15px;
+.competition-wrap{
+    padding: 40px 20px;
+    color: #000000;
+
+    h1 {
+        margin: 10px 0 30px;
+        text-align: left;
+        font-size: 40px;
+        font-weight: 600;
+        line-height: 50px;
+        letter-spacing: 1px;
+    }
+}
+
+.competition-desc{
     font-size: 20px;
-    bottom: -16px;
-    border-top-right-radius: 4px;
-    background-color: #fff;
-    color: #111;
-    transform: translate(-50%);r: #fff;
-    color: #111;
+    line-height: 24px;
 }
 
-.master_styles h1 {
-    background-color: #ebefef;
-    font-size: 40px;
-    width: 100%;
-    font-weight: 500;
-    margin-bottom: 25px;
-    font-family: Bold;
-    line-height: 1.5;
-    letter-spacing: 1px
-}
+.competition-list{
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 30px;
 
-.master_styles>div {
-    padding-top: 40px;
-}
+    li{
+        flex-basis: calc(100%/3 - 56px);
+        margin: 0 80px 20px 0;
+        border-radius: 5px;
+        text-align: center;
+        // padding: 30px 0;
+        background-color: #6adfdf;
+        cursor: pointer;
 
-.comp-img {
-    padding: 30px;
-    position: relative;
-}
+        & > div{
+            margin: 40px 0;
+        }
 
-.comp-img:hover {
-    cursor: pointer;
-}
-
-.comp-img img{
-    margin-bottom: 30px;
+        h2{
+            background-color: rgba(85, 61, 61, 0.4);
+            padding: 10px;
+            color: #ffffff;
+            font-weight: 400;
+            user-select: none;
+            margin: 0;
+        }
+    }
+    li:nth-child(3n + 3){
+       margin-right: 0;
+    }
 }
