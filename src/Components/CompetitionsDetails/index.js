@@ -7,6 +7,8 @@ import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
 import Button from '@material-ui/core/Button';
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
+import CloseIcon from '@material-ui/icons/Close';
+import IconButton from '@material-ui/core/IconButton';
 
 function CompetitionsDetails({ competitionDetails, open, handleClose }) {
 
@@ -27,10 +29,9 @@ function CompetitionsDetails({ competitionDetails, open, handleClose }) {
         },
     }));
     const classes = useStyles();
-    const enrollCompetition = () => {
-        // if user already login then redirect to home
+    const enrollCompetition = (step) => {
         if (loggedInUser.name && loggedInUser.phone && loggedInUser.username) {
-
+            handleClose('enroll-for-competition');
         } else {
             history.push({
                 pathname: '/register',
@@ -54,10 +55,13 @@ function CompetitionsDetails({ competitionDetails, open, handleClose }) {
             >
                 <Fade in={open}>
                     <div className={classes.paper}>
+                        <IconButton onClick={() => handleClose()}>
+                            <CloseIcon />
+                        </IconButton>
                         <h2 id="transition-modal-title">{competitionDetails.name}</h2>
                         <img src={competitionDetails.img} alt={competitionDetails.name} />
                         <p id="transition-modal-description">{competitionDetails.desc}</p>
-                        <Button variant="contained" type="submit" color="primary" onClick={() => enrollCompetition()}>Enroll
+                        <Button variant="contained" type="submit" color="primary" onClick={() => enrollCompetition(1)}>Enroll
                          <ArrowRightSharpIcon />
                         </Button>
                     </div>

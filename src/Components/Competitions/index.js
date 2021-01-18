@@ -1,19 +1,24 @@
 import React, { useState } from 'react'
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
-import CompetitionsDetails from "../CompetitionsDetails/index";
+import CompetitionsDetails from "../CompetitionsDetails";
+import EnrollCompetition from "../EnrollCompetition";
 function Competitions() {
     const competitionsList = [
-        { name: 'Hip Hop', img: boogaluLogo, desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", type: 'running' },
-        { name: 'HEELS', img: boogaluLogo, desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", type: 'running' },
-        { name: 'HOUSE', img: boogaluLogo, desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", type: 'running' },
-        { name: 'JAZZ FUNK', img: boogaluLogo, desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", type: 'running' },
-        { name: 'POPPING', img: boogaluLogo, desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", type: 'running' },
-        { name: 'WHACKING', img: boogaluLogo, desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", type: 'running' },
+        { name: 'Free Style', img: boogaluLogo, startAt: "10-1-2021", endAt: "10-2-2021", fee: 250, desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", priceDesc: ["First prize 6000 worth shoes", "Second prize 3000 worth shoes", "Third prize 1500 worth shoes"], type: 'running' },
+        { name: 'HEELS', img: boogaluLogo, startAt: "10-1-2021", endAt: "10-2-2021", fee: 250, desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", priceDesc: ["First prize 6000 worth shoes", "Second prize 3000 worth shoes", "Third prize 1500 worth shoes"], type: 'running' },
+        { name: 'HOUSE', img: boogaluLogo, startAt: "10-1-2021", endAt: "10-2-2021", fee: 250, desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", priceDesc: ["First prize 6000 worth shoes", "Second prize 3000 worth shoes", "Third prize 1500 worth shoes"], type: 'running' },
+        { name: 'JAZZ FUNK', img: boogaluLogo, startAt: "10-1-2021", endAt: "10-2-2021", fee: 250, desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", priceDesc: ["First prize 6000 worth shoes", "Second prize 3000 worth shoes", "Third prize 1500 worth shoes"], type: 'running' },
+        { name: 'POPPING', img: boogaluLogo, startAt: "10-1-2021", endAt: "10-2-2021", fee: 250, desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", priceDesc: ["First prize 6000 worth shoes", "Second prize 3000 worth shoes", "Third prize 1500 worth shoes"], type: 'running' },
+        { name: 'WHACKING', img: boogaluLogo, startAt: "10-1-2021", endAt: "10-2-2021", fee: 250, desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", priceDesc: ["First prize 6000 worth shoes", "Second prize 3000 worth shoes", "Third prize 1500 worth shoes"], type: 'running' },
     ]
     const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(false);
     const [activeCompetition, setActiveCompetition] = useState(false);
-    const handleClose = () => {
+    const [EnrollForCompetiotion, setEnrollForCompetiotion] = useState(false);
+    const handleClose = (status) => {
         setIsOpenDetailsModal(false);
+        if (status == 'enroll-for-competition') {
+            setEnrollForCompetiotion(true);
+        }
     }
     const openDetailsModal = (competition) => {
         setActiveCompetition(competition);
@@ -39,8 +44,8 @@ function Competitions() {
                     </div>
                 })}
             </div>
-
-            <CompetitionsDetails competitionDetails={activeCompetition} open={isOpenDetailsModal} handleClose={() => handleClose()} />
+            {!EnrollForCompetiotion && isOpenDetailsModal && <CompetitionsDetails competitionDetails={activeCompetition} open={isOpenDetailsModal} handleClose={(e) => handleClose(e)} />}
+            {EnrollForCompetiotion && !isOpenDetailsModal && <EnrollCompetition competitionDetails={activeCompetition} open={isOpenDetailsModal} handleClose={(e) => handleClose(e)} from={"competitionDetails"} />}
         </div>
     )
 }
