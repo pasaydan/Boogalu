@@ -25,25 +25,23 @@ function Competitions() {
         setIsOpenDetailsModal(true);
     }
     return (
-        <div className="competitions master_styles">
-            <div id="Competitions">
-                <div className="heading-wrap">
-                    <h1>
-                        Master A Variety Of Styles
-                </h1>
-                    <div className="line1">Learn moves, skills, and full routines in a range of popular styles.</div>
+        <div className="competition-wrap">
+            <div >
+                <div className="">
+                    <h1>Competitions running now!</h1>
+                    <div className="competition-desc">Learn moves, skills, and full routines in a range of popular styles.</div>
                 </div>
             </div>
-            <div className="flex-container-wrap" >
+            <ul className="competition-list" >
                 {competitionsList && competitionsList.map((competition) => {
-                    return <div className="flex-basis-3">
-                        <div className="comp-img" onClick={() => openDetailsModal(competition)}>
+                    return <li onClick={() => openDetailsModal(competition)}>
+                        <div>
                             <img src={competition.img} alt={competition.name} />
-                            <h2 className="style-name">{competition.name}</h2>
                         </div>
-                    </div>
+                        <h2>{competition.name}</h2>
+                    </li>
                 })}
-            </div>
+            </ul>
             {!EnrollForCompetiotion && isOpenDetailsModal && <CompetitionsDetails competitionDetails={activeCompetition} open={isOpenDetailsModal} handleClose={(e) => handleClose(e)} />}
             {EnrollForCompetiotion && !isOpenDetailsModal && <EnrollCompetition competitionDetails={activeCompetition} open={isOpenDetailsModal} handleClose={(e) => handleClose(e)} from={"competitionDetails"} />}
         </div>
