@@ -1,12 +1,14 @@
 .style-name {
-    position: absolute;
-    left: 12px;
+   position: absolute;
+    left: 50%;
     top: auto;
     padding: 10px 15px;
     font-size: 20px;
     bottom: -16px;
     border-top-right-radius: 4px;
     background-color: #fff;
+    color: #111;
+    transform: translate(-50%);r: #fff;
     color: #111;
 }
 
@@ -23,4 +25,17 @@
 
 .master_styles>div {
     padding-top: 40px;
+}
+
+.comp-img {
+    padding: 30px;
+    position: relative;
+}
+
+.comp-img:hover {
+    cursor: pointer;
+}
+
+.comp-img img{
+    margin-bottom: 30px;
 }
