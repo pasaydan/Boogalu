@@ -1,7 +1,22 @@
-.competition-wrap{
+.competition-wrap {
     padding: 40px 20px;
-    color: #000000;
-
+    color: var(--primary-white);
+    background: var(--dark-blue-bg) url('https://i.imgur.com/B3ZlxGI.jpeg') no-repeat right center/30%;
+    position: relative;
+    &:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.35);
+        z-index: 0;
+    }
+    .competition-inner {
+        position: relative;
+        z-index: 1;
+    }
     h1 {
         margin: 10px 0 30px;
         text-align: left;
@@ -26,27 +41,87 @@
 
     li{
         flex-basis: calc(100%/3 - 56px);
+        min-height: 232px;
         margin: 0 80px 20px 0;
-        border-radius: 5px;
+        border-radius: 10px;
         text-align: center;
-        // padding: 30px 0;
-        background-color: #6adfdf;
+        background-color: var(--primary-white);
         cursor: pointer;
-
-        & > div{
-            margin: 40px 0;
+        position: relative;
+        overflow: hidden;
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: all 0.5s ease-in-out;
         }
 
-        h2{
-            background-color: rgba(85, 61, 61, 0.4);
+        h2 {
+            position: absolute;
+            background-color: var(--box-dark-bg);
             padding: 10px;
             color: #ffffff;
             font-weight: 400;
             user-select: none;
             margin: 0;
+            width: 100%;
+            bottom: 0;
+            transition: all 0.5s ease-in-out;
+        }
+        &:hover {
+            img {
+                transform: scale(1.2);
+                filter: blur(1px);
+            }
+            h2 {
+                bottom: 50%;
+                transform: translateY(50%);
+                background-color: rgba(41, 37, 37, 0.8);
+            }
         }
     }
     li:nth-child(3n + 3){
        margin-right: 0;
     }
 }
+
+.competition-modal-box {
+    .inner-modal-wrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+        padding: 10px 20px;
+        background: var(--primary-white);
+        border-radius: 10px;
+        width: 80%;
+        max-height: 500px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        .close-modal-icon {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+        #transition-modal-title {
+            grid-column: 1 / 3;
+            height: 40px;
+            margin: 17px 0 0;
+        }
+        img {
+            width: 100%;
+        }
+        #transition-modal-description {
+            padding: 0 30px 20px;
+            margin-top: 0;
+        }
+        .MuiButton-root {
+            max-width: 180px;
+            height: 40px;
+            margin-top: 20px;
+        }
+    }
+}
+  

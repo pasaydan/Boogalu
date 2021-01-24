@@ -27,6 +27,10 @@
     width: 100%;
     height: 163px;
     margin-top: 10px;
+    overflow: hidden;
+    iframe {
+        height: 145px;
+    }
 }
 
 .banner_vdo .vdo_wrap:first-child {

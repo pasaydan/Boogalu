@@ -3,12 +3,24 @@ import boogaluLogo from '../../Images/Boogalu-logo.svg';
 import CompetitionsDetails from "../CompetitionsDetails/index";
 function Competitions() {
     const competitionsList = [
-        { name: 'Hip Hop', img: boogaluLogo, desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", type: 'running' },
-        { name: 'HEELS', img: boogaluLogo, desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", type: 'running' },
-        { name: 'HOUSE', img: boogaluLogo, desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", type: 'running' },
-        // { name: 'JAZZ FUNK', img: boogaluLogo, desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", type: 'running' },
-        // { name: 'POPPING', img: boogaluLogo, desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", type: 'running' },
-        // { name: 'WHACKING', img: boogaluLogo, desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", type: 'running' },
+        { 
+            name: 'Free style', 
+            img: 'https://i.imgur.com/EUVZ1Rg.jpg', 
+            desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", 
+            type: 'running' 
+        },
+        { 
+            name: 'Beatboxing', 
+            img: 'https://i.imgur.com/GU7eOFR.jpg', 
+            desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", 
+            type: 'running' 
+        },
+        { 
+            name: 'Body art', 
+            img: 'https://i.imgur.com/Pppi3VA.jpg', 
+            desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", 
+            type: 'running' 
+        }
     ]
     const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(false);
     const [activeCompetition, setActiveCompetition] = useState(false);
@@ -21,24 +33,22 @@ function Competitions() {
     }
     return (
         <div className="competition-wrap">
-            <div >
-                <div className="">
+            <div className="competition-inner">
+                <div className="title-wrap">
                     <h1>Competitions running now!</h1>
                     <div className="competition-desc">Learn moves, skills, and full routines in a range of popular styles.</div>
                 </div>
-            </div>
-            <ul className="competition-list" >
-                {competitionsList && competitionsList.map((competition) => {
-                    return <li onClick={() => openDetailsModal(competition)}>
-                        <div>
+                <ul className="competition-list" >
+                    {competitionsList && competitionsList.map((competition) => {
+                        return <li key={competition.name + '-id'} onClick={() => openDetailsModal(competition)}>
                             <img src={competition.img} alt={competition.name} />
-                        </div>
-                        <h2>{competition.name}</h2>
-                    </li>
-                })}
-            </ul>
+                            <h2>{competition.name}</h2>
+                        </li>
+                    })}
+                </ul>
 
-            <CompetitionsDetails competitionDetails={activeCompetition} open={isOpenDetailsModal} handleClose={() => handleClose()} />
+                <CompetitionsDetails competitionDetails={activeCompetition} open={isOpenDetailsModal} handleClose={() => handleClose()} />
+            </div>
         </div>
     )
 }

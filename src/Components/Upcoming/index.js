@@ -16,8 +16,8 @@ function Upcoming () {
                 <p className="launching-soon">Videos launching soon! Stay connected!</p>
                 <p className="from-our-expert-title">Few sample lessons</p>
                 <div className="lessons-vdo-wrap">
-                    {activeCategory.upcoming.map((item) => {
-                        return <Video vdoObj={item}></Video>
+                    {activeCategory.upcoming.map((item, index) => {
+                        return <Video key={'upcoming-'+index} vdoObj={item}></Video>
                     })}
                 </div>
             </div>
