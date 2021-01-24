@@ -19,8 +19,13 @@ const loggedInUserState = {
   source: ''
 }
 
+
+
 const initialState = localStorage.getItem("Choreoculture") ? JSON.parse(localStorage.getItem("Choreoculture"))
-  : { loggedInUser: loggedInUserState };
+  : {
+    loggedInUser: loggedInUserState,
+    competitionLogginFlow: false
+  };
 const store = createContext(initialState);
 const { Provider } = store;
 

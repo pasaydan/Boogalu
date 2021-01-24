@@ -8,7 +8,7 @@ const Video = ({ vdoObj }) => {
     return (
         <div className="vdo-outer">
             <div className="vdo-wrap">
-                <iframe className="iframe" src={vdoUrl} scrolling="no" title="Vimeo embed" frameBorder="0" allow="autoPlay; fullScreen" allowFullscreen="false">
+                <iframe className="iframe" src={vdoUrl} scrolling="no" title="Vimeo embed" frameBorder="0" allow="autoPlay; fullScreen" allowFullscreen="false" preload="metadata">
                 </iframe>
             </div>
         </div>

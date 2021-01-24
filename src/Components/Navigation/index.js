@@ -48,7 +48,7 @@ function Navigation() {
                 toggleMobile(false);
             } else {
                 toggleMobile(true);
-            }   
+            }
         }
 
         const pathName = history?.location?.pathname.split('/')[1];
@@ -93,7 +93,7 @@ function Navigation() {
             e.target.classList.add('active');
             setTimeout(() => {
                 let target = $(`.${route}`);
-                if(target && target.offset()){
+                if (target && target.offset()) {
                     $('html,body').animate({
                         scrollTop: target.offset().top - 200
                     }, 700);
@@ -133,7 +133,7 @@ function Navigation() {
         );
     }
 
-    if(!didMount) {
+    if (!didMount) {
         return null;
     }
 
@@ -148,17 +148,17 @@ function Navigation() {
                     </h1>
                     {
                         !isMobile ?
-                        <ul className="flex-1 nav-ul">
-                            <li><a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')}>Lessons</a></li>
-                            <li><a href="#Competitions" onClick={(e) => onClickNav(e, 'competitions')}>Competitions</a></li>
-                            <li><a href="#Subscription" onClick={(e) => onClickNav(e, 'subscription')}>Subscription</a></li>
-                        </ul> : ''
+                            <ul className="flex-1 nav-ul">
+                                <li><a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')}>Lessons</a></li>
+                                <li><a href="#Competitions" onClick={(e) => onClickNav(e, 'competitions')}>Competitions</a></li>
+                                <li><a href="#Subscription" onClick={(e) => onClickNav(e, 'subscription')}>Subscription</a></li>
+                            </ul> : ''
                     }
-                    {!state.loggedInUser.phone && <div className="flex-2 signup-wrap" >
+                    {!state.loggedInUser && state.loggedInUser.phone && <div className="flex-2 signup-wrap" >
                         <button className="btn primary-light login" onClick={() => history.push('/login')}>Login</button>
                         <button className="btn primary-dark signup" onClick={() => history.push('/register')}>Sign Up</button>
                     </div>}
-                    {state.loggedInUser.phone && <div className="flex-2 signup-wrap" >
+                    {state.loggedInUser && state.loggedInUser.phone && <div className="flex-2 signup-wrap" >
                         <div className="profile" ref={ref}>
                             <AccountCircleOutlinedIcon onClick={() => setShowProfileTab(true)} style={{ fontSize: '35px', paddingRight: '20px' }} />
                             {showProfileTab && <div className="profile-tab-wrap">
@@ -171,40 +171,40 @@ function Navigation() {
                 </div>
                 {
                     isMobile ?
-                    <div className="sticky-mobile-menu">
-                        <a href="#Competitions" className="upload-btn">
-                            <i><FaCloudUploadAlt /></i>
-                        </a>
-                        <ul className="flex-1 nav-ul">
-                            <li>
-                                <a href="/" ref={mobilHomelinkRef} onClick={(e) => onClickNav(e, '')}>
-                                    <i>
-                                        <FaHome />
-                                    </i>
-                                    <span>Home</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')}>
-                                   <i><FaBookReader /></i>
-                                   <span>Lessons</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#upload" onClick={(e) => onClickNav(e, 'competitions')}>
-                                    <i><FaTrophy /></i>
-                                    <span>Competition</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#Subscription" onClick={(e) => onClickNav(e, 'subscription')}>
-                                    <i><FaStaylinked /></i>
-                                    <span>Subscription</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    : ''
+                        <div className="sticky-mobile-menu">
+                            <a href="#Competitions" className="upload-btn">
+                                <i><FaCloudUploadAlt /></i>
+                            </a>
+                            <ul className="flex-1 nav-ul">
+                                <li>
+                                    <a href="/" ref={mobilHomelinkRef} onClick={(e) => onClickNav(e, '')}>
+                                        <i>
+                                            <FaHome />
+                                        </i>
+                                        <span>Home</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')}>
+                                        <i><FaBookReader /></i>
+                                        <span>Lessons</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#upload" onClick={(e) => onClickNav(e, 'competitions')}>
+                                        <i><FaTrophy /></i>
+                                        <span>Competition</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#Subscription" onClick={(e) => onClickNav(e, 'subscription')}>
+                                        <i><FaStaylinked /></i>
+                                        <span>Subscription</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        : ''
                 }
             </nav>
         </>

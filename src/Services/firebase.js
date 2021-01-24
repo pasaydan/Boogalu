@@ -1,16 +1,18 @@
 // import * as firebase from 'firebase/app';
-// import "firebase/auth";
+import firebase from 'firebase'
+import "firebase/auth";
 
-// firebase.initializeApp({
-//     apiKey: "AIzaSyDhsucdNp0aQKuvNHF6acthtUNxrOU54Tc",
-//     authDomain: "boogalusite.firebaseapp.com",
-//     projectId: "boogalusite",
-//     storageBucket: "boogalusite.appspot.com",
-//     messagingSenderId: "417866547364",
-//     appId: "1:417866547364:web:ddbf4055533ba61f3ee631",
-//     measurementId: "G-0XCNDFZJ1K"
-// });
-
+const config = {
+    apiKey: "AIzaSyDhsucdNp0aQKuvNHF6acthtUNxrOU54Tc",
+    authDomain: "boogalusite.firebaseapp.com",
+    projectId: "boogalusite",
+    storageBucket: "boogalusite.appspot.com",
+    messagingSenderId: "417866547364",
+    appId: "1:417866547364:web:ddbf4055533ba61f3ee631",
+    measurementId: "G-0XCNDFZJ1K"
+};
+firebase.initializeApp(config);
+export default firebase;
 // // export const auth = firebase.auth();
 
 // const googleProvider = new firebase.auth.GoogleAuthProvider()

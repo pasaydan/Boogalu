@@ -10,13 +10,13 @@ import Signup from "./Components/Signup";
 import Profile from "./Components/Profile/Profile";
 import Upcoming from "./Components/Upcoming";
 import Competitions from "./Components/Competitions";
+import Competition from "./Components/Admin/Competition"
 import Subscription from "./Components/Subscription";
 import EditProfile from "./Components/EditProfile/EditProfile";
 
 function App() {
   const [isSplashVisible, toggleSplash] = useState(true);
   const [transitionOpacityClass, toggleTransition] = useState('');
-
   useEffect(() => {
     setTimeout(() => {
       toggleSplash(false);
@@ -63,6 +63,11 @@ function App() {
                 </Route>
                 <Route exact path="/">
                   <Homepage />
+                </Route>
+
+                {/* admin routes */}
+                <Route exact path="/admin/competition">
+                  <Competition />
                 </Route>
               </Switch>
               <Footer />
