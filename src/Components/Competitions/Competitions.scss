@@ -61,7 +61,7 @@
             position: absolute;
             background-color: var(--box-dark-bg);
             padding: 10px;
-            color: #ffffff;
+            color: var(--primary-white);
             font-weight: 400;
             user-select: none;
             margin: 0;
@@ -87,10 +87,11 @@
 }
 
 .competition-modal-box {
+    outline: none;
     .inner-modal-wrap {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        grid-template-rows: 1fr 1fr 1fr;
+        grid-template-rows: 1fr;
         padding: 10px 20px;
         background: var(--primary-white);
         border-radius: 10px;
@@ -100,6 +101,7 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+        outline: none;
         .close-modal-icon {
             position: absolute;
             right: 20px;
@@ -108,7 +110,7 @@
         #transition-modal-title {
             grid-column: 1 / 3;
             height: 40px;
-            margin: 17px 0 0;
+            margin: 10px 0 0;
         }
         img {
             width: 100%;
@@ -120,8 +122,89 @@
         .MuiButton-root {
             max-width: 180px;
             height: 40px;
-            margin-top: 20px;
+            margin: 20px 0;
         }
     }
 }
-  
+
+@media screen and (max-width: 1023px) {
+    .competition-wrap {
+        padding: 20px 10px;
+        background-position: right -39px;
+        background-size: 50%;
+        h1 {
+            font-size: 26px;
+            line-height: 30px;
+            width: auto;
+            margin: 0 0 10px 0;
+            padding: 0;
+        }
+        .competition-list {
+            li {
+                flex-basis: 47%;
+                margin-right: 20px;
+            }
+        } 
+    }
+
+    .competition-modal-box {
+        .inner-modal-wrap {
+            grid-template-columns: 1fr;
+            grid-template-rows: 1fr;
+            padding: 10px;
+            .close-modal-icon {
+                right: 8px;
+                top: 8px;
+                width: 20px;
+                height: 20px;
+            }
+            #transition-modal-title {
+                height: 30px;
+                font-size: 20px;
+                line-height: 30px;
+                margin: 0 0 10px 0;
+            }
+            img {
+                width: 100%;
+                grid-column: 1/3;
+                margin: 0 auto;
+                object-fit: cover;
+                height: 200px;
+            }
+            #transition-modal-description {
+                padding: 0 20px 0 0;
+                margin-top: 16px;
+                overflow-y: auto;
+            }
+        }
+    } 
+}
+
+@media screen and (max-width: 700px) {
+    .competition-wrap {
+        .competition-list {
+            li {
+                flex-basis: 90%;
+                margin: 0 auto 20px;
+            }
+        }
+    } 
+    .competition-wrap {
+        .competition-list {
+            li {
+                flex-basis: 100%;
+            }
+        }
+    } 
+    .competition-modal-box {
+        .inner-modal-wrap {
+            width: 90%;
+            grid-template-rows: 40px 200px 260px;
+            min-height: calc(100vh - 100px);
+            max-height: 80vh;
+            #transition-modal-description {
+                grid-column: 1 / 3;
+            }
+        }
+    }
+}
