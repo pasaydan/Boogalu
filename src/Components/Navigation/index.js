@@ -51,20 +51,18 @@ function Navigation() {
             }
         }
 
-        const pathName = history?.location?.pathname.split('/')[1];
-        const navLinks = document.querySelectorAll('.nav-ul a');
-        if (navLinks && navLinks.length) {
-            navLinks.forEach((ele) => {
-                const getHref = ele.getAttribute('href').toLocaleLowerCase();
-                if (pathName?.length && getHref.includes(pathName)) {
-                    ele.classList.add('active');
-                } else {
-                    if (mobilHomelinkRef.current) {
-                        mobilHomelinkRef.current.classList.add('active');
+        setTimeout(() => {
+            const pathName = history?.location?.pathname.split('/')[1];
+            const navLinks = document.querySelectorAll('.nav-ul a');
+            if (navLinks && navLinks.length) {
+                navLinks.forEach((ele) => {
+                    const getHref = ele.getAttribute('href').toLocaleLowerCase();
+                    if (pathName?.length && getHref.includes(pathName)) {
+                        ele.classList.add('active');
                     }
-                }
-            });
-        }
+                });
+            }
+        }, 1000);
 
         window.addEventListener("resize", windowResize, { passive: true });
         window.addEventListener("scroll", handleScroll, { passive: true });

@@ -3,6 +3,7 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import { makeStyles } from '@material-ui/core/styles';
+import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
 import Button from '@material-ui/core/Button';
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
@@ -62,7 +63,6 @@ function CompetitionsDetails({ competitionDetails, open, handleClose }) {
         },
     }));
     const classes = useStyles();
-
     const selectVdo = (e, vdo) => {
         e.preventDefault();
         e.stopPropagation();
@@ -93,9 +93,9 @@ function CompetitionsDetails({ competitionDetails, open, handleClose }) {
     return (
         <div>
             <Modal
-                aria-labelledby="title"
-                aria-describedby="description"
-                className={classes.modal}
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                className='competition-modal-box'
                 open={open}
                 onClose={handleClose}
                 closeAfterTransition
@@ -179,6 +179,7 @@ function CompetitionsDetails({ competitionDetails, open, handleClose }) {
                             </div>
                             <Button variant="contained" color="primary" onClick={() => enrollForCompetition()}>Submit</Button>
                         </div>}
+
                         {ActiveStep === 3 && <div>
                             <EnrollCompetition competitionDetails={competitionDetails} handleClose={(e) => handleClose(e)} loggedInUser={loggedInUser} SelectedVdo={SelectedVdo} changeSelectedVdo={() => setActiveStep(2)} />
                         </div>}
@@ -188,5 +189,6 @@ function CompetitionsDetails({ competitionDetails, open, handleClose }) {
         </div>
     )
 }
+
 
 export default CompetitionsDetails
