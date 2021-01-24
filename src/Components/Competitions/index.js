@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import boogaluLogo from '../../Images/Boogalu-logo.svg';
 import CompetitionsDetails from "../CompetitionsDetails/index";
 function Competitions() {
     const competitionsList = [
