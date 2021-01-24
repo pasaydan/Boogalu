@@ -35,8 +35,8 @@ function Competitions() {
         <div className="competition-wrap">
             <div className="competition-inner">
                 <div className="title-wrap">
-                    <h1>Competitions running now!</h1>
-                    <div className="competition-desc">Learn moves, skills, and full routines in a range of popular styles.</div>
+                    <h1>Our Active Competition !</h1>
+                    <div className="competition-desc">Participate in different competitions &amp; win exciting prizes.</div>
                 </div>
                 <ul className="competition-list" >
                     {competitionsList && competitionsList.map((competition) => {
