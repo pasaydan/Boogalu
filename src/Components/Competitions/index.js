@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import boogaluLogo from '../../Images/Boogalu-logo.svg';
 import CompetitionsDetails from "../CompetitionsDetails";
 import { getCompetitionsList } from "../../Services/Competition";
+
 function Competitions() {
     const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(false);
     const [activeCompetition, setActiveCompetition] = useState(false);
@@ -19,8 +19,8 @@ function Competitions() {
         <div className="competition-wrap">
             <div className="competition-inner">
                 <div className="title-wrap">
-                    <h1>Competitions running now!</h1>
-                    <div className="competition-desc">Learn moves, skills, and full routines in a range of popular styles.</div>
+                    <h1>Our Active Competition !</h1>
+                    <div className="competition-desc">Participate in different competitions &amp; win exciting prizes.</div>
                 </div>
                 <ul className="competition-list" >
                     {CompletitionList && CompletitionList.map((competition) => {

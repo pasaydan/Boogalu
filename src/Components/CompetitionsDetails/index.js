@@ -169,7 +169,7 @@ function CompetitionsDetails({ competitionDetails, open, handleClose }) {
                         {ActiveStep === 2 && <div>
                             <div className="lessons-vdo-wrap">
                                 {userUploadedVdos && userUploadedVdos.map((item, index) => {
-                                    return <div className={item.isSelected ? 'vdo-outer active' : 'vdo-outer'} key={index} onClick={(e) => selectVdo(e, item)}>
+                                    return <div className={item.isSelected ? 'vdo-outer selected-vdo' : 'vdo-outer'} key={index} onClick={(e) => selectVdo(e, item)}>
                                         <div className="vdo-wrap" >
                                             <img src={item.thumbnail ? item.thumbnail : thumbnailImg} style={{ width: "50%" }} />
                                             <div>{item.title}</div>
