@@ -7,16 +7,22 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import thumbnailImg from '../../Images/thumbnail.jpg';
+import { useStoreConsumer } from '../../Providers/StateProvider';
 
-function EnrollCompetition({ competitionDetails, loggedInUser, handleClose, SelectedVdo, changeSelectedVdo }) {
+function EnrollCompetition({ handleClose, changeSelectedVdo }) {
 
+    const { state, dispatch } = useStoreConsumer();
     const [AgeGroup, setAgeGroup] = useState('');
-
+    const loggedInUser = state.loggedInUser;
+    const competitionDetails = state.activeCompetition;
+    const SelectedVdo = competitionDetails.selectedVideo;
+    console.log(competitionDetails);
     const onAgeGroupChange = (groupValue) => {
         setAgeGroup(groupValue);
     }
 
     const submitForCompetition = () => {
+        console.log(competitionDetails)
         // handleClose();
     }
 

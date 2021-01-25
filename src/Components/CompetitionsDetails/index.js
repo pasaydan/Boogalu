@@ -3,18 +3,17 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import { makeStyles } from '@material-ui/core/styles';
-import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
 import Button from '@material-ui/core/Button';
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
-import Video from "../Vedio/Video";
 import thumbnailImg from '../../Images/thumbnail.jpg';
 import "./CompetitionsDetails.scss";
 import EnrollCompetition from "../EnrollCompetition";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { enableLoginFlow } from "../../Actions/Competition";
+import { enableLoginFlow, setActiveCompetition } from "../../Actions/Competition";
+
 const userUploadedVideoList = [
     {
         title: "Hip Hop Follow Along",
@@ -39,16 +38,17 @@ const userUploadedVideoList = [
         level: "Beginner"
     }
 ]
-function CompetitionsDetails({ competitionDetails, open, handleClose }) {
+function CompetitionsDetails({ open, handleClose, initialStep }) {
 
-    console.log(competitionDetails);
     const { state, dispatch } = useStoreConsumer();
     const history = useHistory();
+    const competitionDetails = state.activeCompetition;
+    console.log(competitionDetails);
     const loggedInUser = state.loggedInUser;
     const [userUploadedVdos, setUserUploadedVideoList] = useState(userUploadedVideoList);
     const [TnC, setTnC] = useState(false);
-    const [ActiveStep, setActiveStep] = useState(1);
-    const [SelectedVdo, setSelectedVdo] = useState(null);
+    const [ActiveStep, setActiveStep] = useState(initialStep || 1);
+    // const [SelectedVdo, setSelectedVdo] = useState(null);
     const useStyles = makeStyles((theme) => ({
         modal: {
             display: 'flex',
@@ -70,7 +70,10 @@ function CompetitionsDetails({ competitionDetails, open, handleClose }) {
         updatedVdos.map((item) => {
             if (item.id == vdo.id) {
                 item.isSelected = true;
-                setSelectedVdo(item);
+                // setSelectedVdo(item);
+                let updatedCompetition = competitionDetails;
+                updatedCompetition.selectedVideo = item;
+                dispatch(setActiveCompetition(updatedCompetition));
             }
             else item.isSelected = false;
         })
@@ -82,7 +85,7 @@ function CompetitionsDetails({ competitionDetails, open, handleClose }) {
             setActiveStep(3);
         } else {
             handleClose();
-            enableLoginFlow();
+            dispatch(enableLoginFlow());
             history.push({
                 pathname: '/login',
                 state: null
@@ -106,7 +109,7 @@ function CompetitionsDetails({ competitionDetails, open, handleClose }) {
             >
                 <Fade in={open}>
                     <div className={classes.paper}>
-                        {ActiveStep == 1 && <IconButton onClick={() => handleClose()}>
+                        {ActiveStep == 1 && <IconButton onClick={() => { handleClose(); (state.activeCompetition && !state.competitionLogginFlow) && dispatch(setActiveCompetition(null)) }}>
                             <CloseIcon />
                         </IconButton>}
                         {(ActiveStep == 2 || ActiveStep == 3) && <IconButton onClick={() => setActiveStep(ActiveStep - 1)}>
@@ -181,7 +184,7 @@ function CompetitionsDetails({ competitionDetails, open, handleClose }) {
                         </div>}
 
                         {ActiveStep === 3 && <div>
-                            <EnrollCompetition competitionDetails={competitionDetails} handleClose={(e) => handleClose(e)} loggedInUser={loggedInUser} SelectedVdo={SelectedVdo} changeSelectedVdo={() => setActiveStep(2)} />
+                            <EnrollCompetition handleClose={(e) => handleClose(e)} changeSelectedVdo={() => setActiveStep(2)} />
                         </div>}
                     </div>
                 </Fade>

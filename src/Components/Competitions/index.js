@@ -1,20 +1,30 @@
 import React, { useState, useEffect } from 'react'
 import CompetitionsDetails from "../CompetitionsDetails";
 import { getCompetitionsList } from "../../Services/Competition";
+import { useStoreConsumer } from '../../Providers/StateProvider';
+import { disableLoginFlow, setActiveCompetition } from "../../Actions/Competition";
 
 function Competitions() {
+    const { state, dispatch } = useStoreConsumer();
     const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(false);
-    const [activeCompetition, setActiveCompetition] = useState(false);
     const [CompletitionList, setCompletitionList] = useState(null);
+
+    var initialStep = 1;
+    if (state.competitionLogginFlow) {
+        initialStep = 3;
+        dispatch(disableLoginFlow());
+        setIsOpenDetailsModal(true);
+    }
 
     useEffect(() => {
         getCompetitionsList().subscribe(list => setCompletitionList(list));
     }, [])
 
     const openDetailsModal = (competition) => {
-        setActiveCompetition(competition);
+        dispatch(setActiveCompetition(competition));
         setIsOpenDetailsModal(true);
     }
+
     return (
         <div className="competition-wrap">
             <div className="competition-inner">
@@ -31,7 +41,7 @@ function Competitions() {
                     })}
                 </ul>
 
-                {isOpenDetailsModal && <CompetitionsDetails competitionDetails={activeCompetition} open={isOpenDetailsModal} handleClose={() => setIsOpenDetailsModal(false)} />}
+                {isOpenDetailsModal && <CompetitionsDetails open={isOpenDetailsModal} handleClose={() => setIsOpenDetailsModal(false)} initialStep={initialStep} />}
             </div>
         </div>
     )

@@ -1,4 +1,4 @@
-import { LOGIN_USER, LOGOUT_USER, SIGN_UP_USER, ENABLE_COMPETITION_LOGIN_FLOW, DISABLE_COMPETITION_LOGIN_FLOW } from '../Constants'
+import { LOGIN_USER, LOGOUT_USER, SIGN_UP_USER, ENABLE_COMPETITION_LOGIN_FLOW, DISABLE_COMPETITION_LOGIN_FLOW, SET_ACTIVE_COMPETITION } from '../Constants'
 
 const storeReducer = (initialState, action) => {
     switch (action.type) {
@@ -12,6 +12,8 @@ const storeReducer = (initialState, action) => {
             return { ...initialState, competitionLogginFlow: action.payload };
         case DISABLE_COMPETITION_LOGIN_FLOW:
             return { ...initialState, competitionLogginFlow: action.payload };
+        case SET_ACTIVE_COMPETITION:
+            return { ...initialState, activeCompetition: action.payload };
         default:
             return initialState;
     }
