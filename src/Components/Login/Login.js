@@ -15,7 +15,8 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
 import bgImg from '../../Images/bg1.svg';
-import { loginUser, signupUser } from '../../Actions/User/index'
+import { loginUser, signupUser } from '../../Actions/User/index';
+import { getUserByEmail, getUserByPhone } from "../../Services/User";
 import * as $ from 'jquery';
 
 export default function Login() {
@@ -26,8 +27,8 @@ export default function Login() {
     const [thirdPartyResponse, setThirdPartyResponse] = useState({ isLogginSuccess: false, data: null, source: '' })
 
     useEffect(() => {
-        if (thirdPartyResponse.source == 'Facebook') signinUser('', 'Facebook');
-        if (thirdPartyResponse.source == 'Google') signinUser('', 'Google');
+        if (thirdPartyResponse.source === 'Facebook') signinUser('', 'Facebook');
+        if (thirdPartyResponse.source === 'Google') signinUser('', 'Google');
     }, [thirdPartyResponse]);
 
     useEffect(() => {
@@ -38,10 +39,11 @@ export default function Login() {
 
     const setLoginResponseToServer = () => {
         // notify server that user is loggedin
-        console.log('Saved to db')
+        console.log('Save loggin user to db')
 
     }
     const successResponseGoogle = function (response) {
+        console.log(response);
         let loginResponse = {
             data: {
                 name: response.profileObj.name,
@@ -88,24 +90,60 @@ export default function Login() {
         setloginCred({ ...loginCred, showPassWord: (loginCred.showPassWord ? false : true) })
     }
 
+    const checkForUserPhone = (phone) => {
+        return new Promise((res, rej) => {
+            getUserByPhone(phone).subscribe((data) => {
+                if (data && data.length) res(data);
+                else res(null);
+            })
+        })
+    }
+
+    const checkForUserEmail = (email) => {
+        return new Promise((res, rej) => {
+            getUserByEmail(email).subscribe((data) => {
+                if (data && data.length) res(data);
+                else res(null);
+            })
+        })
+    }
+
     const getUserLoginData = (userData) => {
         return new Promise((res, rej) => {
-            let registeredUser = localStorage.getItem('users') ? JSON.parse(localStorage.getItem('users')) : [];
-            if (registeredUser && registeredUser.length != 0) {
-                let isRegisteredUser = registeredUser.filter((user) => (user.username == userData.username || user.email == userData.email || user.phone == userData.phone || user.name == userData.name) && (thirdPartyResponse.data ? user.password == userData.password : true));
-                if (isRegisteredUser.length) {
-                    res(isRegisteredUser[0]);
-                } else {
-                    if (!thirdPartyResponse.source) {
-                        setLoginError('Please enter correct credentials.')
-                        rej();
+            if (thirdPartyResponse.data && thirdPartyResponse.data.email) {
+                // with gmail or fb flow
+                getUserByEmail(userData.email).subscribe((isRegisteredUser) => {
+                    if (isRegisteredUser.length) {
+                        res(isRegisteredUser[0]);
                     } else {
                         setLoginError('Please enter correct credentials.')
                         rej({ ...userData, isRegistered: false });
                     }
-                }
+                })
             } else {
-                rej({ ...userData, isRegistered: false });
+                // without gmail fb flow
+                checkForUserEmail(userData.emailOrPhone).then((isRegisteredUser) => {
+                    if (isRegisteredUser && isRegisteredUser.length) {
+                        if (isRegisteredUser[0].password === userData.password) res(isRegisteredUser[0]);
+                        else {
+                            setLoginError('Please enter correct credentials.')
+                            rej();
+                        }
+                    } else {
+                        checkForUserPhone(userData.emailOrPhone).then((isRegisteredUser) => {
+                            if (isRegisteredUser && isRegisteredUser.length) {
+                                if (isRegisteredUser[0].password === userData.password) res(isRegisteredUser[0]);
+                                else {
+                                    setLoginError('Please enter correct credentials.')
+                                    rej();
+                                }
+                            } else {
+                                setLoginError('Please enter correct credentials.')
+                                rej();
+                            }
+                        })
+                    }
+                })
             }
         })
     }
@@ -121,11 +159,11 @@ export default function Login() {
                     ...loginCred,
                     phone: loginCred.username,
                     email: loginCred.username,
+                    emailOrPhone: loginCred.username
                 }
                 getUserLoginData(userData)
                     .then((data) => {
                         //user is registered
-                        //set to db 
                         setLoginResponseToServer();
                         data.source = 'Website';
                         dispatch(loginUser(data));
@@ -150,7 +188,6 @@ export default function Login() {
                 getUserLoginData(userData)
                     .then((data) => {
                         //user is registered
-                        //set to db 
                         setLoginResponseToServer();
                         data.source = thirdPartyResponse.source;
                         dispatch(loginUser(data));

@@ -2,8 +2,8 @@ import { Observable } from 'rxjs';
 import { formatDate, formatTime } from "./Utils";
 import db from '../Database';
 
-
 const competitionRef = db.collection('competitions');
+
 export function getCompetitionsList() {
     return new Observable((observer) => {
         competitionRef.onSnapshot((querySnapshot) => {

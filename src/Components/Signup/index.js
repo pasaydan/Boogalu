@@ -17,6 +17,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import stepListData from '../../Data/RegistrationStepData'
 import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
+import { registerUser, getUserByEmail, getUserByPhone, getUserByPhoneOrEmail } from "../../Services/User";
 import * as $ from 'jquery';
 
 export default function Signup() {
@@ -29,7 +30,7 @@ export default function Signup() {
         state: null
     })
     // get data from history props if redirected through google or facebook login
-    if (history.location.state && (history.location.state.source == 'Facebook' || history.location.state.source == 'Google')) {
+    if (history.location.state && (history.location.state.source === 'Facebook' || history.location.state.source === 'Google')) {
         loggedInUser.email = history.location.state.email;
         loggedInUser.name = history.location.state.name;
         // setNeedToRegisterError('You are not registered yet, Please register with Choreoculture.')
@@ -73,10 +74,10 @@ export default function Signup() {
                     if (parentValueItem.isSelected) {
                         let selectionObj = { value: [parentValueItem.title], key: parentKey, heading: parentValueItem.heading };
                         if (selectedOptions.length != 0) {
-                            let isAvl = selectedOptions.filter((data) => data.key == parentKey);
+                            let isAvl = selectedOptions.filter((data) => data.key === parentKey);
                             if (isAvl.length != 0) {
                                 selectedOptions.map((item) => {
-                                    if (item.key == parentKey) item.value.push(parentValueItem.title);
+                                    if (item.key === parentKey) item.value.push(parentValueItem.title);
                                 })
                             } else selectedOptions.push(selectionObj);
                         } else selectedOptions.push(selectionObj);
@@ -87,28 +88,39 @@ export default function Signup() {
         }
     }, [activeStep])
 
-    const registerUser = () => {
+    const saveUserRegistrationDetails = () => {
         return new Promise((res, rej) => {
-            let registeredUser = localStorage.getItem('users') ? JSON.parse(localStorage.getItem('users')) : [];
-            registeredUser.push(userDetails);
-            localStorage.setItem('users', JSON.stringify(registeredUser))
-            res();
+            registerUser(userDetails).subscribe((data) => {
+                console.log('user registered success', data);
+                res();
+            })
         })
     }
 
-    const checkForRepeatedEmailPhone = (param) => {
-        let registeredUser = localStorage.getItem('users') ? JSON.parse(localStorage.getItem('users')) : [];
-        if (registeredUser && registeredUser.length != 0) {
-            let isRegisteredUser = registeredUser.filter((user) => (user[param] == userDetails[param]));
-            if (isRegisteredUser.length) {
-                setSignUpError(param + ' already registered.');
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            return true;
-        }
+    const checkForUsedPhone = () => {
+        return new Promise((res, rej) => {
+            getUserByPhone(userDetails.phone).subscribe((data) => {
+                if (data && data.length) {
+                    setSignUpError('Phone already registered.');
+                    rej(false);
+                } else {
+                    res(true);
+                }
+            })
+        })
+    }
+
+    const checkForUsedEmail = () => {
+        return new Promise((res, rej) => {
+            getUserByEmail(userDetails.email).subscribe((data) => {
+                if (data && data.length) {
+                    setSignUpError('Email already registered.');
+                    rej(false);
+                } else {
+                    res(true);
+                }
+            })
+        })
     }
 
     const setSignupUserCred = (e) => {
@@ -117,8 +129,8 @@ export default function Signup() {
             return;
         }
 
-        if (checkForRepeatedEmailPhone('email') && checkForRepeatedEmailPhone('phone')) {
-            registerUser()
+        Promise.all([checkForUsedEmail(), checkForUsedPhone()]).then(() => {
+            saveUserRegistrationDetails()
                 .then(() => {
                     dispatch(signupUser(userDetails));
                     if (state.competitionLogginFlow) history.push('/competitions');
@@ -133,9 +145,10 @@ export default function Signup() {
 
                     }
                 })
-        }
+        }).catch(error => {
+            console.error(error)
+        });
         e.preventDefault();
-        e.stopPropagation();
     }
 
     const setNextStep = () => {
@@ -163,7 +176,7 @@ export default function Signup() {
         e.stopPropagation();
         const stepDataList = Object.assign({}, stepData);
         stepDataList[activeStep].map((item) => {
-            if (item.title == activeItem.title) {
+            if (item.title === activeItem.title) {
                 item.isSelected = item.isSelected ? false : true;
             } else {
                 if (status != 'multi-select') {
@@ -178,10 +191,10 @@ export default function Signup() {
                 if (parentValueItem.isSelected) {
                     let selectionObj = { value: [parentValueItem.title], key: parentKey, heading: parentValueItem.heading };
                     if (selectedOptions.length != 0) {
-                        let isAvl = selectedOptions.filter((data) => data.key == parentKey);
+                        let isAvl = selectedOptions.filter((data) => data.key === parentKey);
                         if (isAvl.length != 0) {
                             selectedOptions.map((item) => {
-                                if (item.key == parentKey) item.value.push(parentValueItem.title);
+                                if (item.key === parentKey) item.value.push(parentValueItem.title);
                             })
                         } else selectedOptions.push(selectionObj);
                     } else selectedOptions.push(selectionObj);
@@ -199,7 +212,7 @@ export default function Signup() {
         <div className="logout-wrap clearfix">
             {activeStep != 6 && <div className="step-wrap">
                 <div className="heading1">Let's Get Started!</div>
-                {activeStep == 'stepOne' && <>
+                {activeStep === 'stepOne' && <>
                     <div className="list-content">
                         <div className="list-heading-wrap">
                             <div className="heading2">What’s your experience with dancing?</div>
@@ -225,7 +238,7 @@ export default function Signup() {
                         </div>
                     </div>
                 </>}
-                {activeStep == 'stepTwo' && <>
+                {activeStep === 'stepTwo' && <>
                     <div className="list-content">
                         <div className="list-heading-wrap">
                             <div className="heading2">What is your first goal that you want to work on?</div>
@@ -251,7 +264,7 @@ export default function Signup() {
                         </div>
                     </div>
                 </>}
-                {activeStep == 'stepThree' && <>
+                {activeStep === 'stepThree' && <>
                     <div className="list-content">
                         <div className="list-heading-wrap">
                             <div className="heading2">What are you interested in?</div>
@@ -277,7 +290,7 @@ export default function Signup() {
                         </div>
                     </div>
                 </>}
-                {activeStep == 'stepFour' && <>
+                {activeStep === 'stepFour' && <>
                     <div className="list-content">
                         <div className="list-heading-wrap">
                             <div className="heading2">How long would you like your dance sessions to be?</div>
@@ -303,7 +316,7 @@ export default function Signup() {
                         </div>
                     </div>
                 </>}
-                {activeStep == 'stepFive' && <>
+                {activeStep === 'stepFive' && <>
                     <div className="list-content">
                         <div className="list-heading-wrap">
                             <div style={{ paddingBottom: 0 }} className="heading2">Your Personal Schedule & Recommendations</div>
@@ -314,7 +327,7 @@ export default function Signup() {
                                     <div key={i} className="list-item selected-item" onClick={() => setActiveStep(item.key)}>
                                         <div className="title">{item.heading}</div>
                                         <div className="desc">
-                                            {item.value.length == 1 &&
+                                            {item.value.length === 1 &&
                                                 item.value.map((listValue, j) => {
                                                     return <span key={j}>{listValue} </span>
                                                 })
@@ -350,7 +363,7 @@ export default function Signup() {
                     {activeStep != 'stepOne' && <Button style={{ marginRight: '25px' }} color="primary" variant="contained" className="next-btn" onClick={() => setPrevStep()}>Prev</Button>}
                 </div>}
             </div>}
-            {activeStep == 6 && <form className="form-wrap clearfix" onSubmit={setSignupUserCred}>
+            {activeStep === 6 && <form className="form-wrap clearfix" onSubmit={setSignupUserCred}>
                 <div className="heading-outer">
                     <div className="heading1">Let's Get Started!</div>
                     <div className="heading2">Create an account to Choreoculture to get all features.</div>
