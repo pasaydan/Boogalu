@@ -17,7 +17,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import stepListData from '../../Data/RegistrationStepData'
 import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
-import { registerUser, getUserByEmail, getUserByPhone, getUserByPhoneOrEmail } from "../../Services/User";
+import { registerUser, getUserByEmail, getUserByPhone } from "../../Services/User.service";
 import * as $ from 'jquery';
 
 export default function Signup() {

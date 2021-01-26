@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import bgImg from '../../Images/hip-hop.png';
 import { useHistory } from "react-router-dom";
-
+import VideoUploader from "../VideoUploader";
 export default function Homepage() {
     const history = useHistory();
     const { state, dispatch } = useStoreConsumer();
@@ -11,7 +11,7 @@ export default function Homepage() {
 
     useEffect(() => {
         setTimeout(() => {
-            activeDanceImage('show'); 
+            activeDanceImage('show');
         }, 800);
     }, []);
 
@@ -29,6 +29,7 @@ export default function Homepage() {
                         <iframe width="100%" src="https://www.youtube.com/embed/U7NaFiqSeVE" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
                     </div>
                 </div>
+                <VideoUploader className="upload-btn" />
                 <div className="banner_img">
                     <h1>Dance Classes for Everyone</h1>
                     <div className="get-started-wrap">

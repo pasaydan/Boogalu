@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import CompetitionsDetails from "../CompetitionsDetails";
-import { getCompetitionsList } from "../../Services/Competition";
+import { getCompetitionsList } from "../../Services/Competition.service";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { disableLoginFlow, setActiveCompetition } from "../../Actions/Competition";
 
 function Competitions() {
     const { state, dispatch } = useStoreConsumer();
-    const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(false);
+    const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(state.competitionLogginFlow ? true : false);
     const [CompletitionList, setCompletitionList] = useState(null);
 
-    var initialStep = 1;
-    if (state.competitionLogginFlow) {
-        initialStep = 3;
-        dispatch(disableLoginFlow());
-        setIsOpenDetailsModal(true);
-    }
+    var initialStep = state.competitionLogginFlow ? 3 : 1;
 
     useEffect(() => {
         getCompetitionsList().subscribe(list => setCompletitionList(list));
+        if (state.competitionLogginFlow) {
+            dispatch(disableLoginFlow());
+        }
     }, [])
 
     const openDetailsModal = (competition) => {

@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import firebase from '../Services/firebase';
+import firebase from './firebase';
 const storageRef = firebase.storage().ref();
 
 const BASE_PATH = '/uploads';
@@ -43,3 +43,39 @@ export function deleteImage(imageUrl) {
     storageRef.refFromURL(imageUrl).delete();
 }
 
+export function uploadVideo(video) {
+
+    let date = new Date();
+    let id = date.getTime().toString();
+    FILE_NAME = 'user' + id + '.mp4';
+    FILE_PATH = BASE_PATH + '/video/' + FILE_NAME;
+
+    let uploadTask = storageRef.child(FILE_PATH).putString(video, 'data_url');
+
+    return new Observable((observer) => {
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                // console.log('Upload is ' + progress + '% done');
+                observer.next({ donePercentage: progress });
+                switch (snapshot.state) {
+                    case firebase.storage.TaskState.PAUSED: // or 'paused'
+                        console.log('Upload is paused');
+                        break;
+                    case firebase.storage.TaskState.RUNNING: // or 'running'
+                        console.log('Upload is running');
+                        break;
+                }
+            }, (error) => {
+                console.log(error);
+            }, () => {
+                uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+                    observer.next({ downloadURL });
+                });
+            });
+    });
+}
+
+export function deleteVideo(videoUrl) {
+    storageRef.refFromURL(videoUrl).delete();
+}

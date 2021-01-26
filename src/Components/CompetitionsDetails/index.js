@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
@@ -8,36 +8,13 @@ import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
-import thumbnailImg from '../../Images/thumbnail.jpg';
+import { THUMBNAIL_URL } from '../../Constants';
 import "./CompetitionsDetails.scss";
 import EnrollCompetition from "../EnrollCompetition";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { enableLoginFlow, setActiveCompetition } from "../../Actions/Competition";
+import { getUploadedVideosByUserId } from "../../Services/UploadedVideo.service";
 
-const userUploadedVideoList = [
-    {
-        title: "Hip Hop Follow Along",
-        id: 1,
-        url: "https://www.youtube.com/embed/dM1ghaspLyc",
-        length: "2.5",
-        level: "Beginner",
-        isSelected: false
-    }, {
-        title: "Hip Hop Along",
-        id: 2,
-        url: "https://www.youtube.com/embed/dM1ghaspLyc",
-        length: "2.5",
-        level: "Beginner",
-        isSelected: false
-    }, {
-        title: "Hip Hop Follow",
-        id: 3,
-        url: "https://www.youtube.com/embed/dM1ghaspLyc",
-        length: "2.5",
-        isSelected: false,
-        level: "Beginner"
-    }
-]
 function CompetitionsDetails({ open, handleClose, initialStep }) {
 
     const { state, dispatch } = useStoreConsumer();
@@ -45,10 +22,15 @@ function CompetitionsDetails({ open, handleClose, initialStep }) {
     const competitionDetails = state.activeCompetition;
     console.log(competitionDetails);
     const loggedInUser = state.loggedInUser;
-    const [userUploadedVdos, setUserUploadedVideoList] = useState(userUploadedVideoList);
+    const [userUploadedVdos, setUserUploadedVideoList] = useState([]);
     const [TnC, setTnC] = useState(false);
     const [ActiveStep, setActiveStep] = useState(initialStep || 1);
     // const [SelectedVdo, setSelectedVdo] = useState(null);
+
+    useEffect(() => {
+        getUploadedVideosByUserId(loggedInUser.key).subscribe((vdoList) => setUserUploadedVideoList(vdoList));
+    }, [])
+
     const useStyles = makeStyles((theme) => ({
         modal: {
             display: 'flex',
@@ -63,14 +45,14 @@ function CompetitionsDetails({ open, handleClose, initialStep }) {
         },
     }));
     const classes = useStyles();
+
     const selectVdo = (e, vdo) => {
         e.preventDefault();
         e.stopPropagation();
         let updatedVdos = userUploadedVdos;
         updatedVdos.map((item) => {
-            if (item.id == vdo.id) {
+            if (item.key == vdo.key) {
                 item.isSelected = true;
-                // setSelectedVdo(item);
                 let updatedCompetition = competitionDetails;
                 updatedCompetition.selectedVideo = item;
                 dispatch(setActiveCompetition(updatedCompetition));
@@ -174,7 +156,7 @@ function CompetitionsDetails({ open, handleClose, initialStep }) {
                                 {userUploadedVdos && userUploadedVdos.map((item, index) => {
                                     return <div className={item.isSelected ? 'vdo-outer selected-vdo' : 'vdo-outer'} key={index} onClick={(e) => selectVdo(e, item)}>
                                         <div className="vdo-wrap" >
-                                            <img src={item.thumbnail ? item.thumbnail : thumbnailImg} style={{ width: "50%" }} />
+                                            <img src={item.thumbnail ? item.thumbnail : THUMBNAIL_URL} style={{ width: "50%" }} />
                                             <div>{item.title}</div>
                                         </div>
                                     </div>

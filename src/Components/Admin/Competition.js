@@ -8,19 +8,9 @@ import Select from '@material-ui/core/Select';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import ImageUploader from 'react-images-upload';
 import Button from '@material-ui/core/Button';
-import { saveCompetition } from "../../Services/Competition";
-import { uploadImage } from "../../Services/UploadImage";
-const data = {
-    name: 'Free Style',
-    // img: boogaluLogo,
-    startAt: "2017-05-24T10:30",
-    endAt: "2017-05-24T10:30",
-    fee: 250,
-    desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.",
-    priceDesc: ["First prize 6000 worth shoes", "Second prize 3000 worth shoes", "Third prize 1500 worth shoes"],
-    active: true,
-    type: 'running'
-}
+import { saveCompetition } from "../../Services/Competition.service";
+import { uploadImage } from "../../Services/Upload.service";
+import { toBase64 } from "../../Services/Utils";
 
 export default function Competition() {
     const initialCompetitionData = {
@@ -49,13 +39,6 @@ export default function Competition() {
     const onimageUpload = (picture) => {
         setCompetitionData({ ...CompetitionData, img: picture });
     }
-
-    const toBase64 = file => new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-    });
 
     async function saveDetails(e) {
         console.log(await toBase64(CompetitionData.img[0]));

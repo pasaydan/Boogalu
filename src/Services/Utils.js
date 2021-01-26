@@ -31,3 +31,12 @@ export function formatDate(date, status) {
 export function timeStampToNewDate(timeStamp) {
     return new Date(timeStamp.seconds * 1000 + Math.round(timeStamp.nanoseconds / 1000000));
 }
+
+export function toBase64(file) {
+    new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+}

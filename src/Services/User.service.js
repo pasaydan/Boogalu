@@ -31,20 +31,6 @@ export function getUserByEmail(email) {
     })
 }
 
-export function getUserByPhoneOrEmail(queryString) {
-    return new Observable((observer) => {
-        userRef.where(queryString, "in", ["phone", "email"]).get().then((querySnapshot) => {
-            let user = []
-            querySnapshot.forEach(function (doc) {
-                let data = doc.data();
-                data.key = doc.id;
-                user.push(data);
-            })
-            observer.next(user);
-        })
-    })
-}
-
 export function updateUser(id, data) {
     data.createdOn = data.createdOn || new Date();
     data.modifiedOn = new Date();

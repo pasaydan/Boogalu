@@ -6,7 +6,7 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import thumbnailImg from '../../Images/thumbnail.jpg';
+import { THUMBNAIL_URL } from '../../Constants';
 import { useStoreConsumer } from '../../Providers/StateProvider';
 
 function EnrollCompetition({ handleClose, changeSelectedVdo }) {
@@ -57,7 +57,7 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
                 <div>Selected video for competition -</div>
                 <div onClick={() => changeSelectedVdo()}>Change</div>
                 <div className="vdo-wrap" >
-                    <img src={SelectedVdo.thumbnail ? SelectedVdo.thumbnail : thumbnailImg} style={{ width: "50%" }} />
+                    <img src={SelectedVdo.thumbnail ? SelectedVdo.thumbnail : THUMBNAIL_URL} style={{ width: "50%" }} />
                     <div>{SelectedVdo.title}</div>
                 </div>
             </div>}
