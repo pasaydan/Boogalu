@@ -137,8 +137,7 @@ export default function VideoUploader() {
                         />
                     </div>
                     <Button variant="contained" color="secondary" onClick={(e) => uploadSelectedVideo(e)}>Upload</Button>
-                </div>
-            }
+                </div>}
         </div>
     )
 }
