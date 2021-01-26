@@ -37,11 +37,17 @@ function App() {
             <div className={`main-content-wrapper ${transitionOpacityClass}`}>
               <Navigation />
               <Switch>
+                <Route exact path="/login:plan">
+                  <Login />
+                </Route>
                 <Route exact path="/login">
                   <Login />
                 </Route>
                 <Route exact path="/profile/edit">
                   <EditProfile />
+                </Route>
+                <Route exact path="/register:plan">
+                  <Signup />
                 </Route>
                 <Route exact path="/register">
                   <Signup />

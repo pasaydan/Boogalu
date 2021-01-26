@@ -212,16 +212,18 @@ export default function Login() {
                             />
                         </FormControl>
                     </div>
-                    <div className="forgot-password clearfix">
-                        <div>Forgot Password ?</div>
-                    </div>
-                    {LoginError && <div className="login-error">
-                        {LoginError}
-                    </div>}
-                    <div className="submit-btn clearfix">
-                        <Button variant="contained" type="submit" color="primary">Sign In
-                         <ArrowRightSharpIcon />
-                        </Button>
+                    <div className="action-wrap">
+                        {LoginError && <div className="login-error">
+                            {LoginError}
+                        </div>}
+                        <div className="submit-btn clearfix">
+                            <Button variant="contained" type="submit" color="primary">Sign In
+                            <ArrowRightSharpIcon />
+                            </Button>
+                        </div>
+                        <div className="forgot-password clearfix">
+                            <div>Forgot Password ?</div>
+                        </div>
                     </div>
                     <div className="or-seprator clearfix">
                         <span></span>
@@ -229,6 +231,7 @@ export default function Login() {
                         <span></span>
                     </div>
                     <div className="login-with">
+                        <p className="loginWithTitle">Login with</p>
                         <div className="login-with-google">
                             <GoogleLogin
                                 className="google-login-btn"
