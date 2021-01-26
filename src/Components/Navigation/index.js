@@ -191,14 +191,14 @@ function Navigation() {
                     </div>}
                 </div>
                 {
+                    isUserRegstrationPage ?
+                    <a href="#Competitions" className="upload-btn">
+                        <i><FaCloudUploadAlt /></i>
+                    </a> : ''
+                }
+                {
                     isMobile ?
                     <div className="sticky-mobile-menu">
-                        {
-                            isUserRegstrationPage ?
-                            <a href="#Competitions" className="upload-btn">
-                                <i><FaCloudUploadAlt /></i>
-                            </a> : ''
-                        }
                         <ul className="flex-1 nav-ul">
                             <li>
                                 <a href="/" ref={mobilHomelinkRef} onClick={(e) => onClickNav(e, '')}>

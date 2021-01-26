@@ -12,6 +12,7 @@ import Upcoming from "./Components/Upcoming";
 import Competitions from "./Components/Competitions";
 import Subscription from "./Components/Subscription";
 import EditProfile from "./Components/EditProfile/EditProfile";
+import ContactUs from "./Components/Contactus";
 
 function App() {
   const [isSplashVisible, toggleSplash] = useState(true);
@@ -37,6 +38,9 @@ function App() {
             <div className={`main-content-wrapper ${transitionOpacityClass}`}>
               <Navigation />
               <Switch>
+                <Route exact path="/contactus">
+                  <ContactUs />
+                </Route>
                 <Route exact path="/login:plan">
                   <Login />
                 </Route>

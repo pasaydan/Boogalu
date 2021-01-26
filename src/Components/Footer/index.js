@@ -1,7 +1,53 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from "react-router-dom";
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
+import * as $ from 'jquery';
 
 function Footer() {
+    const history = useHistory();
+    
+    useEffect(() => {
+        setTimeout(() => {
+            const pathName = history?.location?.pathname.split('/')[1];
+            const footerLinks = document.querySelectorAll('.js-page-links li');
+
+            if (footerLinks && footerLinks.length) {
+                footerLinks.forEach((ele) => {
+                    const getData = ele.getAttribute('data-name').toLocaleLowerCase();
+                    if (pathName?.length && getData.includes(pathName)) {
+                        ele.classList.add('active');
+                    }
+                });
+            }
+
+        }, 1000);
+
+    }, []);
+
+    function navigatePageLinks(event, path) {
+        const footerLinks = document.querySelectorAll('.js-page-links li');
+        if (footerLinks && footerLinks.length) {
+            footerLinks.forEach((ele) => {
+                const getData = ele.getAttribute('data-name').toLocaleLowerCase();
+                if (path?.length && getData.includes(path)) {
+                    ele.classList.add('active');
+                } else {
+                    if (ele.classList.contains('active')) {
+                        ele.classList.remove('active');    
+                    }
+                }
+            });
+        }
+        history.push(`/${path}`);
+        if (path) {
+            setTimeout(() => {
+                $('html,body').animate({
+                    scrollTop: 0
+                }, 700);
+            }, 100);
+        }
+    }
+
     return (
         <div>
             <footer className="flex-container-VC">
@@ -25,11 +71,12 @@ function Footer() {
                     <button className="subscribe" >Subscribe</button>
                 </div>
                 <div className="footer-menus flex-1">
-                    <ul className="menu-lists flex-1">
-                        <li>Blog</li>
-                        <li>Careers</li>
-                        <li>Support</li>
-                        <li>Terms</li>
+                    <ul className="menu-lists js-page-links flex-1">
+                        <li data-name="career">Careers</li>
+                        <li data-name="contactus">
+                            <a onClick={(e) => navigatePageLinks(e, 'contactus')}>Contact us</a>
+                        </li>
+                        <li data-name="terms">Terms</li>
                     </ul>
                     <ul className="menu-lists menu-lists-2 flex-1">
                         <li>Instagram</li>
