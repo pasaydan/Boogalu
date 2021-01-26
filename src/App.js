@@ -14,6 +14,7 @@ import Competition from "./Components/Admin/Competition"
 import Subscription from "./Components/Subscription";
 import EditProfile from "./Components/EditProfile/EditProfile";
 import ContactUs from "./Components/Contactus";
+import VideoUploader from "./Components/VideoUploader";
 
 function App() {
   const [isSplashVisible, toggleSplash] = useState(true);
@@ -70,6 +71,9 @@ function App() {
                 </Route>
                 <Route exact path="/home">
                   <Homepage />
+                </Route>
+                <Route exact path="/upload-video">
+                  <VideoUploader />
                 </Route>
                 <Route exact path="/">
                   <Homepage />

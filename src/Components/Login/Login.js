@@ -167,7 +167,7 @@ export default function Login() {
                         setLoginResponseToServer();
                         data.source = 'Website';
                         dispatch(loginUser(data));
-                        if (state.competitionLogginFlow) history.push('/competitions');
+                        if (state.currentLoginFlow == 'competition') history.push('/competitions');
                         else history.push('/')
                     })
                     .catch((data) => {
@@ -191,7 +191,7 @@ export default function Login() {
                         setLoginResponseToServer();
                         data.source = thirdPartyResponse.source;
                         dispatch(loginUser(data));
-                        if (state.competitionLogginFlow) history.push('/competitions');
+                        if (state.currentLoginFlow == 'competition') history.push('/competitions');
                         else history.push('/')
                     })
                     .catch((data) => {

@@ -12,7 +12,8 @@ import { THUMBNAIL_URL } from '../../Constants';
 import "./CompetitionsDetails.scss";
 import EnrollCompetition from "../EnrollCompetition";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { enableLoginFlow, setActiveCompetition } from "../../Actions/Competition";
+import { setActiveCompetition } from "../../Actions/Competition";
+import { enableLoginFlow } from "../../Actions/LoginFlow";
 import { getUploadedVideosByUserId } from "../../Services/UploadedVideo.service";
 
 function CompetitionsDetails({ open, handleClose, initialStep }) {
@@ -67,7 +68,7 @@ function CompetitionsDetails({ open, handleClose, initialStep }) {
             setActiveStep(3);
         } else {
             handleClose();
-            dispatch(enableLoginFlow());
+            dispatch(enableLoginFlow('competition'));
             history.push({
                 pathname: '/login',
                 state: null
@@ -91,7 +92,7 @@ function CompetitionsDetails({ open, handleClose, initialStep }) {
             >
                 <Fade in={open}>
                     <div className={classes.paper}>
-                        {ActiveStep == 1 && <IconButton onClick={() => { handleClose(); (state.activeCompetition && !state.competitionLogginFlow) && dispatch(setActiveCompetition(null)) }}>
+                        {ActiveStep == 1 && <IconButton onClick={() => { handleClose(); (state.activeCompetition && !state.currentLoginFlow) && dispatch(setActiveCompetition(null)) }}>
                             <CloseIcon />
                         </IconButton>}
                         {(ActiveStep == 2 || ActiveStep == 3) && <IconButton onClick={() => setActiveStep(ActiveStep - 1)}>

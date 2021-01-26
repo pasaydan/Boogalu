@@ -133,7 +133,7 @@ export default function Signup() {
             saveUserRegistrationDetails()
                 .then(() => {
                     dispatch(signupUser(userDetails));
-                    if (state.competitionLogginFlow) history.push('/competitions');
+                    if (state.currentLoginFlow == 'competition') history.push('/competitions');
                     else history.push(({
                         pathname: '/',
                         state: null

@@ -5,11 +5,13 @@ import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { logoutUser } from '../../Actions/User';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
+import { enableLoginFlow } from "../../Actions/LoginFlow";
 import * as $ from 'jquery';
 const SCROLL_TOP_LIMIT = 200;
+
 function Navigation() {
     const [goingUpClass, setGoingUpClass] = useState('');
-    const [isUserRegstrationPage, toggleUserRegistrationPage] = useState(false);
+    const [hideVdoUploadBtn, setHideVdoUploadBtn] = useState(false);
     const [didMount, setDidMount] = useState(false);
     const [isMobile, toggleMobile] = useState(false);
     const [goingDownClass, setGoingDownClass] = useState('');
@@ -22,7 +24,7 @@ function Navigation() {
 
     useEffect(() => {
         setDidMount(true);
-        toggleUserRegistrationPage(false);
+        setHideVdoUploadBtn(false);
         let windowViewPortWidth = window.innerWidth;
         if (windowViewPortWidth > 1023) {
             toggleMobile(false);
@@ -56,11 +58,8 @@ function Navigation() {
         setTimeout(() => {
             const pathName = history?.location?.pathname.split('/')[1];
             const navLinks = document.querySelectorAll('.nav-ul a');
-            if (pathName.includes('register') || pathName.includes('login')) {
-                toggleUserRegistrationPage(false);
-            } else {
-                toggleUserRegistrationPage(true);
-            }
+            if (pathName.includes('register') || pathName.includes('login') || pathName.includes('upload-video')) setHideVdoUploadBtn(true);
+            else setHideVdoUploadBtn(false);
             if (navLinks && navLinks.length) {
                 navLinks.forEach((ele) => {
                     const getHref = ele.getAttribute('href').toLocaleLowerCase();
@@ -87,15 +86,11 @@ function Navigation() {
         e.preventDefault();
         const navLinks = document.querySelectorAll('.nav-ul a');
 
-        toggleUserRegistrationPage(false);
         setTimeout(() => {
             const pathName = history?.location?.pathname.split('/')[1];
-            if (pathName.includes('register') || pathName.includes('login')) {
-                toggleUserRegistrationPage(false);
-            } else {
-                toggleUserRegistrationPage(true);
-            }
-        }, 1000);
+            if (pathName.includes('register') || pathName.includes('login') || pathName.includes('upload-video')) setHideVdoUploadBtn(true);
+            else setHideVdoUploadBtn(false);
+        });
 
         if (navLinks && navLinks.length) {
             navLinks.forEach((ele) => {
@@ -150,12 +145,29 @@ function Navigation() {
     }
 
     function navigateToUserRegistrationLogin(path) {
-        toggleUserRegistrationPage(false);
+        setHideVdoUploadBtn(true);
         history.push(`/${path}`)
     }
 
     if (!didMount) {
         return null;
+    }
+
+    const uploadVdo = (e) => {
+        setHideVdoUploadBtn(true);
+        e.preventDefault();
+        if (state.loggedInUser) {
+            history.push({
+                pathname: '/upload-video',
+                state: null
+            })
+        } else {
+            dispatch(enableLoginFlow('upload-vdo'));
+            history.push({
+                pathname: '/login',
+                state: null
+            })
+        }
     }
 
     return (
@@ -192,8 +204,8 @@ function Navigation() {
                     </div>}
                 </div>
                 {
-                    isUserRegstrationPage ?
-                        <a href="#Competitions" className="upload-btn">
+                    !hideVdoUploadBtn ?
+                        <a href="" className="upload-btn" onClick={(e) => uploadVdo(e)}>
                             <i><FaCloudUploadAlt /></i>
                         </a> : ''
                 }
