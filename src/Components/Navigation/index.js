@@ -9,6 +9,7 @@ import * as $ from 'jquery';
 const SCROLL_TOP_LIMIT = 200;
 function Navigation() {
     const [goingUpClass, setGoingUpClass] = useState('');
+    const [isUserRegstrationPage, toggleUserRegistrationPage] = useState(false);
     const [didMount, setDidMount] = useState(false);
     const [isMobile, toggleMobile] = useState(false);
     const [goingDownClass, setGoingDownClass] = useState('');
@@ -21,7 +22,7 @@ function Navigation() {
 
     useEffect(() => {
         setDidMount(true);
-
+        toggleUserRegistrationPage(false);
         let windowViewPortWidth = window.innerWidth;
         if (windowViewPortWidth > 1023) {
             toggleMobile(false);
@@ -51,9 +52,15 @@ function Navigation() {
             }
         }
 
+
         setTimeout(() => {
             const pathName = history?.location?.pathname.split('/')[1];
             const navLinks = document.querySelectorAll('.nav-ul a');
+            if (pathName.includes('register') || pathName.includes('login')) {
+                toggleUserRegistrationPage(false);
+            } else {
+                toggleUserRegistrationPage(true);
+            }
             if (navLinks && navLinks.length) {
                 navLinks.forEach((ele) => {
                     const getHref = ele.getAttribute('href').toLocaleLowerCase();
@@ -79,6 +86,17 @@ function Navigation() {
     const onClickNav = (e, route) => {
         e.preventDefault();
         const navLinks = document.querySelectorAll('.nav-ul a');
+
+        toggleUserRegistrationPage(false);
+        setTimeout(() => {
+            const pathName = history?.location?.pathname.split('/')[1];
+            if (pathName.includes('register') || pathName.includes('login')) {
+                toggleUserRegistrationPage(false);
+            } else {
+                toggleUserRegistrationPage(true);
+            }
+        }, 1000);
+
         if (navLinks && navLinks.length) {
             navLinks.forEach((ele) => {
                 if (ele.classList.contains('active')) {
@@ -132,6 +150,13 @@ function Navigation() {
     }
 
     if (!didMount) {
+        function navigateToUserRegistrationLogin(path) {
+            toggleUserRegistrationPage(false);
+            history.push(`/${path}`)
+        }
+    }
+
+    if (!didMount) {
         return null;
     }
 
@@ -153,8 +178,8 @@ function Navigation() {
                             </ul> : ''
                     }
                     {!state.loggedInUser && state.loggedInUser.phone && <div className="flex-2 signup-wrap" >
-                        <button className="btn primary-light login" onClick={() => history.push('/login')}>Login</button>
-                        <button className="btn primary-dark signup" onClick={() => history.push('/register')}>Sign Up</button>
+                        <button className="btn primary-light login" onClick={() => navigateToUserRegistrationLogin('login')}>Login</button>
+                        <button className="btn primary-dark signup" onClick={() => navigateToUserRegistrationLogin('register')}>Sign Up</button>
                     </div>}
                     {state.loggedInUser && state.loggedInUser.phone && <div className="flex-2 signup-wrap" >
                         <div className="profile" ref={ref}>
@@ -168,11 +193,14 @@ function Navigation() {
                     </div>}
                 </div>
                 {
+                    isUserRegstrationPage ?
+                        <a href="#Competitions" className="upload-btn">
+                            <i><FaCloudUploadAlt /></i>
+                        </a> : ''
+                }
+                {
                     isMobile ?
                         <div className="sticky-mobile-menu">
-                            <a href="#Competitions" className="upload-btn">
-                                <i><FaCloudUploadAlt /></i>
-                            </a>
                             <ul className="flex-1 nav-ul">
                                 <li>
                                     <a href="/" ref={mobilHomelinkRef} onClick={(e) => onClickNav(e, '')}>

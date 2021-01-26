@@ -359,11 +359,16 @@ export default function Signup() {
                         pathname: '/login',
                         state: null
                     })}>SIGN IN</Button>
-                    {showNextButton && <Button color="primary" variant="contained" className="next-btn" onClick={() => setNextStep()}>Next</Button>}
-                    {activeStep != 'stepOne' && <Button style={{ marginRight: '25px' }} color="primary" variant="contained" className="next-btn" onClick={() => setPrevStep()}>Prev</Button>}
+                    {
+                        showNextButton ?
+                            <div className={`next-prev-actions ${activeStep != 'stepOne' ? 'next-step-active' : ''} `}>
+                                {activeStep != 'stepOne' && <Button color="primary" variant="contained" className="next-btn previous" onClick={() => setPrevStep()}>Prev</Button>}
+                                {showNextButton && <Button color="primary" variant="contained" className="next-btn" onClick={() => setNextStep()}>Next</Button>}
+                            </div> : ''
+                    }
                 </div>}
             </div>}
-            {activeStep === 6 && <form className="form-wrap clearfix" onSubmit={setSignupUserCred}>
+            {activeStep == 6 && <form className="form-wrap final-registration-block clearfix" onSubmit={setSignupUserCred}>
                 <div className="heading-outer">
                     <div className="heading1">Let's Get Started!</div>
                     <div className="heading2">Create an account to Choreoculture to get all features.</div>
@@ -435,7 +440,7 @@ export default function Signup() {
                         />
                     </div>
                     <div className="input-wrap">
-                        <FormControl className="" variant="outlined" style={{ width: '100%' }}>
+                        <FormControl className="" variant="outlined">
                             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
                             <OutlinedInput
                                 required
@@ -460,7 +465,7 @@ export default function Signup() {
                         </FormControl>
                     </div>
                     <div className="input-wrap">
-                        <FormControl className="" variant="outlined" style={{ width: '100%' }}>
+                        <FormControl className="" variant="outlined">
                             <InputLabel htmlFor="outlined-adornment-confirm-password">Confirm Password</InputLabel>
                             <OutlinedInput
                                 required
@@ -490,7 +495,6 @@ export default function Signup() {
                                 id="date"
                                 label="Birthday"
                                 type="date"
-                                style={{ width: '100%' }}
                                 onChange={handleChange('dob')}
                                 value={userDetails.dob}
                                 InputLabelProps={{
@@ -515,7 +519,7 @@ export default function Signup() {
                             </Select>
                         </FormControl>
                     </div>
-                    <div className="input-wrap" style={{ width: '93%' }}>
+                    <div className="input-wrap bio-wrap">
                         <TextField className="input-field bio-input"
                             id="outlined-required-bio"
                             label="Bio"
@@ -545,7 +549,7 @@ export default function Signup() {
                         <Button variant="contained" type="submit" color="primary" >Sign Up
                          <ArrowRightSharpIcon />
                         </Button>
-                        {activeStep != 'stepOne' && <Button style={{ marginRight: '25px' }} color="primary" variant="contained" className="next-btn" onClick={() => setPrevStep()}>Prev</Button>}
+                        {activeStep != 'stepOne' && <Button color="primary" variant="contained" className="next-btn previous" onClick={() => setPrevStep()}>Prev</Button>}
                     </div>
                     <div className="already-login-wrap">
                         <div className="text-wrap">Already have an account?</div>

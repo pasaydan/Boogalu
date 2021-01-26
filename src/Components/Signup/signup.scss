@@ -19,12 +19,6 @@
     padding-top: 10%;
 }
 
-.form-outer {
-    padding: 30px 0;
-    font-family: Regular;
-    padding-left: 100px;
-}
-
 .img-wrap {
     overflow: hidden;
 }
@@ -40,7 +34,7 @@
 }
 
 .input-wrap {
-    padding: 10px 20px;
+    padding: 10px 0;
     width: 44%;
     filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
     float: left;
@@ -49,14 +43,6 @@
 
 .input-field {
     width: 100%;
-}
-
-.heading1 {
-    padding: 30px 0 14px;
-    font-size: 30px;
-    font-family: Bold;
-    padding-left: 100px;
-    letter-spacing: 1px;
 }
 
 .heading2 {
@@ -99,11 +85,7 @@
     line-height: 45px;
 }
 
-.submit-btn {
-    padding: 30px;
-}
-
-.submit-btn Button {
+.submit-btn button {
     font-size: 15px;
     padding: 13px 47px;
     filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
@@ -212,4 +194,248 @@
     float: right;
     border-radius: 25px;
     font-family: 'SemiBold';
+    &.previous {
+        margin-right: 20px;
+    }
+}
+
+.final-registration-block {
+    .input-wrap {
+        .MuiFormControl-root {
+            width: 100%;
+        }
+        &.bio-wrap {
+            width: 100%;
+        }
+    }
+    .submit-btn {
+        .next-btn {
+            &.previous {
+                margin-right: 20px;
+            }
+        }
+    }
+    .tnc-wrap {
+        width: 50%;
+        .tnc-content {
+            line-height: 48px;
+            padding-left: 0;
+            .MuiCheckbox-colorPrimary.Mui-checked {
+                padding-left: 0;
+            }
+        }
+    }
+    .already-login-wrap {
+        margin-top: 10px;
+    }
+}
+
+@media screen and (max-width: 1195px) {
+    .final-registration-block {
+        .tnc-wrap {
+            float: none;
+            width: 100%;
+        }
+        .already-login-wrap {
+            text-align: left;
+            margin-top: 20px;
+        }
+    }
+}
+
+@media screen and (max-width: 1023px) {
+    .logout-wrap {
+        margin: 0;
+        padding: 20px 10px;
+        box-sizing: border-box;
+        .img-wrap {
+            overflow: hidden;
+        }
+        .heading1 {
+            font-size: 20px;
+            line-height: 24px;
+            padding: 0;
+            margin: 15px 0;
+        }
+        .list-content {
+            padding: 0;
+            .list-heading-wrap {
+                padding: 10px;
+            }
+            .list {
+                .list-item {
+                    position: relative;
+                    margin: 0 0 10px;
+                    padding: 10px 40px 10px 10px;
+                    .selected-item-checkbox {
+                        right: 0;
+                        top: 50%;
+                        transform: translateY(-50%);
+                    }
+                }
+            }
+        }
+        .step-already-login-wrap {
+            padding-left: 0;
+            text-align: center;
+        }
+    }
+    .final-registration-block {
+        .input-wrap {
+            width: 48%;
+        }
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .logout-wrap {
+        position: relative;
+        .step-wrap {
+            position: relative;
+            width: 100%;
+            z-index: 1;
+            border-radius: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+            float: none;
+            background: rgba(227, 235, 249, 0.9);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        }
+        .list-content {
+            .list-heading-wrap {
+                margin-bottom: 10px;
+                .heading2 {
+                    font-size: 16px;
+                    line-height: 20px;
+                }
+                .heading3 {
+                    font-size: 14px;
+                    line-height: 18px;
+                }
+            }
+            .list-item {
+                .title {
+                    font-size: 16px;
+                    line-height: 20px;
+                }
+                .desc {
+                    font-size: 14px;
+                    line-height: 18px;
+                }
+            }
+        }
+        .img-wrap {
+            float: none;
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            img {
+                position: absolute;
+                right: -203px;
+                top: 0;
+                padding-left: 0;
+                width: 131%;
+                height: 62%;
+                object-fit: contain;
+            }
+        }
+        .next-prev-actions {
+            display: flex;
+            justify-content: flex-end;
+            position: fixed;
+            bottom: 58px;
+            width: 100%;
+            height: 66px;
+            z-index: 10;
+            left: 0;
+            padding: 10px;
+            box-sizing: border-box;
+            background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.7));
+            button {
+                float: none;
+                margin: 0;
+                .next-btn {
+                    order: 2;
+                    &.previous {
+                        order: 1;
+                    }
+                }
+            }
+            &.next-step-active {
+                justify-content: space-between;
+                button {
+                    .next-btn.previous {
+                        margin: 0;
+                    }
+                }
+            }
+        }
+        .final-registration-block {
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            border-radius: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+            float: none;
+            background: rgba(227, 235, 249, 0.9);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+            .tnc-wrap {
+                width: 45%;
+                .tnc-content {
+                    line-height: 36px;
+                    padding-top: 7px;
+                    .MuiCheckbox-colorPrimary.Mui-checked {
+                        padding-top: 0;
+                    }
+                    .note-wrap {
+                        line-height: 16px;
+                    }
+                }
+            }
+            .submit-btn {
+                button {
+                    padding: 10px 30px;
+                }
+            }
+            .already-login-wrap {
+                text-align: center;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 524px) {
+    .logout-wrap {
+        .final-registration-block {
+            .input-wrap {
+                float: none;
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            .tnc-wrap {
+                width: 100%;
+                .tnc-content {
+                    line-height: 20px;
+                    .note-wrap {
+                        line-height: 20px;
+                        float: none;
+                    }
+                    .checkbox-wrap {
+                        float: none;
+                        .MuiCheckbox-colorPrimary.Mui-checked {
+                            padding-bottom: 3px;
+                        }
+                    }
+                }
+            }
+            .submit-btn {
+                margin: 10px auto 0;
+            }
+        }
+    }
 }

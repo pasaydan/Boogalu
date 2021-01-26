@@ -16,6 +16,11 @@ footer {
             color: var(--footer-list-text-grey);
             letter-spacing: 0.07em;
             text-transform: uppercase;
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+            &:hover, &.active {
+                color: var(--primary-white);
+            }
         }
     }
     
@@ -58,6 +63,10 @@ footer {
         font-size: 12px;
         line-height: 18px;
         text-decoration: none;
+        transition: all 0.3s ease-in-out;
+        &:hover {
+            color: var(--primary-white);
+        }
     }
 }
 

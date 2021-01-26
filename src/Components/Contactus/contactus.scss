@@ -1,0 +1,82 @@
+.contact-us-wrap {
+    padding: 20px 40px;
+    h1 {
+        margin: 20px 0;
+        text-align: center;
+        font-size: 24px;
+        line-height: 30px;
+        font-weight: 500;
+    }
+    .contact-form, .address-block {
+        padding: 10px;
+        width: 500px;
+        max-width: 500px;
+        margin: 20px auto;
+        .control-group {
+            margin-top: 10px;
+            input {
+                height: 40px;
+            }
+            &:first-child {
+                margin-top: 0;
+            }
+            input, textarea {
+                padding: 10px;
+                width: 100%;
+                border-radius: 8px;
+                border: none;
+                outline: none;
+                box-sizing: border-box;
+                background: var(--box-dark-bg);
+                color: var(--btn-primary-light-bg);
+                font-family: sans-serif, Helvetica;
+            }
+            textarea {
+                height: 80px;
+                resize: none;
+            }
+            &.action-group {
+                display: flex;
+                justify-content: flex-end;
+                button {
+                    margin-left: 20px;
+                    &.reset-btn {
+                        background: transparent !important;
+                        background-image: none !important;
+                        border: 1px solid var(--btn-primary-light-bg) !important;
+                        color: var(--btn-primary-light-bg) !important;
+                    }
+                }
+            }
+        }
+    }
+    .address-block {
+        text-align: center;
+        margin-top: 0;
+        padding: 0 10px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .contact-us-wrap {
+        padding: 20px 10px;
+        h1 {
+            font-size: 18px;
+            line-height: 22px;
+        }
+        .contact-form, .address-block {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            .control-group {
+                &.action-group {
+                    justify-content: flex-start;
+                    button {
+                        margin-left: 0;
+                        margin-right: 20px;
+                    }
+                }
+            }
+        }
+    }
+}
