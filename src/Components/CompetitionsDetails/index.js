@@ -29,8 +29,8 @@ function CompetitionsDetails({ open, handleClose, initialStep }) {
     // const [SelectedVdo, setSelectedVdo] = useState(null);
 
     useEffect(() => {
-        getUploadedVideosByUserId(loggedInUser.key).subscribe((vdoList) => setUserUploadedVideoList(vdoList));
-    }, [])
+        (loggedInUser.email && ActiveStep === 2) && getUploadedVideosByUserId(loggedInUser.key).subscribe((vdoList) => setUserUploadedVideoList(vdoList));
+    }, [ActiveStep])
 
     const useStyles = makeStyles((theme) => ({
         modal: {
@@ -65,7 +65,7 @@ function CompetitionsDetails({ open, handleClose, initialStep }) {
 
     const enrollForCompetition = () => {
         if (loggedInUser.name && loggedInUser.phone && loggedInUser.username) {
-            setActiveStep(3);
+            setActiveStep(2);
         } else {
             handleClose();
             dispatch(enableLoginFlow('competition'));
@@ -149,12 +149,12 @@ function CompetitionsDetails({ open, handleClose, initialStep }) {
                                 <div>Show details and the artist lineup are subject to change as per the artist’s discretion.</div>
                                 <div> No refunds on purchased tickets are possible, even in case of any rescheduling.</div>
                             </div>}
-                            <Button variant="contained" color="primary" onClick={() => setActiveStep(2)}>Submit Video</Button>
+                            <Button variant="contained" color="primary" onClick={() => enrollForCompetition(2)}>Submit Video</Button>
                         </div>}
 
                         {ActiveStep === 2 && <div>
                             <div className="lessons-vdo-wrap">
-                                {userUploadedVdos && userUploadedVdos.map((item, index) => {
+                                {userUploadedVdos.length && userUploadedVdos.map((item, index) => {
                                     return <div className={item.isSelected ? 'vdo-outer selected-vdo' : 'vdo-outer'} key={index} onClick={(e) => selectVdo(e, item)}>
                                         <div className="vdo-wrap" >
                                             <img src={item.thumbnail ? item.thumbnail : THUMBNAIL_URL} style={{ width: "50%" }} />
@@ -163,7 +163,7 @@ function CompetitionsDetails({ open, handleClose, initialStep }) {
                                     </div>
                                 })}
                             </div>
-                            <Button variant="contained" color="primary" onClick={() => enrollForCompetition()}>Submit</Button>
+                            <Button variant="contained" color="primary" onClick={() => setActiveStep(3)}>Submit</Button>
                         </div>}
 
                         {ActiveStep === 3 && <div>

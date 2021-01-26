@@ -21,7 +21,7 @@ const loggedInUserState = {
 
 const initialState = localStorage.getItem("Choreoculture") ? JSON.parse(localStorage.getItem("Choreoculture"))
   : {
-    loggedInUser: loggedInUserState,
+    loggedInUser: {},
     currentLoginFlow: null
   };
 const store = createContext(initialState);

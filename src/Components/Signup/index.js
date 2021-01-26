@@ -134,6 +134,7 @@ export default function Signup() {
                 .then(() => {
                     dispatch(signupUser(userDetails));
                     if (state.currentLoginFlow == 'competition') history.push('/competitions');
+                    if (state.currentLoginFlow == 'upload-vdo') history.push('/upload-vdo');
                     else history.push(({
                         pathname: '/',
                         state: null

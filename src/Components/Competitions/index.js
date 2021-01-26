@@ -10,11 +10,11 @@ function Competitions() {
     const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(state.currentLoginFlow ? true : false);
     const [CompletitionList, setCompletitionList] = useState(null);
 
-    var initialStep = state.currentLoginFlow == 'competiotion' ? 3 : 1;
+    var initialStep = state.currentLoginFlow == 'competition' ? 2 : 1;
 
     useEffect(() => {
         getCompetitionsList().subscribe(list => setCompletitionList(list));
-        if (state.currentLoginFlow == 'competiotion') {
+        if (state.currentLoginFlow == 'competition') {
             dispatch(disableLoginFlow());
         }
     }, [])
