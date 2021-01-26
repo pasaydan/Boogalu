@@ -149,11 +149,9 @@ function Navigation() {
         );
     }
 
-    if (!didMount) {
-        function navigateToUserRegistrationLogin(path) {
-            toggleUserRegistrationPage(false);
-            history.push(`/${path}`)
-        }
+    function navigateToUserRegistrationLogin(path) {
+        toggleUserRegistrationPage(false);
+        history.push(`/${path}`)
     }
 
     if (!didMount) {
@@ -177,10 +175,11 @@ function Navigation() {
                                 <li><a href="#Subscription" onClick={(e) => onClickNav(e, 'subscription')}>Subscription</a></li>
                             </ul> : ''
                     }
-                    {!state.loggedInUser && state.loggedInUser.phone && <div className="flex-2 signup-wrap" >
+                    {(!state.loggedInUser || !state.loggedInUser.phone) && <div className="flex-2 signup-wrap" >
                         <button className="btn primary-light login" onClick={() => navigateToUserRegistrationLogin('login')}>Login</button>
                         <button className="btn primary-dark signup" onClick={() => navigateToUserRegistrationLogin('register')}>Sign Up</button>
                     </div>}
+
                     {state.loggedInUser && state.loggedInUser.phone && <div className="flex-2 signup-wrap" >
                         <div className="profile" ref={ref}>
                             <AccountCircleOutlinedIcon onClick={() => setShowProfileTab(true)} style={{ fontSize: '35px', paddingRight: '20px' }} />
