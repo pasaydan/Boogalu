@@ -29,7 +29,7 @@ function CompetitionsDetails({ open, handleClose, initialStep }) {
     // const [SelectedVdo, setSelectedVdo] = useState(null);
 
     useEffect(() => {
-        (loggedInUser.email && ActiveStep === 2) && getUploadedVideosByUserId(loggedInUser.key).subscribe((vdoList) => setUserUploadedVideoList(vdoList));
+        (loggedInUser.email && ActiveStep === 2 && userUploadedVdos.length == 0) && getUploadedVideosByUserId(loggedInUser.key).subscribe((vdoList) => setUserUploadedVideoList(vdoList));
     }, [ActiveStep])
 
     const useStyles = makeStyles((theme) => ({

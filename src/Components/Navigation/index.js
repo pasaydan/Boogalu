@@ -156,13 +156,13 @@ function Navigation() {
     const uploadVdo = (e) => {
         setHideVdoUploadBtn(true);
         e.preventDefault();
-        if (state.loggedInUser) {
+        if (state.loggedInUser && state.loggedInUser.email) {
             history.push({
                 pathname: '/upload-video',
                 state: null
             })
         } else {
-            dispatch(enableLoginFlow('upload-vdo'));
+            dispatch(enableLoginFlow('upload-video'));
             history.push({
                 pathname: '/login',
                 state: null

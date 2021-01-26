@@ -168,7 +168,7 @@ export default function Login() {
                         data.source = 'Website';
                         dispatch(loginUser(data));
                         if (state.currentLoginFlow == 'competition') history.push('/competitions');
-                        else if (state.currentLoginFlow == 'upload-vdo') history.push('/upload-vdo');
+                        else if (state.currentLoginFlow == 'upload-video') history.push('/upload-video');
                         else history.push('/')
                     })
                     .catch((data) => {
@@ -193,7 +193,7 @@ export default function Login() {
                         data.source = thirdPartyResponse.source;
                         dispatch(loginUser(data));
                         if (state.currentLoginFlow == 'competition') history.push('/competitions');
-                        else if (state.currentLoginFlow == 'upload-vdo') history.push('/upload-vdo');
+                        else if (state.currentLoginFlow == 'upload-video') history.push('/upload-video');
                         else history.push('/')
                     })
                     .catch((data) => {

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { useStoreConsumer } from '../../Providers/StateProvider';
@@ -7,7 +7,7 @@ import { saveUploadedVideo } from "../../Services/UploadedVideo.service";
 import { useHistory } from "react-router-dom";
 import { THUMBNAIL_URL } from "../../Constants";
 import ImageUploader from 'react-images-upload';
-
+import { disableLoginFlow } from "../../Actions/LoginFlow";
 export default function VideoUploader() {
     const history = useHistory();
     const { state, dispatch } = useStoreConsumer();
@@ -16,6 +16,10 @@ export default function VideoUploader() {
     const [SelectedVideo, setSelectedVideo] = useState({ title: "", desc: "", file: null });
     const [UploadedVdoUrl, setUploadedVdoUrl] = useState(null);
     const [ThumbnailImage, setThumbnailImage] = useState(null);
+
+    useEffect(() => {
+        dispatch(disableLoginFlow());
+    }, [])
 
     async function onChangeFile(event) {
         event.stopPropagation();
@@ -89,8 +93,7 @@ export default function VideoUploader() {
 
             {!SelectedVideo.file && <Button
                 variant="contained" color="primary"
-                onClick={() => { uploaderRef.current.click() }}
-            >Upload Video</Button>}
+                onClick={() => { uploaderRef.current.click() }}>Upload Video</Button>}
 
             {SelectedVideo.file &&
                 <div >

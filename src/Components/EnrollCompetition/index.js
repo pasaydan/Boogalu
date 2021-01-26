@@ -8,9 +8,11 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { THUMBNAIL_URL } from '../../Constants';
 import { useStoreConsumer } from '../../Providers/StateProvider';
+import { saveCompetition } from "../../Services/EnrollCompetition.service";
 
 function EnrollCompetition({ handleClose, changeSelectedVdo }) {
 
+    const history = useHistory();
     const { state, dispatch } = useStoreConsumer();
     const [AgeGroup, setAgeGroup] = useState('');
     const loggedInUser = state.loggedInUser;
@@ -22,7 +24,26 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
     }
 
     const submitForCompetition = () => {
-        console.log(competitionDetails)
+        const competitionObj = {
+            compId: competitionDetails.key,
+            compName: competitionDetails.name,
+            compImg: competitionDetails.img,
+            userId: loggedInUser.key,
+            vdo: {
+                key: competitionDetails.selectedVideo.key,
+                title: competitionDetails.selectedVideo.title,
+                thumbnail: competitionDetails.selectedVideo.thumbnail,
+                url: competitionDetails.selectedVideo.url,
+                desc: competitionDetails.selectedVideo.desc,
+            },
+            ageGroup: AgeGroup,
+            status: 'Submited'
+        }
+        console.log(competitionObj)
+        saveCompetition(competitionObj).subscribe((response) => {
+            console.log('vdo uploaded for competition suceess');
+            history.push('/profile');
+        })
         // handleClose();
     }
 
@@ -47,9 +68,9 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
                         onChange={(e) => onAgeGroupChange(e.target.value)}
                         label="Select Age Group"
                     >
-                        <MenuItem value="1">Age 4 to 13 years</MenuItem>
-                        <MenuItem value="2">Age 14 to 17 years</MenuItem>
-                        <MenuItem value="3">Age 18 and above</MenuItem>
+                        <MenuItem value="Age 4 to 13 years">Age 4 to 13 years</MenuItem>
+                        <MenuItem value="Age 14 to 17 years">Age 14 to 17 years</MenuItem>
+                        <MenuItem value="Age 18 and above">Age 18 and above</MenuItem>
                     </Select>
                 </FormControl>
             </div>
