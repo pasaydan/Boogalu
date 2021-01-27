@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
+import { FaInstagramSquare, FaYoutube, FaFacebookSquare } from 'react-icons/fa';
 import * as $ from 'jquery';
 
 function Footer() {
@@ -79,10 +80,24 @@ function Footer() {
                         <li data-name="terms">Terms</li>
                     </ul>
                     <ul className="menu-lists menu-lists-2 flex-1">
-                        <li>Instagram</li>
-                        <li>Twitter</li>
-                        <li>Youtube</li>
-                        <li>Facebook</li>
+                        <li>
+                            <a href="https://www.instagram.com/choreo_culture/?hl=en" title="Follow us on Insta" target="_blank">
+                                <i><FaInstagramSquare /></i>
+                                <span>Instagram</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.youtube.com/user/anjanevents" title="Subscribe our channel" target="_blank">
+                                <i><FaYoutube /></i>
+                                <span>Youtube</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.facebook.com/choreocultureindia/" title="Like our FB page" target="_blank">
+                                <i><FaFacebookSquare /></i>
+                                <span>Facebook</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </footer>
