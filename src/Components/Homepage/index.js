@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import bgImg from '../../Images/hip-hop.png';
 import { useHistory } from "react-router-dom";
@@ -12,7 +12,7 @@ export default function Homepage() {
 
     useEffect(() => {
         setTimeout(() => {
-            activeDanceImage('show'); 
+            activeDanceImage('show');
         }, 800);
     }, []);
 

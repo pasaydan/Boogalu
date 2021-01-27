@@ -17,16 +17,12 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
 import * as $ from 'jquery';
+import { updateUser } from "../../Services/User.service";
 
 export default function EditProfile() {
     const { state, dispatch } = useStoreConsumer();
     const history = useHistory();
     let loggedInUser = state.loggedInUser;
-    // if user already login then redirect to home
-    // if (loggedInUser.name && loggedInUser.phone && loggedInUser.email && loggedInUser.username) history.push({
-    //     pathname: '/',
-    //     state: null
-    // })
     // get data from history props if redirected through google or facebook login
     if (history.location.state && (history.location.state.source == 'Facebook' || history.location.state.source == 'Google')) {
         loggedInUser.email = history.location.state.email;
@@ -56,56 +52,20 @@ export default function EditProfile() {
         }, 500);
     }, [])
 
-    const registerUser = () => {
-        return new Promise((res, rej) => {
-            let registeredUser = localStorage.getItem('users') ? JSON.parse(localStorage.getItem('users')) : [];
-            registeredUser.push(userDetails);
-            localStorage.setItem('users', JSON.stringify(registeredUser))
-            res();
-        })
-    }
-
-    const checkForRepeatedEmailPhone = (param) => {
-        if (loggedInUser[param] != userDetails[param]) {
-            let registeredUser = localStorage.getItem('users') ? JSON.parse(localStorage.getItem('users')) : [];
-            if (registeredUser && registeredUser.length != 0) {
-                let isRegisteredUser = registeredUser.filter((user) => (user[param] == userDetails[param]));
-                if (isRegisteredUser.length) {
-                    setSignUpError(param + ' already registered.');
-                    return false;
-                } else {
-                    return true;
-                }
-            } else {
-                return true;
-            }
-        } else return true;
-    }
-
     const setSignupUserCred = (e) => {
         if (userDetails.password != userDetails.confirmPassword) {
             setSignUpError('Password dose not match.');
             return;
         }
 
-        if (checkForRepeatedEmailPhone('email') && checkForRepeatedEmailPhone('phone')) {
-            registerUser()
-                .then(() => {
-                    dispatch(signupUser(userDetails));
-                    history.push(({
-                        pathname: '/profile',
-                        state: null
-                    }));
-                })
-                .catch((error) => {
-                    // error in user registration
-                    if (error) {
-
-                    }
-                })
-        }
+        updateUser(userDetails.key, userDetails).subscribe(() => {
+            dispatch(signupUser(userDetails));
+            history.push(({
+                pathname: '/profile',
+                state: null
+            }));
+        })
         e.preventDefault();
-        e.stopPropagation();
     }
 
     return (
@@ -144,6 +104,7 @@ export default function EditProfile() {
                             onChange={handleChange('phone')}
                             value={userDetails.phone}
                             variant="outlined"
+                            InputProps={{ readOnly: true }}
                         />
                     </div>
                     <div className="input-wrap">
@@ -155,6 +116,7 @@ export default function EditProfile() {
                             onChange={handleChange('email')}
                             value={userDetails.email}
                             variant="outlined"
+                            InputProps={{ readOnly: true }}
                         />
                     </div>
                     <div className="input-wrap">

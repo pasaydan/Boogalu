@@ -13,7 +13,9 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import * as $ from 'jquery';
-
+import { getUploadedVideosByUserId } from "../../Services/UploadedVideo.service";
+import { getCompetitionByUserId } from "../../Services/EnrollCompetition.service";
+import Vedio from "../Vedio/Video";
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -59,12 +61,18 @@ function Profile() {
     const theme = useTheme();
     const { state, dispatch } = useStoreConsumer();
     const [value, setValue] = useState(0);
-    const userDetails = state.loggedInUser;
+    const loggedInUser = state.loggedInUser;
+    const [UserUploadedVideoList, setUserUploadedVideoList] = useState([]);
+    const [UserCompetitionsList, setUserCompetitionsList] = useState([]);
+    const [UserLikedVideoList, setUserLikedVideoList] = useState([]);
 
     useEffect(() => {
         $('html,body').animate({
             scrollTop: 0
         }, 500);
+        getUploadedVideosByUserId(loggedInUser.key).subscribe((list) => setUserUploadedVideoList(list));
+        getCompetitionByUserId(loggedInUser.key).subscribe((list) => setUserCompetitionsList(list));
+        // getCompetitionByUserId(loggedInUser.key).subscribe((list) => UserLikedVideoList(list));
     }, [])
 
     const handleChange = (event, newValue) => {
@@ -84,7 +92,7 @@ function Profile() {
                 <div className="profile-details clearfix">
                     <div className="username-wrap clearfix">
                         <div className="username">
-                            {userDetails.username}
+                            {loggedInUser.username}
                         </div>
                         <div className="edit-profile" onClick={() => history.push('/profile/edit')}>
                             Edit Profile
@@ -103,10 +111,10 @@ function Profile() {
                     </div>
                     <div className="bio-wrap">
                         <div className="fullname">
-                            {userDetails.name}
+                            {loggedInUser.name}
                         </div>
-                        {userDetails.bio ? <div className="bio">
-                            {userDetails.bio}
+                        {loggedInUser.bio ? <div className="bio">
+                            {loggedInUser.bio}
                         </div> : <div className="bio">
                                 Older dancers (especially from the SoCal dance community) – even if you can appreciate and welcome the ways dance has evolved, you’ll still feel pangs of nostalgia when going through this list.
                         </div>}
@@ -125,7 +133,7 @@ function Profile() {
                     >
                         <Tab label="Posts" icon={<CollectionsOutlinedIcon />} {...a11yProps(0)} />
                         <Tab label="Liked" icon={<FavoriteBorderOutlinedIcon />}{...a11yProps(1)} />
-                        <Tab label="Tagged" icon={<LoyaltyOutlinedIcon />} {...a11yProps(2)} />
+                        <Tab label="Competitions" icon={<LoyaltyOutlinedIcon />} {...a11yProps(2)} />
                     </Tabs>
                     <SwipeableViews
                         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
@@ -133,41 +141,33 @@ function Profile() {
                         onChangeIndex={handleChangeIndex}>
                         <TabPanel value={value} index={0} dir={theme.direction}>
                             <div className="flex-container" >
-                                <div className="flex-basis-3" style={{ marginRight: '30px' }}>
-                                    <iframe width="281" height="247" src="https://www.youtube.com/embed/p0evLf_humQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                </div>
-                                <div className="flex-basis-3" style={{ marginRight: '30px' }}>
-                                    <iframe width="286" height="251" src="https://www.youtube.com/embed/3nFAkBYrrJw" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                </div>
-                                <div className="flex-basis-3" style={{ marginRight: '30px' }}>
-                                    <iframe width="286" height="251" src="https://www.youtube.com/embed/f9dBgfEoqD4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                </div>
+                                {UserUploadedVideoList.length !== 0 ? UserUploadedVideoList.map((vdoObj) => {
+                                    return <div className="flex-basis-3" style={{ marginRight: '30px' }} key={vdoObj.key}>
+                                        <Vedio vdoObj={vdoObj} />
+                                    </div>
+                                }) :
+                                    <div>No video posted yet !</div>}
                             </div>
                         </TabPanel>
                         <TabPanel value={value} index={1} dir={theme.direction}>
                             <div className="flex-container" >
-                                <div className="flex-basis-3" style={{ marginRight: '30px' }}>
-                                    <iframe width="281" height="247" src="https://www.youtube.com/embed/p0evLf_humQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                </div>
-                                <div className="flex-basis-3" style={{ marginRight: '30px' }}>
-                                    <iframe width="286" height="251" src="https://www.youtube.com/embed/3nFAkBYrrJw" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                </div>
-                                <div className="flex-basis-3" style={{ marginRight: '30px' }}>
-                                    <iframe width="286" height="251" src="https://www.youtube.com/embed/f9dBgfEoqD4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                </div>
+                                {UserLikedVideoList.length !== 0 ? UserLikedVideoList.map((vdoObj) => {
+                                    return <div className="flex-basis-3" style={{ marginRight: '30px' }} key={vdoObj.key}>
+                                        <Vedio vdoObj={vdoObj} />
+                                    </div>
+                                }) :
+                                    <div>No video liked yet !</div>}
                             </div>
                         </TabPanel>
                         <TabPanel value={value} index={2} dir={theme.direction}>
                             <div className="flex-container" >
-                                <div className="flex-basis-3" style={{ marginRight: '30px' }}>
-                                    <iframe width="281" height="247" src="https://www.youtube.com/embed/p0evLf_humQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                </div>
-                                <div className="flex-basis-3" style={{ marginRight: '30px' }}>
-                                    <iframe width="286" height="251" src="https://www.youtube.com/embed/3nFAkBYrrJw" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                </div>
-                                <div className="flex-basis-3" style={{ marginRight: '30px' }}>
-                                    <iframe width="286" height="251" src="https://www.youtube.com/embed/f9dBgfEoqD4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                </div>
+                                {UserCompetitionsList.length !== 0 ? UserCompetitionsList.map((competition) => {
+                                    return <div className="flex-basis-3" style={{ marginRight: '30px' }} key={competition.key}>
+                                        <div>{competition.compName}</div>
+                                        <img src={competition.compImg} />
+                                    </div>
+                                }) :
+                                    <div>No competition enrolled yet !</div>}
                             </div>
                         </TabPanel>
                     </SwipeableViews>

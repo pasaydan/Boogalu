@@ -1,35 +1,29 @@
-import React, { useState } from 'react'
-import CompetitionsDetails from "../CompetitionsDetails/index";
+import React, { useState, useEffect } from 'react'
+import CompetitionsDetails from "../CompetitionsDetails";
+import { getCompetitionsList } from "../../Services/Competition.service";
+import { useStoreConsumer } from '../../Providers/StateProvider';
+import { setActiveCompetition } from "../../Actions/Competition";
+import { disableLoginFlow } from "../../Actions/LoginFlow";
+
 function Competitions() {
-    const competitionsList = [
-        { 
-            name: 'Free style', 
-            img: 'https://i.imgur.com/EUVZ1Rg.jpg', 
-            desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", 
-            type: 'running' 
-        },
-        { 
-            name: 'Beatboxing', 
-            img: 'https://i.imgur.com/GU7eOFR.jpg', 
-            desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", 
-            type: 'running' 
-        },
-        { 
-            name: 'Body art', 
-            img: 'https://i.imgur.com/Pppi3VA.jpg', 
-            desc: "Lessons for all users from our expert faculty members. From Hip-Hop to Bharatnatyam. You'll get all learning videos at one place.", 
-            type: 'running' 
+    const { state, dispatch } = useStoreConsumer();
+    const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(state.currentLoginFlow ? true : false);
+    const [CompletitionList, setCompletitionList] = useState(null);
+
+    var initialStep = state.currentLoginFlow == 'competition' ? 2 : 1;
+
+    useEffect(() => {
+        getCompetitionsList().subscribe(list => setCompletitionList(list));
+        if (state.currentLoginFlow == 'competition') {
+            dispatch(disableLoginFlow());
         }
-    ]
-    const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(false);
-    const [activeCompetition, setActiveCompetition] = useState(false);
-    const handleClose = () => {
-        setIsOpenDetailsModal(false);
-    }
+    }, [])
+
     const openDetailsModal = (competition) => {
-        setActiveCompetition(competition);
+        dispatch(setActiveCompetition(competition));
         setIsOpenDetailsModal(true);
     }
+
     return (
         <div className="competition-wrap">
             <div className="competition-inner">
@@ -38,7 +32,7 @@ function Competitions() {
                     <div className="competition-desc">Participate in different competitions &amp; win exciting prizes.</div>
                 </div>
                 <ul className="competition-list" >
-                    {competitionsList && competitionsList.map((competition) => {
+                    {CompletitionList && CompletitionList.map((competition) => {
                         return <li key={competition.name + '-id'} onClick={() => openDetailsModal(competition)}>
                             <img src={competition.img} alt={competition.name} />
                             <h2>{competition.name}</h2>
@@ -46,7 +40,7 @@ function Competitions() {
                     })}
                 </ul>
 
-                <CompetitionsDetails competitionDetails={activeCompetition} open={isOpenDetailsModal} handleClose={() => handleClose()} />
+                {isOpenDetailsModal && <CompetitionsDetails open={isOpenDetailsModal} handleClose={() => setIsOpenDetailsModal(false)} initialStep={initialStep} />}
             </div>
         </div>
     )

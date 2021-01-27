@@ -5,11 +5,13 @@ import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { logoutUser } from '../../Actions/User';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
+import { enableLoginFlow } from "../../Actions/LoginFlow";
 import * as $ from 'jquery';
 const SCROLL_TOP_LIMIT = 200;
+
 function Navigation() {
     const [goingUpClass, setGoingUpClass] = useState('');
-    const [isUserRegstrationPage, toggleUserRegistrationPage] = useState(false);
+    const [hideVdoUploadBtn, setHideVdoUploadBtn] = useState(false);
     const [didMount, setDidMount] = useState(false);
     const [isMobile, toggleMobile] = useState(false);
     const [goingDownClass, setGoingDownClass] = useState('');
@@ -22,7 +24,7 @@ function Navigation() {
 
     useEffect(() => {
         setDidMount(true);
-        toggleUserRegistrationPage(false);
+        setHideVdoUploadBtn(false);
         let windowViewPortWidth = window.innerWidth;
         if (windowViewPortWidth > 1023) {
             toggleMobile(false);
@@ -49,18 +51,15 @@ function Navigation() {
                 toggleMobile(false);
             } else {
                 toggleMobile(true);
-            }   
+            }
         }
 
-        
+
         setTimeout(() => {
             const pathName = history?.location?.pathname.split('/')[1];
             const navLinks = document.querySelectorAll('.nav-ul a');
-            if (pathName.includes('register') || pathName.includes('login')) {
-                toggleUserRegistrationPage(false);
-            } else {
-                toggleUserRegistrationPage(true);
-            }
+            if (pathName.includes('register') || pathName.includes('login') || pathName.includes('upload-video')) setHideVdoUploadBtn(true);
+            else setHideVdoUploadBtn(false);
             if (navLinks && navLinks.length) {
                 navLinks.forEach((ele) => {
                     const getHref = ele.getAttribute('href').toLocaleLowerCase();
@@ -86,17 +85,13 @@ function Navigation() {
     const onClickNav = (e, route) => {
         e.preventDefault();
         const navLinks = document.querySelectorAll('.nav-ul a');
-        
-        toggleUserRegistrationPage(false);
+
         setTimeout(() => {
-            const pathName = history?.location?.pathname.split('/')[1];        
-            if (pathName.includes('register') || pathName.includes('login')) {
-                toggleUserRegistrationPage(false);
-            } else {
-                toggleUserRegistrationPage(true);
-            }
-        }, 1000);
-        
+            const pathName = history?.location?.pathname.split('/')[1];
+            if (pathName.includes('register') || pathName.includes('login') || pathName.includes('upload-video')) setHideVdoUploadBtn(true);
+            else setHideVdoUploadBtn(false);
+        });
+
         if (navLinks && navLinks.length) {
             navLinks.forEach((ele) => {
                 if (ele.classList.contains('active')) {
@@ -109,7 +104,7 @@ function Navigation() {
             e.target.classList.add('active');
             setTimeout(() => {
                 let target = $(`.${route}`);
-                if(target && target.offset()){
+                if (target && target.offset()) {
                     $('html,body').animate({
                         scrollTop: target.offset().top - 200
                     }, 700);
@@ -150,12 +145,29 @@ function Navigation() {
     }
 
     function navigateToUserRegistrationLogin(path) {
-        toggleUserRegistrationPage(false);
+        setHideVdoUploadBtn(true);
         history.push(`/${path}`)
     }
 
-    if(!didMount) {
+    if (!didMount) {
         return null;
+    }
+
+    const uploadVdo = (e) => {
+        setHideVdoUploadBtn(true);
+        e.preventDefault();
+        if (state.loggedInUser && state.loggedInUser.email) {
+            history.push({
+                pathname: '/upload-video',
+                state: null
+            })
+        } else {
+            dispatch(enableLoginFlow('upload-video'));
+            history.push({
+                pathname: '/login',
+                state: null
+            })
+        }
     }
 
     return (
@@ -169,17 +181,18 @@ function Navigation() {
                     </h1>
                     {
                         !isMobile ?
-                        <ul className="flex-1 nav-ul">
-                            <li><a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')}>Lessons</a></li>
-                            <li><a href="#Competitions" onClick={(e) => onClickNav(e, 'competitions')}>Competitions</a></li>
-                            <li><a href="#Subscription" onClick={(e) => onClickNav(e, 'subscription')}>Subscription</a></li>
-                        </ul> : ''
+                            <ul className="flex-1 nav-ul">
+                                <li><a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')}>Lessons</a></li>
+                                <li><a href="#Competitions" onClick={(e) => onClickNav(e, 'competitions')}>Competitions</a></li>
+                                <li><a href="#Subscription" onClick={(e) => onClickNav(e, 'subscription')}>Subscription</a></li>
+                            </ul> : ''
                     }
-                    {!state.loggedInUser.phone && <div className="flex-2 signup-wrap" >
+                    {(!state.loggedInUser || !state.loggedInUser.phone) && <div className="flex-2 signup-wrap" >
                         <button className="btn primary-light login" onClick={() => navigateToUserRegistrationLogin('login')}>Login</button>
                         <button className="btn primary-dark signup" onClick={() => navigateToUserRegistrationLogin('register')}>Sign Up</button>
                     </div>}
-                    {state.loggedInUser.phone && <div className="flex-2 signup-wrap" >
+
+                    {state.loggedInUser && state.loggedInUser.phone && <div className="flex-2 signup-wrap" >
                         <div className="profile" ref={ref}>
                             <AccountCircleOutlinedIcon onClick={() => setShowProfileTab(true)} style={{ fontSize: '35px', paddingRight: '20px' }} />
                             {showProfileTab && <div className="profile-tab-wrap">
@@ -191,44 +204,44 @@ function Navigation() {
                     </div>}
                 </div>
                 {
-                    isUserRegstrationPage ?
-                    <a href="#Competitions" className="upload-btn">
-                        <i><FaCloudUploadAlt /></i>
-                    </a> : ''
+                    !hideVdoUploadBtn ?
+                        <a href="" className="upload-btn" onClick={(e) => uploadVdo(e)}>
+                            <i><FaCloudUploadAlt /></i>
+                        </a> : ''
                 }
                 {
                     isMobile ?
-                    <div className="sticky-mobile-menu">
-                        <ul className="flex-1 nav-ul">
-                            <li>
-                                <a href="/" ref={mobilHomelinkRef} onClick={(e) => onClickNav(e, '')}>
-                                    <i>
-                                        <FaHome />
-                                    </i>
-                                    <span>Home</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')}>
-                                   <i><FaBookReader /></i>
-                                   <span>Lessons</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#upload" onClick={(e) => onClickNav(e, 'competitions')}>
-                                    <i><FaTrophy /></i>
-                                    <span>Competition</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#Subscription" onClick={(e) => onClickNav(e, 'subscription')}>
-                                    <i><FaStaylinked /></i>
-                                    <span>Subscription</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    : ''
+                        <div className="sticky-mobile-menu">
+                            <ul className="flex-1 nav-ul">
+                                <li>
+                                    <a href="/" ref={mobilHomelinkRef} onClick={(e) => onClickNav(e, '')}>
+                                        <i>
+                                            <FaHome />
+                                        </i>
+                                        <span>Home</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')}>
+                                        <i><FaBookReader /></i>
+                                        <span>Lessons</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#upload" onClick={(e) => onClickNav(e, 'competitions')}>
+                                        <i><FaTrophy /></i>
+                                        <span>Competition</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#Subscription" onClick={(e) => onClickNav(e, 'subscription')}>
+                                        <i><FaStaylinked /></i>
+                                        <span>Subscription</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        : ''
                 }
             </nav>
         </>
