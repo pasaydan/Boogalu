@@ -22,6 +22,25 @@ footer {
                 color: var(--primary-white);
             }
         }
+        &.menu-lists-2 {
+            li {
+                a {
+                    transition: all 0.3s ease-in-out;
+                    color: var(--footer-list-text-grey);
+                    text-decoration: none;
+                    i {
+                        margin-right: 5px;
+                        font-size: 20px;
+                        line-height: 12px;
+                        display: inline-block;
+                        vertical-align: top;
+                    }
+                    &:hover {
+                        color: var(--primary-white);
+                    }
+                }
+            }
+        }
     }
     
     input {
