@@ -153,6 +153,58 @@ button:focus {
   }
 }
 
+// custom tabination
+.tabination-wrap {
+  width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  .tab-btn-section {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+    .tab-links {
+      font-size: 16px;
+      line-height: 30px;
+      height: 30px;
+      padding: 0;
+      text-align: center;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      outline: none;
+      flex-basis: 50%;
+      color: var(--footer-list-text-grey);
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+      &:hover {
+        color: var(--secondary-color);
+      } 
+      &.active {
+        color: var(--secondary-color);
+        border-bottom-color: var(--secondary-color);
+      }
+    }
+  }
+  .tab-content-wrap {
+    min-height: 300px;
+    position: relative;
+    .inner-box {
+      position: absolute;
+      width: 100%;
+      transition: all 0.3s ease-in-out;
+      height: 100%;
+      overflow-y: auto;
+      background: var(--primary-white);
+      z-index: 0;
+      opacity: 0;
+      &.active {
+        opacity: 1;
+        z-index: 1;
+      }
+    } 
+  }
+}
+
 // Media query 
 @media screen and (max-width: 1023px) {
   .App {
@@ -175,3 +227,4 @@ button:focus {
 @import './Components/Vedio/Vedio.scss';
 @import './Components/Competitions/Competitions.scss';
 @import './Components/Contactus/contactus.scss';
+@import './Components/EnrollCompetition/enrollment.scss';

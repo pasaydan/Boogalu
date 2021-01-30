@@ -56,15 +56,15 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
     }
 
     return (
-        <div>
-            <h2 id="title">Enroll for {competitionDetails.name}</h2>
-            <img src={competitionDetails.img} alt={competitionDetails.name} style={{ width: '20%' }} />
-            <p id="description">{competitionDetails.desc}</p>
+        <div className="final-enrollment-wrap">
+            <h2 id="title">Basic Details for Enrollment</h2>
+            {/* <img src={competitionDetails.img} alt={competitionDetails.name} style={{ width: '20%' }} /> */}
+            {/* <p id="description">{competitionDetails.desc}</p> */}
             <div className="userdata">
-                <div>Name:<span>{loggedInUser.name}</span></div>
-                <div>Phone:<span>{loggedInUser.phone}</span></div>
-                <div>Email:<span>{loggedInUser.email}</span></div>
-                <div>Gender:<span>{loggedInUser.gender}</span></div>
+                <div className="user-info"><label>Name:</label><span>{loggedInUser.name}</span></div>
+                <div className="user-info"><label>Phone:</label><span>{loggedInUser.phone}</span></div>
+                <div className="user-info"><label>Email:</label><span>{loggedInUser.email}</span></div>
+                <div className="user-info"><label>Gender:</label><span>{loggedInUser.gender}</span></div>
             </div>
             {!competitionDetails?.isUserEnrolled ? <div className="age-group-dropdown">
                 <FormControl variant="outlined" className="input-field">
@@ -93,8 +93,8 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
                     <div>{SelectedVdo.title}</div>
                 </div>
             </div>}
-            { !competitionDetails?.isUserEnrolled ? <Button variant="contained" color="primary" onClick={() => submitForCompetition()}>Enroll Competition<ArrowRightSharpIcon /></Button>
-                : <Button variant="contained" color="primary" onClick={() => submitForCompetition()}>Update Competition<ArrowRightSharpIcon /></Button>
+            { !competitionDetails?.isUserEnrolled ? <Button variant="contained" color="primary" onClick={() => submitForCompetition()}>Complete Enrollment <ArrowRightSharpIcon /></Button>
+                : <Button variant="contained" color="primary" onClick={() => updateCompetition()}>Update Competition<ArrowRightSharpIcon /></Button>
             }
         </div>
     )

@@ -1,0 +1,42 @@
+.final-enrollment-wrap {
+    width: 300px;
+    margin: 50px auto 0;
+    h2#title {
+        font-size: 16px;
+        line-height: 22px;
+        margin-bottom: 30px;
+        text-align: left;
+    }
+    .userdata {
+        margin-bottom: 20px;
+        .user-info {
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: 500;
+            label {
+                display: inline-block;
+                vertical-align: top;
+                width: 60px;
+            }
+            span {
+                font-weight: 400;
+                margin-left: 10px;
+            }
+        }
+    }
+    .age-group-dropdown {
+        margin-bottom: 20px;
+        max-width: 300px;
+        .MuiFormControl-root {
+            .MuiInputLabel-outlined {
+                transform: translate(14px, 12px) scale(1);
+                &.MuiInputLabel-shrink {
+                    transform: translate(14px, -6px) scale(0.75);
+                }
+            }
+        }
+        .MuiSelect-outlined.MuiSelect-outlined {
+            padding: 10px;
+        }
+    }
+}
