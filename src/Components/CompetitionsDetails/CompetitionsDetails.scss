@@ -1,3 +1,109 @@
-.selected-vdo{
+.selected-vdo {
     border: 1px solid;
+}
+
+.competition-modal-box {
+    outline: none;
+    .outer-modal-wrap {
+        height: 100vh;
+        outline: none;
+        border: none;
+        .inner-modal-wrap {
+            background: var(--primary-white);
+            width: 80%;
+            height: 90%;
+            border-radius: 10px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            padding: 20px;
+            box-sizing: border-box;
+            transform: translate(-50%, -50%);
+            h2 {
+                font-size: 20px;
+                line-height: 24px;
+                font-weight: 500;
+                text-align: center;
+                margin: 0 0 20px;
+            }
+            .image-contentWrap {
+                display: flex;
+                justify-content: flex-start;
+                .image-wrap {
+                    flex-basis: 65%;
+                    height: 280px;
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
+                }
+                .about-competition-wrap {
+                    margin-left: 20px;
+                    overflow-y: auto;
+                    max-height: 400px;
+                    color: var(--btn-primary-dark-bg);
+                    font-size: 14px;
+                    line-height: 18px;
+                    .sub-titles {
+                        color: var(--secondary-dark-grey);
+                        font-weight: 600;
+                        margin-bottom: 10px;
+                        span {
+                            font-weight: 400;
+                        }
+                    }
+                    ul {
+                        li {
+                            margin-bottom: 5px;
+                            &.sub-titles {
+                                margin-bottom: 5px;
+                            }
+                        }
+                    }
+                }
+            }
+            .action-wrap {
+                display: flex;
+                justify-content: flex-start;
+                margin-top: 20px;
+                .terms-button {
+                    color: var(--secondary-color);
+                    cursor: pointer;
+                    margin-right: 20px;
+                    line-height: 36px;
+                    position: relative;
+                    .tool-tip-wrap {
+                        position: absolute;
+                        padding: 10px;
+                        border-radius: 5px;
+                        background: rgba(0, 0, 0, 0.8);
+                        width: 320px;
+                        line-height: 20px;
+                        color: var(--primary-white);
+                        bottom: 40px;
+                        font-size: 13px;
+                        &:after {
+                            content: '';
+                            position: absolute;
+                            bottom: -11px;
+                            left: 20px;
+                            border-left: 12px solid transparent;
+                            border-right: 12px solid transparent;
+                            border-top: 12px solid rgba(0, 0, 0, 0.8);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .close-modal-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+    }
+    .back-step-btn {
+        right: auto;
+        left: 5px;
+    }
 }

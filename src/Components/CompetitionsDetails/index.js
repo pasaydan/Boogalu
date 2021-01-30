@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
@@ -30,11 +30,19 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
     console.log(competitionDetails);
     const loggedInUser = state.loggedInUser;
     const [userUploadedVdos, setUserUploadedVideoList] = useState([]);
+    const tncRef = useRef();
     const [TnC, setTnC] = useState(false);
     const [ActiveStep, setActiveStep] = useState(initialStep || 1);
     const [disableSubmitVdoButton, setDisableSubmitVdoButton] = useState(false);
     const [VdoUploadDateLimit, setVdoUploadDateLimit] = useState(null)
     // const [SelectedVdo, setSelectedVdo] = useState(null);
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+    }, []);
 
     useEffect(() => {
         if (competitionDetails) {
@@ -43,7 +51,8 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
             let displayDate = formatDate(vdoUploadUpto, 3) + " " + formatTime(vdoUploadUpto)
             setVdoUploadDateLimit(displayDate);
         }
-    }, [competitionDetails])
+    }, [competitionDetails]);
+
     useEffect(() => {
         (loggedInUser.email && loggedInUser.phone && ActiveStep === 3 && userUploadedVdos.length == 0) && getUploadedVideosByUserId(loggedInUser.key).subscribe((vdoList) => {
             if (vdoList) {
@@ -61,7 +70,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                 setUserUploadedVideoList(vdoList)
             }
         });
-    }, [ActiveStep])
+    }, [ActiveStep]);
 
     const useStyles = makeStyles((theme) => ({
         modal: {
@@ -76,6 +85,13 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
             padding: theme.spacing(2, 4, 3),
         },
     }));
+
+    function handleClickOutside(event) {
+        if (tncRef && !tncRef.current.contains(event.target)) {
+            setTnC(false);
+        }
+    }
+
     const classes = useStyles();
 
     const selectVdo = (e, vdo) => {
@@ -129,95 +145,116 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                 }}
             >
                 <Fade in={open}>
-                    <div className={classes.paper}>
-                        {(ActiveStep == 1 || ActiveStep === 2) && <IconButton onClick={() => { handleClose(); (state.activeCompetition && !state.currentLoginFlow) && dispatch(setActiveCompetition(null)) }}>
-                            <CloseIcon />
-                        </IconButton>}
-                        {(ActiveStep == 3 || ActiveStep == 4) && <IconButton onClick={() => setActiveStep(ActiveStep - 1)}>
-                            <ArrowBackIcon />
-                        </IconButton>}
-                        {(ActiveStep == 1 || ActiveStep === 2) && <div>
+                    <div className="outer-modal-wrap">
+                        {(ActiveStep == 1 || ActiveStep === 2) && <div className="inner-modal-wrap">
+                            {(ActiveStep == 1 || ActiveStep === 2) && <IconButton className="close-modal-btn" onClick={() => { handleClose(); (state.activeCompetition && !state.currentLoginFlow) && dispatch(setActiveCompetition(null)) }}>
+                                <CloseIcon />
+                            </IconButton>}
+                            {(ActiveStep == 3 || ActiveStep == 4) && <IconButton  className="close-modal-btn back-step-btn" onClick={() => setActiveStep(ActiveStep - 1)}>
+                                <ArrowBackIcon />
+                            </IconButton>}
                             <h2 id="title">{competitionDetails.name}</h2>
-                            <img src={competitionDetails.img} alt={competitionDetails.name} style={{ width: '20%' }} />
-
-                            <div className="">About Competition-</div>
-                            <p id="description">{competitionDetails.desc}</p>
-
-                            <div>Age Category-</div>
-                            <div >Age 4 to 13 years</div>
-                            <div >Age 14 to 17 years</div>
-                            <div >Age 18 and above</div>
-
-                            <div id="fees">Fees: {competitionDetails.fee}</div>
-
-                            <div className="start-at">
-                                Start At: {competitionDetails.startingDate}
-                            </div>
-                            <div className="end-at">
-                                End At: {competitionDetails.endingDate}
-                            </div>
-
-                            {competitionDetails && competitionDetails.isUserEnrolled ?
-                                <div>You can change uploaded video till {VdoUploadDateLimit}</div> :
-                                <div>Upload video till {VdoUploadDateLimit}</div>}
-
-                            <div>Winners -</div>
-                            <div>1. Top 3 Winner From Each Category Get Award.</div>
-                            <div>2. There will be a three category as mention above.</div>
-                            <div>1. Winner will be based on best performance.</div>
-                            <div className="prices">
-                                <div className="price-details">
-                                    First Price : {competitionDetails.prices[0]}
+                            <div className="image-contentWrap">
+                                <div className="image-wrap">
+                                    <img src={competitionDetails.img} alt={competitionDetails.name}/>
                                 </div>
-                                <div className="price-details">
-                                    Second Price : {competitionDetails.prices[1]}
-                                </div>
-                                <div className="price-details">
-                                    Third Price : {competitionDetails.prices[2]}
-                                </div>
-                            </div>
+                                <div className="about-competition-wrap">
+                                    <div className="sub-titles">About Competition</div>
+                                    <p id="description">{competitionDetails.desc}</p>
 
-                            <div>Submission And Result -</div>
-                            <div>1. You Have to submit Your video till 15th June</div>
-                            <div>2. Result will be declared on 16th June At 4 Pm On</div>
-                            <div>1. Winner will be based on best performance.</div>
+                                    <div className="sub-titles">Age Category</div>
+                                    <ul>
+                                        <li>Age 4 to 13 years</li>
+                                        <li>Age 14 to 17 years</li>
+                                        <li>Age 18 and above</li>
+                                    </ul>
 
-                            <h3>Time To Express Your Talent on Our Platform during this Lockdown</h3>
-
-                            <div onClick={() => setTnC((TnC ? false : true))}>Terms & Conditions</div>
-                            {TnC && <div>
-                                <div>You may not be able to attend the live session if you are late.</div>
-                                <div>You may face interruptions during the course of the live stream due to internet connectivity issues.</div>
-                                <div>Show details and the artist lineup are subject to change as per the artist’s discretion.</div>
-                                <div> No refunds on purchased tickets are possible, even in case of any rescheduling.</div>
-                            </div>}
-                            {!competitionDetails?.isUserEnrolled && <Button variant="contained" color="primary" onClick={() => enrollForCompetition(2)}>Submit Video</Button>}
-                        </div>}
-
-                        {competitionDetails?.isUserEnrolled && ActiveStep === 2 && <div>
-                            Submitted details:
-                             {/* <video width="400" controls>
-                                <source src={competitionDetails.userSubmitedDetails.vdo.url} />
-                            </video> */}
-                            <Button variant="contained" color="primary" onClick={() => setActiveStep(3)}>Change Video</Button>
-                        </div>}
-
-                        {ActiveStep === 3 && <div>
-                            <div className="lessons-vdo-wrap">
-                                {userUploadedVdos.length && userUploadedVdos.map((item, index) => {
-                                    return <div className={item.isSelected ? 'vdo-outer selected-vdo' : 'vdo-outer'} key={index} onClick={(e) => selectVdo(e, item)}>
-                                        <div className="vdo-wrap" >
-                                            <img src={item.thumbnail ? item.thumbnail : THUMBNAIL_URL} style={{ width: "50%" }} />
-                                            <div>{item.title}</div>
-                                        </div>
+                                    <div className="sub-titles" id="fees">
+                                        Fees: <span>{competitionDetails.fee}</span>
                                     </div>
-                                })}
-                            </div>
-                            {!disableSubmitVdoButton && <Button variant="contained" color="primary" onClick={() => setActiveStep(4)}>Submit</Button>}
-                        </div>}
 
-                        {ActiveStep === 4 && <div>
-                            <EnrollCompetition handleClose={(e) => handleClose(e)} changeSelectedVdo={() => setActiveStep(3)} />
+                                    <div className="start-at sub-titles">
+                                        Start At: <span>{competitionDetails.startingDate}</span>
+                                    </div>
+                                    <div className="end-at sub-titles">
+                                        End At: <span>{competitionDetails.endingDate}</span>
+                                    </div>
+
+                                    {competitionDetails && competitionDetails.isUserEnrolled ?
+                                        <div className="sub-titles">
+                                            You can change/modify video till 
+                                            <span>{VdoUploadDateLimit}</span></div> :
+                                        <div className="sub-titles">
+                                            Upload video till <span>{VdoUploadDateLimit}</span></div>}
+
+                                    <div className="sub-titles">Winners and Prizes Rule</div>
+                                    <ul>
+                                        <li>Top 3 Winner From Each Category Get Award.</li>
+                                        <li>There will be a three category as mention above.</li>
+                                        <li>Winner will be based on best performance.</li>
+                                    </ul>
+
+                                    <ul className="prices">
+                                        <li className="sub-titles price-details">
+                                            First Price : <span>{competitionDetails.prices[0]}</span>
+                                        </li>
+                                        <li className="sub-titles price-details">
+                                            Second Price : <span>{competitionDetails.prices[1]}</span>
+                                        </li>
+                                        <li className="sub-titles price-details">
+                                            Third Price : <span>{competitionDetails.prices[2]}</span>
+                                        </li>
+                                    </ul>
+
+                                    <div className="sub-titles">Submission And Result</div>
+                                    <ul>
+                                        <li>You Have to submit Your video till 15th June</li>
+                                        <li>Result will be declared on 16th June At 4 Pm On</li>
+                                        <li>Winner will be based on best performance.</li>
+                                    </ul>
+                                    <h4 className="before-submit-message">Time To Express Your Talent on Our Platform during this Lockdown</h4>
+                                </div>
+                            </div>   
+                            
+                            <div className="action-wrap">
+                                <div className="terms-button" ref={tncRef} onClick={() => setTnC((TnC ? false : true))}>
+                                    Terms &amp; Conditions
+                                    {TnC && <div className="tool-tip-wrap">
+                                        <div>You may not be able to attend the live session if you are late.</div>
+                                        <div>You may face interruptions during the course of the live stream due to internet connectivity issues.</div>
+                                        <div>Show details and the artist lineup are subject to change as per the artist’s discretion.</div>
+                                        <div> No refunds on purchased tickets are possible, even in case of any rescheduling.</div>
+                                    </div>}
+                                </div>
+                                {!competitionDetails?.isUserEnrolled && <Button variant="contained" color="primary" onClick={() => enrollForCompetition(2)}>Submit Video</Button>}
+                                <div className="change-video-wrap">
+                                    {competitionDetails?.isUserEnrolled && ActiveStep === 2 && <div>
+                                        Submitted details:
+                                        {/* <video width="400" controls>
+                                            <source src={competitionDetails.userSubmitedDetails.vdo.url} />
+                                        </video> */}
+                                        <Button variant="contained" color="primary" onClick={() => setActiveStep(3)}>Change Video</Button>
+                                    </div>}
+
+                                    {ActiveStep === 3 && <div>
+                                        <div className="lessons-vdo-wrap">
+                                            {userUploadedVdos.length && userUploadedVdos.map((item, index) => {
+                                                return <div className={item.isSelected ? 'vdo-outer selected-vdo' : 'vdo-outer'} key={index} onClick={(e) => selectVdo(e, item)}>
+                                                    <div className="vdo-wrap" >
+                                                        <img src={item.thumbnail ? item.thumbnail : THUMBNAIL_URL} style={{ width: "50%" }} />
+                                                        <div>{item.title}</div>
+                                                    </div>
+                                                </div>
+                                            })}
+                                        </div>
+                                        {!disableSubmitVdoButton && <Button variant="contained" color="primary" onClick={() => setActiveStep(4)}>Submit</Button>}
+                                    </div>}
+
+                                    {ActiveStep === 4 && <div>
+                                        <EnrollCompetition handleClose={(e) => handleClose(e)} changeSelectedVdo={() => setActiveStep(3)} />
+                                    </div>}
+                                </div>
+                            </div>
                         </div>}
                     </div>
                 </Fade>
