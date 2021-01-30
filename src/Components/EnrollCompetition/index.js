@@ -86,8 +86,8 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
                 <div>Submited age group - {competitionDetails.userSubmitedDetails.ageGroup}</div>
             }
             {SelectedVdo && <div className="selected-vdo">
-                <div>Selected video for competition -</div>
-                <div onClick={() => changeSelectedVdo()}>Change</div>
+                <div className="sub-title">Selected video for competition</div>
+                <div className="change-link" onClick={() => changeSelectedVdo()}>Change</div>
                 <div className="vdo-wrap" >
                     <img src={SelectedVdo.thumbnail ? SelectedVdo.thumbnail : THUMBNAIL_URL} style={{ width: "50%" }} />
                     <div>{SelectedVdo.title}</div>

@@ -1,7 +1,3 @@
-.selected-vdo {
-    border: 1px solid;
-}
-
 .competition-modal-box {
     outline: none;
     .outer-modal-wrap {
@@ -109,6 +105,7 @@
                     .list-box {
                         display: flex;
                         justify-content: space-between;
+                        flex-wrap: wrap;
                         margin: 0 10px 10px 0;
                         .vdo-outer {
                             border-radius: 5px;
@@ -128,6 +125,7 @@
                             .video-title {
                                 color: var(--footer-list-text-grey);
                                 padding: 0 10px;
+                                margin-top: 10px;
                             }
                             &.selected-vdo {
                                 border: 2px solid var(--secondary-color);
@@ -198,5 +196,88 @@
 }
 
 @media screen and (max-width: 1023px) {
+    .competition-modal-box {
+        .outer-modal-wrap {
+            .inner-modal-wrap {
+                .image-contentWrap {
+                    flex-wrap: wrap;
+                    .image-wrap {
+                        flex-basis: 40%;
+                        min-width: 270px;
+                        height: 162px;
+                        margin: 0 auto 20px;
+                    }
+                    .about-competition-wrap {
+                        max-height: 235px;
+                    }
+                }
+            }
+            .video-submit-section {
+                .lessons-vdo-wrap {
+                    .tab-content-wrap {
+                        .list-box .vdo-outer {
+                            width: calc(100% / 3);
+                            min-width: 170px;
+                            margin: 0 20px 20px 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
+@media screen and (max-width: 767px) {
+    .competition-modal-box {
+        .outer-modal-wrap {
+            .inner-modal-wrap {
+                width: 90%;
+                height: 95%;
+                padding: 10px;
+                .image-contentWrap {
+                    .about-competition-wrap {
+                        max-height: 290px;
+                    }
+                }
+                .action-wrap {
+                    justify-content: space-between;
+                    .terms-button {
+                        font-size: 14px;
+                        .tool-tip-wrap {
+                            width: 285px;
+                        }
+                    }
+                    button {
+                        font-size: 12px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .competition-modal-box {
+        .outer-modal-wrap {
+            .video-submit-section {
+                height: 75vh;
+                .lessons-vdo-wrap {
+                    min-height: 89%;
+                    .tab-content-wrap {
+                        min-height: 90%;
+                        .list-box .vdo-outer {
+                            width: 100%;
+                            box-sizing: border-box;
+                            min-width: 170px;
+                            margin: 0 0 40px 0;
+                        }
+                    }
+                    .input-upload-wrap {
+                        width: 100%;
+                        box-sizing: border-box;
+                    }
+                }
+            }
+        }
+    }
 }

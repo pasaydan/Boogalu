@@ -258,8 +258,8 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                                     return <div className={item.isSelected ? 'vdo-outer selected-vdo' : 'vdo-outer'} key={index} onClick={(e) => selectVdo(e, item)}>
                                                         <div className="vdo-wrap" >
                                                             <img src={item.thumbnail ? item.thumbnail : THUMBNAIL_URL} alt="video-url" />
-                                                            <div className="video-title">{item.title}</div>
                                                         </div>
+                                                        <div className="video-title">{item.title}</div>
                                                     </div>
                                                 })}
                                             </div>

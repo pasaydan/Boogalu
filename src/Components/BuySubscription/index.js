@@ -64,11 +64,11 @@ export default function BuySubsription({ handleClose, activeStep }) {
     }
 
     return (
-        <div>
+        <div className="subscription-modal-wrap">
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
-                className='competition-modal-box'
+                className='subscription-modal-box'
                 open={openDetailsModal}
                 onClose={() => handleModalClose(false)}
                 closeAfterTransition
@@ -78,16 +78,22 @@ export default function BuySubsription({ handleClose, activeStep }) {
                 }}
             >
                 <Fade in={openDetailsModal}>
-                    <div className={classes.paper}>
-                        <IconButton onClick={() => handleModalClose(false)}>
+                    <div className="subscription-inner-modal">
+                        <IconButton className="close-modal-btn" onClick={() => handleModalClose(false)}>
                             <CloseIcon />
                         </IconButton>
+                        <h3>Boogalu Subscription</h3>
                         {activeStep == 1 && <div>
                             <div className="subs-details-wrap">
-                                <div>{subscriptionDetails.name}</div>
-                                <div>{subscriptionDetails.desc}</div>
-                                <div>{subscriptionDetails.amount} / {subscriptionDetails.plans}</div>
-                                <div>Valid Upto- {subsciptionValidity}</div>
+                                <p>
+                                    Welcome, we are glad to see you. Now, you can subscribe to our application, and 
+                                    get a chance to participate in any competition for one month. 
+                                </p>
+                                <p> Just {subscriptionDetails.amount}/{subscriptionDetails.plans}</p>
+                                {/* <div>{subscriptionDetails.name}</div> */}
+                                {/* <div>{subscriptionDetails.desc}</div> */}
+                                {/* <div>{subscriptionDetails.amount} / {subscriptionDetails.plans}</div> */}
+                                {/* <div>Valid Upto- {subsciptionValidity}</div> */}
                             </div>
                             <Button variant="contained" color="secondary" onClick={(e) => proceedForpayment(e)}>Subscribe</Button>
                         </div>}

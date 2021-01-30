@@ -205,6 +205,10 @@ button:focus {
   }
 }
 
+.MuiBackdrop-root {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
 // Media query 
 @media screen and (max-width: 1023px) {
   .App {
@@ -228,3 +232,4 @@ button:focus {
 @import './Components/Competitions/Competitions.scss';
 @import './Components/Contactus/contactus.scss';
 @import './Components/EnrollCompetition/enrollment.scss';
+@import './Components/BuySubscription/BuySubscription.scss';
