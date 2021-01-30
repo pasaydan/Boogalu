@@ -7,6 +7,7 @@ import BuySubscription from "../BuySubscription";
 import { enableLoginFlow, disableLoginFlow } from "../../Actions/LoginFlow";
 import { saveUserSubscription } from "../../Services/User.service";
 import { loginUser } from "../../Actions/User";
+import { SUBSCRIPTION_ACTIVE_STATUS, SUBSCRIPTION_ENDED_STATUS } from "../../Constants";
 
 function Subscriptions() {
     const { state, dispatch } = useStoreConsumer();
@@ -24,6 +25,7 @@ function Subscriptions() {
                 const subscriptionSuccessObj = {
                     subId: state.activeSubscription.key,
                     type: state.activeSubscription.type,
+                    status: SUBSCRIPTION_ACTIVE_STATUS, // current subscription status Active or Ended
                     subscribedAt: new Date()
                 }
                 let loggedInUserData = { ...loggedInUser };
@@ -49,15 +51,23 @@ function Subscriptions() {
         getActiveSubscriptionsList().subscribe((subscriptionsList) => {
             setAvailableSubscriptions(subscriptionsList);
             console.log(subscriptionsList);
+            //if user come from competition details 
+            if (state.currentLoginFlow == 'competition-subscription') {
+                let subscriptionForCompetition = subscriptionsList.filter((data) => data.type === 'competition-enrollment');
+                dispatch(setActiveSubscription(subscriptionForCompetition[0]));
+                setActiveStep(1);
+            }
         })
+        //is user go to login flow from itself(current page)
         if (state.currentLoginFlow == 'subscription') {
             dispatch(disableLoginFlow());
             setShowSubscriptionDetails(true);
         }
-    }, [])
+    }, [state.currentLoginFlow])
 
     const setSubscription = (subscription) => {
         dispatch(setActiveSubscription(subscription));
+        setActiveStep(1);
         if (loggedInUser.name && loggedInUser.phone && loggedInUser.username) {
             setShowSubscriptionDetails(true);
         } else {

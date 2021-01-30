@@ -47,16 +47,11 @@ export default function BuySubsription({ handleClose, activeStep }) {
         handleClose();
     }
 
-    const submitForSubscription = () => {
-        const finalSubscriptionDetails = {
-            subscribedAt: new Date(),
-            subsId: subscriptionDetails.key,
-            status: SUBSCRIPTION_ACTIVE_STATUS, // current subscription status Active or Ended
-            paymentId: ''
-        }
-        console.log(finalSubscriptionDetails)
-    }
+    const proceedForCompetition = () => {
+        if (state.currentLoginFlow == 'competition-subscription') {
 
+        } else history.push('/competition');
+    }
     const proceedForPayment = () => {
         var params = "?phone=" + loggedInUser.phone + "&orderId=" + subscriptionDetails.key + "&amount=" + subscriptionDetails.amount + "&uId=" + loggedInUser.uId + "&email=" + loggedInUser.email;
         window.open('http://localhost:5001/boogalusite/us-central1/payment' + params, '_self');
@@ -85,8 +80,8 @@ export default function BuySubsription({ handleClose, activeStep }) {
                         {activeStep == 1 && <div>
                             <div className="subs-details-wrap">
                                 <p>
-                                    Welcome, we are glad to see you. Now, you can subscribe to our application, and 
-                                    get a chance to participate in any competition for one month. 
+                                    Welcome, we are glad to see you. Now, you can subscribe to our application, and
+                                    get a chance to participate in any competition for one month.
                                 </p>
                                 <p> Just {subscriptionDetails.amount}/{subscriptionDetails.plans}</p>
                                 {/* <div>{subscriptionDetails.name}</div> */}
@@ -98,7 +93,7 @@ export default function BuySubsription({ handleClose, activeStep }) {
                         </div>}
                         {activeStep == 2 && <div>
                             <div>payment success</div>
-                            <Button variant="contained" color="secondary" onClick={(e) => history.push('/competitions')}>Continue to competition</Button>
+                            <Button variant="contained" color="secondary" onClick={(e) => proceedForCompetition()}>Continue to competition</Button>
                         </div>}
                         {activeStep == 3 && <div>
                             <div>payment fail</div>

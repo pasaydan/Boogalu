@@ -8,9 +8,9 @@ import { getCompetitionByUserId } from "../../Services/EnrollCompetition.service
 
 function Competitions() {
     const { state, dispatch } = useStoreConsumer();
-    const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(state.currentLoginFlow == 'competition' ? true : false);
+    const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(false);
     const [CompletitionList, setCompletitionList] = useState(null);
-    const [initialStep, setInitialStep] = useState(state.currentLoginFlow == 'competition' ? 3 : 1);
+    const [initialStep, setInitialStep] = useState(1);
     const loggedInUser = state.loggedInUser;
 
     const prepareUserCompData = (allCompList) => {
@@ -40,13 +40,25 @@ function Competitions() {
                 })
             } else setCompletitionList(allCompList);
         });
+        // if user come from login page
         if (state.currentLoginFlow == 'competition') {
             dispatch(disableLoginFlow());
+            setIsOpenDetailsModal(true);
+            if (loggedInUser.subscriptions) {
+                let isSubscribed = loggedInUser.subscriptions.filter((data) => data.type === 'competition-enrollment');
+                if (isSubscribed.length) setInitialStep(3);
+                else setInitialStep(1);
+            } else setInitialStep(1);
+        } else if (state.currentLoginFlow === 'competition-subscription') {
+            // if user come from subscription page
+            dispatch(disableLoginFlow());
+            setIsOpenDetailsModal(true);
+            setInitialStep(1);
         }
     }, [])
 
     const openDetailsModal = (competition) => {
-        if (competition.isUserEnrolled) setInitialStep(2);
+        if (competition.isUserEnrolled) setInitialStep(1);
         dispatch(setActiveCompetition(competition));
         setIsOpenDetailsModal(true);
     }

@@ -36,7 +36,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
     const [ActiveStep, setActiveStep] = useState(initialStep || 1);
     const [disableSubmitVdoButton, setDisableSubmitVdoButton] = useState(false);
     const [VdoUploadDateLimit, setVdoUploadDateLimit] = useState(null)
-    // const [SelectedVdo, setSelectedVdo] = useState(null);
+    const [IsUserSubscribed, setIsUserSubscribed] = useState(null);
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
@@ -51,6 +51,11 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
             new Date(vdoUploadUpto.setDate(vdoUploadUpto.getDate() + 30));
             let displayDate = formatDate(vdoUploadUpto, 3) + " " + formatTime(vdoUploadUpto)
             setVdoUploadDateLimit(displayDate);
+            if (loggedInUser.subscriptions) {
+                let isSubscribed = loggedInUser.subscriptions.filter((data) => data.type === 'competition-enrollment');
+                if (isSubscribed.length) setIsUserSubscribed(true);
+                else setIsUserSubscribed(false);
+            } else setIsUserSubscribed(false);
         }
     }, [competitionDetails]);
 
@@ -102,19 +107,6 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
         setUserUploadedVideoList([...updatedVdos]);
     }
 
-    const enrollForCompetition = () => {
-        if (loggedInUser.name && loggedInUser.phone && loggedInUser.username) {
-            setActiveStep(3);
-        } else {
-            handleClose();
-            dispatch(enableLoginFlow('competition'));
-            history.push({
-                pathname: '/login',
-                state: null
-            })
-        }
-    }
-
     function toggleTabination(event) {
         event.stopPropagation();
 
@@ -134,6 +126,24 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                 item.classList.remove('active');
             }
         });
+    }
+
+    const proceedForLogin = () => {
+        handleClose();
+        dispatch(enableLoginFlow('competition'));
+        history.push({
+            pathname: '/login',
+            state: null
+        })
+    }
+
+    const proceedForSubscription = () => {
+        handleClose();
+        dispatch(enableLoginFlow('competition-subscription'));
+        history.push({
+            pathname: '/subscription',
+            state: null
+        })
     }
 
     return (
@@ -233,8 +243,26 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                             <div> No refunds on purchased tickets are possible, even in case of any rescheduling.</div>
                                         </div>}
                                     </div>
-                                    {!competitionDetails?.isUserEnrolled && <Button variant="contained" color="primary" onClick={() => enrollForCompetition(2)}>Submit Video</Button>}
-                                    {competitionDetails?.isUserEnrolled && ActiveStep === 2 && <div className="change-video-wrap">
+                                    {/* check for user logged in or not */}
+                                    {loggedInUser.email && loggedInUser.username ?
+                                        <div>
+                                            {/* check for user subscribed or not */}
+                                            {IsUserSubscribed ?
+                                                <div>
+                                                    {!competitionDetails?.isUserEnrolled && <Button variant="contained" color="primary" onClick={() => setActiveStep(3)}>Submit Video</Button>}
+                                                </div> :
+                                                <div>
+                                                    <div>To upload video you need to subscribe</div>
+                                                    <Button variant="contained" color="primary" onClick={() => proceedForSubscription()}>Continue</Button>
+                                                </div>
+                                            }
+                                        </div> :
+                                        <div>
+                                            <div>To upload video you need to login first</div>
+                                            <Button variant="contained" color="primary" onClick={() => proceedForLogin()}>Login</Button>
+                                        </div>
+                                    }
+                                    {loggedInUser && IsUserSubscribed && competitionDetails?.isUserEnrolled && <div className="change-video-wrap">
                                         <div >
                                             Submitted details:
                                         {/* <video width="400" controls>
