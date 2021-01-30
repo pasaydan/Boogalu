@@ -15,7 +15,11 @@ import Box from '@material-ui/core/Box';
 import * as $ from 'jquery';
 import { getUploadedVideosByUserId } from "../../Services/UploadedVideo.service";
 import { getCompetitionByUserId } from "../../Services/EnrollCompetition.service";
+import CompetitionsDetails from "../CompetitionsDetails";
+import { getCompetitionsList } from "../../Services/Competition.service";
+import { setActiveCompetition } from "../../Actions/Competition";
 import Vedio from "../Vedio/Video";
+
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -65,6 +69,8 @@ function Profile() {
     const [UserUploadedVideoList, setUserUploadedVideoList] = useState([]);
     const [UserCompetitionsList, setUserCompetitionsList] = useState([]);
     const [UserLikedVideoList, setUserLikedVideoList] = useState([]);
+    const [openUserEnrolledCompDetailsModal, setOpenUserEnrolledCompDetailsModal] = useState(false);
+    const [initialStep, setInitialStep] = useState(1);
 
     useEffect(() => {
         $('html,body').animate({
@@ -82,6 +88,19 @@ function Profile() {
     const handleChangeIndex = (index) => {
         setValue(index);
     };
+
+    const openCompetitionDetailsModal = (competition) => {
+        getCompetitionsList().subscribe(allCompList => {
+            let isUserEnrolled = allCompList.filter((data) => data.key == competition.compId);
+            if (isUserEnrolled.length) {
+                isUserEnrolled[0].isUserEnrolled = true;
+                isUserEnrolled[0].userSubmitedDetails = competition;
+                setInitialStep(2);
+                dispatch(setActiveCompetition(isUserEnrolled[0]));
+                setOpenUserEnrolledCompDetailsModal(true);
+            }
+        });
+    }
 
     return (
         <div className="profile-outer">
@@ -162,7 +181,7 @@ function Profile() {
                         <TabPanel value={value} index={2} dir={theme.direction}>
                             <div className="flex-container" >
                                 {UserCompetitionsList.length !== 0 ? UserCompetitionsList.map((competition) => {
-                                    return <div className="flex-basis-3" style={{ marginRight: '30px' }} key={competition.key}>
+                                    return <div className="flex-basis-3" style={{ marginRight: '30px' }} key={competition.key} onClick={() => openCompetitionDetailsModal(competition)}>
                                         <div>{competition.compName}</div>
                                         <img src={competition.compImg} />
                                     </div>
@@ -173,6 +192,7 @@ function Profile() {
                     </SwipeableViews>
                 </div>
             </div>
+            {openUserEnrolledCompDetailsModal && <CompetitionsDetails open={openUserEnrolledCompDetailsModal} handleClose={() => setOpenUserEnrolledCompDetailsModal(false)} initialStep={initialStep} />}
         </div>
     )
 }

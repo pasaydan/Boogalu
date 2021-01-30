@@ -6,6 +6,8 @@ import { useStoreConsumer } from '../../Providers/StateProvider';
 import { logoutUser } from '../../Actions/User';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import { enableLoginFlow } from "../../Actions/LoginFlow";
+import { disableLoginFlow } from "../../Actions/LoginFlow";
+import VideoUploader from "../VideoUploader";
 import * as $ from 'jquery';
 const SCROLL_TOP_LIMIT = 200;
 
@@ -20,6 +22,7 @@ function Navigation() {
     const mobilHomelinkRef = useRef();
     const history = useHistory();
     const { state, dispatch } = useStoreConsumer();
+    const [openVdoUploadModal, setOpenVdoUploadModal] = useState(false)
     useOnClickOutside(ref, () => setShowProfileTab(false));
 
     useEffect(() => {
@@ -58,8 +61,6 @@ function Navigation() {
         setTimeout(() => {
             const pathName = history?.location?.pathname.split('/')[1];
             const navLinks = document.querySelectorAll('.nav-ul a');
-            if (pathName.includes('register') || pathName.includes('login') || pathName.includes('upload-video')) setHideVdoUploadBtn(true);
-            else setHideVdoUploadBtn(false);
             if (navLinks && navLinks.length) {
                 navLinks.forEach((ele) => {
                     const getHref = ele.getAttribute('href').toLocaleLowerCase();
@@ -74,6 +75,17 @@ function Navigation() {
         window.addEventListener("scroll", handleScroll, { passive: true });
         return () => setDidMount(false);
     }, [isMobile]);
+
+    useEffect(() => {
+        const listenRouteChange = history.listen((location, action) => {
+            const pathName = location?.pathname.split('/')[1];
+            if (pathName.includes('register') || pathName.includes('login') || pathName.includes('upload-video')) setHideVdoUploadBtn(true);
+            else setHideVdoUploadBtn(false);
+            if ((!pathName || pathName.includes('lessons') || pathName.includes('subscription') || pathName.includes('contactus') || pathName.includes('home')) && state.currentLoginFlow) {
+                dispatch(disableLoginFlow());
+            }
+        });
+    })
 
     const logout = () => {
         console.log('logout success');
@@ -156,11 +168,12 @@ function Navigation() {
     const uploadVdo = (e) => {
         setHideVdoUploadBtn(true);
         e.preventDefault();
-        if (state.loggedInUser && state.loggedInUser.email) {
-            history.push({
-                pathname: '/upload-video',
-                state: null
-            })
+        if (state.loggedInUser && state.loggedInUser.email && state.loggedInUser.phone) {
+            // history.push({
+            //     pathname: '/upload-video',
+            //     state: null
+            // })
+            setOpenVdoUploadModal(true);
         } else {
             dispatch(enableLoginFlow('upload-video'));
             history.push({
@@ -243,6 +256,7 @@ function Navigation() {
                         </div>
                         : ''
                 }
+                {openVdoUploadModal && <VideoUploader handleClose={() => setOpenVdoUploadModal(false)} />}
             </nav>
         </>
     )

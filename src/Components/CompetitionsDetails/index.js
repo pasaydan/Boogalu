@@ -3,11 +3,11 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import { makeStyles } from '@material-ui/core/styles';
+import CloseIcon from '@material-ui/icons/Close';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
-import CloseIcon from '@material-ui/icons/Close';
-import IconButton from '@material-ui/core/IconButton';
 import { THUMBNAIL_URL } from '../../Constants';
 import "./CompetitionsDetails.scss";
 import EnrollCompetition from "../EnrollCompetition";
@@ -15,8 +15,14 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { setActiveCompetition } from "../../Actions/Competition";
 import { enableLoginFlow } from "../../Actions/LoginFlow";
 import { getUploadedVideosByUserId } from "../../Services/UploadedVideo.service";
+import { formatDate, formatTime } from "../../Services/Utils";
 
-function CompetitionsDetails({ open, handleClose, initialStep }) {
+//activestep 1 === Competition details
+//activestep 2 === User submitted competition details if already enrolled
+//activestep 3 === Video selection
+//activestep 4 === final age group and video submission for competition
+
+export default function CompetitionsDetails({ open, handleClose, initialStep }) {
 
     const { state, dispatch } = useStoreConsumer();
     const history = useHistory();
@@ -26,10 +32,35 @@ function CompetitionsDetails({ open, handleClose, initialStep }) {
     const [userUploadedVdos, setUserUploadedVideoList] = useState([]);
     const [TnC, setTnC] = useState(false);
     const [ActiveStep, setActiveStep] = useState(initialStep || 1);
+    const [disableSubmitVdoButton, setDisableSubmitVdoButton] = useState(false);
+    const [VdoUploadDateLimit, setVdoUploadDateLimit] = useState(null)
     // const [SelectedVdo, setSelectedVdo] = useState(null);
 
     useEffect(() => {
-        (loggedInUser.email && ActiveStep === 2 && userUploadedVdos.length == 0) && getUploadedVideosByUserId(loggedInUser.key).subscribe((vdoList) => setUserUploadedVideoList(vdoList));
+        if (competitionDetails) {
+            let vdoUploadUpto = new Date(competitionDetails.startAt);
+            new Date(vdoUploadUpto.setDate(vdoUploadUpto.getDate() + 30));
+            let displayDate = formatDate(vdoUploadUpto, 3) + " " + formatTime(vdoUploadUpto)
+            setVdoUploadDateLimit(displayDate);
+        }
+    }, [competitionDetails])
+    useEffect(() => {
+        (loggedInUser.email && loggedInUser.phone && ActiveStep === 3 && userUploadedVdos.length == 0) && getUploadedVideosByUserId(loggedInUser.key).subscribe((vdoList) => {
+            if (vdoList) {
+                vdoList.map((uploadedVdo) => {
+                    if (competitionDetails.isUserEnrolled) {
+                        if (uploadedVdo.key == competitionDetails.userSubmitedDetails.vdo.key) {
+                            uploadedVdo.isSelected = true;
+                            let updatedCompetition = competitionDetails;
+                            updatedCompetition.selectedVideo = uploadedVdo;
+                            dispatch(setActiveCompetition(updatedCompetition));
+                            setDisableSubmitVdoButton(true);
+                        }
+                    }
+                })
+                setUserUploadedVideoList(vdoList)
+            }
+        });
     }, [ActiveStep])
 
     const useStyles = makeStyles((theme) => ({
@@ -50,6 +81,13 @@ function CompetitionsDetails({ open, handleClose, initialStep }) {
     const selectVdo = (e, vdo) => {
         e.preventDefault();
         e.stopPropagation();
+        if (competitionDetails.isUserEnrolled && competitionDetails.userSubmitedDetails.vdo.key == vdo.key) {
+            setDisableSubmitVdoButton(true);
+            let updatedCompetition = competitionDetails;
+            delete updatedCompetition.selectedVideo;
+            dispatch(setActiveCompetition(updatedCompetition));
+        }
+        else setDisableSubmitVdoButton(false);
         let updatedVdos = userUploadedVdos;
         updatedVdos.map((item) => {
             if (item.key == vdo.key) {
@@ -65,7 +103,7 @@ function CompetitionsDetails({ open, handleClose, initialStep }) {
 
     const enrollForCompetition = () => {
         if (loggedInUser.name && loggedInUser.phone && loggedInUser.username) {
-            setActiveStep(2);
+            setActiveStep(3);
         } else {
             handleClose();
             dispatch(enableLoginFlow('competition'));
@@ -92,13 +130,13 @@ function CompetitionsDetails({ open, handleClose, initialStep }) {
             >
                 <Fade in={open}>
                     <div className={classes.paper}>
-                        {ActiveStep == 1 && <IconButton onClick={() => { handleClose(); (state.activeCompetition && !state.currentLoginFlow) && dispatch(setActiveCompetition(null)) }}>
+                        {(ActiveStep == 1 || ActiveStep === 2) && <IconButton onClick={() => { handleClose(); (state.activeCompetition && !state.currentLoginFlow) && dispatch(setActiveCompetition(null)) }}>
                             <CloseIcon />
                         </IconButton>}
-                        {(ActiveStep == 2 || ActiveStep == 3) && <IconButton onClick={() => setActiveStep(ActiveStep - 1)}>
+                        {(ActiveStep == 3 || ActiveStep == 4) && <IconButton onClick={() => setActiveStep(ActiveStep - 1)}>
                             <ArrowBackIcon />
                         </IconButton>}
-                        {ActiveStep == 1 && <div>
+                        {(ActiveStep == 1 || ActiveStep === 2) && <div>
                             <h2 id="title">{competitionDetails.name}</h2>
                             <img src={competitionDetails.img} alt={competitionDetails.name} style={{ width: '20%' }} />
 
@@ -118,6 +156,10 @@ function CompetitionsDetails({ open, handleClose, initialStep }) {
                             <div className="end-at">
                                 End At: {competitionDetails.endingDate}
                             </div>
+
+                            {competitionDetails && competitionDetails.isUserEnrolled ?
+                                <div>You can change uploaded video till {VdoUploadDateLimit}</div> :
+                                <div>Upload video till {VdoUploadDateLimit}</div>}
 
                             <div>Winners -</div>
                             <div>1. Top 3 Winner From Each Category Get Award.</div>
@@ -149,10 +191,18 @@ function CompetitionsDetails({ open, handleClose, initialStep }) {
                                 <div>Show details and the artist lineup are subject to change as per the artist’s discretion.</div>
                                 <div> No refunds on purchased tickets are possible, even in case of any rescheduling.</div>
                             </div>}
-                            <Button variant="contained" color="primary" onClick={() => enrollForCompetition(2)}>Submit Video</Button>
+                            {!competitionDetails?.isUserEnrolled && <Button variant="contained" color="primary" onClick={() => enrollForCompetition(2)}>Submit Video</Button>}
                         </div>}
 
-                        {ActiveStep === 2 && <div>
+                        {competitionDetails?.isUserEnrolled && ActiveStep === 2 && <div>
+                            Submitted details:
+                             {/* <video width="400" controls>
+                                <source src={competitionDetails.userSubmitedDetails.vdo.url} />
+                            </video> */}
+                            <Button variant="contained" color="primary" onClick={() => setActiveStep(3)}>Change Video</Button>
+                        </div>}
+
+                        {ActiveStep === 3 && <div>
                             <div className="lessons-vdo-wrap">
                                 {userUploadedVdos.length && userUploadedVdos.map((item, index) => {
                                     return <div className={item.isSelected ? 'vdo-outer selected-vdo' : 'vdo-outer'} key={index} onClick={(e) => selectVdo(e, item)}>
@@ -163,11 +213,11 @@ function CompetitionsDetails({ open, handleClose, initialStep }) {
                                     </div>
                                 })}
                             </div>
-                            <Button variant="contained" color="primary" onClick={() => setActiveStep(3)}>Submit</Button>
+                            {!disableSubmitVdoButton && <Button variant="contained" color="primary" onClick={() => setActiveStep(4)}>Submit</Button>}
                         </div>}
 
-                        {ActiveStep === 3 && <div>
-                            <EnrollCompetition handleClose={(e) => handleClose(e)} changeSelectedVdo={() => setActiveStep(2)} />
+                        {ActiveStep === 4 && <div>
+                            <EnrollCompetition handleClose={(e) => handleClose(e)} changeSelectedVdo={() => setActiveStep(3)} />
                         </div>}
                     </div>
                 </Fade>
@@ -175,6 +225,3 @@ function CompetitionsDetails({ open, handleClose, initialStep }) {
         </div>
     )
 }
-
-
-export default CompetitionsDetails

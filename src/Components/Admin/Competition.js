@@ -41,21 +41,25 @@ export default function Competition() {
     }
 
     async function saveDetails(e) {
-        console.log(await toBase64(CompetitionData.img[0]));
         console.log(CompetitionData)
         // upload competition image to bucket
-        let uploadUrl = await toBase64(CompetitionData.img[0]);
-        uploadImage(uploadUrl, 'competition', 'small').subscribe((downloadableUrl) => {
-            CompetitionData.img = downloadableUrl;
-            // save competition data to db with imag url
-            saveCompetition(CompetitionData).subscribe((response) => {
-                console.log('competition success', response);
-                setCompetitionData(initialCompetitionData);
-            })
-        })
+        if (CompetitionData.img[0]) {
+            const reader = new FileReader();
+            reader.readAsDataURL(CompetitionData.img[0]);
+            reader.onload = () => {
+                uploadImage(reader.result, 'competition', 'small').subscribe((downloadableUrl) => {
+                    CompetitionData.img = downloadableUrl;
+                    // save competition data to db with imag url
+                    saveCompetition(CompetitionData).subscribe((response) => {
+                        console.log('competition success', response);
+                        setCompetitionData(initialCompetitionData);
+                    })
+                })
+            }
+        }
     }
     return (
-        <div className="competition-wrap">
+        <div className="competition-bo-wrap">
             <div className="input-wrap">
                 <TextField className="input-field"
                     required

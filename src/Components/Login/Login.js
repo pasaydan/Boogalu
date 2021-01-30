@@ -17,6 +17,7 @@ import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
 import bgImg from '../../Images/bg1.svg';
 import { loginUser, signupUser } from '../../Actions/User/index';
 import { getUserByEmail, getUserByPhone } from "../../Services/User.service";
+import VideoUploader from "../VideoUploader";
 import * as $ from 'jquery';
 
 export default function Login() {
@@ -25,6 +26,7 @@ export default function Login() {
     const [loginCred, setloginCred] = useState({ username: "", password: "", showPassWord: false })
     const [LoginError, setLoginError] = useState(null);
     const [thirdPartyResponse, setThirdPartyResponse] = useState({ isLogginSuccess: false, data: null, source: '' })
+    const [openVdoUploadModal, setOpenVdoUploadModal] = useState(false)
 
     useEffect(() => {
         if (thirdPartyResponse.source === 'Facebook') signinUser('', 'Facebook');
@@ -168,7 +170,7 @@ export default function Login() {
                         data.source = 'Website';
                         dispatch(loginUser(data));
                         if (state.currentLoginFlow == 'competition') history.push('/competitions');
-                        else if (state.currentLoginFlow == 'upload-video') history.push('/upload-video');
+                        else if (state.currentLoginFlow == 'upload-video') setOpenVdoUploadModal(true);
                         else history.push('/')
                     })
                     .catch((data) => {
@@ -193,7 +195,7 @@ export default function Login() {
                         data.source = thirdPartyResponse.source;
                         dispatch(loginUser(data));
                         if (state.currentLoginFlow == 'competition') history.push('/competitions');
-                        else if (state.currentLoginFlow == 'upload-video') history.push('/upload-video');
+                        else if (state.currentLoginFlow == 'upload-video') setOpenVdoUploadModal(true);
                         else history.push('/')
                     })
                     .catch((data) => {
@@ -305,6 +307,7 @@ export default function Login() {
             <div className="img-wrap">
                 <img src={bgImg} />
             </div>
+            {openVdoUploadModal && <VideoUploader handleClose={() => setOpenVdoUploadModal(false)} />}
         </div>
     );
 }

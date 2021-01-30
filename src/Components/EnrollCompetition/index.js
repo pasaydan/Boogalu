@@ -8,7 +8,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { THUMBNAIL_URL } from '../../Constants';
 import { useStoreConsumer } from '../../Providers/StateProvider';
-import { saveCompetition } from "../../Services/EnrollCompetition.service";
+import { saveCompetition, updateCompetition } from "../../Services/EnrollCompetition.service";
 
 function EnrollCompetition({ handleClose, changeSelectedVdo }) {
 
@@ -40,11 +40,23 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
             status: 'Submited'
         }
         console.log(competitionObj)
-        saveCompetition(competitionObj).subscribe((response) => {
-            console.log('vdo uploaded for competition suceess');
-            history.push('/profile');
-        })
+        if (competitionDetails.isUserEnrolled) {
+            updateCompetition(competitionDetails.userSubmitedDetails.key, competitionObj).subscribe((response) => {
+                console.log('vdo updated for competition suceess');
+                history.push('/profile');
+            })
+        } else {
+            saveCompetition(competitionObj).subscribe((response) => {
+                console.log('vdo uploaded for competition suceess');
+                history.push('/profile');
+            })
+        }
+
         // handleClose();
+    }
+
+    const updateCompetition = () => {
+
     }
 
     return (
@@ -58,7 +70,7 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
                 <div>Email:<span>{loggedInUser.email}</span></div>
                 <div>Gender:<span>{loggedInUser.gender}</span></div>
             </div>
-            <div className="age-group-dropdown">
+            {!competitionDetails?.isUserEnrolled ? <div className="age-group-dropdown">
                 <FormControl variant="outlined" className="input-field">
                     <InputLabel id="select-outlined-label">Select Age Group</InputLabel>
                     <Select
@@ -74,6 +86,9 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
                     </Select>
                 </FormControl>
             </div>
+                :
+                <div>Submited age group - {competitionDetails.userSubmitedDetails.ageGroup}</div>
+            }
             {SelectedVdo && <div className="selected-vdo">
                 <div>Selected video for competition -</div>
                 <div onClick={() => changeSelectedVdo()}>Change</div>
@@ -82,7 +97,9 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
                     <div>{SelectedVdo.title}</div>
                 </div>
             </div>}
-            <Button variant="contained" color="primary" onClick={() => submitForCompetition()}>Enroll Competition<ArrowRightSharpIcon /></Button>
+            { !competitionDetails?.isUserEnrolled ? <Button variant="contained" color="primary" onClick={() => submitForCompetition()}>Enroll Competition<ArrowRightSharpIcon /></Button>
+                : <Button variant="contained" color="primary" onClick={() => updateCompetition()}>Update Competition<ArrowRightSharpIcon /></Button>
+            }
         </div>
     )
 }
