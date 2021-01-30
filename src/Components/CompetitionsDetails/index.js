@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
+import { FaCloudUploadAlt } from 'react-icons/fa';
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { THUMBNAIL_URL } from '../../Constants';
@@ -114,6 +115,27 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
         }
     }
 
+    function toggleTabination(event) {
+        event.stopPropagation();
+
+        const getCurrentData = event.target.getAttribute('data-id');
+
+        const tabsLinks = Array.from(document.querySelectorAll('.tab-links'));
+        const tabsBoxes = Array.from(document.querySelectorAll('.js-inner-tab-box'));
+        
+        tabsLinks.forEach( item => {
+            item.classList.remove('active');
+        });
+        event.target.classList.add('active');
+        tabsBoxes.forEach( item => {
+            if (item.getAttribute('id') === getCurrentData) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    }
+
     return (
         <div>
             <Modal
@@ -137,8 +159,8 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                             {(ActiveStep == 3 || ActiveStep == 4) && <IconButton className="close-modal-btn back-step-btn" onClick={() => setActiveStep(ActiveStep - 1)}>
                                 <ArrowBackIcon />
                             </IconButton>}
+                            <h2 id="title">{competitionDetails.name}</h2>
                             {(ActiveStep == 1 || ActiveStep == 2) && <div>
-                                <h2 id="title">{competitionDetails.name}</h2>
                                 <div className="image-contentWrap">
                                     <div className="image-wrap">
                                         <img src={competitionDetails.img} alt={competitionDetails.name} />
@@ -223,18 +245,34 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                     </div>}
                                 </div>
                             </div>}
-                            {ActiveStep === 3 && <div>
+                            {ActiveStep === 3 && <div className="video-submit-section">
                                 <div className="lessons-vdo-wrap">
-                                    {userUploadedVdos.length && userUploadedVdos.map((item, index) => {
-                                        return <div className={item.isSelected ? 'vdo-outer selected-vdo' : 'vdo-outer'} key={index} onClick={(e) => selectVdo(e, item)}>
-                                            <div className="vdo-wrap" >
-                                                <img src={item.thumbnail ? item.thumbnail : THUMBNAIL_URL} style={{ width: "50%" }} />
-                                                <div>{item.title}</div>
+                                    <div className="tabination-wrap">
+                                        <div className="tab-btn-section">
+                                            <button className="tab-links active" data-id="tab-1" onClick={e => toggleTabination(e)}>My video list</button>
+                                            <button className="tab-links" data-id="tab-2" onClick={e => toggleTabination(e)}>Upload new</button>
+                                        </div>
+                                        <div className="tab-content-wrap">
+                                            <div id="tab-1" className="inner-box js-inner-tab-box list-box active">
+                                                {userUploadedVdos.length && userUploadedVdos.map((item, index) => {
+                                                    return <div className={item.isSelected ? 'vdo-outer selected-vdo' : 'vdo-outer selected-vdo'} key={index} onClick={(e) => selectVdo(e, item)}>
+                                                        <div className="vdo-wrap" >
+                                                            <img src={item.thumbnail ? item.thumbnail : THUMBNAIL_URL} alt="video-url" />
+                                                            <div className="video-title">{item.title}</div>
+                                                        </div>
+                                                    </div>
+                                                })}
+                                            </div>
+                                            <div id="tab-2" className="inner-box js-inner-tab-box new-upload-box">
+                                                <div className="input-upload-wrap">
+                                                    <input type="file" id="video-upload" title="upload video for competition" />
+                                                    <i className="upload-icon"><FaCloudUploadAlt /></i>
+                                                </div>
                                             </div>
                                         </div>
-                                    })}
+                                    </div>
                                 </div>
-                                {!disableSubmitVdoButton && <Button variant="contained" color="primary" onClick={() => setActiveStep(4)}>Submit</Button>}
+                                {!disableSubmitVdoButton && <Button variant="contained" color="primary" onClick={() => setActiveStep(4)}>Upload</Button>}
                             </div>}
 
                             {ActiveStep === 4 && <div>
