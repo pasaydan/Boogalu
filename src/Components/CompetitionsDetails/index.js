@@ -17,6 +17,7 @@ import { setActiveCompetition } from "../../Actions/Competition";
 import { enableLoginFlow } from "../../Actions/LoginFlow";
 import { getUploadedVideosByUserId } from "../../Services/UploadedVideo.service";
 import { formatDate, formatTime } from "../../Services/Utils";
+import VideoUploader from "../VideoUploader";
 
 //activestep 1 === Competition details
 //activestep 2 === User submitted competition details if already enrolled
@@ -37,6 +38,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
     const [disableSubmitVdoButton, setDisableSubmitVdoButton] = useState(false);
     const [VdoUploadDateLimit, setVdoUploadDateLimit] = useState(null)
     const [IsUserSubscribed, setIsUserSubscribed] = useState(null);
+    const [SelectedVideo, setSelectedVideo] = useState({ title: "", desc: "", file: null });
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
@@ -144,6 +146,43 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
             pathname: '/subscription',
             state: null
         })
+    }
+
+    async function onChangeFile(event) {
+        event.preventDefault();
+        var file = event.target.files[0];
+        console.log(file);
+        if (file) {
+            setSelectedVideo({ ...SelectedVideo, file: null });
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                setSelectedVideo({ ...SelectedVideo, file: reader.result });
+                dispatch(enableLoginFlow('competition-uploadvdo'));
+                // handleClose();
+                // open = false;
+            }
+            reader.onerror = error => console.error(error);
+        }
+    }
+
+    const handleVdoUploadResponse = () => {
+        getUploadedVideosByUserId(loggedInUser.key).subscribe((vdoList) => {
+            if (vdoList) {
+                vdoList.map((uploadedVdo) => {
+                    if (competitionDetails.isUserEnrolled) {
+                        if (uploadedVdo.key == competitionDetails.userSubmitedDetails.vdo.key) {
+                            uploadedVdo.isSelected = true;
+                            let updatedCompetition = competitionDetails;
+                            updatedCompetition.selectedVideo = uploadedVdo;
+                            dispatch(setActiveCompetition(updatedCompetition));
+                            setDisableSubmitVdoButton(true);
+                        }
+                    }
+                })
+                setUserUploadedVideoList(vdoList)
+            }
+        });
     }
 
     return (
@@ -262,7 +301,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                             <Button variant="contained" color="primary" onClick={() => proceedForLogin()}>Login</Button>
                                         </div>
                                     }
-                                    {loggedInUser && IsUserSubscribed && competitionDetails?.isUserEnrolled && <div className="change-video-wrap">
+                                    {loggedInUser && true && competitionDetails?.isUserEnrolled && <div className="change-video-wrap">
                                         <div >
                                             Submitted details:
                                         {/* <video width="400" controls>
@@ -293,7 +332,10 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                             </div>
                                             <div id="tab-2" className="inner-box js-inner-tab-box new-upload-box">
                                                 <div className="input-upload-wrap">
-                                                    <input type="file" id="video-upload" title="upload video for competition" />
+                                                    <input
+                                                        accept="video/mp4,video/x-m4v,video/*"
+                                                        onChange={(e) => onChangeFile(e)}
+                                                        type="file" id="video-upload" title="upload video for competition" />
                                                     <i className="upload-icon"><FaCloudUploadAlt /></i>
                                                 </div>
                                             </div>
@@ -306,6 +348,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                             {ActiveStep === 4 && <div>
                                 <EnrollCompetition handleClose={(e) => handleClose(e)} changeSelectedVdo={() => setActiveStep(3)} />
                             </div>}
+                            {SelectedVideo?.file && <VideoUploader selectedVdo={SelectedVideo} handleVdoUploadResponse={() => handleVdoUploadResponse(3)} />}
                         </div>}
                     </div>
                 </Fade>

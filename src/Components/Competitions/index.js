@@ -54,6 +54,11 @@ function Competitions() {
             dispatch(disableLoginFlow());
             setIsOpenDetailsModal(true);
             setInitialStep(1);
+        } else if (state.currentLoginFlow === 'competition-uploadvdo') {
+            // if user come from vdoUpload page
+            dispatch(disableLoginFlow());
+            setIsOpenDetailsModal(true);
+            setInitialStep(3);
         }
     }, [])
 

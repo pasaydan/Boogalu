@@ -16,12 +16,12 @@ import { makeStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 
-export default function VideoUploader({ handleClose }) {
+export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) {
     const history = useHistory();
     const { state, dispatch } = useStoreConsumer();
     const loggedInUser = state.loggedInUser;
     const uploaderRef = useRef(null);
-    const [SelectedVideo, setSelectedVideo] = useState({ title: "", desc: "", file: null });
+    const [SelectedVideo, setSelectedVideo] = useState(selectedVdo ? selectedVdo : { title: "", desc: "", file: null });
     const [UploadedVdoUrl, setUploadedVdoUrl] = useState(null);
     const [ThumbnailImage, setThumbnailImage] = useState(null);
     const [openVdoUploaderModal, setOpenVdoUploaderModal] = useState(true);
@@ -94,7 +94,8 @@ export default function VideoUploader({ handleClose }) {
                 saveUploadedVideo(uploadObj).subscribe((response) => {
                     console.log("vedio data saved to db", response);
                     closeUploaderModal();
-                    history.push('/profile');
+                    if (state.currentLoginFlow == 'competition-uploadvdo') handleVdoUploadResponse(3);
+                    else history.push('/profile');
                 })
             }
         })
@@ -111,6 +112,7 @@ export default function VideoUploader({ handleClose }) {
         if (pathName.includes('register') || pathName.includes('login')) {
             history.push('/profile');
         }
+        // else if (state.currentLoginFlow == 'competition-uploadvdo') history.push('/competition');
         // handleClose();
         setOpenVdoUploaderModal(false);
 

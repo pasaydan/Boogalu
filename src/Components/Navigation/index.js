@@ -256,7 +256,7 @@ function Navigation() {
                         </div>
                         : ''
                 }
-                {openVdoUploadModal && <VideoUploader handleClose={() => setOpenVdoUploadModal(false)} />}
+                {openVdoUploadModal && <VideoUploader />}
             </nav>
         </>
     )
