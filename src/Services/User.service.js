@@ -66,3 +66,13 @@ export function getUserById(id) {
         });
     });
 }
+
+export function saveUserSubscription(id, data) {
+    data.createdOn = data.createdOn || new Date();
+    data.modifiedOn = new Date();
+    return new Observable((observer) => {
+        userRef.doc(id).set(data).then(() => {
+            observer.next();
+        });
+    });
+}

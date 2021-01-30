@@ -8,65 +8,69 @@ import Select from '@material-ui/core/Select';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import ImageUploader from 'react-images-upload';
 import Button from '@material-ui/core/Button';
-import { saveCompetition } from "../../Services/Competition.service";
 import { uploadImage } from "../../Services/Upload.service";
-import { toBase64 } from "../../Services/Utils";
+import { saveSubscription } from "../../Services/Subscription.service";
 
-export default function Competition() {
-    const initialCompetitionData = {
+export default function Subscription() {
+    const initialSubscriptionData = {
         name: "",
-        type: "",
         desc: "",
         active: true,
-        fee: "",
+        type: "",
+        amount: "",
         img: "",
         startAt: "",
         endAt: "",
-        prices: [],
+        plans: "",
     }
-    const [CompetitionData, setCompetitionData] = useState(initialCompetitionData);
+    const [Subscription, setSubscription] = useState(initialSubscriptionData);
 
     const handleChange = (prop, index) => (event) => {
         let value = event.target.value;
         if (prop === 'active') value = event.target.checked;
         if (prop === 'prices') {
-            CompetitionData.prices[index] = event.target.value;
-            value = CompetitionData.prices;
+            Subscription.prices[index] = event.target.value;
+            value = Subscription.prices;
         }
-        setCompetitionData({ ...CompetitionData, [prop]: value });
+        setSubscription({ ...Subscription, [prop]: value });
     };
 
     const onimageUpload = (picture) => {
-        setCompetitionData({ ...CompetitionData, img: picture });
+        setSubscription({ ...Subscription, img: picture });
     }
 
     async function saveDetails(e) {
-        console.log(CompetitionData)
-        // upload competition image to bucket
-        if (CompetitionData.img[0]) {
+        console.log(Subscription)
+        // upload Subscription image to bucket
+        if (Subscription.img[0]) {
             const reader = new FileReader();
-            reader.readAsDataURL(CompetitionData.img[0]);
+            reader.readAsDataURL(Subscription.img[0]);
             reader.onload = () => {
-                uploadImage(reader.result, 'competition', 'small').subscribe((downloadableUrl) => {
-                    CompetitionData.img = downloadableUrl;
-                    // save competition data to db with imag url
-                    saveCompetition(CompetitionData).subscribe((response) => {
-                        console.log('competition success', response);
-                        setCompetitionData(initialCompetitionData);
+                uploadImage(reader.result, 'subscription', 'small').subscribe((downloadableUrl) => {
+                    Subscription.img = downloadableUrl;
+                    // save Subscription data to db with imag url
+                    saveSubscription(Subscription).subscribe((response) => {
+                        console.log('Subscription success', response);
+                        setSubscription(initialSubscriptionData);
                     })
                 })
             }
+        } else {
+            saveSubscription(Subscription).subscribe((response) => {
+                console.log('Subscription success', response);
+                setSubscription(initialSubscriptionData);
+            })
         }
     }
     return (
-        <div className="competition-bo-wrap">
+        <div className="Subscription-bo-wrap">
             <div className="input-wrap">
                 <TextField className="input-field"
                     required
                     id="outlined-required-name"
                     label="Name"
                     onChange={handleChange('name')}
-                    value={CompetitionData.name}
+                    value={Subscription.name}
                     variant="outlined"
                 />
             </div>
@@ -75,32 +79,31 @@ export default function Competition() {
                     id="outlined-required-desc"
                     label="Description"
                     onChange={handleChange('desc')}
-                    value={CompetitionData.desc}
+                    value={Subscription.desc}
                     variant="outlined"
                 />
             </div>
             <div className="input-wrap">
                 <TextField className="input-field"
-                    id="outlined-required-fee"
-                    label="Fee"
+                    id="outlined-required-amount"
+                    label="Amount"
                     type="number"
-                    onChange={handleChange('fee')}
-                    value={CompetitionData.fee}
+                    onChange={handleChange('amount')}
+                    value={Subscription.amount}
                     variant="outlined"
                 />
             </div>
             <div className="input-wrap">
                 <FormControl variant="outlined" className="input-field">
-                    <InputLabel id="select-outlined-label">Type</InputLabel>
+                    <InputLabel id="select-outlined-label">Plans</InputLabel>
                     <Select
                         labelId="select-outlined-label"
                         id="select-outlined"
-                        value={CompetitionData.type}
-                        onChange={handleChange('type')}
-                        label="Type"
+                        value={Subscription.plans}
+                        onChange={handleChange('plans')}
                     >
-                        <MenuItem value="running">Currently Running</MenuItem>
-                        <MenuItem value="upcomming">Up-Comming</MenuItem>
+                        <MenuItem value="monthly">Monthly</MenuItem>
+                        <MenuItem value="annual">Annual</MenuItem>
                     </Select>
                 </FormControl>
             </div>
@@ -111,7 +114,7 @@ export default function Competition() {
                             required
                             color="primary"
                             className="selected-item-checkbox"
-                            checked={CompetitionData.active}
+                            checked={Subscription.active}
                             onChange={handleChange('active')}
                             inputProps={{ 'aria-label': 'secondary checkbox' }}
                         />
@@ -124,7 +127,7 @@ export default function Competition() {
                     id="datetime-local"
                     label="Start Date & Time"
                     type="datetime-local"
-                    value={CompetitionData.startAt}
+                    value={Subscription.startAt}
                     onChange={handleChange('startAt')}
                     InputLabelProps={{
                         shrink: true,
@@ -136,41 +139,11 @@ export default function Competition() {
                     id="datetime-local"
                     label="End Date & Time"
                     type="datetime-local"
-                    value={CompetitionData.endAt}
+                    value={Subscription.endAt}
                     onChange={handleChange('endAt')}
                     InputLabelProps={{
                         shrink: true,
                     }}
-                />
-            </div>
-            <div className="input-wrap">
-                <TextField className="input-field"
-                    required
-                    id="outlined-required-name"
-                    label="First Price"
-                    onChange={handleChange('prices', 0)}
-                    value={CompetitionData.prices[0]}
-                    variant="outlined"
-                />
-            </div>
-            <div className="input-wrap">
-                <TextField className="input-field"
-                    required
-                    id="outlined-required-name"
-                    label="Second Price"
-                    onChange={handleChange('prices', 1)}
-                    value={CompetitionData.prices[1]}
-                    variant="outlined"
-                />
-            </div>
-            <div className="input-wrap">
-                <TextField className="input-field"
-                    required
-                    id="outlined-required-name"
-                    label="Third Price"
-                    onChange={handleChange('prices', 2)}
-                    value={CompetitionData.prices[2]}
-                    variant="outlined"
                 />
             </div>
             <div className="input-wrap">
@@ -183,7 +156,7 @@ export default function Competition() {
                     accept="image/*"
                     withPreview={true}
                     singleImage={true}
-                    label="Select competition image"
+                    label="Select subscription image"
                 />
             </div>
             <Button variant="contained" color="primary">Cancel</Button>

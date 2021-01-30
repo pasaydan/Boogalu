@@ -11,11 +11,11 @@ import Profile from "./Components/Profile/Profile";
 import Upcoming from "./Components/Upcoming";
 import Competitions from "./Components/Competitions";
 import Competition from "./Components/Admin/Competition"
-import Subscription from "./Components/Subscription";
+import Subscriptions from "./Components/Subscriptions";
 import EditProfile from "./Components/EditProfile/EditProfile";
 import ContactUs from "./Components/Contactus";
 import VideoUploader from "./Components/VideoUploader";
-
+import Subscription from "./Components/Admin/Subscription";
 function App() {
   const [isSplashVisible, toggleSplash] = useState(true);
   const [transitionOpacityClass, toggleTransition] = useState('');
@@ -64,7 +64,7 @@ function App() {
                   <Competitions />
                 </Route>
                 <Route exact path="/subscription">
-                  <Subscription />
+                  <Subscriptions />
                 </Route>
                 <Route exact path="/profile">
                   <Profile />
@@ -82,6 +82,9 @@ function App() {
                 {/* admin routes */}
                 <Route exact path="/admin/competition">
                   <Competition />
+                </Route>
+                <Route exact path="/admin/subscription">
+                  <Subscription />
                 </Route>
               </Switch>
               <Footer />
