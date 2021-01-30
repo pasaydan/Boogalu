@@ -5,6 +5,8 @@ import { getActiveSubscriptionsList } from "../../Services/Subscription.service"
 import { setActiveSubscription } from "../../Actions/Subscription";
 import BuySubscription from "../BuySubscription";
 import { enableLoginFlow, disableLoginFlow } from "../../Actions/LoginFlow";
+import { saveUserSubscription } from "../../Services/User.service";
+import { loginUser } from "../../Actions/User";
 
 function Subscriptions() {
     const { state, dispatch } = useStoreConsumer();
@@ -15,22 +17,32 @@ function Subscriptions() {
     const [activeStep, setActiveStep] = useState(1);
 
     // check for payment status if user is in payment flow
-    // useEffect(() => {
-    //     if ('status' in history.location.search) {
-    //         let paymentStatus = history.location.search.split('status=')[1];
-    //         if (paymentStatus == 'success') {
-    //             this.bookingService.updateBookingPaymentStatus(this.paymentProcessingForBooking.key, 'Paid', this.paymentProcessingForBooking).subscribe(() => { });
-    //             $('#paymentSuccessModal').modal('show', { backdrop: 'static', keyboard: false });
-    //             this.bookingService.getBookingByInvoiceId(this.paymentProcessingForBooking.invoiceId).subscribe((data) => {
-    //                 this.webstorageService.setValueInLocalStorage('activeBooking', data[0]);
-    //                 this.activeBooking = data[0];
-    //             })
-    //             this.webstorageService.removeItemFromLocalStorage('paymentProcessingForBooking');
-    //         } else {
-    //             $('#paymentFailModal').modal('show', { backdrop: 'static', keyboard: false })
-    //         }
-    //     } else this.webstorageService.removeItemFromLocalStorage('paymentProcessingForBooking');
-    // }, [])
+    useEffect(() => {
+        if (history.location.search && history.location.search.includes('status')) {
+            let paymentStatus = history.location.search.split('status=')[1];
+            if (paymentStatus == 'success') {
+                const subscriptionSuccessObj = {
+                    subId: state.activeSubscription.key,
+                    type: state.activeSubscription.type,
+                    subscribedAt: new Date()
+                }
+                let loggedInUserData = { ...loggedInUser };
+                if (loggedInUserData.subscriptions) loggedInUserData.subscriptions.push(subscriptionSuccessObj)
+                else (loggedInUserData.subscriptions = [subscriptionSuccessObj]);
+
+                saveUserSubscription(state.activeSubscription.key, loggedInUserData).subscribe((response) => {
+                    dispatch(loginUser(loggedInUserData));
+                    setShowSubscriptionDetails(true);
+                    setActiveStep(2);
+                });
+            } else {
+                // payment failure
+                setShowSubscriptionDetails(true);
+                setActiveStep(3)
+            }
+            history.push('/subscription');
+        }
+    }, [])
 
 
     useEffect(() => {

@@ -57,10 +57,9 @@ export default function BuySubsription({ handleClose, activeStep }) {
         console.log(finalSubscriptionDetails)
     }
 
-    const proceedForpayment = () => {
+    const proceedForPayment = () => {
         var params = "?phone=" + loggedInUser.phone + "&orderId=" + subscriptionDetails.key + "&amount=" + subscriptionDetails.amount + "&uId=" + loggedInUser.uId + "&email=" + loggedInUser.email;
-        // window.open('https://us-central1-theekkaralo-qa.cloudfunctions.net/payment' + params, '_self');
-        window.open('http://localhost:5001/theekkaralo-qa/us-central1/payment' + params, '_self');
+        window.open('http://localhost:5001/boogalusite/us-central1/payment' + params, '_self');
     }
 
     return (
@@ -95,12 +94,16 @@ export default function BuySubsription({ handleClose, activeStep }) {
                                 {/* <div>{subscriptionDetails.amount} / {subscriptionDetails.plans}</div> */}
                                 {/* <div>Valid Upto- {subsciptionValidity}</div> */}
                             </div>
-                            <Button variant="contained" color="secondary" onClick={(e) => proceedForpayment(e)}>Subscribe</Button>
+                            <Button variant="contained" color="secondary" onClick={(e) => proceedForPayment(e)}>Subscribe</Button>
                         </div>}
                         {activeStep == 2 && <div>
-                            payment sucess</div>}
+                            <div>payment success</div>
+                            <Button variant="contained" color="secondary" onClick={(e) => history.push('/competitions')}>Continue to competition</Button>
+                        </div>}
                         {activeStep == 3 && <div>
-                            payment fail</div>}
+                            <div>payment fail</div>
+                            <Button variant="contained" color="secondary" onClick={(e) => proceedForPayment(e)}>Retry</Button>
+                        </div>}
                     </div>
                 </Fade>
             </Modal>
