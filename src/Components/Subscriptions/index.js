@@ -14,6 +14,25 @@ function Subscriptions() {
     const [showSubscriptionDetails, setShowSubscriptionDetails] = useState(false);
     const [activeStep, setActiveStep] = useState(1);
 
+    // check for payment status if user is in payment flow
+    // useEffect(() => {
+    //     if ('status' in history.location.search) {
+    //         let paymentStatus = history.location.search.split('status=')[1];
+    //         if (paymentStatus == 'success') {
+    //             this.bookingService.updateBookingPaymentStatus(this.paymentProcessingForBooking.key, 'Paid', this.paymentProcessingForBooking).subscribe(() => { });
+    //             $('#paymentSuccessModal').modal('show', { backdrop: 'static', keyboard: false });
+    //             this.bookingService.getBookingByInvoiceId(this.paymentProcessingForBooking.invoiceId).subscribe((data) => {
+    //                 this.webstorageService.setValueInLocalStorage('activeBooking', data[0]);
+    //                 this.activeBooking = data[0];
+    //             })
+    //             this.webstorageService.removeItemFromLocalStorage('paymentProcessingForBooking');
+    //         } else {
+    //             $('#paymentFailModal').modal('show', { backdrop: 'static', keyboard: false })
+    //         }
+    //     } else this.webstorageService.removeItemFromLocalStorage('paymentProcessingForBooking');
+    // }, [])
+
+
     useEffect(() => {
         getActiveSubscriptionsList().subscribe((subscriptionsList) => {
             setAvailableSubscriptions(subscriptionsList);

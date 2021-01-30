@@ -55,10 +55,6 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
         // handleClose();
     }
 
-    const updateCompetition = () => {
-
-    }
-
     return (
         <div>
             <h2 id="title">Enroll for {competitionDetails.name}</h2>
@@ -98,7 +94,7 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
                 </div>
             </div>}
             { !competitionDetails?.isUserEnrolled ? <Button variant="contained" color="primary" onClick={() => submitForCompetition()}>Enroll Competition<ArrowRightSharpIcon /></Button>
-                : <Button variant="contained" color="primary" onClick={() => updateCompetition()}>Update Competition<ArrowRightSharpIcon /></Button>
+                : <Button variant="contained" color="primary" onClick={() => submitForCompetition()}>Update Competition<ArrowRightSharpIcon /></Button>
             }
         </div>
     )
