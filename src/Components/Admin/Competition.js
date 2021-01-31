@@ -59,135 +59,136 @@ export default function Competition() {
         }
     }
     return (
-        <div className="competition-bo-wrap">
-            <div className="input-wrap">
-                <TextField className="input-field"
-                    required
-                    id="outlined-required-name"
-                    label="Name"
-                    onChange={handleChange('name')}
-                    value={CompetitionData.name}
-                    variant="outlined"
-                />
+        <div className="competition-bo-wrap clearfix">
+            <h1>Launch a new competition</h1>
+            <div className="inner-form-wrap">
+                <div className="input-wrap">
+                    <TextField className="input-field"
+                        required
+                        id="outlined-required-name"
+                        label="Name"
+                        onChange={handleChange('name')}
+                        value={CompetitionData.name}
+                        variant="outlined"
+                    />
+                </div>
+                <div className="input-wrap">
+                    <TextField className="input-field"
+                        id="outlined-required-desc"
+                        label="Description"
+                        onChange={handleChange('desc')}
+                        value={CompetitionData.desc}
+                        variant="outlined"
+                    />
+                </div>
+                <div className="input-wrap">
+                    <TextField className="input-field"
+                        id="outlined-required-fee"
+                        label="Fee"
+                        type="number"
+                        onChange={handleChange('fee')}
+                        value={CompetitionData.fee}
+                        variant="outlined"
+                    />
+                </div>
+                <div className="input-wrap">
+                    <FormControl variant="outlined" className="input-field">
+                        <InputLabel id="select-outlined-label">Type</InputLabel>
+                        <Select
+                            labelId="select-outlined-label"
+                            id="select-outlined"
+                            value={CompetitionData.type}
+                            onChange={handleChange('type')}
+                            label="Type"
+                        >
+                            <MenuItem value="running">Currently Running</MenuItem>
+                            <MenuItem value="upcomming">Up-Comming</MenuItem>
+                        </Select>
+                    </FormControl>
+                </div>
+                <div className="input-wrap data-time-wrap">
+                    <TextField
+                        id="datetime-local-start"
+                        label="Start Date & Time"
+                        type="datetime-local"
+                        value={CompetitionData.startAt}
+                        onChange={handleChange('startAt')}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                     <TextField
+                        id="datetime-local-end"
+                        label="End Date & Time"
+                        type="datetime-local"
+                        value={CompetitionData.endAt}
+                        onChange={handleChange('endAt')}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </div>
+                <div className="input-wrap">
+                    <TextField className="input-field"
+                        required
+                        id="outlined-required-name"
+                        label="First Price"
+                        onChange={handleChange('prices', 0)}
+                        value={CompetitionData.prices[0]}
+                        variant="outlined"
+                    />
+                </div>
+                <div className="input-wrap">
+                    <TextField className="input-field"
+                        required
+                        id="outlined-required-name"
+                        label="Second Price"
+                        onChange={handleChange('prices', 1)}
+                        value={CompetitionData.prices[1]}
+                        variant="outlined"
+                    />
+                </div>
+                <div className="input-wrap">
+                    <TextField className="input-field"
+                        required
+                        id="outlined-required-name"
+                        label="Third Price"
+                        onChange={handleChange('prices', 2)}
+                        value={CompetitionData.prices[2]}
+                        variant="outlined"
+                    />
+                </div>
+                <div className="input-wrap">
+                    <ImageUploader
+                        withIcon={true}
+                        buttonText='Upload image'
+                        onChange={onimageUpload}
+                        imgExtension={['.jpg', '.gif', '.png', '.gif', '.svg']}
+                        maxFileSize={5242880}
+                        accept="image/*"
+                        withPreview={true}
+                        singleImage={true}
+                        label="Select competition image"
+                    />
+                </div>
+                <div className="input-wrap action-wrap">
+                    <Button variant="contained" color="primary">Cancel</Button>
+                    <Button variant="contained" color="secondary" onClick={(e) => saveDetails(e)}>Save</Button>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                required
+                                color="primary"
+                                className="selected-item-checkbox"
+                                checked={CompetitionData.active}
+                                onChange={handleChange('active')}
+                                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                            />
+                        }
+                        label="Active Competition"
+                    />
+                </div>
             </div>
-            <div className="input-wrap">
-                <TextField className="input-field"
-                    id="outlined-required-desc"
-                    label="Description"
-                    onChange={handleChange('desc')}
-                    value={CompetitionData.desc}
-                    variant="outlined"
-                />
-            </div>
-            <div className="input-wrap">
-                <TextField className="input-field"
-                    id="outlined-required-fee"
-                    label="Fee"
-                    type="number"
-                    onChange={handleChange('fee')}
-                    value={CompetitionData.fee}
-                    variant="outlined"
-                />
-            </div>
-            <div className="input-wrap">
-                <FormControl variant="outlined" className="input-field">
-                    <InputLabel id="select-outlined-label">Type</InputLabel>
-                    <Select
-                        labelId="select-outlined-label"
-                        id="select-outlined"
-                        value={CompetitionData.type}
-                        onChange={handleChange('type')}
-                        label="Type"
-                    >
-                        <MenuItem value="running">Currently Running</MenuItem>
-                        <MenuItem value="upcomming">Up-Comming</MenuItem>
-                    </Select>
-                </FormControl>
-            </div>
-            <div className="input-wrap">
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            required
-                            color="primary"
-                            className="selected-item-checkbox"
-                            checked={CompetitionData.active}
-                            onChange={handleChange('active')}
-                            inputProps={{ 'aria-label': 'secondary checkbox' }}
-                        />
-                    }
-                    label="Active"
-                />
-            </div>
-            <div className="inpyt-wrap">
-                <TextField
-                    id="datetime-local"
-                    label="Start Date & Time"
-                    type="datetime-local"
-                    value={CompetitionData.startAt}
-                    onChange={handleChange('startAt')}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                />
-            </div>
-            <div className="input-wrap">
-                <TextField
-                    id="datetime-local"
-                    label="End Date & Time"
-                    type="datetime-local"
-                    value={CompetitionData.endAt}
-                    onChange={handleChange('endAt')}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                />
-            </div>
-            <div className="input-wrap">
-                <TextField className="input-field"
-                    required
-                    id="outlined-required-name"
-                    label="First Price"
-                    onChange={handleChange('prices', 0)}
-                    value={CompetitionData.prices[0]}
-                    variant="outlined"
-                />
-            </div>
-            <div className="input-wrap">
-                <TextField className="input-field"
-                    required
-                    id="outlined-required-name"
-                    label="Second Price"
-                    onChange={handleChange('prices', 1)}
-                    value={CompetitionData.prices[1]}
-                    variant="outlined"
-                />
-            </div>
-            <div className="input-wrap">
-                <TextField className="input-field"
-                    required
-                    id="outlined-required-name"
-                    label="Third Price"
-                    onChange={handleChange('prices', 2)}
-                    value={CompetitionData.prices[2]}
-                    variant="outlined"
-                />
-            </div>
-            <div className="input-wrap">
-                <ImageUploader
-                    withIcon={true}
-                    buttonText='Upload image'
-                    onChange={onimageUpload}
-                    imgExtension={['.jpg', '.gif', '.png', '.gif', '.svg']}
-                    maxFileSize={5242880}
-                    accept="image/*"
-                    withPreview={true}
-                    singleImage={true}
-                    label="Select competition image"
-                />
-            </div>
-            <Button variant="contained" color="primary">Cancel</Button>
-            <Button variant="contained" color="secondary" onClick={(e) => saveDetails(e)}>Save</Button>
         </div>
     )
 }
