@@ -19,6 +19,8 @@ import stepListData from '../../Data/RegistrationStepData'
 import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
 import { registerUser, getUserByEmail, getUserByPhone } from "../../Services/User.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
+import { displayNotification } from "../../Actions/Notification";
+import { NOTIFICATION_SUCCCESS, NOTIFICATION_ERROR } from "../../Constants";
 import * as $ from 'jquery';
 
 export default function Signup() {
@@ -138,6 +140,11 @@ export default function Signup() {
                 .then(() => {
                     dispatch(disableLoading());
                     dispatch(signupUser(userDetails));
+                    dispatch(displayNotification({
+                        msg: "Registration successfully",
+                        type: NOTIFICATION_SUCCCESS,
+                        time: 3000
+                    }));
                     if (state.currentLoginFlow == 'competition') history.push('/competitions');
                     else if (state.currentLoginFlow == 'subscription') history.push('/subscription');
                     if (state.currentLoginFlow == 'upload-video') history.push('/upload-video');

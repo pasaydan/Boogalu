@@ -6,7 +6,7 @@ import LoyaltyOutlinedIcon from '@material-ui/icons/LoyaltyOutlined';
 import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
 import CollectionsOutlinedIcon from '@material-ui/icons/CollectionsOutlined';
 import PropTypes from 'prop-types';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { useTheme } from '@material-ui/core/styles';
 import SwipeableViews from 'react-swipeable-views';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -20,6 +20,7 @@ import { getCompetitionsList } from "../../Services/Competition.service";
 import { setActiveCompetition } from "../../Actions/Competition";
 import Vedio from "../Vedio/Video";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
+import { removeDataRefetchModuleName } from "../../Actions/Utility";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -47,13 +48,6 @@ TabPanel.propTypes = {
     value: PropTypes.any.isRequired,
 };
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        backgroundColor: theme.palette.background.paper,
-        width: 500,
-    },
-}));
-
 function a11yProps(index) {
     return {
         id: `full-width-tab-${index}`,
@@ -61,7 +55,6 @@ function a11yProps(index) {
     };
 }
 function Profile() {
-    const classes = useStyles();
     const history = useHistory();
     const theme = useTheme();
     const { state, dispatch } = useStoreConsumer();
@@ -86,6 +79,12 @@ function Profile() {
         getCompetitionByUserId(loggedInUser.key).subscribe((list) => { dispatch(disableLoading()); setUserCompetitionsList(list) });
         // getCompetitionByUserId(loggedInUser.key).subscribe((list) => UserLikedVideoList(list));
     }, []);
+
+    useEffect(() => {
+        if (state.refetchDataModule == 'user-uploaded-video') {
+            getUploadedVideosByUserId(loggedInUser.key).subscribe((list) => { dispatch(removeDataRefetchModuleName()); setUserUploadedVideoList(list) });
+        }
+    }, [state])
 
     function onWindowScroll(event) {
         if (window.outerWidth > 1023) {

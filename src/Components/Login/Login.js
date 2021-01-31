@@ -19,6 +19,8 @@ import { loginUser, signupUser } from '../../Actions/User/index';
 import { getUserByEmail, getUserByPhone } from "../../Services/User.service";
 import VideoUploader from "../VideoUploader";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
+import { displayNotification } from "../../Actions/Notification";
+import { NOTIFICATION_SUCCCESS, NOTIFICATION_ERROR } from "../../Constants";
 import * as $ from 'jquery';
 
 export default function Login() {
@@ -172,6 +174,11 @@ export default function Login() {
                         data.source = 'Website';
                         dispatch(loginUser(data));
                         dispatch(disableLoading());
+                        dispatch(displayNotification({
+                            msg: "Login successfully",
+                            type: NOTIFICATION_SUCCCESS,
+                            time: 3000
+                        }));
                         if (state.currentLoginFlow == 'competition') history.push('/competitions');
                         else if (state.currentLoginFlow == 'subscription') history.push('/subscription');
                         else if (state.currentLoginFlow == 'upload-video') setOpenVdoUploadModal(true);
@@ -200,6 +207,11 @@ export default function Login() {
                         setLoginResponseToServer();
                         data.source = thirdPartyResponse.source;
                         dispatch(loginUser(data));
+                        dispatch(displayNotification({
+                            msg: "Login successfully",
+                            type: NOTIFICATION_SUCCCESS,
+                            time: 3000
+                        }));
                         if (state.currentLoginFlow == 'competition') history.push('/competitions');
                         else if (state.currentLoginFlow == 'subscription') history.push('/subscription');
                         else if (state.currentLoginFlow == 'upload-video') setOpenVdoUploadModal(true);

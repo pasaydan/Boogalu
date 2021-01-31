@@ -8,6 +8,8 @@ import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined'
 import { enableLoginFlow } from "../../Actions/LoginFlow";
 import { disableLoginFlow } from "../../Actions/LoginFlow";
 import VideoUploader from "../VideoUploader";
+import { NOTIFICATION_SUCCCESS, NOTIFICATION_ERROR } from "../../Constants";
+import { displayNotification } from "../../Actions/Notification";
 import * as $ from 'jquery';
 const SCROLL_TOP_LIMIT = 200;
 
@@ -84,13 +86,18 @@ function Navigation() {
             const pathName = location?.pathname.split('/')[1];
             if (pathName.includes('register') || pathName.includes('login') || pathName.includes('upload-video') || pathName.includes('admin') || pathName.includes('admin')) setHideVdoUploadBtn(true);
             else setHideVdoUploadBtn(false);
-            if ((!pathName || pathName.includes('lessons') || (pathName.includes('subscription') && state.currentLoginFlow !== 'competition-subscription' && state.currentLoginFlow !== 'competition') || pathName.includes('contactus') || pathName.includes('home')) && state.currentLoginFlow) {
+            if ((!pathName || pathName.includes('lessons') || pathName.includes('contactus') || pathName.includes('home')) && state.currentLoginFlow) {
                 dispatch(disableLoginFlow());
             }
         });
     })
 
     const logout = () => {
+        dispatch(displayNotification({
+            msg: "Logout Successfully",
+            type: NOTIFICATION_SUCCCESS,
+            time: 3000
+        }))
         console.log('logout success');
         dispatch(logoutUser());
         setShowProfileTab(false)
@@ -169,7 +176,7 @@ function Navigation() {
     }
 
     const uploadVdo = (e) => {
-        setHideVdoUploadBtn(true);
+        // setHideVdoUploadBtn(true);
         e.preventDefault();
         if (state.loggedInUser && state.loggedInUser.email && state.loggedInUser.phone) {
             // history.push({
@@ -259,7 +266,7 @@ function Navigation() {
                         </div>
                         : ''
                 }
-                {openVdoUploadModal && <VideoUploader />}
+                {openVdoUploadModal && <VideoUploader handleVdoUploadResponse={() => setOpenVdoUploadModal(false)} />}
             </nav>
         </>
     )

@@ -9,6 +9,7 @@ import { THUMBNAIL_URL } from "../../Constants";
 import ImageUploader from 'react-images-upload';
 import { disableLoginFlow } from "../../Actions/LoginFlow";
 import { FaCloudUploadAlt } from 'react-icons/fa';
+import { setDataRefetchModuleName } from "../../Actions/Utility";
 // modal imports
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -16,6 +17,11 @@ import Fade from '@material-ui/core/Fade';
 import { makeStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
+import { enableLoading, disableLoading } from "../../Actions/Loader";
+//circular progress
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
 
 export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) {
     const history = useHistory();
@@ -26,6 +32,17 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
     const [UploadedVdoUrl, setUploadedVdoUrl] = useState(null);
     const [ThumbnailImage, setThumbnailImage] = useState(null);
     const [openVdoUploaderModal, setOpenVdoUploaderModal] = useState(true);
+    const [progress, setProgress] = useState(0);
+    const [ShowVdoUploadProgress, setShowVdoUploadProgress] = useState(false);
+
+    // useEffect(() => {
+    //     const timer = setInterval(() => {
+    //         setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
+    //     }, 800);
+    //     return () => {
+    //         clearInterval(timer);
+    //     };
+    // }, []);
 
     useEffect(() => {
         dispatch(disableLoginFlow());
@@ -80,10 +97,15 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
         }
 
         uploadVideo(SelectedVideo.file).subscribe((response) => {
+            dispatch(enableLoading());
+            setShowVdoUploadProgress(true);
             if (response.donePercentage) {
+                setProgress(response.donePercentage);
                 console.log('Upload is ' + response.donePercentage + '% done');
             }
             if (response.downloadURL && !UploadedVdoUrl) {
+                // dispatch(enableLoading());
+                setShowVdoUploadProgress(false);
                 setUploadedVdoUrl(response.downloadURL);
                 const uploadObj = {
                     title: SelectedVideo.title,
@@ -94,6 +116,9 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
                 }
                 saveUploadedVideo(uploadObj).subscribe((response) => {
                     console.log("vedio data saved to db", response);
+                    dispatch(disableLoading());
+                    const pathName = history?.location?.pathname.split('/')[1];
+                    pathName.includes('profile') && dispatch(setDataRefetchModuleName('user-uploaded-video'));
                     closeUploaderModal();
                     if (state.currentLoginFlow == 'competition-uploadvdo') handleVdoUploadResponse(3);
                     else history.push('/profile');
@@ -115,9 +140,33 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
         }
         // else if (state.currentLoginFlow == 'competition-uploadvdo') history.push('/competition');
         // handleClose();
+        handleVdoUploadResponse();
         setOpenVdoUploaderModal(false);
 
     }
+
+    function CircularProgressWithLabel(props) {
+        return (
+            <Box position="relative" display="inline-flex">
+                <CircularProgress variant="determinate" {...props} />
+                <Box
+                    top={0}
+                    left={0}
+                    bottom={0}
+                    right={0}
+                    position="absolute"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <Typography variant="caption" component="div" color="textSecondary">{`${Math.round(
+                        props.value,
+                    )}%`}</Typography>
+                </Box>
+            </Box>
+        );
+    }
+
     return (
         <div>
             <Modal
@@ -138,18 +187,18 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
                             <CloseIcon />
                         </IconButton>
                         <h3>Upload your dance performance video!</h3>
-                        <div className={`uploader-wrap ${SelectedVideo.file ? 'selected-file': ''}`}>
+                        <div className={`uploader-wrap ${SelectedVideo.file ? 'selected-file' : ''}`}>
                             {
                                 !SelectedVideo.file ?
-                                <div className="upload-input-wrap">
-                                    <i className="upload-icon"><FaCloudUploadAlt /></i>
-                                    <input id="myInput"
-                                        type="file"
-                                        accept="video/mp4,video/x-m4v,video/*"
-                                        ref={uploaderRef}
-                                        onChange={(e) => onChangeFile(e)}
-                                    />
-                                </div> : ''
+                                    <div className="upload-input-wrap">
+                                        <i className="upload-icon"><FaCloudUploadAlt /></i>
+                                        <input id="myInput"
+                                            type="file"
+                                            accept="video/mp4,video/x-m4v,video/*"
+                                            ref={uploaderRef}
+                                            onChange={(e) => onChangeFile(e)}
+                                        />
+                                    </div> : ''
                             }
 
                             {!SelectedVideo.file ?
@@ -213,6 +262,11 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
                     </div>
                 </Fade>
             </Modal>
+            {ShowVdoUploadProgress && <div className="progress-wrap">
+                <div className="progress-body">
+                    <CircularProgressWithLabel value={progress} />
+                </div>
+            </div>}
         </div>
     )
 }
