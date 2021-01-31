@@ -233,3 +233,61 @@
 [info] i  functions: Your functions could not be parsed due to an issue with your node_modules (see above) {"metadata":{"emulator":{"name":"functions"},"message":"Your functions could not be parsed due to an issue with your node_modules (see above)"}}
 [debug] [2021-01-31T16:36:24.780Z] [worker-~diagnostic~-17912823-f0dc-4a86-9497-5d9ab0082343]: exited {"metadata":{"emulator":{"name":"functions"},"message":"[worker-~diagnostic~-17912823-f0dc-4a86-9497-5d9ab0082343]: exited"}}
 [debug] [2021-01-31T16:36:24.780Z] [worker-~diagnostic~-17912823-f0dc-4a86-9497-5d9ab0082343]: FINISHED {"metadata":{"emulator":{"name":"functions"},"message":"[worker-~diagnostic~-17912823-f0dc-4a86-9497-5d9ab0082343]: FINISHED"}}
+[debug] [2021-01-31T16:42:57.198Z] ----------------------------------------------------------------------
+[debug] [2021-01-31T16:42:57.202Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Admin\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js serve
+[debug] [2021-01-31T16:42:57.202Z] CLI Version:   9.2.2
+[debug] [2021-01-31T16:42:57.202Z] Platform:      win32
+[debug] [2021-01-31T16:42:57.202Z] Node Version:  v12.18.4
+[debug] [2021-01-31T16:42:57.204Z] Time:          Sun Jan 31 2021 22:12:57 GMT+0530 (India Standard Time)
+[debug] [2021-01-31T16:42:57.204Z] ----------------------------------------------------------------------
+[debug] [2021-01-31T16:42:57.205Z] 
+[debug] [2021-01-31T16:42:57.216Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-01-31T16:42:57.217Z] > authorizing via signed-in user
+[debug] [2021-01-31T16:42:57.217Z] [iam] checking project boogalusite for permissions ["firebase.projects.get"]
+[debug] [2021-01-31T16:42:57.221Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2021-01-31T16:42:57.222Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-01-31T16:42:57.490Z] <<< HTTP RESPONSE 200 {"date":"Sun, 31 Jan 2021 16:42:56 GMT","expires":"Mon, 01 Jan 1990 00:00:00 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","pragma":"no-cache","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-01-31T16:42:57.578Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/boogalusite:testIamPermissions  
+ {"permissions":["firebase.projects.get"]}
+[debug] [2021-01-31T16:42:59.109Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sun, 31 Jan 2021 16:42:58 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=1331","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-01-31T16:42:59.113Z] > refreshing access token with scopes: []
+[debug] [2021-01-31T16:42:59.114Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-01-31T16:42:59.575Z] <<< HTTP RESPONSE 200 {"pragma":"no-cache","date":"Sun, 31 Jan 2021 16:42:58 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","expires":"Mon, 01 Jan 1990 00:00:00 GMT","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-01-31T16:42:59.642Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/boogalusite [none]
+[debug] [2021-01-31T16:43:00.070Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/boogalusite 200
+[debug] [2021-01-31T16:43:00.070Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/boogalusite {"projectId":"boogalusite","projectNumber":"417866547364","displayName":"Boogalu","name":"projects/boogalusite","resources":{"hostingSite":"boogalusite","realtimeDatabaseInstance":"boogalusite-default-rtdb","storageBucket":"boogalusite.appspot.com","locationId":"us-central"},"state":"ACTIVE"}
+[info] 
+[info] === Serving from 'F:\Toms\Business-work\Boogalu'...
+[info] 
+[debug] [2021-01-31T16:43:00.074Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/boogalusite/webApps/-/config [none]
+[debug] [2021-01-31T16:43:01.568Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/boogalusite/webApps/-/config 200
+[debug] [2021-01-31T16:43:01.569Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/boogalusite/webApps/-/config {"projectId":"boogalusite","appId":"1:417866547364:web:ddbf4055533ba61f3ee631","databaseURL":"https://boogalusite-default-rtdb.firebaseio.com","storageBucket":"boogalusite.appspot.com","locationId":"us-central","apiKey":"AIzaSyDhsucdNp0aQKuvNHF6acthtUNxrOU54Tc","authDomain":"boogalusite.firebaseapp.com","messagingSenderId":"417866547364","measurementId":"G-0XCNDFZJ1K"}
+[info] i  hosting: Serving hosting files from: build {"metadata":{"emulator":{"name":"hosting"},"message":"Serving hosting files from: \u001b[1mbuild\u001b[22m"}}
+[info] +  hosting: Local server: http://localhost:5000 {"metadata":{"emulator":{"name":"hosting"},"message":"Local server: \u001b[4m\u001b[1mhttp://localhost:5000\u001b[22m\u001b[24m"}}
+[info] +  functions: Using node@12 from host. {"metadata":{"emulator":{"name":"functions"},"message":"Using node@12 from host."}}
+[debug] [2021-01-31T16:43:02.155Z] defaultcredentials: writing to file C:\Users\Admin\AppData\Roaming\firebase\vikasfreelancer1913_gmail_com_application_default_credentials.json
+[debug] [2021-01-31T16:43:02.159Z] Setting GAC to C:\Users\Admin\AppData\Roaming\firebase\vikasfreelancer1913_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to C:\\Users\\Admin\\AppData\\Roaming\\firebase\\vikasfreelancer1913_gmail_com_application_default_credentials.json"}}
+[debug] [2021-01-31T16:43:02.161Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/boogalusite/adminSdkConfig [none]
+[debug] [2021-01-31T16:43:03.022Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/boogalusite/adminSdkConfig 200
+[debug] [2021-01-31T16:43:03.023Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/boogalusite/adminSdkConfig {"projectId":"boogalusite","databaseURL":"https://boogalusite-default-rtdb.firebaseio.com","storageBucket":"boogalusite.appspot.com","locationId":"us-central"}
+[info] i  functions: Watching "F:\Toms\Business-work\Boogalu\functions" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"F:\\Toms\\Business-work\\Boogalu\\functions\" for Cloud Functions..."}}
+[debug] [2021-01-31T16:43:03.135Z] [worker-pool] addWorker(~diagnostic~) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] addWorker(~diagnostic~)"}}
+[debug] [2021-01-31T16:43:03.135Z] [worker-pool] Adding worker with key ~diagnostic~, total=1 {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] Adding worker with key ~diagnostic~, total=1"}}
+[debug] [2021-01-31T16:43:03.135Z] [worker-pool] submitWork(triggerId=) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitWork(triggerId=)"}}
+[debug] [2021-01-31T16:43:03.136Z] [worker-~diagnostic~-7347af54-e0d9-45ac-ae09-fdb33d3ad9df]: Assigning socketPath: \\?\pipe\F:\Toms\Business-work\Boogalu\functions\14460 {"metadata":{"emulator":{"name":"functions"},"message":"[worker-~diagnostic~-7347af54-e0d9-45ac-ae09-fdb33d3ad9df]: Assigning socketPath: \\\\?\\pipe\\F:\\Toms\\Business-work\\Boogalu\\functions\\14460"}}
+[debug] [2021-01-31T16:43:03.137Z] [worker-~diagnostic~-7347af54-e0d9-45ac-ae09-fdb33d3ad9df]: BUSY {"metadata":{"emulator":{"name":"functions"},"message":"[worker-~diagnostic~-7347af54-e0d9-45ac-ae09-fdb33d3ad9df]: BUSY"}}
+[debug] [2021-01-31T16:43:03.461Z] [runtime-status] [14460] Functions runtime initialized. {"cwd":"F:\\Toms\\Business-work\\Boogalu\\functions","node_version":"12.18.4"} {"metadata":{"emulator":{"name":"functions"},"message":"[runtime-status] [14460] Functions runtime initialized. {\"cwd\":\"F:\\\\Toms\\\\Business-work\\\\Boogalu\\\\functions\",\"node_version\":\"12.18.4\"}"}}
+[debug] [2021-01-31T16:43:03.462Z] [runtime-status] [14460] Disabled runtime features: undefined {"metadata":{"emulator":{"name":"functions"},"message":"[runtime-status] [14460] Disabled runtime features: undefined"}}
+[warn] !  The Cloud Functions emulator requires the module "firebase-admin" to be installed. This package is in your package.json, but it's not available. You probably need to run "npm install" in your functions directory. {"metadata":{"emulator":{"name":"functions"},"message":"The Cloud Functions emulator requires the module \"firebase-admin\" to be installed. This package is in your package.json, but it's not available. You probably need to run \"npm install\" in your functions directory."}}
+[info] i  functions: Your functions could not be parsed due to an issue with your node_modules (see above) {"metadata":{"emulator":{"name":"functions"},"message":"Your functions could not be parsed due to an issue with your node_modules (see above)"}}
+[debug] [2021-01-31T16:43:03.488Z] [worker-~diagnostic~-7347af54-e0d9-45ac-ae09-fdb33d3ad9df]: exited {"metadata":{"emulator":{"name":"functions"},"message":"[worker-~diagnostic~-7347af54-e0d9-45ac-ae09-fdb33d3ad9df]: exited"}}
+[debug] [2021-01-31T16:43:03.488Z] [worker-~diagnostic~-7347af54-e0d9-45ac-ae09-fdb33d3ad9df]: FINISHED {"metadata":{"emulator":{"name":"functions"},"message":"[worker-~diagnostic~-7347af54-e0d9-45ac-ae09-fdb33d3ad9df]: FINISHED"}}
+[debug] [2021-01-31T16:43:36.279Z] [work-queue] {"queueLength":1,"workRunningCount":0}
+[debug] [2021-01-31T16:43:36.280Z] [work-queue] {"queueLength":0,"workRunningCount":1}
+[debug] [2021-01-31T16:43:36.290Z] [work-queue] {"queueLength":0,"workRunningCount":0}
+[debug] [2021-01-31T16:43:36.568Z] Functions emulator received unknown request at path /favicon.ico
+[debug] [2021-01-31T16:46:43.420Z] [work-queue] {"queueLength":1,"workRunningCount":0}
+[debug] [2021-01-31T16:46:43.420Z] [work-queue] {"queueLength":0,"workRunningCount":1}
+[debug] [2021-01-31T16:46:43.422Z] [work-queue] {"queueLength":0,"workRunningCount":0}
