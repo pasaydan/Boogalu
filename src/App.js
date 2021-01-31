@@ -20,6 +20,7 @@ import Feeds from "./Components/Feeds";
 import Page404 from './Components/Page404';
 import Loader from "./Components/Loader";
 import { useStoreConsumer } from './Providers/StateProvider';
+import Notification from "./Components/Notification";
 
 function App() {
   const { state } = useStoreConsumer();
@@ -44,6 +45,7 @@ function App() {
             :
             <div className={`main-content-wrapper ${transitionOpacityClass}`}>
               <Navigation />
+              <Notification />
               {state?.isLoading && <Loader />}
               <Switch>
                 <Route exact path="/contactus">

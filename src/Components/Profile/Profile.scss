@@ -127,6 +127,29 @@
     color: black;
 }
 
+.progress-wrap{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background-color: #ffffff7d;
+    opacity: 1;
+}
+.progress-body{
+    margin: 0px auto;
+    width: 140px;
+    text-align: center;
+    position: absolute;
+    top: 48%;
+    /* left: 44%; */
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    z-index: 1500;
+}
 @media screen and (max-width: 1023px) {
   .profile-outer {
         &.sticky {

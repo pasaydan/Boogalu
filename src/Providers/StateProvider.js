@@ -23,7 +23,12 @@ const initialState = localStorage.getItem("Choreoculture") ? JSON.parse(localSto
   : {
     loggedInUser: {},
     isLoading: false,
-    currentLoginFlow: null
+    currentLoginFlow: null,
+    notification: {
+      msg: "",
+      type: "",
+      time: 3000
+    }
   };
 const store = createContext(initialState);
 const { Provider } = store;

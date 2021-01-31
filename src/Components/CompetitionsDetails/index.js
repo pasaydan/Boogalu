@@ -175,26 +175,28 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
         }
     }
 
-    const handleVdoUploadResponse = () => {
-        dispatch(enableLoading());
-        getUploadedVideosByUserId(loggedInUser.key).subscribe((vdoList) => {
-            if (vdoList) {
-                setActiveTabInVdoSelection(1);
-                vdoList.map((uploadedVdo) => {
-                    if (competitionDetails.isUserEnrolled) {
-                        if (uploadedVdo.key == competitionDetails.userSubmitedDetails.vdo.key) {
-                            uploadedVdo.isSelected = true;
-                            let updatedCompetition = competitionDetails;
-                            updatedCompetition.selectedVideo = uploadedVdo;
-                            dispatch(setActiveCompetition(updatedCompetition));
-                            setDisableSubmitVdoButton(true);
+    const handleVdoUploadResponse = (value) => {
+        if (value) {
+            dispatch(enableLoading());
+            getUploadedVideosByUserId(loggedInUser.key).subscribe((vdoList) => {
+                if (vdoList) {
+                    setActiveTabInVdoSelection(1);
+                    vdoList.map((uploadedVdo) => {
+                        if (competitionDetails.isUserEnrolled) {
+                            if (uploadedVdo.key == competitionDetails.userSubmitedDetails.vdo.key) {
+                                uploadedVdo.isSelected = true;
+                                let updatedCompetition = competitionDetails;
+                                updatedCompetition.selectedVideo = uploadedVdo;
+                                dispatch(setActiveCompetition(updatedCompetition));
+                                setDisableSubmitVdoButton(true);
+                            }
                         }
-                    }
-                })
-                dispatch(disableLoading());
-                setUserUploadedVideoList(vdoList)
-            }
-        });
+                    })
+                    dispatch(disableLoading());
+                    setUserUploadedVideoList(vdoList)
+                }
+            });
+        }
     }
 
     return (
@@ -351,7 +353,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                             {ActiveStep === 4 && <div>
                                 <EnrollCompetition handleClose={(e) => handleClose(e)} changeSelectedVdo={() => setActiveStep(3)} />
                             </div>}
-                            {SelectedVideo?.file && <VideoUploader selectedVdo={SelectedVideo} handleVdoUploadResponse={() => handleVdoUploadResponse(3)} />}
+                            {SelectedVideo?.file && <VideoUploader selectedVdo={SelectedVideo} handleVdoUploadResponse={(e) => handleVdoUploadResponse(e)} />}
                         </div>}
                     </div>
                 </Fade>
