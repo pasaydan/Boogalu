@@ -36,6 +36,24 @@
             }
         }
     }
+    .errorMessage {
+        height: 14px;
+        font-size: 14px;
+        line-height: 14px;
+        color: var(--red-text-color);
+        margin-bottom: 5px;
+    }
+    .login-admin-form {
+        width: 400px;
+        margin: 20px auto;
+        display: flex;
+        flex-direction: column;
+        padding: 0 10px;
+        .input-wrap {
+            width: 100%;
+            flex-basis: 100%;
+        }
+    }
 }
 
 .subscription-bo-wrap {
@@ -62,6 +80,10 @@
                     }
                 }
             }
+        }
+
+        .login-admin-form {
+            width: 300px;
         }
     }
 }

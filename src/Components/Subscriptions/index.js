@@ -7,7 +7,8 @@ import BuySubscription from "../BuySubscription";
 import { enableLoginFlow, disableLoginFlow } from "../../Actions/LoginFlow";
 import { saveUserSubscription } from "../../Services/User.service";
 import { loginUser } from "../../Actions/User";
-import { SUBSCRIPTION_ACTIVE_STATUS, SUBSCRIPTION_ENDED_STATUS } from "../../Constants";
+import { SUBSCRIPTION_ACTIVE_STATUS } from "../../Constants";
+import { enableLoading, disableLoading } from "../../Actions/Loader";
 
 function Subscriptions() {
     const { state, dispatch } = useStoreConsumer();
@@ -20,9 +21,11 @@ function Subscriptions() {
 
     // check for payment status if user is in payment flow
     useEffect(() => {
+        dispatch(enableLoading());
         if (history.location.search && history.location.search.includes('status')) {
             getActiveSubscriptionsList().subscribe((subscriptionsList) => {
                 setAvailableSubscriptions(subscriptionsList);
+                dispatch(disableLoading());
                 console.log(subscriptionsList);
             })
             let paymentStatus = history.location.search.split('status=')[1];
@@ -37,9 +40,11 @@ function Subscriptions() {
                 if (loggedInUserData.subscriptions) loggedInUserData.subscriptions.push(subscriptionSuccessObj)
                 else (loggedInUserData.subscriptions = [subscriptionSuccessObj]);
 
+                dispatch(enableLoading());
                 saveUserSubscription(state.activeSubscription.key, loggedInUserData).subscribe((response) => {
                     dispatch(loginUser(loggedInUserData));
                     setShowSubscriptionDetails(true);
+                    dispatch(disableLoading());
                     setActiveStep(2);
                 });
             } else {
@@ -51,6 +56,7 @@ function Subscriptions() {
         } else {
             getActiveSubscriptionsList().subscribe((subscriptionsList) => {
                 setAvailableSubscriptions(subscriptionsList);
+                dispatch(disableLoading());
                 console.log(subscriptionsList);
                 //if user come from competition details 
                 if (state.currentLoginFlow == 'competition-subscription') {

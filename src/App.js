@@ -35,10 +35,6 @@ function App() {
     }, 2800);
   }, []);
 
-  useEffect(() => {
-    console.log("isLoading", state.isLoading)
-  }, [state.isLoading])
-
   return (
     <Router>
       <div className="App">

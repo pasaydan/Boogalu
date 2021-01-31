@@ -11,6 +11,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
+import { enableLoading, disableLoading } from "../../Actions/Loader";
 
 export default function BuySubsription({ handleClose, activeStep }) {
     const history = useHistory();
@@ -35,6 +36,7 @@ export default function BuySubsription({ handleClose, activeStep }) {
     }
 
     const submitForCompetition = () => {
+        dispatch(enableLoading());
         const competitionObj = {
             compId: competitionDetails.key,
             compName: competitionDetails.name,
@@ -52,6 +54,7 @@ export default function BuySubsription({ handleClose, activeStep }) {
         }
         console.log(competitionObj)
         saveCompetition(competitionObj).subscribe((response) => {
+            dispatch(disableLoading());
             console.log('vdo uploaded for competition suceess');
             dispatch(disableLoginFlow());
             history.push('/profile');

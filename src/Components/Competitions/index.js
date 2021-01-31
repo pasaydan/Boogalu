@@ -17,7 +17,7 @@ function Competitions() {
     const prepareUserCompData = (allCompList) => {
         return new Promise((res, rej) => {
             getCompetitionByUserId(loggedInUser.key).subscribe((userCompList) => {
-                disableLoading();
+                dispatch(disableLoading());
                 if (userCompList.length) {
                     allCompList.map((compDetails) => {
                         let isUserEnrolled = userCompList.filter((userCompData) => userCompData.compId == compDetails.key);
@@ -33,7 +33,7 @@ function Competitions() {
     }
 
     useEffect(() => {
-        enableLoading();
+        dispatch(enableLoading());
         getCompetitionsList().subscribe(allCompList => {
             if (allCompList.length && loggedInUser.email && loggedInUser.phone) {
                 // get user submitted competition details

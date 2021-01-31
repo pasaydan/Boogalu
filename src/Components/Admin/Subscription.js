@@ -24,6 +24,27 @@ export default function Subscription() {
         plans: "",
     }
     const [Subscription, setSubscription] = useState(initialSubscriptionData);
+    const [isAdminLoggedIn, toggleAdminLogin] = useState(false);
+    const [adminEmail, setAdminEmail] = useState('');
+    const [adminPwd, setAdminPwd] = useState('');
+    const [loggedInMessages, setLoginMessage] = useState('');
+
+    function handleAdminLogin(value, type) {
+        if (type === 'email') {
+            setAdminEmail(value?.target?.value);
+        } else {
+            setAdminPwd(value?.target?.value);
+        }
+    }
+
+    function triggerLogin(event) {
+        if (adminEmail && adminEmail === 'b2b@boxpuppet.com' && adminPwd && adminPwd === 'Box-puppet@1001') {
+            toggleAdminLogin(true);
+        } else {
+            toggleAdminLogin(false);
+            setLoginMessage('Invalid credentials, please enter valid email-Id and Password!');
+        }
+    }
 
     const handleChange = (prop, index) => (event) => {
         let value = event.target.value;
@@ -64,104 +85,138 @@ export default function Subscription() {
     }
     return (
         <div className="subscription-bo-wrap clearfix">
-            <h1>Create a new Subscription</h1>
-            <div className="inner-form-wrap">
-                <div className="input-wrap">
-                    <TextField className="input-field"
-                        required
-                        id="outlined-required-name"
-                        label="Name"
-                        onChange={handleChange('name')}
-                        value={Subscription.name}
-                        variant="outlined"
-                    />
+            {
+                isAdminLoggedIn ?
+                    <h1>Create a new Subscription</h1>
+                :
+                    <h1>Login to create new Subscription</h1>
+            }
+            {
+                isAdminLoggedIn ?
+                <div className="inner-form-wrap">
+                    <div className="input-wrap">
+                        <TextField className="input-field"
+                            required
+                            id="outlined-required-name"
+                            label="Name"
+                            onChange={handleChange('name')}
+                            value={Subscription.name}
+                            variant="outlined"
+                        />
+                    </div>
+                    <div className="input-wrap">
+                        <TextField className="input-field"
+                            id="outlined-required-desc"
+                            label="Description"
+                            onChange={handleChange('desc')}
+                            value={Subscription.desc}
+                            variant="outlined"
+                        />
+                    </div>
+                    <div className="input-wrap">
+                        <TextField className="input-field"
+                            id="outlined-required-amount"
+                            label="Amount"
+                            type="number"
+                            onChange={handleChange('amount')}
+                            value={Subscription.amount}
+                            variant="outlined"
+                        />
+                    </div>
+                    <div className="input-wrap">
+                        <FormControl variant="outlined" className="input-field">
+                            <InputLabel id="select-outlined-label">Plans</InputLabel>
+                            <Select
+                                labelId="select-outlined-label"
+                                id="select-outlined"
+                                value={Subscription.plans}
+                                onChange={handleChange('plans')}
+                            >
+                                <MenuItem value="monthly">Monthly</MenuItem>
+                                <MenuItem value="annual">Annual</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </div>
+                    <div className="input-wrap data-time-wrap">
+                        <TextField
+                            id="datetime-local-start"
+                            label="Start Date & Time"
+                            type="datetime-local"
+                            value={Subscription.startAt}
+                            onChange={handleChange('startAt')}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />
+                        <TextField
+                            id="datetime-local-end"
+                            label="End Date & Time"
+                            type="datetime-local"
+                            value={Subscription.endAt}
+                            onChange={handleChange('endAt')}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />
+                    </div>
+                    {/* <div className="input-wrap">
+                        <ImageUploader
+                            withIcon={true}
+                            buttonText='Upload image'
+                            onChange={onimageUpload}
+                            imgExtension={['.jpg', '.gif', '.png', '.gif', '.svg']}
+                            maxFileSize={5242880}
+                            accept="image/*"
+                            withPreview={true}
+                            singleImage={true}
+                            label="Select subscription image"
+                        />
+                    </div> */}
+                    <div className="input-wrap action-wrap">
+                        <Button variant="contained" color="primary">Cancel</Button>
+                        <Button variant="contained" color="secondary" onClick={(e) => saveDetails(e)}>Save</Button>
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    required
+                                    color="primary"
+                                    className="selected-item-checkbox"
+                                    checked={Subscription.active}
+                                    onChange={handleChange('active')}
+                                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                />
+                            }
+                            label="Active Subscription"
+                        />
+                    </div>
+                </div> : 
+
+                <div className="login-admin-form">
+                    <p className="errorMessage">{loggedInMessages}</p>
+                    <div className="input-wrap">
+                        <TextField className="input-field"
+                            required
+                            id="admin-id"
+                            label="Email Id"
+                            onChange={value => handleAdminLogin(value, 'email')}
+                            variant="outlined"
+                        />
+                    </div>    
+                    <div className="input-wrap">
+                        <TextField className="input-field"
+                            required
+                            id="admin-pwd"
+                            type="password"
+                            label="Password"
+                            onChange={value => handleAdminLogin(value, 'pwd')}
+                            variant="outlined"
+                        />
+                    </div>
+                    <div className="input-wrap action-wrap">
+                        <Button variant="contained" color="secondary" onClick={(e) => triggerLogin(e)}>Login</Button>
+                    </div>
                 </div>
-                <div className="input-wrap">
-                    <TextField className="input-field"
-                        id="outlined-required-desc"
-                        label="Description"
-                        onChange={handleChange('desc')}
-                        value={Subscription.desc}
-                        variant="outlined"
-                    />
-                </div>
-                <div className="input-wrap">
-                    <TextField className="input-field"
-                        id="outlined-required-amount"
-                        label="Amount"
-                        type="number"
-                        onChange={handleChange('amount')}
-                        value={Subscription.amount}
-                        variant="outlined"
-                    />
-                </div>
-                <div className="input-wrap">
-                    <FormControl variant="outlined" className="input-field">
-                        <InputLabel id="select-outlined-label">Plans</InputLabel>
-                        <Select
-                            labelId="select-outlined-label"
-                            id="select-outlined"
-                            value={Subscription.plans}
-                            onChange={handleChange('plans')}
-                        >
-                            <MenuItem value="monthly">Monthly</MenuItem>
-                            <MenuItem value="annual">Annual</MenuItem>
-                        </Select>
-                    </FormControl>
-                </div>
-                <div className="input-wrap data-time-wrap">
-                    <TextField
-                        id="datetime-local-start"
-                        label="Start Date & Time"
-                        type="datetime-local"
-                        value={Subscription.startAt}
-                        onChange={handleChange('startAt')}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-                    <TextField
-                        id="datetime-local-end"
-                        label="End Date & Time"
-                        type="datetime-local"
-                        value={Subscription.endAt}
-                        onChange={handleChange('endAt')}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-                </div>
-                {/* <div className="input-wrap">
-                    <ImageUploader
-                        withIcon={true}
-                        buttonText='Upload image'
-                        onChange={onimageUpload}
-                        imgExtension={['.jpg', '.gif', '.png', '.gif', '.svg']}
-                        maxFileSize={5242880}
-                        accept="image/*"
-                        withPreview={true}
-                        singleImage={true}
-                        label="Select subscription image"
-                    />
-                </div> */}
-                <div className="input-wrap action-wrap">
-                    <Button variant="contained" color="primary">Cancel</Button>
-                    <Button variant="contained" color="secondary" onClick={(e) => saveDetails(e)}>Save</Button>
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                required
-                                color="primary"
-                                className="selected-item-checkbox"
-                                checked={Subscription.active}
-                                onChange={handleChange('active')}
-                                inputProps={{ 'aria-label': 'secondary checkbox' }}
-                            />
-                        }
-                        label="Active Subscription"
-                    />
-                </div>
-            </div>
+            }
         </div>
     )
 }

@@ -17,6 +17,7 @@ import { enableLoginFlow } from "../../Actions/LoginFlow";
 import { getUploadedVideosByUserId } from "../../Services/UploadedVideo.service";
 import { formatDate, formatTime } from "../../Services/Utils";
 import VideoUploader from "../VideoUploader";
+import { enableLoading, disableLoading } from "../../Actions/Loader";
 
 //activestep 1 === Competition details
 //activestep 2 === User submitted competition details if already enrolled
@@ -175,6 +176,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
     }
 
     const handleVdoUploadResponse = () => {
+        dispatch(enableLoading());
         getUploadedVideosByUserId(loggedInUser.key).subscribe((vdoList) => {
             if (vdoList) {
                 setActiveTabInVdoSelection(1);
@@ -189,6 +191,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                         }
                     }
                 })
+                dispatch(disableLoading());
                 setUserUploadedVideoList(vdoList)
             }
         });
