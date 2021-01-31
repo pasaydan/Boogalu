@@ -11,6 +11,7 @@ import { useStoreConsumer } from '../../Providers/StateProvider';
 import { saveCompetition, updateCompetition } from "../../Services/EnrollCompetition.service";
 import { enableLoginFlow } from "../../Actions/LoginFlow";
 import { setActiveCompetition } from "../../Actions/Competition";
+import { enableLoading, disableLoading } from "../../Actions/Loader";
 
 function EnrollCompetition({ handleClose, changeSelectedVdo }) {
 
@@ -36,6 +37,7 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
     }
 
     const submitForCompetition = () => {
+        dispatch(enableLoading());
         const competitionObj = {
             compId: competitionDetails.key,
             compName: competitionDetails.name,
@@ -54,11 +56,13 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
         console.log(competitionObj)
         if (competitionDetails.isUserEnrolled) {
             updateCompetition(competitionDetails.userSubmitedDetails.key, competitionObj).subscribe((response) => {
+                dispatch(disableLoading());
                 console.log('vdo updated for competition suceess');
                 history.push('/profile');
             })
         } else {
             saveCompetition(competitionObj).subscribe((response) => {
+                dispatch(disableLoading());
                 console.log('vdo uploaded for competition suceess');
                 history.push('/profile');
             })
@@ -118,7 +122,7 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
             {IsUserSubscribed ?
                 <div>
                     {!competitionDetails?.isUserEnrolled ? <Button variant="contained" color="primary" onClick={() => submitForCompetition()}>Complete Enrollment <ArrowRightSharpIcon /></Button>
-                        : <Button variant="contained" color="primary" onClick={() => updateCompetition()}>Update Competition<ArrowRightSharpIcon /></Button>
+                        : <Button variant="contained" color="primary" onClick={() => submitForCompetition()}>Update Competition<ArrowRightSharpIcon /></Button>
                     }
                 </div> :
                 <div>

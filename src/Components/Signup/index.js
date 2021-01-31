@@ -18,6 +18,7 @@ import Select from '@material-ui/core/Select';
 import stepListData from '../../Data/RegistrationStepData'
 import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
 import { registerUser, getUserByEmail, getUserByPhone } from "../../Services/User.service";
+import { enableLoading, disableLoading } from "../../Actions/Loader";
 import * as $ from 'jquery';
 
 export default function Signup() {
@@ -100,6 +101,7 @@ export default function Signup() {
     const checkForUsedPhone = () => {
         return new Promise((res, rej) => {
             getUserByPhone(userDetails.phone).subscribe((data) => {
+                dispatch(disableLoading());
                 if (data && data.length) {
                     setSignUpError('Phone already registered.');
                     rej(false);
@@ -113,6 +115,7 @@ export default function Signup() {
     const checkForUsedEmail = () => {
         return new Promise((res, rej) => {
             getUserByEmail(userDetails.email).subscribe((data) => {
+                dispatch(disableLoading());
                 if (data && data.length) {
                     setSignUpError('Email already registered.');
                     rej(false);
@@ -124,6 +127,7 @@ export default function Signup() {
     }
 
     const setSignupUserCred = (e) => {
+        dispatch(enableLoading());
         if (userDetails.password != userDetails.confirmPassword) {
             setSignUpError('Password dose not match.');
             return;
@@ -132,6 +136,7 @@ export default function Signup() {
         Promise.all([checkForUsedEmail(), checkForUsedPhone()]).then(() => {
             saveUserRegistrationDetails()
                 .then(() => {
+                    dispatch(disableLoading());
                     dispatch(signupUser(userDetails));
                     if (state.currentLoginFlow == 'competition') history.push('/competitions');
                     else if (state.currentLoginFlow == 'subscription') history.push('/subscription');
