@@ -30,6 +30,7 @@ export default function BuySubsription({ handleClose, activeStep }) {
 
     const handleModalClose = () => {
         setOpenDetailsModal(false);
+        dispatch(disableLoginFlow());
         handleClose();
     }
 

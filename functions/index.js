@@ -76,6 +76,7 @@ exports.paymentCallback = functions.https.onRequest((request, response) => {
         var checksum = request.body.CHECKSUMHASH;
         delete request.body.CHECKSUMHASH;
         if (paytm_checksum.verifychecksum(request.body, paytm_config.MERCHANT_KEY, checksum)) {
+            console.log(request.body)
             if (request.body.STATUS === "TXN_SUCCESS") {
                 var paymentRef = db.collection('payments')
                 console.log('paymentRef =>>>', paymentRef)

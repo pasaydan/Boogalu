@@ -21,6 +21,10 @@ function Subscriptions() {
     // check for payment status if user is in payment flow
     useEffect(() => {
         if (history.location.search && history.location.search.includes('status')) {
+            getActiveSubscriptionsList().subscribe((subscriptionsList) => {
+                setAvailableSubscriptions(subscriptionsList);
+                console.log(subscriptionsList);
+            })
             let paymentStatus = history.location.search.split('status=')[1];
             if (paymentStatus == 'success') {
                 const subscriptionSuccessObj = {

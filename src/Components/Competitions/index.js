@@ -5,6 +5,7 @@ import { useStoreConsumer } from '../../Providers/StateProvider';
 import { setActiveCompetition } from "../../Actions/Competition";
 import { disableLoginFlow } from "../../Actions/LoginFlow";
 import { getCompetitionByUserId } from "../../Services/EnrollCompetition.service";
+import { enableLoading, disableLoading } from "../../Actions/Loader";
 
 function Competitions() {
     const { state, dispatch } = useStoreConsumer();
@@ -16,6 +17,7 @@ function Competitions() {
     const prepareUserCompData = (allCompList) => {
         return new Promise((res, rej) => {
             getCompetitionByUserId(loggedInUser.key).subscribe((userCompList) => {
+                disableLoading();
                 if (userCompList.length) {
                     allCompList.map((compDetails) => {
                         let isUserEnrolled = userCompList.filter((userCompData) => userCompData.compId == compDetails.key);
@@ -31,6 +33,7 @@ function Competitions() {
     }
 
     useEffect(() => {
+        enableLoading();
         getCompetitionsList().subscribe(allCompList => {
             if (allCompList.length && loggedInUser.email && loggedInUser.phone) {
                 // get user submitted competition details
@@ -38,7 +41,10 @@ function Competitions() {
                     setCompletitionList(compListWithUserData);
                     console.log(compListWithUserData)
                 })
-            } else setCompletitionList(allCompList);
+            } else {
+                disableLoading();
+                setCompletitionList(allCompList);
+            }
         });
         // if user come from login page
         if (state.currentLoginFlow == 'competition') {
