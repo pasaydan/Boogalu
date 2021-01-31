@@ -35,7 +35,7 @@ export default function Homepage() {
                     <div className="get-started-wrap">
                         <h4>The world’s best dance learning tools – at your fingertips. Start free for 7 days.</h4>
                         <button className="btn primary-light get_started" onClick={() => {
-                            loggedInUser ? history.push('/lessons') : history.push('/login');
+                            loggedInUser ? history.push('/competitions') : history.push('/login');
                         }}>Get Started</button>
                     </div>
                 </div>

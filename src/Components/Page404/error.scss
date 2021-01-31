@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Monoton&display=swap');
+
+.error-page {
+    position: relative;
+    height: 50vh;
+    .error-board {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        height: 150px;
+        width: 300px;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        font: 75px/75px Monoton, cursive;
+        text-align: center;
+        text-transform: uppercase;
+        text-shadow: 0 0 80px red,0 0 30px FireBrick,0 0 6px DarkRed;
+        color: red;
+        p {
+            margin: 0;
+        }
+        .error-text {
+            color: var(--primary-white);
+            text-shadow: 0 0 80px var(--primary-white),0 0 30px #008000,0 0 6px #0000ff;
+        }
+    }
+
+    h3 {
+        color: var(--primary-white);
+        position: absolute;
+        bottom: 20px;
+        width: 100%;
+        text-align: center;
+        font-weight: normal;
+        padding: 0 30px;
+        a {
+            color: var(--primary-link-color-blue);
+        }
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .error-page {
+        h3 {
+            bottom: 0;
+            padding: 0;
+            a {
+                display: block;
+            }
+        }
+    }
+}

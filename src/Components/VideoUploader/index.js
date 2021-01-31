@@ -8,6 +8,7 @@ import { useHistory } from "react-router-dom";
 import { THUMBNAIL_URL } from "../../Constants";
 import ImageUploader from 'react-images-upload';
 import { disableLoginFlow } from "../../Actions/LoginFlow";
+import { FaCloudUploadAlt } from 'react-icons/fa';
 // modal imports
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -132,70 +133,81 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
                 }}
             >
                 <Fade in={openVdoUploaderModal}>
-                    <div className={classes.paper}>
-                        <IconButton onClick={() => closeUploaderModal(false)}>
+                    <div className="video-uploader-inner-modal">
+                        <IconButton className="close-modal-btn" onClick={() => closeUploaderModal(false)}>
                             <CloseIcon />
                         </IconButton>
-                        <div>
-                            <input id="myInput"
-                                type="file"
-                                accept="video/mp4,video/x-m4v,video/*"
-                                ref={uploaderRef}
-                                style={{ display: 'none' }}
-                                onChange={(e) => onChangeFile(e)}
-                            />
+                        <h3>Upload your dance performance video!</h3>
+                        <div className={`uploader-wrap ${SelectedVideo.file ? 'selected-file': ''}`}>
+                            {
+                                !SelectedVideo.file ?
+                                <div className="upload-input-wrap">
+                                    <i className="upload-icon"><FaCloudUploadAlt /></i>
+                                    <input id="myInput"
+                                        type="file"
+                                        accept="video/mp4,video/x-m4v,video/*"
+                                        ref={uploaderRef}
+                                        onChange={(e) => onChangeFile(e)}
+                                    />
+                                </div> : ''
+                            }
 
                             {!SelectedVideo.file ?
-                                <div>
-                                    <div>Upload your favourite video !</div>
+                                <div className="upload-btn-file">
                                     <Button
                                         variant="contained" color="primary"
                                         onClick={() => { uploaderRef.current.click() }}>Upload Video</Button>
                                 </div> :
-                                <div >
+                                <div className="video-information-wrap">
                                     <video width="400" controls>
                                         <source src={SelectedVideo.file} />
                                     </video>
-                                    <div className="input-wrap">
-                                        <ImageUploader
-                                            withIcon={true}
-                                            buttonText='Select image'
-                                            onChange={onThumbnailImgSelect}
-                                            imgExtension={['.jpg', '.gif', '.png', '.gif', '.svg']}
-                                            maxFileSize={5242880}
-                                            accept="image/*"
-                                            withPreview={true}
-                                            singleImage={true}
-                                            label="Select thumbnail image"
-                                        />
+                                    <div className="change-video-btn">
+                                        <Button
+                                            variant="contained" color="primary"
+                                            onClick={() => { uploaderRef.current.click() }}
+                                        >Change vdo</Button>
                                     </div>
-                                    <Button
-                                        variant="contained" color="primary"
-                                        onClick={() => { uploaderRef.current.click() }}
-                                    >Change vdo</Button>
-                                    <div className="input-field-wrap">
-                                        <TextField className="input-field"
-                                            required
-                                            id="outlined-required-title"
-                                            label="Video title"
-                                            onChange={handleChange('title')}
-                                            value={SelectedVideo.title}
-                                            variant="outlined"
-                                            autoComplete="off"
-                                        />
+                                    <div className="input-form-wrap">
+                                        <div className="input-wrap image-uploader-wrap">
+                                            <ImageUploader
+                                                withIcon={true}
+                                                buttonText='Select image'
+                                                onChange={onThumbnailImgSelect}
+                                                imgExtension={['.jpg', '.gif', '.png', '.gif', '.svg']}
+                                                maxFileSize={5242880}
+                                                accept="image/*"
+                                                withPreview={true}
+                                                singleImage={true}
+                                                label="Select thumbnail image"
+                                            />
+                                        </div>
+                                        <div className="text-form-wrapper">
+                                            <div className="input-field-wrap">
+                                                <TextField className="input-field"
+                                                    required
+                                                    id="outlined-required-title"
+                                                    label="Video title"
+                                                    onChange={handleChange('title')}
+                                                    value={SelectedVideo.title}
+                                                    variant="outlined"
+                                                    autoComplete="off"
+                                                />
+                                            </div>
+                                            <div className="input-field-wrap">
+                                                <TextField className="input-field"
+                                                    required
+                                                    id="outlined-required-desc"
+                                                    label="Video description"
+                                                    onChange={handleChange('desc')}
+                                                    value={SelectedVideo.desc}
+                                                    variant="outlined"
+                                                    autoComplete="off"
+                                                />
+                                            </div>
+                                            <Button variant="contained" color="secondary" onClick={(e) => uploadSelectedVideo(e)}>Upload</Button>
+                                        </div>
                                     </div>
-                                    <div className="input-field-wrap">
-                                        <TextField className="input-field"
-                                            required
-                                            id="outlined-required-desc"
-                                            label="Video description"
-                                            onChange={handleChange('desc')}
-                                            value={SelectedVideo.desc}
-                                            variant="outlined"
-                                            autoComplete="off"
-                                        />
-                                    </div>
-                                    <Button variant="contained" color="secondary" onClick={(e) => uploadSelectedVideo(e)}>Upload</Button>
                                 </div>}
                         </div>
                     </div>

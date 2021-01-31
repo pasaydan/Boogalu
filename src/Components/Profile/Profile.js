@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
@@ -71,15 +71,54 @@ function Profile() {
     const [UserLikedVideoList, setUserLikedVideoList] = useState([]);
     const [openUserEnrolledCompDetailsModal, setOpenUserEnrolledCompDetailsModal] = useState(false);
     const [initialStep, setInitialStep] = useState(1);
+    const profileOuterRef = useRef();
+    const userTabsRef = useRef();
 
     useEffect(() => {
         $('html,body').animate({
             scrollTop: 0
         }, 500);
+
+        document.addEventListener('scroll', onWindowScroll);
+
         getUploadedVideosByUserId(loggedInUser.key).subscribe((list) => setUserUploadedVideoList(list));
         getCompetitionByUserId(loggedInUser.key).subscribe((list) => setUserCompetitionsList(list));
         // getCompetitionByUserId(loggedInUser.key).subscribe((list) => UserLikedVideoList(list));
-    }, [])
+    }, []);
+
+    function onWindowScroll(event) {
+        if (window.outerWidth > 1023) {
+            if (window.scrollY >= 302) {
+                toggleStickyHeader('add');
+            } else {
+                toggleStickyHeader('remove');
+            }
+        } else {
+            if (window.scrollY >= 294) {
+                toggleStickyHeader('add');
+            } else {
+                toggleStickyHeader('remove');
+            }
+        }
+    }
+
+    function toggleStickyHeader(toggleValue) {
+        if (toggleValue === 'add') {
+            if (userTabsRef.current) {
+                userTabsRef.current.classList.add('sticky');
+            }
+            if (profileOuterRef.current) {
+                profileOuterRef.current.classList.add('sticky');
+            }
+        } else {
+            if (userTabsRef.current) {
+                userTabsRef.current.classList.remove('sticky');
+            }
+            if (profileOuterRef.current) {
+                profileOuterRef.current.classList.remove('sticky');
+            }
+        }
+    }
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -103,7 +142,7 @@ function Profile() {
     }
 
     return (
-        <div className="profile-outer">
+        <div className="profile-outer"  ref={profileOuterRef}>
             <div className="profile-details-wrap clearfix">
                 <div className="profile-img">
                     <AccountCircleOutlinedIcon />
@@ -142,18 +181,20 @@ function Profile() {
             </div>
             <div className="profile-content-wrap">
                 <div className="headers-wrap">
-                    <Tabs
-                        value={value}
-                        onChange={handleChange}
-                        indicatorColor="primary"
-                        textColor="primary"
-                        variant="fullWidth"
-                        aria-label="full width tabs example"
-                    >
-                        <Tab label="Posts" icon={<CollectionsOutlinedIcon />} {...a11yProps(0)} />
-                        <Tab label="Liked" icon={<FavoriteBorderOutlinedIcon />}{...a11yProps(1)} />
-                        <Tab label="Competitions" icon={<LoyaltyOutlinedIcon />} {...a11yProps(2)} />
-                    </Tabs>
+                    <div className="user-tabs-wrap" ref={userTabsRef}>
+                        <Tabs
+                            value={value}
+                            onChange={handleChange}
+                            indicatorColor="primary"
+                            textColor="primary"
+                            variant="fullWidth"
+                            aria-label="full width tabs example"
+                        >
+                            <Tab label="Posts" icon={<CollectionsOutlinedIcon />} {...a11yProps(0)} />
+                            <Tab label="Liked" icon={<FavoriteBorderOutlinedIcon />}{...a11yProps(1)} />
+                            <Tab label="Competitions" icon={<LoyaltyOutlinedIcon />} {...a11yProps(2)} />
+                        </Tabs>
+                    </div>
                     <SwipeableViews
                         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                         index={value}

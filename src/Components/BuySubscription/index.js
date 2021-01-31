@@ -3,12 +3,12 @@ import Button from '@material-ui/core/Button';
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { useHistory } from "react-router-dom";
 import { formatDate } from "../../Services/Utils";
-import { SUBSCRIPTION_ACTIVE_STATUS, SUBSCRIPTION_ENDED_STATUS } from "../../Constants";
+import { disableLoginFlow } from "../../Actions/LoginFlow";
+import { saveCompetition } from "../../Services/EnrollCompetition.service";
 // modal imports
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
-import { makeStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 
@@ -19,21 +19,7 @@ export default function BuySubsription({ handleClose, activeStep }) {
     const [openDetailsModal, setOpenDetailsModal] = useState(true);
     const subscriptionDetails = state.activeSubscription;
     const [subsciptionValidity, setsubsciptionValidity] = useState(null);
-
-    const useStyles = makeStyles((theme) => ({
-        modal: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-        },
-        paper: {
-            backgroundColor: theme.palette.background.paper,
-            border: '2px solid #000',
-            boxShadow: theme.shadows[5],
-            padding: theme.spacing(2, 4, 3),
-        },
-    }));
-    const classes = useStyles();
+    const competitionDetails = state.activeCompetition;
 
     useEffect(() => {
         let validUpto = new Date();
@@ -44,12 +30,37 @@ export default function BuySubsription({ handleClose, activeStep }) {
 
     const handleModalClose = () => {
         setOpenDetailsModal(false);
+        dispatch(disableLoginFlow());
         handleClose();
+    }
+
+    const submitForCompetition = () => {
+        const competitionObj = {
+            compId: competitionDetails.key,
+            compName: competitionDetails.name,
+            compImg: competitionDetails.img,
+            userId: loggedInUser.key,
+            vdo: {
+                key: competitionDetails.selectedVideo.key,
+                title: competitionDetails.selectedVideo.title,
+                thumbnail: competitionDetails.selectedVideo.thumbnail,
+                url: competitionDetails.selectedVideo.url,
+                desc: competitionDetails.selectedVideo.desc,
+            },
+            ageGroup: competitionDetails.ageGroup,
+            status: 'Submited'
+        }
+        console.log(competitionObj)
+        saveCompetition(competitionObj).subscribe((response) => {
+            console.log('vdo uploaded for competition suceess');
+            dispatch(disableLoginFlow());
+            history.push('/profile');
+        })
     }
 
     const proceedForCompetition = () => {
         if (state.currentLoginFlow == 'competition-subscription') {
-
+            submitForCompetition();
         } else history.push('/competition');
     }
     const proceedForPayment = () => {

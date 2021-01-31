@@ -16,10 +16,15 @@ function Subscriptions() {
     const [AvailableSubscriptions, setAvailableSubscriptions] = useState([]);
     const [showSubscriptionDetails, setShowSubscriptionDetails] = useState(false);
     const [activeStep, setActiveStep] = useState(1);
+    const [alreadySubscribed, setAlreadySubscribed] = useState(false)
 
     // check for payment status if user is in payment flow
     useEffect(() => {
         if (history.location.search && history.location.search.includes('status')) {
+            getActiveSubscriptionsList().subscribe((subscriptionsList) => {
+                setAvailableSubscriptions(subscriptionsList);
+                console.log(subscriptionsList);
+            })
             let paymentStatus = history.location.search.split('status=')[1];
             if (paymentStatus == 'success') {
                 const subscriptionSuccessObj = {
@@ -43,27 +48,30 @@ function Subscriptions() {
                 setActiveStep(3)
             }
             history.push('/subscription');
+        } else {
+            getActiveSubscriptionsList().subscribe((subscriptionsList) => {
+                setAvailableSubscriptions(subscriptionsList);
+                console.log(subscriptionsList);
+                //if user come from competition details 
+                if (state.currentLoginFlow == 'competition-subscription') {
+                    let subscriptionForCompetition = subscriptionsList.filter((data) => data.type === 'competition-enrollment');
+                    dispatch(setActiveSubscription(subscriptionForCompetition[0]));
+                    setActiveStep(1);
+                    setShowSubscriptionDetails(true);
+                }
+            })
+            //is user go to login flow from itself(current page)
+            if (state.currentLoginFlow == 'subscription') {
+                dispatch(disableLoginFlow());
+                setShowSubscriptionDetails(true);
+            }
         }
     }, [])
 
-
     useEffect(() => {
-        getActiveSubscriptionsList().subscribe((subscriptionsList) => {
-            setAvailableSubscriptions(subscriptionsList);
-            console.log(subscriptionsList);
-            //if user come from competition details 
-            if (state.currentLoginFlow == 'competition-subscription') {
-                let subscriptionForCompetition = subscriptionsList.filter((data) => data.type === 'competition-enrollment');
-                dispatch(setActiveSubscription(subscriptionForCompetition[0]));
-                setActiveStep(1);
-            }
-        })
-        //is user go to login flow from itself(current page)
-        if (state.currentLoginFlow == 'subscription') {
-            dispatch(disableLoginFlow());
-            setShowSubscriptionDetails(true);
-        }
-    }, [state.currentLoginFlow])
+        let isSubscribed = loggedInUser?.subscriptions?.filter((data) => data.type === 'competition-enrollment');
+        if (isSubscribed && isSubscribed.length) setAlreadySubscribed(true);
+    }, [state.loggedInUser])
 
     const setSubscription = (subscription) => {
         dispatch(setActiveSubscription(subscription));
@@ -93,6 +101,7 @@ function Subscriptions() {
                                 <div className="plan_tag">{subscription.name}</div>
                                 <div className="plan_price">@{subscription.amount}<span>{subscription.plans}</span></div>
                                 <div className="plan_tag">{subscription.desc}</div>
+                                {alreadySubscribed && <div>Alredy subscribed</div>}
                             </div>
                         })}
                     </div>

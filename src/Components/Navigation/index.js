@@ -61,6 +61,9 @@ function Navigation() {
         setTimeout(() => {
             const pathName = history?.location?.pathname.split('/')[1];
             const navLinks = document.querySelectorAll('.nav-ul a');
+            if (pathName.includes('register') || pathName.includes('login') || pathName.includes('upload-video') || pathName.includes('admin') || pathName.includes('admin')) {
+                setHideVdoUploadBtn(true);
+            }
             if (navLinks && navLinks.length) {
                 navLinks.forEach((ele) => {
                     const getHref = ele.getAttribute('href').toLocaleLowerCase();
@@ -79,9 +82,9 @@ function Navigation() {
     useEffect(() => {
         const listenRouteChange = history.listen((location, action) => {
             const pathName = location?.pathname.split('/')[1];
-            if (pathName.includes('register') || pathName.includes('login') || pathName.includes('upload-video')) setHideVdoUploadBtn(true);
+            if (pathName.includes('register') || pathName.includes('login') || pathName.includes('upload-video') || pathName.includes('admin') || pathName.includes('admin')) setHideVdoUploadBtn(true);
             else setHideVdoUploadBtn(false);
-            if ((!pathName || pathName.includes('lessons') || pathName.includes('subscription') || pathName.includes('contactus') || pathName.includes('home')) && state.currentLoginFlow) {
+            if ((!pathName || pathName.includes('lessons') || (pathName.includes('subscription') && state.currentLoginFlow !== 'competition-subscription' && state.currentLoginFlow !== 'competition') || pathName.includes('contactus') || pathName.includes('home')) && state.currentLoginFlow) {
                 dispatch(disableLoginFlow());
             }
         });
@@ -100,7 +103,7 @@ function Navigation() {
 
         setTimeout(() => {
             const pathName = history?.location?.pathname.split('/')[1];
-            if (pathName.includes('register') || pathName.includes('login') || pathName.includes('upload-video')) setHideVdoUploadBtn(true);
+            if (pathName.includes('register') || pathName.includes('login') || pathName.includes('upload-video') || pathName.includes('admin')) setHideVdoUploadBtn(true);
             else setHideVdoUploadBtn(false);
         });
 

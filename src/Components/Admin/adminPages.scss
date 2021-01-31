@@ -1,0 +1,85 @@
+.competition-bo-wrap, .subscription-bo-wrap {
+    h1 {
+        margin: 20px 0;
+        font-size: 20px;
+        line-height: 30px;
+        text-align: center;
+        color: var(--footer-text-grey);
+    }
+    .inner-form-wrap {
+        width: 80%;
+        margin: 10px auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        .input-wrap {
+            flex-basis: 49%;
+            .MuiSelect-select.MuiSelect-select {
+                padding-bottom: 18px;
+            }
+            &.data-time-wrap {
+                display: flex;
+                justify-content: space-between;
+                .MuiFormControl-root {
+                    flex-basis: 45%;
+                }
+            }
+            &.action-wrap {
+                button, label {
+                    display: inline-block;
+                    margin-right: 20px;
+                    vertical-align: middle;
+                }
+            }
+            .fileContainer {
+                margin: 0;
+            }
+        }
+    }
+}
+
+.subscription-bo-wrap {
+    .inner-form-wrap {
+        .input-wrap {
+            &.data-time-wrap {
+                flex-basis: 100%;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .competition-bo-wrap, .subscription-bo-wrap {
+        .inner-form-wrap {
+            width: 90%;
+            flex-wrap: wrap;
+            .input-wrap {
+                flex-basis: 100%;
+                &.action-wrap {
+                    label {
+                        display: block;
+                        margin-top: 20px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .competition-bo-wrap, .subscription-bo-wrap {
+        .inner-form-wrap {
+            .input-wrap {
+                &.data-time-wrap {
+                    flex-wrap: wrap;
+                    .MuiFormControl-root {
+                        flex-basis: 100%;
+                        &:first-child {
+                            margin-bottom: 20px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
