@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
 import Button from '@material-ui/core/Button';
 import { useHistory } from "react-router-dom";
@@ -9,18 +9,30 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { THUMBNAIL_URL } from '../../Constants';
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { saveCompetition, updateCompetition } from "../../Services/EnrollCompetition.service";
+import { enableLoginFlow } from "../../Actions/LoginFlow";
+import { setActiveCompetition } from "../../Actions/Competition";
 
 function EnrollCompetition({ handleClose, changeSelectedVdo }) {
 
     const history = useHistory();
     const { state, dispatch } = useStoreConsumer();
-    const [AgeGroup, setAgeGroup] = useState('');
     const loggedInUser = state.loggedInUser;
     const competitionDetails = state.activeCompetition;
     const SelectedVdo = competitionDetails.selectedVideo;
-    console.log(competitionDetails);
+    const [IsUserSubscribed, setIsUserSubscribed] = useState(null);
+
+    useEffect(() => {
+        if (loggedInUser.subscriptions) {
+            let isSubscribed = loggedInUser.subscriptions.filter((data) => data.type === 'competition-enrollment');
+            if (isSubscribed.length) setIsUserSubscribed(true);
+            else setIsUserSubscribed(false);
+        } else setIsUserSubscribed(false);
+    }, [])
+
     const onAgeGroupChange = (groupValue) => {
-        setAgeGroup(groupValue);
+        let compData = { ...competitionDetails };
+        compData.ageGroup = groupValue;
+        dispatch(setActiveCompetition(compData));
     }
 
     const submitForCompetition = () => {
@@ -36,7 +48,7 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
                 url: competitionDetails.selectedVideo.url,
                 desc: competitionDetails.selectedVideo.desc,
             },
-            ageGroup: AgeGroup,
+            ageGroup: competitionDetails.ageGroup,
             status: 'Submited'
         }
         console.log(competitionObj)
@@ -53,6 +65,15 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
         }
 
         // handleClose();
+    }
+
+    const proceedForSubscription = () => {
+        handleClose();
+        dispatch(enableLoginFlow('competition-subscription'));
+        history.push({
+            pathname: '/subscription',
+            state: null
+        })
     }
 
     return (
@@ -72,7 +93,7 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
                     <Select
                         labelId="select-outlined-label"
                         id="select-outlined"
-                        value={AgeGroup}
+                        value={competitionDetails.ageGroup}
                         onChange={(e) => onAgeGroupChange(e.target.value)}
                         label="Select Age Group"
                     >
@@ -93,8 +114,17 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
                     <div>{SelectedVdo.title}</div>
                 </div>
             </div>}
-            { !competitionDetails?.isUserEnrolled ? <Button variant="contained" color="primary" onClick={() => submitForCompetition()}>Complete Enrollment <ArrowRightSharpIcon /></Button>
-                : <Button variant="contained" color="primary" onClick={() => updateCompetition()}>Update Competition<ArrowRightSharpIcon /></Button>
+            {/* check for user subscribed or not */}
+            {IsUserSubscribed ?
+                <div>
+                    {!competitionDetails?.isUserEnrolled ? <Button variant="contained" color="primary" onClick={() => submitForCompetition()}>Complete Enrollment <ArrowRightSharpIcon /></Button>
+                        : <Button variant="contained" color="primary" onClick={() => updateCompetition()}>Update Competition<ArrowRightSharpIcon /></Button>
+                    }
+                </div> :
+                <div>
+                    {/* <div>To upload video you need to subscribe</div> */}
+                    <Button variant="contained" color="primary" onClick={() => proceedForSubscription()}>Continue</Button>
+                </div>
             }
         </div>
     )
