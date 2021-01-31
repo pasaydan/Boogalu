@@ -1,0 +1,22 @@
+.feed-wrap{
+    padding: 0 15%;
+    display: flex;
+    flex-wrap: wrap;
+
+    .username{font-size: 20px;
+    font-family: SemiBold;
+    padding-bottom: 7px;}
+
+    > div{
+        margin-right: 20px;
+        width: calc(100%/3 - 20px);
+
+        .iframe{
+            width: 100%;
+        }
+    }
+    &:nth-child(3n+3){
+        margin-right: 0;
+    }
+}
+
