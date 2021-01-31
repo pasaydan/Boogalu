@@ -131,7 +131,7 @@ export default function Subscription() {
                         }}
                     />
                 </div>
-                <div className="input-wrap">
+                {/* <div className="input-wrap">
                     <ImageUploader
                         withIcon={true}
                         buttonText='Upload image'
@@ -143,7 +143,7 @@ export default function Subscription() {
                         singleImage={true}
                         label="Select subscription image"
                     />
-                </div>
+                </div> */}
                 <div className="input-wrap action-wrap">
                     <Button variant="contained" color="primary">Cancel</Button>
                     <Button variant="contained" color="secondary" onClick={(e) => saveDetails(e)}>Save</Button>

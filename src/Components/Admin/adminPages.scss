@@ -38,6 +38,16 @@
     }
 }
 
+.subscription-bo-wrap {
+    .inner-form-wrap {
+        .input-wrap {
+            &.data-time-wrap {
+                flex-basis: 100%;
+            }
+        }
+    }
+}
+
 @media screen and (max-width: 800px) {
     .competition-bo-wrap, .subscription-bo-wrap {
         .inner-form-wrap {
