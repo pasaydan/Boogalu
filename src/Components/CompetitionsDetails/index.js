@@ -291,13 +291,13 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                                     {!competitionDetails?.isUserEnrolled && <Button variant="contained" color="primary" onClick={() => setActiveStep(3)}>Submit Video</Button>}
                                                 </div> :
                                                 <div>
-                                                    <div>To upload video you need to subscribe</div>
+                                                    {/* <div>To upload video you need to subscribe</div> */}
                                                     <Button variant="contained" color="primary" onClick={() => proceedForSubscription()}>Continue</Button>
                                                 </div>
                                             }
                                         </div> :
                                         <div>
-                                            <div>To upload video you need to login first</div>
+                                            {/* <div>To upload video you need to login first</div> */}
                                             <Button variant="contained" color="primary" onClick={() => proceedForLogin()}>Login</Button>
                                         </div>
                                     }

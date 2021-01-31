@@ -16,6 +16,8 @@ import EditProfile from "./Components/EditProfile/EditProfile";
 import ContactUs from "./Components/Contactus";
 import VideoUploader from "./Components/VideoUploader";
 import Subscription from "./Components/Admin/Subscription";
+import Page404 from './Components/Page404';
+
 function App() {
   const [isSplashVisible, toggleSplash] = useState(true);
   const [transitionOpacityClass, toggleTransition] = useState('');
@@ -85,6 +87,11 @@ function App() {
                 </Route>
                 <Route exact path="/admin/subscription">
                   <Subscription />
+                </Route>
+
+                {/* Handling 404 */}
+                <Route>
+                  <Page404 />
                 </Route>
               </Switch>
               <Footer />

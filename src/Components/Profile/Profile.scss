@@ -76,8 +76,46 @@
     font-family: Regular;
 }
 
+.profile-outer {
+    &.sticky {
+        padding-top: 73px;
+    }
+}
 .profile-content-wrap {
     padding: 0 15%;
+    .user-tabs-wrap {
+        transition: all 0.3s ease-in-out;
+        &.sticky {
+            position: fixed;
+            width: 100%;
+            top: 73px;
+            z-index: 2;
+            background: var(--primary-white);
+            left: 0;
+            .MuiTabs-root {
+                margin-bottom: 0;
+            }
+        }
+    }
+    .react-swipeable-view-container {
+        flex-wrap: wrap !important;
+        .flex-container {
+            flex-wrap: wrap !important;
+            justify-content: space-between !important;
+            .flex-basis-3 {
+                margin: 0 10px 10px 0 !important;
+                .vdo-outer {
+                    width: 280px !important;
+                    .vdo-wrap {
+                        width: 100% !important;
+                        iframe {
+                            width: 100% !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 .MuiTabs-root {
@@ -87,4 +125,131 @@
 
 .MuiTab-textColorPrimary.Mui-selected {
     color: black;
+}
+
+@media screen and (max-width: 1023px) {
+  .profile-outer {
+        &.sticky {
+            padding-top: 60px;   
+        }
+      .profile-content-wrap {
+          padding: 0 3%;
+          .react-swipeable-view-container {
+            .flex-container {
+                justify-content: center !important;    
+            }
+          } 
+          .user-tabs-wrap {
+            &.sticky {
+                top: 60px;
+            }
+        }
+      }
+  }  
+}
+
+@media screen and (max-width: 767px) {
+  .profile-outer {
+      .profile-details-wrap {
+        padding: 20px 3% 0;
+        .profile-img {
+            display: block;
+            margin: 0 auto;
+            float: none;
+            width: 100px;
+            height: 100px;
+            svg {
+                width: 100px;
+                height: 100px;
+            }
+        }
+        .profile-details {
+            width: 100%;
+            box-sizing: border-box;
+            float: none;
+            display: block;
+            .username-wrap {
+                padding: 0;
+                margin-bottom: 10px;
+                .username {
+                    font-size: 20px;
+                    line-height: 34px;
+                }
+                .edit-profile {
+                    margin-top: 0;
+                }
+            }
+            .followers-wrap {
+                padding: 0;
+                margin-bottom: 10px;
+                display: flex;
+                justify-content: space-between;
+                div {
+                    padding: 0;
+                    float: none;
+                    display: block;
+                }   
+            }
+            .bio-wrap {
+                display: flex;
+                justify-content: flex-start;
+                .fullname {
+                    margin-right: 20px;
+                    line-height: 20px;
+                }
+            }
+        }
+      }
+      .profile-content-wrap {
+          .react-swipeable-view-container {
+            .MuiBox-root-7 {
+                padding: 20px 10px !important;
+            }
+            .flex-container {
+                justify-content: flex-start !important;
+                .flex-basis-3 {
+                    width: 48% !important;
+                    flex-basis: 48% !important;
+                    .vdo-outer {
+                        width: 100% !important;
+                        .vdo-wrap {
+                            iframe {
+                                height: 200px !important;
+                            }
+                        }
+                    }
+                }
+            }
+          } 
+      }
+  }  
+}
+
+@media screen and (max-width: 554px) {
+  .profile-outer {
+      .profile-content-wrap {
+          .react-swipeable-view-container {
+            .MuiBox-root,
+            .MuiBox-root-7 {
+                padding: 20px 10px !important;
+            }
+            .flex-container {
+                justify-content: flex-start !important;
+                .flex-basis-3 {
+                    width: 100% !important;
+                    flex-basis: 100% !important;
+                    margin: 0 0 20px 0 !important;
+                    .vdo-outer {
+                        width: 100% !important;
+                        .vdo-wrap {
+                            iframe {
+                                height: 230px !important;
+                            }
+                        }
+                    }
+                }
+            }
+          } 
+      }
+  }  
 }
