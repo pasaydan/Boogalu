@@ -213,6 +213,7 @@ function Navigation() {
                             <AccountCircleOutlinedIcon onClick={() => setShowProfileTab(true)} style={{ fontSize: '35px', paddingRight: '20px' }} />
                             {showProfileTab && <div className="profile-tab-wrap">
                                 <div className="profile" onClick={() => { history.push('/profile'); setShowProfileTab(false) }}>Profile</div>
+                                <div className="profile" onClick={() => { history.push('/feeds'); setShowProfileTab(false) }}>Feeds</div>
                                 <div className="logout" onClick={() => logout()}>Logout</div>
                             </div>}
                         </div>

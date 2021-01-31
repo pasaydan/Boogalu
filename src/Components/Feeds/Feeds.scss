@@ -1,22 +1,134 @@
-.feed-wrap{
+.user-dashboard-wrap{
+    margin-top: 50px;
     padding: 0 15%;
+}
+.user-list-wrap{
     display: flex;
-    flex-wrap: wrap;
+    margin-bottom: 30px;
+    width: 100%;
+    overflow-x: auto;
 
-    .username{font-size: 20px;
-    font-family: SemiBold;
-    padding-bottom: 7px;}
+    .user-icon-wrap{
+        width: 86px;
+        margin-right: 10px;
+        text-align: center;
+        >div{
+            font-size: 16px;
+            color: var(--secondary-dark-grey);
+            text-overflow: ellipsis;
+            overflow: hidden; 
+            white-space: nowrap;
+        }
+
+        >svg{
+            font-size: 62px;
+        }
+    }
+}
+
+.user-list-wrap::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}
+.feed-dashboard-wrap{
+    display: flex;
+}
+.loggedin-user{
+    flex: 1;
+    order: 2;
+    margin-bottom: 20px;
+    > div{
+        display: flex;
+        font-size: 26px;
+        align-items: center;
+
+        >svg{
+            font-size: 60px;
+            margin-right: 10px;
+            margin-top: 5px;
+        }
+        
+        .username{
+            font-size: 16px;
+            color: var(--secondary-dark-grey);
+        }
+    }
+}
+
+.feed-wrap{
+    flex: 3;
+    display: flex;
+    order: 1;
+    flex-wrap: wrap;
+    margin-right: 30px;
+
+    .username{
+        font-size: 18px;
+        font-family: SemiBold;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        >svg{
+            font-size: 34px;
+        }
+        > span{
+            margin-left: 10px;
+        }
+    }
 
     > div{
-        margin-right: 20px;
-        width: calc(100%/3 - 20px);
+        margin-right: 40px;
+        width: calc(100%/2 - 40px);
+        margin-bottom: 30px;
 
         .iframe{
             width: 100%;
         }
+        &:nth-child(2n+2){
+            margin-right: 0;
+        }
     }
-    &:nth-child(3n+3){
-        margin-right: 0;
+}
+.like-comment{
+    display: flex;
+    align-items: center;
+    margin: 5px 0 5px;
+    >svg{
+        margin-right: 10px;
     }
 }
 
+@media screen and (max-width: 767px) {
+
+    .user-dashboard-wrap{
+        display: block;
+        padding: 0 4%;
+        margin-top: 20px;
+    }
+    .feed-dashboard-wrap{
+        display: block;
+    }
+    .feed-wrap{
+        flex-wrap: nowrap;
+        display: block;
+
+        .username{
+            > span{
+                margin-left: 5px;
+            }
+        }
+
+        > div{
+            margin-right: 0;
+            width: 100%;
+            margin-bottom: 20px;
+    
+            .iframe{
+                width: 100%;
+            }
+        }
+    }
+    .like-comment{
+        padding: 0 10px;
+    }
+
+}
