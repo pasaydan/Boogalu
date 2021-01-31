@@ -47,3 +47,13 @@ export function getUploadedVideosByUserId(id) {
         })
     })
 }
+
+export function updateVideo(id, data) {
+    data.createdOn = data.createdOn || new Date();
+    data.modifiedOn = new Date();
+    return new Observable((observer) => {
+        uploadedVideosRef.doc(id).set(data).then(() => {
+            observer.next();
+        });
+    });
+}
