@@ -8,7 +8,7 @@ export function getUserByPhone(phone) {
         userRef.where('phone', '==', phone).get().then((querySnapshot) => {
             let user = []
             querySnapshot.forEach(function (doc) {
-                let data = doc.data();
+                let data = doc.data();  
                 data.key = doc.id;
                 user.push(data);
             })
@@ -73,6 +73,20 @@ export function saveUserSubscription(id, data) {
     return new Observable((observer) => {
         userRef.doc(id).set(data).then(() => {
             observer.next();
+        });
+    });
+}
+
+export function getAllUser() {
+    return new Observable((observer) => {
+        userRef.onSnapshot((querySnapshot) => {
+            let users = [];
+            querySnapshot.forEach((doc) => {
+                let data = doc.data();
+                data.key = doc.id;
+                users.push(data);
+            });
+            observer.next(users);
         });
     });
 }

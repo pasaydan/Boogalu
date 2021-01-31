@@ -16,6 +16,7 @@ import EditProfile from "./Components/EditProfile/EditProfile";
 import ContactUs from "./Components/Contactus";
 import VideoUploader from "./Components/VideoUploader";
 import Subscription from "./Components/Admin/Subscription";
+import Feeds from "./Components/Feeds";
 function App() {
   const [isSplashVisible, toggleSplash] = useState(true);
   const [transitionOpacityClass, toggleTransition] = useState('');
@@ -74,6 +75,9 @@ function App() {
                 </Route>
                 <Route exact path="/upload-video">
                   <VideoUploader />
+                </Route>
+                <Route exact path="/feeds">
+                  <Feeds />
                 </Route>
                 <Route exact path="/">
                   <Homepage />
