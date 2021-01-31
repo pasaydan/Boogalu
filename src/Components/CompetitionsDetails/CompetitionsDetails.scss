@@ -113,6 +113,8 @@
                             min-height: 150px;
                             height: 152px;
                             cursor: pointer;
+                            position: relative;
+                            border: 2px solid transparent;
                             .vdo-wrap {
                                 position: relative;
                                 height: 100%;
@@ -128,7 +130,7 @@
                                 margin-top: 10px;
                             }
                             &.selected-vdo {
-                                border: 2px solid var(--secondary-color);
+                                border-color: var(--secondary-color);
                                 &:before, &:after {
                                     content: '';
                                     position: absolute;
