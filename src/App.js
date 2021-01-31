@@ -16,6 +16,7 @@ import EditProfile from "./Components/EditProfile/EditProfile";
 import ContactUs from "./Components/Contactus";
 import VideoUploader from "./Components/VideoUploader";
 import Subscription from "./Components/Admin/Subscription";
+import Feeds from "./Components/Feeds";
 import Page404 from './Components/Page404';
 import Loader from "./Components/Loader";
 import { useStoreConsumer } from './Providers/StateProvider';
@@ -82,6 +83,9 @@ function App() {
                 </Route>
                 <Route exact path="/upload-video">
                   <VideoUploader />
+                </Route>
+                <Route exact path="/feeds">
+                  <Feeds />
                 </Route>
                 <Route exact path="/">
                   <Homepage />

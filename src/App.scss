@@ -16,6 +16,7 @@
   --btn-primary-dark-bg: #343a40;
   --copyright-grey: #6b6b6b;
   --box-dark-bg: rgba(41, 37, 37, 0.7);
+  --red-text-color: #cc0000;
 }
 
 .clearfix::after {
@@ -233,6 +234,7 @@ button:focus {
 @import './Components/Contactus/contactus.scss';
 @import './Components/EnrollCompetition/enrollment.scss';
 @import './Components/BuySubscription/BuySubscription.scss';
+@import './Components/Feeds/Feeds.scss';
 @import './Components/VideoUploader/videoUploader.scss';
 @import './Components/Page404/error.scss';
 @import './Components/Admin/adminPages.scss';
