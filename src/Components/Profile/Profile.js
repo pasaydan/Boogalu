@@ -19,6 +19,7 @@ import CompetitionsDetails from "../CompetitionsDetails";
 import { getCompetitionsList } from "../../Services/Competition.service";
 import { setActiveCompetition } from "../../Actions/Competition";
 import Vedio from "../Vedio/Video";
+import { enableLoading, disableLoading } from "../../Actions/Loader";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -80,9 +81,9 @@ function Profile() {
         }, 500);
 
         document.addEventListener('scroll', onWindowScroll);
-
-        getUploadedVideosByUserId(loggedInUser.key).subscribe((list) => setUserUploadedVideoList(list));
-        getCompetitionByUserId(loggedInUser.key).subscribe((list) => setUserCompetitionsList(list));
+        dispatch(enableLoading());
+        getUploadedVideosByUserId(loggedInUser.key).subscribe((list) => { dispatch(disableLoading()); setUserUploadedVideoList(list) });
+        getCompetitionByUserId(loggedInUser.key).subscribe((list) => { dispatch(disableLoading()); setUserCompetitionsList(list) });
         // getCompetitionByUserId(loggedInUser.key).subscribe((list) => UserLikedVideoList(list));
     }, []);
 
@@ -142,7 +143,7 @@ function Profile() {
     }
 
     return (
-        <div className="profile-outer"  ref={profileOuterRef}>
+        <div className="profile-outer" ref={profileOuterRef}>
             <div className="profile-details-wrap clearfix">
                 <div className="profile-img">
                     <AccountCircleOutlinedIcon />

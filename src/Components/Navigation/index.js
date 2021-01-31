@@ -84,7 +84,7 @@ function Navigation() {
             const pathName = location?.pathname.split('/')[1];
             if (pathName.includes('register') || pathName.includes('login') || pathName.includes('upload-video') || pathName.includes('admin') || pathName.includes('admin')) setHideVdoUploadBtn(true);
             else setHideVdoUploadBtn(false);
-            if ((!pathName || pathName.includes('lessons') || pathName.includes('subscription') || pathName.includes('contactus') || pathName.includes('home')) && state.currentLoginFlow) {
+            if ((!pathName || pathName.includes('lessons') || (pathName.includes('subscription') && state.currentLoginFlow !== 'competition-subscription' && state.currentLoginFlow !== 'competition') || pathName.includes('contactus') || pathName.includes('home')) && state.currentLoginFlow) {
                 dispatch(disableLoginFlow());
             }
         });

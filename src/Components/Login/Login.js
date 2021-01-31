@@ -18,6 +18,7 @@ import bgImg from '../../Images/bg1.svg';
 import { loginUser, signupUser } from '../../Actions/User/index';
 import { getUserByEmail, getUserByPhone } from "../../Services/User.service";
 import VideoUploader from "../VideoUploader";
+import { enableLoading, disableLoading } from "../../Actions/Loader";
 import * as $ from 'jquery';
 
 export default function Login() {
@@ -150,6 +151,7 @@ export default function Login() {
         })
     }
     const signinUser = (e, status) => {
+        dispatch(enableLoading());
         setLoginError(null);
         let userData = {};
         switch (status) {
@@ -169,12 +171,14 @@ export default function Login() {
                         setLoginResponseToServer();
                         data.source = 'Website';
                         dispatch(loginUser(data));
+                        dispatch(disableLoading());
                         if (state.currentLoginFlow == 'competition') history.push('/competitions');
                         else if (state.currentLoginFlow == 'subscription') history.push('/subscription');
                         else if (state.currentLoginFlow == 'upload-video') setOpenVdoUploadModal(true);
                         else history.push('/')
                     })
                     .catch((data) => {
+                        dispatch(disableLoading());
                         if (data) {
                             //user not registered
                             history.push({
@@ -192,6 +196,7 @@ export default function Login() {
                 getUserLoginData(userData)
                     .then((data) => {
                         //user is registered
+                        dispatch(disableLoading());
                         setLoginResponseToServer();
                         data.source = thirdPartyResponse.source;
                         dispatch(loginUser(data));
@@ -201,6 +206,7 @@ export default function Login() {
                         else history.push('/')
                     })
                     .catch((data) => {
+                        dispatch(disableLoading());
                         if (data) {
                             data.source = thirdPartyResponse.source;
                             //user not registered

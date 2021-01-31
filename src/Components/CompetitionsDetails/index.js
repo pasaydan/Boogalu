@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
-import { makeStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -18,6 +17,7 @@ import { enableLoginFlow } from "../../Actions/LoginFlow";
 import { getUploadedVideosByUserId } from "../../Services/UploadedVideo.service";
 import { formatDate, formatTime } from "../../Services/Utils";
 import VideoUploader from "../VideoUploader";
+import { enableLoading, disableLoading } from "../../Actions/Loader";
 
 //activestep 1 === Competition details
 //activestep 2 === User submitted competition details if already enrolled
@@ -37,7 +37,6 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
     const [ActiveStep, setActiveStep] = useState(initialStep || 1);
     const [disableSubmitVdoButton, setDisableSubmitVdoButton] = useState(false);
     const [VdoUploadDateLimit, setVdoUploadDateLimit] = useState(null)
-    const [IsUserSubscribed, setIsUserSubscribed] = useState(null);
     const [SelectedVideo, setSelectedVideo] = useState({ title: "", desc: "", file: null });
 
     useEffect(() => {
@@ -53,17 +52,12 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
             new Date(vdoUploadUpto.setDate(vdoUploadUpto.getDate() + 30));
             let displayDate = formatDate(vdoUploadUpto, 3) + " " + formatTime(vdoUploadUpto)
             setVdoUploadDateLimit(displayDate);
-            if (loggedInUser.subscriptions) {
-                let isSubscribed = loggedInUser.subscriptions.filter((data) => data.type === 'competition-enrollment');
-                if (isSubscribed.length) setIsUserSubscribed(true);
-                else setIsUserSubscribed(false);
-            } else setIsUserSubscribed(false);
         }
     }, [competitionDetails]);
 
     useEffect(() => {
         (loggedInUser.email && loggedInUser.phone && ActiveStep === 3 && userUploadedVdos.length == 0) && getUploadedVideosByUserId(loggedInUser.key).subscribe((vdoList) => {
-            if (vdoList) {
+            if (vdoList && vdoList.length) {
                 vdoList.map((uploadedVdo) => {
                     if (competitionDetails.isUserEnrolled) {
                         if (uploadedVdo.key == competitionDetails.userSubmitedDetails.vdo.key) {
@@ -76,9 +70,33 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                     }
                 })
                 setUserUploadedVideoList(vdoList)
+            } else {
+                // if user not uploaded any video then set upload new tab active
+                setActiveTabInVdoSelection(2);
             }
         });
     }, [ActiveStep]);
+
+    const setActiveTabInVdoSelection = (tab) => {
+        const getCurrentData = 'tab-2';
+        const tabsLinks = Array.from(document.querySelectorAll('.tab-links'));
+        const tabsBoxes = Array.from(document.querySelectorAll('.js-inner-tab-box'));
+        let currentTab = tab == 1 ? 'tab-1' : 'tab-2'
+        tabsBoxes.forEach(item => {
+            if (item.getAttribute('id') === currentTab) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+        tabsLinks.forEach(item => {
+            if (item?.dataset?.id === currentTab) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    }
 
     function handleClickOutside(event) {
         if (tncRef && tncRef.current && !tncRef.current.contains(event.target)) {
@@ -139,15 +157,6 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
         })
     }
 
-    const proceedForSubscription = () => {
-        handleClose();
-        dispatch(enableLoginFlow('competition-subscription'));
-        history.push({
-            pathname: '/subscription',
-            state: null
-        })
-    }
-
     async function onChangeFile(event) {
         event.preventDefault();
         var file = event.target.files[0];
@@ -167,8 +176,10 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
     }
 
     const handleVdoUploadResponse = () => {
+        dispatch(enableLoading());
         getUploadedVideosByUserId(loggedInUser.key).subscribe((vdoList) => {
             if (vdoList) {
+                setActiveTabInVdoSelection(1);
                 vdoList.map((uploadedVdo) => {
                     if (competitionDetails.isUserEnrolled) {
                         if (uploadedVdo.key == competitionDetails.userSubmitedDetails.vdo.key) {
@@ -180,6 +191,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                         }
                     }
                 })
+                dispatch(disableLoading());
                 setUserUploadedVideoList(vdoList)
             }
         });
@@ -285,16 +297,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                     {/* check for user logged in or not */}
                                     {loggedInUser.email && loggedInUser.username ?
                                         <div>
-                                            {/* check for user subscribed or not */}
-                                            {IsUserSubscribed ?
-                                                <div>
-                                                    {!competitionDetails?.isUserEnrolled && <Button variant="contained" color="primary" onClick={() => setActiveStep(3)}>Submit Video</Button>}
-                                                </div> :
-                                                <div>
-                                                    {/* <div>To upload video you need to subscribe</div> */}
-                                                    <Button variant="contained" color="primary" onClick={() => proceedForSubscription()}>Continue</Button>
-                                                </div>
-                                            }
+                                            {!competitionDetails?.isUserEnrolled && <Button variant="contained" color="primary" onClick={() => setActiveStep(3)}>Submit Video</Button>}
                                         </div> :
                                         <div>
                                             {/* <div>To upload video you need to login first</div> */}
@@ -321,7 +324,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                         </div>
                                         <div className="tab-content-wrap">
                                             <div id="tab-1" className="inner-box js-inner-tab-box list-box active">
-                                                {userUploadedVdos.length && userUploadedVdos.map((item, index) => {
+                                                {userUploadedVdos.length != 0 && userUploadedVdos.map((item, index) => {
                                                     return <div className={item.isSelected ? 'vdo-outer selected-vdo' : 'vdo-outer'} key={index} onClick={(e) => selectVdo(e, item)}>
                                                         <div className="vdo-wrap" >
                                                             <img src={item.thumbnail ? item.thumbnail : THUMBNAIL_URL} alt="video-url" />

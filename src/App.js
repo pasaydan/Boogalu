@@ -17,8 +17,11 @@ import ContactUs from "./Components/Contactus";
 import VideoUploader from "./Components/VideoUploader";
 import Subscription from "./Components/Admin/Subscription";
 import Page404 from './Components/Page404';
+import Loader from "./Components/Loader";
+import { useStoreConsumer } from './Providers/StateProvider';
 
 function App() {
+  const { state } = useStoreConsumer();
   const [isSplashVisible, toggleSplash] = useState(true);
   const [transitionOpacityClass, toggleTransition] = useState('');
   useEffect(() => {
@@ -40,6 +43,7 @@ function App() {
             :
             <div className={`main-content-wrapper ${transitionOpacityClass}`}>
               <Navigation />
+              {state?.isLoading && <Loader />}
               <Switch>
                 <Route exact path="/contactus">
                   <ContactUs />
