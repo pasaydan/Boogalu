@@ -7,6 +7,7 @@ import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import Favorite from '@material-ui/icons/Favorite';
 import CommentOutlined from '@material-ui/icons/CommentOutlined';
 import { useStoreConsumer } from '../../Providers/StateProvider';
+import Comments from '../Comments'
 
 import Vedio from "../Vedio/Video";
 
@@ -14,6 +15,8 @@ function Feeds() {
 
     const [feedList, setFeedList] = useState([])
     const [userList, setUserList] = useState([])
+    const [activeVideoObj, setActiveVideoObj] = useState({})
+    const [commentModal, setCommentModal] = useState(false)
     const { state, dispatch } = useStoreConsumer();
     const loggedInUser = state.loggedInUser;
 
@@ -64,7 +67,29 @@ function Feeds() {
         })
     }
 
+    const handleComments = (commentString) => {
+        let videoObj = { ...activeVideoObj }
+        if(videoObj.comments){
+            videoObj.comments.push({ value: commentString, userId: loggedInUser.key, userName: loggedInUser.username})
+        }else{
+            videoObj.comments = [{ value: commentString, userId: loggedInUser.key, userName: loggedInUser.username }]
+        }
+        
+        updateVideo(videoObj.key, videoObj).subscribe(() => {
+            let feedListCopy = [...feedList]
+            feedListCopy.map((feed)=>{
+                if(feed.key == videoObj.key){
+                    feed.comments = videoObj.comments
+                }
+            })
+            setFeedList(feedListCopy)
+        })
+    }
 
+    const handleCommentClick = (video)=>{
+        setCommentModal(true);
+        setActiveVideoObj(video)
+    }
 
     useEffect(() => {
         Promise.all([getAllUserList(), getAllUploadedVideos()]).then((data) => {
@@ -126,7 +151,7 @@ function Feeds() {
                                     {feed.likes && feed.likes.length > 0 && <div className="likes-count">{feed.likes.length} Likes</div>}
                                     {!feed.isLiked && <FavoriteBorder onClick={() => handleLikes(feed,'liked')} />}
                                     {feed.isLiked && <Favorite onClick={() => handleLikes(feed,'unliked')} />}
-                                    <CommentOutlined />
+                                    <CommentOutlined onClick={() => handleCommentClick(feed)} />
                                 </div>
 
                             </div>
@@ -134,6 +159,9 @@ function Feeds() {
                     })}
                 </div>
             </div>
+
+            {commentModal && <Comments handleClose={() => setCommentModal(false)} handleLikes={handleLikes} handleComments={handleComments} videoObj={activeVideoObj} />}
+
         </div>
     )
 }
