@@ -1,0 +1,73 @@
+.feed-card{
+    .username{
+        font-size: 18px;
+        font-family: SemiBold;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        >svg{
+            font-size: 34px;
+        }
+        > span{
+            margin-left: 10px;
+        }
+    }
+}
+.comment-outer-wrap{
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.comment-outer-wrap::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}
+.comment-wrap{
+    font-size: 14px;
+    font-weight: 400;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+
+    .username{
+        font-size: 18px;
+        margin: 0 6px;
+        font-weight: 500;
+    }
+}
+.comments-count{
+    font-size: 14px;
+    color: var(--secondary-dark-grey);
+    font-weight: 450;
+    margin-right: 3px;
+    line-height: 18px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.commnet-input-wrap{
+    display: flex;
+    align-items: center;
+    > div{
+        flex: 1;
+    }
+    >svg{
+        margin-left: 10px;
+    }
+}
+
+.comment-modal{
+    max-width: 390px;
+    height: auto;
+}
+
+@media screen and (max-width: 767px) {
+    .subscription-modal-box {
+        .subscription-inner-modal {
+            width: 90%;
+            height: auto;
+            .subs-details-wrap {
+                margin-bottom: 50px;
+            }
+        }
+    }
+}

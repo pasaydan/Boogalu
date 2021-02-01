@@ -67,6 +67,25 @@ function Feeds() {
         })
     }
 
+    const handleComments = (commentString) => {
+        let videoObj = { ...activeVideoObj }
+        if(videoObj.comments){
+            videoObj.comments.push({ value: commentString, userId: loggedInUser.key, userName: loggedInUser.username})
+        }else{
+            videoObj.comments = [{ value: commentString, userId: loggedInUser.key, userName: loggedInUser.username }]
+        }
+        
+        updateVideo(videoObj.key, videoObj).subscribe(() => {
+            let feedListCopy = [...feedList]
+            feedListCopy.map((feed)=>{
+                if(feed.key == videoObj.key){
+                    feed.comments = videoObj.comments
+                }
+            })
+            setFeedList(feedListCopy)
+        })
+    }
+
     const handleCommentClick = (video)=>{
         setCommentModal(true);
         setActiveVideoObj(video)
@@ -141,7 +160,7 @@ function Feeds() {
                 </div>
             </div>
 
-            {commentModal && <Comments handleClose={() => setCommentModal(false)} handleLikes={handleLikes} videoObj={activeVideoObj} />}
+            {commentModal && <Comments handleClose={() => setCommentModal(false)} handleLikes={handleLikes} handleComments={handleComments} videoObj={activeVideoObj} />}
 
         </div>
     )
