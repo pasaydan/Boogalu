@@ -10,6 +10,6 @@ export const enableLoading = () => {
 export const disableLoading = () => {
     return {
         type: DISABLE_LOADER,
-        payload: false
+        payload: null
     }
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { signupUser } from '../../Actions/User';
@@ -20,7 +20,8 @@ import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
 import { registerUser, getUserByEmail, getUserByPhone } from "../../Services/User.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { displayNotification } from "../../Actions/Notification";
-import { NOTIFICATION_SUCCCESS, NOTIFICATION_ERROR } from "../../Constants";
+import { NOTIFICATION_SUCCCESS, NOTIFICATION_ERROR, MALE_PROFILE_DEFAULT_IMAGE, FEMALE_PROFILE_DEFAULT_IMAGE } from "../../Constants";
+import { uploadImage } from "../../Services/Upload.service";
 import * as $ from 'jquery';
 
 export default function Signup() {
@@ -46,6 +47,7 @@ export default function Signup() {
     const [showNextButton, setShowNextButton] = useState(false);
     const [stepData, setStepListData] = useState(stepListData);
     const [selectedOptionsList, setSelectedOptionsList] = useState([]);
+    const uploaderRef = useRef(null);
 
     const handleChange = (prop) => (event) => {
         setUserDetails({ ...userDetails, [prop]: event.target.value });
@@ -63,6 +65,9 @@ export default function Signup() {
         $('html,body').animate({
             scrollTop: 0
         }, 500);
+        if (userDetails && !userDetails.profileImage) {
+            setUserDetails({ ...userDetails, profileImage: MALE_PROFILE_DEFAULT_IMAGE })
+        }
     }, [])
 
     useEffect(() => {
@@ -93,10 +98,21 @@ export default function Signup() {
 
     const saveUserRegistrationDetails = () => {
         return new Promise((res, rej) => {
-            registerUser(userDetails).subscribe((data) => {
-                console.log('user registered success', data);
-                res();
-            })
+            dispatch(enableLoading());
+            if (userDetails.profileImage != MALE_PROFILE_DEFAULT_IMAGE) {
+                uploadImage(userDetails.profileImage, 'user', 'small').subscribe((downloadableUrl) => {
+                    userDetails.profileImage = downloadableUrl;
+                    registerUser(userDetails).subscribe((data) => {
+                        console.log('user registered success', data);
+                        res(data.key);
+                    })
+                })
+            } else {
+                registerUser(userDetails).subscribe((data) => {
+                    console.log('user registered success', data);
+                    res(data.key);
+                })
+            }
         })
     }
 
@@ -137,7 +153,8 @@ export default function Signup() {
 
         Promise.all([checkForUsedEmail(), checkForUsedPhone()]).then(() => {
             saveUserRegistrationDetails()
-                .then(() => {
+                .then((userKey) => {
+                    userDetails.key = userKey;
                     dispatch(disableLoading());
                     dispatch(signupUser(userDetails));
                     dispatch(displayNotification({
@@ -220,6 +237,22 @@ export default function Signup() {
         if (isAnySelected.length != 0) setShowNextButton(true);
         else setShowNextButton(false);
         setStepListData(stepDataList);
+    }
+
+    async function onChangeFile(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        var file = event.target.files[0];
+        console.log(file);
+        if (file) {
+            setUserDetails({ ...userDetails, profileImage: null });
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                setUserDetails({ ...userDetails, profileImage: reader.result });
+            }
+            reader.onerror = error => console.error(error);
+        }
     }
 
     return (
@@ -390,6 +423,23 @@ export default function Signup() {
                 {/* {NeedToRegisterError && <div className="login-error">
                     {NeedToRegisterError}
                 </div>} */}
+                <div className="profile-img-wrap">
+                    <div className="uploaded-img" >
+                        <img src={userDetails.profileImage} onClick={() => { uploaderRef.current.click() }} />
+                    </div>
+                    <input id="myInput"
+                        type="file"
+                        accept="image/*"
+                        style={{ 'display': 'none' }}
+                        ref={uploaderRef}
+                        onChange={(e) => onChangeFile(e)}
+                    />
+                    {/* <div className="upload-btn-file">
+                        <Button
+                            variant="contained" color="primary"
+                            onClick={() => { uploaderRef.current.click() }}>Upload Video</Button>
+                    </div>  */}
+                </div>
                 <div className="form-outer clearfix">
                     <div className="input-wrap">
                         <TextField className="input-field"

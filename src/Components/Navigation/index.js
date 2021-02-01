@@ -24,6 +24,7 @@ function Navigation() {
     const mobilHomelinkRef = useRef();
     const history = useHistory();
     const { state, dispatch } = useStoreConsumer();
+    const loggedInUser = state.loggedInUser;
     const [openVdoUploadModal, setOpenVdoUploadModal] = useState(false)
     useOnClickOutside(ref, () => setShowProfileTab(false));
 
@@ -178,7 +179,7 @@ function Navigation() {
     const uploadVdo = (e) => {
         // setHideVdoUploadBtn(true);
         e.preventDefault();
-        if (state.loggedInUser && state.loggedInUser.email && state.loggedInUser.phone) {
+        if (loggedInUser && loggedInUser.email && loggedInUser.phone) {
             // history.push({
             //     pathname: '/upload-video',
             //     state: null
@@ -210,14 +211,17 @@ function Navigation() {
                                 <li><a href="#Subscription" onClick={(e) => onClickNav(e, 'subscription')}>Subscription</a></li>
                             </ul> : ''
                     }
-                    {(!state.loggedInUser || !state.loggedInUser.phone) && <div className="flex-2 signup-wrap" >
+                    {(!loggedInUser || !loggedInUser.phone) && <div className="flex-2 signup-wrap" >
                         <button className="btn primary-light login" onClick={() => navigateToUserRegistrationLogin('login')}>Login</button>
                         <button className="btn primary-dark signup" onClick={() => navigateToUserRegistrationLogin('register')}>Sign Up</button>
                     </div>}
 
-                    {state.loggedInUser && state.loggedInUser.phone && <div className="flex-2 signup-wrap" >
+                    {loggedInUser && loggedInUser.phone && <div className="flex-2 signup-wrap" >
                         <div className="profile" ref={ref}>
-                            <AccountCircleOutlinedIcon onClick={() => setShowProfileTab(true)} style={{ fontSize: '35px', paddingRight: '20px' }} />
+                            {loggedInUser.profileImage ? <div>
+                                <img src={loggedInUser.profileImage} onClick={() => setShowProfileTab(true)} style={{ fontSize: '35px', paddingRight: '20px' }} />
+                            </div> : <AccountCircleOutlinedIcon onClick={() => setShowProfileTab(true)} style={{ fontSize: '35px', paddingRight: '20px' }} />}
+                          
                             {showProfileTab && <div className="profile-tab-wrap">
                                 <div className="profile" onClick={() => { history.push('/profile'); setShowProfileTab(false) }}>Profile</div>
                                 <div className="profile" onClick={() => { history.push('/feeds'); setShowProfileTab(false) }}>Feeds</div>

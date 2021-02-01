@@ -69,6 +69,7 @@ function Profile() {
     const userTabsRef = useRef();
 
     useEffect(() => {
+        if (!loggedInUser || !loggedInUser.email) history.push('/login')
         $('html,body').animate({
             scrollTop: 0
         }, 500);
@@ -145,6 +146,7 @@ function Profile() {
         <div className="profile-outer" ref={profileOuterRef}>
             <div className="profile-details-wrap clearfix">
                 <div className="profile-img">
+                    <img src={loggedInUser.profileImage}/>
                     <AccountCircleOutlinedIcon />
                 </div>
                 <div className="profile-details clearfix">
