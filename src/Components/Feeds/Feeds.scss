@@ -1,13 +1,18 @@
-.user-dashboard-wrap{
-    margin-top: 50px;
-    padding: 0 15%;
+.user-dashboard-wrap {
+    max-width: 970px;
+    margin: 20px auto;
+    background: rgba(255, 255, 255, 0.4);
+    padding: 10px 20px;
+    box-sizing: border-box;
+    border-radius: 5px;
 }
-.user-list-wrap{
+.user-list-wrap {
     display: flex;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(0, 0 , 0, 0.1);
     width: 100%;
     overflow-x: auto;
-
     .user-icon-wrap{
         width: 86px;
         margin-right: 10px;
@@ -88,28 +93,39 @@
         }
     }
 }
-.like-comment{
+.video-title-like-wrap {
     display: flex;
-    align-items: center;
-    margin: 5px 0 5px;
-    >svg{
-        margin-right: 10px;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 5px;
+    .title {
+        padding-right: 20px;
+        word-wrap: wrap;
+    }
+    .like-comment {
+        display: flex;
+        align-items: center;
+        >svg{
+            margin-right: 10px;
+        }
+    }
+    .likes-count {
+        font-size: 14px;
+        color: var(--secondary-dark-grey);
+        font-weight: 450;
+        margin-right: 3px;
+        line-height: 18px;
+        cursor: pointer;
     }
 }
-.likes-count{
-    font-size: 14px;
-    color: var(--secondary-dark-grey);
-    font-weight: 450;
-    margin-bottom: 3px;
+
+@media screen and (max-width: 1023px) {
+    .user-dashboard-wrap {
+        max-width: 95%;
+    }
 }
 
 @media screen and (max-width: 767px) {
-
-    .user-dashboard-wrap{
-        display: block;
-        padding: 0 4%;
-        margin-top: 20px;
-    }
     .feed-dashboard-wrap{
         display: block;
     }
