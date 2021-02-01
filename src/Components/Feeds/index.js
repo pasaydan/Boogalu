@@ -126,13 +126,16 @@ function Feeds() {
                             <div>
                                 <Vedio vdoObj={feed} />
                             </div>
-                            <div className="like-comment">
-                                {!feed.isLiked && <FavoriteBorder onClick={() => handleLikes(feed,'liked')} />}
-                                {feed.isLiked && <Favorite onClick={() => handleLikes(feed,'unliked')} />}
-                                <CommentOutlined onClick={() => handleCommentClick(feed)} />
+                            <div className="video-title-like-wrap">
+                                <div className="title">{feed.title}</div>
+                                <div className="like-comment">
+                                    {feed.likes && feed.likes.length > 0 && <div className="likes-count">{feed.likes.length} Likes</div>}
+                                    {!feed.isLiked && <FavoriteBorder onClick={() => handleLikes(feed,'liked')} />}
+                                    {feed.isLiked && <Favorite onClick={() => handleLikes(feed,'unliked')} />}
+                                    <CommentOutlined onClick={() => handleCommentClick(feed)} />
+                                </div>
+
                             </div>
-                            {feed.likes && feed.likes.length > 0 && <div className="likes-count">{feed.likes.length} Likes</div>}
-                            <div>{feed.title}</div>
                         </div>
                     })}
                 </div>
