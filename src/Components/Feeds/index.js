@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { getUploadedVideosList } from "../../Services/UploadedVideo.service";
-import { updateVideo } from "../../Services/UploadedVideo.service";
+import { updateVideoLikes, updateVideoComments } from "../../Services/UploadedVideo.service";
 import { getAllUser } from "../../Services/User.service";
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import Favorite from '@material-ui/icons/Favorite';
@@ -48,7 +48,8 @@ function Feeds() {
             let likes = videoObj.likes.filter(data => data.userId != loggedInUser.key)
             videoObj.likes = likes
         }
-        updateVideo(videoObj.key, videoObj).subscribe(() => {
+        videoObj.likes.map((likeObj) => { delete likeObj.profileImage; delete likeObj.username; })
+        updateVideoLikes(videoObj.key, videoObj).subscribe(() => {
             let feedListCopy = [...feedList]
             feedListCopy.map((feed) => {
                 if (feed.key == videoObj.key) {
@@ -74,7 +75,8 @@ function Feeds() {
             videoObj.comments = [{ value: commentString, userId: loggedInUser.key }]
         }
 
-        updateVideo(videoObj.key, videoObj).subscribe(() => {
+        videoObj.comments.map((commentObj) => { delete commentObj.profileImage; delete commentObj.username; })
+        updateVideoComments(videoObj.key, videoObj).subscribe(() => {
             let feedListCopy = [...feedList]
             feedListCopy.map((feed) => {
                 if (feed.key == videoObj.key) {
