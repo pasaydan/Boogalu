@@ -20,8 +20,8 @@ export default function Notification() {
     }, [state])
     return (
         <>
-            {ShowNotification ? <div className="notification-wrap">
-                <div className={`${ActiveNotification?.type} notification-type`}>
+            {ShowNotification ? <div className={`${ActiveNotification?.type} notification-wrap`}>
+                <div className="notification-type">
                     <div className="notification-msg">{ActiveNotification?.msg}</div>
                 </div>
             </div> : null}
