@@ -2,13 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { getUploadedVideosList } from "../../Services/UploadedVideo.service";
 import { updateVideo } from "../../Services/UploadedVideo.service";
 import { getAllUser } from "../../Services/User.service";
-import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import Favorite from '@material-ui/icons/Favorite';
 import CommentOutlined from '@material-ui/icons/CommentOutlined';
 import { useStoreConsumer } from '../../Providers/StateProvider';
-import Comments from '../Comments'
-
+import VideoDetails from '../VideoDetails'
+import ProfileImage from "../ProfileImage";
 import Vedio from "../Vedio/Video";
 
 function Feeds() {
@@ -39,20 +38,20 @@ function Feeds() {
 
     const handleLikes = (video, status) => {
         let videoObj = { ...video }
-        if(status == 'liked'){
-            if(videoObj.likes){
+        if (status == 'liked') {
+            if (videoObj.likes) {
                 videoObj.likes.push({ value: 1, userId: loggedInUser.key })
-            }else{
+            } else {
                 videoObj.likes = [{ value: 1, userId: loggedInUser.key }]
             }
-        }else{
+        } else {
             let likes = videoObj.likes.filter(data => data.userId != loggedInUser.key)
             videoObj.likes = likes
         }
         updateVideo(videoObj.key, videoObj).subscribe(() => {
             let feedListCopy = [...feedList]
-            feedListCopy.map((feed)=>{
-                if(feed.key == videoObj.key){
+            feedListCopy.map((feed) => {
+                if (feed.key == videoObj.key) {
                     feed.likes = videoObj.likes
                 }
 
@@ -69,16 +68,16 @@ function Feeds() {
 
     const handleComments = (commentString) => {
         let videoObj = { ...activeVideoObj }
-        if(videoObj.comments){
-            videoObj.comments.push({ value: commentString, userId: loggedInUser.key, userName: loggedInUser.username})
-        }else{
-            videoObj.comments = [{ value: commentString, userId: loggedInUser.key, userName: loggedInUser.username }]
+        if (videoObj.comments) {
+            videoObj.comments.push({ value: commentString, userId: loggedInUser.key })
+        } else {
+            videoObj.comments = [{ value: commentString, userId: loggedInUser.key }]
         }
-        
+
         updateVideo(videoObj.key, videoObj).subscribe(() => {
             let feedListCopy = [...feedList]
-            feedListCopy.map((feed)=>{
-                if(feed.key == videoObj.key){
+            feedListCopy.map((feed) => {
+                if (feed.key == videoObj.key) {
                     feed.comments = videoObj.comments
                 }
             })
@@ -86,7 +85,7 @@ function Feeds() {
         })
     }
 
-    const handleCommentClick = (video)=>{
+    const handleCommentClick = (video) => {
         setCommentModal(true);
         setActiveVideoObj(video)
     }
@@ -99,7 +98,8 @@ function Feeds() {
             tempUserList.map((user) => {
                 tempFeedList.map((feed) => {
                     if (user.key == feed.userId) {
-                        feed.username = user.name
+                        feed.username = user.name;
+                        feed.profileImage = user.profileImage;
                     }
                     if (feed.likes && feed.likes.length) {
                         let isAvail = feed.likes.filter(data => data.userId == loggedInUser.key)
@@ -107,10 +107,26 @@ function Feeds() {
                     } else {
                         feed.isLiked = false
                     }
-
+                    if (feed.likes && feed.likes.length) {
+                        feed.likes.map((likeObj) => {
+                            let userData = tempUserList.filter(userObj => userObj.key == likeObj.userId);
+                            if (userData.length != 0) {
+                                likeObj.username = userData[0].username;
+                                likeObj.profileImage = userData[0].profileImage;
+                            }
+                        })
+                    }
+                    if (feed.comments && feed.comments.length) {
+                        feed.comments.map((commentObj) => {
+                            let userData = tempUserList.filter(userObj => userObj.key == commentObj.userId);
+                            if (userData.length != 0) {
+                                commentObj.username = userData[0].username;
+                                commentObj.profileImage = userData[0].profileImage;
+                            }
+                        })
+                    }
                 })
             })
-
             setFeedList(tempFeedList)
         })
     }, [])
@@ -120,26 +136,26 @@ function Feeds() {
             <div className="user-list-wrap">
                 {userList && userList.map((user) => {
                     return <div key={user.key} className="user-icon-wrap">
-                        <AccountCircleOutlinedIcon />
+                        <ProfileImage src={user.profileImage} type="large" />
                         <div>{user.username}</div>
                     </div>
                 })}
             </div>
             <div className="feed-dashboard-wrap">
-                <div className="loggedin-user">
+                {/* <div className="loggedin-user">
                     <div>
-                        <AccountCircleOutlinedIcon />
+                        <ProfileImage src={loggedInUser.profileImage} />
                         <div>
                             <div>{loggedInUser.username}</div>
                             <div className="username">{loggedInUser.name}</div>
                         </div>
                     </div>
-                </div>
+                </div> */}
                 <div className="feed-wrap">
                     {feedList && feedList.map((feed) => {
                         return <div key={feed.key} className="feed-card">
                             <div className="username">
-                                <AccountCircleOutlinedIcon />
+                                <ProfileImage src={feed.profileImage} />
                                 <span>{feed.username}</span>
                             </div>
                             <div>
@@ -149,8 +165,8 @@ function Feeds() {
                                 <div className="title">{feed.title}</div>
                                 <div className="like-comment">
                                     {feed.likes && feed.likes.length > 0 && <div className="likes-count">{feed.likes.length} Likes</div>}
-                                    {!feed.isLiked && <FavoriteBorder title="Unlike" onClick={() => handleLikes(feed,'liked')} />}
-                                    {feed.isLiked && <Favorite title="Like" onClick={() => handleLikes(feed,'unliked')} />}
+                                    {!feed.isLiked && <FavoriteBorder title="Unlike" onClick={() => handleLikes(feed, 'liked')} />}
+                                    {feed.isLiked && <Favorite title="Like" onClick={() => handleLikes(feed, 'unliked')} />}
                                     <CommentOutlined title="comment" onClick={() => handleCommentClick(feed)} />
                                 </div>
 
@@ -160,7 +176,7 @@ function Feeds() {
                 </div>
             </div>
 
-            {commentModal && <Comments handleClose={() => setCommentModal(false)} handleLikes={handleLikes} handleComments={handleComments} videoObj={activeVideoObj} />}
+            {commentModal && <VideoDetails handleClose={() => setCommentModal(false)} handleLikes={handleLikes} handleComments={handleComments} videoObj={activeVideoObj} />}
 
         </div>
     )

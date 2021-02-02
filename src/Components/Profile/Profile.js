@@ -21,6 +21,12 @@ import { setActiveCompetition } from "../../Actions/Competition";
 import Vedio from "../Vedio/Video";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { removeDataRefetchModuleName } from "../../Actions/Utility";
+import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
+import Favorite from '@material-ui/icons/Favorite';
+import CommentOutlined from '@material-ui/icons/CommentOutlined';
+import { updateVideo } from "../../Services/UploadedVideo.service";
+import VideoDetails from '../VideoDetails'
+import { getAllUser } from "../../Services/User.service";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -67,6 +73,8 @@ function Profile() {
     const [initialStep, setInitialStep] = useState(1);
     const profileOuterRef = useRef();
     const userTabsRef = useRef();
+    const [activeVideoObj, setActiveVideoObj] = useState({})
+    const [commentModal, setCommentModal] = useState(false)
 
     useEffect(() => {
         if (!loggedInUser || !loggedInUser.email) history.push('/login')
@@ -76,10 +84,52 @@ function Profile() {
 
         document.addEventListener('scroll', onWindowScroll);
         dispatch(enableLoading());
-        getUploadedVideosByUserId(loggedInUser.key).subscribe((list) => { dispatch(disableLoading()); setUserUploadedVideoList(list) });
         getCompetitionByUserId(loggedInUser.key).subscribe((list) => { dispatch(disableLoading()); setUserCompetitionsList(list) });
         // getCompetitionByUserId(loggedInUser.key).subscribe((list) => UserLikedVideoList(list));
     }, []);
+
+    const getAllUserList = () => {
+        return new Promise((res, rej) => {
+            getAllUser().subscribe((users) => {
+                res(users);
+            });
+        })
+    }
+
+    useEffect(() => {
+        getUploadedVideosByUserId(loggedInUser.key).subscribe((list) => {
+            setUserUploadedVideoList(list);
+            if (list.length != 0) {
+                getAllUserList().then((data) => {
+                    let userList = data;
+                    let userVdoCopy = [...list];
+                    userVdoCopy.map((vdoObj) => {
+                        if (vdoObj.likes && vdoObj.likes.length) {
+                            vdoObj.likes.map((likeObj) => {
+                                let userData = userList.filter(userObj => userObj.key == likeObj.userId);
+                                if (userData.length != 0) {
+                                    likeObj.username = userData[0].username;
+                                    likeObj.profileImage = userData[0].profileImage;
+                                }
+                            })
+                        }
+                        if (vdoObj.comments && vdoObj.comments.length) {
+                            vdoObj.comments.map((commentObj) => {
+                                let userData = userList.filter(userObj => userObj.key == commentObj.userId);
+                                if (userData.length != 0) {
+                                    commentObj.username = userData[0].username;
+                                    commentObj.profileImage = userData[0].profileImage;
+                                }
+                            })
+                        }
+                    })
+                    dispatch(disableLoading());
+                    console.log('userVdoCopy', userVdoCopy)
+                    setUserUploadedVideoList(userVdoCopy)
+                })
+            } else dispatch(disableLoading());
+        });
+    }, [])
 
     useEffect(() => {
         if (state.refetchDataModule == 'user-uploaded-video') {
@@ -142,15 +192,69 @@ function Profile() {
         });
     }
 
+    const handleLikes = (video, status) => {
+        let videoObj = { ...video }
+        if (status == 'liked') {
+            if (videoObj.likes) {
+                videoObj.likes.push({ value: 1, userId: loggedInUser.key })
+            } else {
+                videoObj.likes = [{ value: 1, userId: loggedInUser.key }]
+            }
+        } else {
+            let likes = videoObj.likes.filter(data => data.userId != loggedInUser.key)
+            videoObj.likes = likes
+        }
+        updateVideo(videoObj.key, videoObj).subscribe(() => {
+            let feedListCopy = [...UserUploadedVideoList]
+            feedListCopy.map((feed) => {
+                if (feed.key == videoObj.key) {
+                    feed.likes = videoObj.likes
+                }
+
+                if (feed.likes && feed.likes.length) {
+                    let isAvail = feed.likes.filter(data => data.userId == loggedInUser.key)
+                    isAvail.length > 0 ? feed.isLiked = true : feed.isLiked = false
+                } else {
+                    feed.isLiked = false
+                }
+            })
+            setUserUploadedVideoList(feedListCopy)
+        })
+    }
+
+    const handleComments = (commentString) => {
+        let videoObj = { ...activeVideoObj }
+        if (videoObj.comments) {
+            videoObj.comments.push({ value: commentString, userId: loggedInUser.key })
+        } else {
+            videoObj.comments = [{ value: commentString, userId: loggedInUser.key }]
+        }
+
+        updateVideo(videoObj.key, videoObj).subscribe(() => {
+            let feedListCopy = [...UserUploadedVideoList]
+            feedListCopy.map((feed) => {
+                if (feed.key == videoObj.key) {
+                    feed.comments = videoObj.comments
+                }
+            })
+            setUserUploadedVideoList(feedListCopy)
+        })
+    }
+
+    const handleCommentClick = (video) => {
+        setCommentModal(true);
+        setActiveVideoObj(video)
+    }
+
     return (
         <div className="profile-outer" ref={profileOuterRef}>
             <div className="profile-details-wrap clearfix">
                 <div className="profile-img">
                     {
                         loggedInUser.profileImage ?
-                        <img src={loggedInUser.profileImage}/>
-                        :
-                        <AccountCircleOutlinedIcon />
+                            <img src={loggedInUser.profileImage} />
+                            :
+                            <AccountCircleOutlinedIcon />
                     }
                 </div>
                 <div className="profile-details clearfix">
@@ -207,11 +311,27 @@ function Profile() {
                         onChangeIndex={handleChangeIndex}>
                         <TabPanel value={value} index={0} dir={theme.direction}>
                             <div className="flex-container" >
-                                {UserUploadedVideoList.length !== 0 ? UserUploadedVideoList.map((vdoObj) => {
-                                    return <div className="flex-basis-3" style={{ marginRight: '30px' }} key={vdoObj.key}>
-                                        <Vedio vdoObj={vdoObj} />
+                                {UserUploadedVideoList.length !== 0 ?
+                                    <div className="feed-wrap">
+                                        {UserUploadedVideoList && UserUploadedVideoList.map((vdo) => {
+                                            return <div key={vdo.key} className="vdo-card">
+                                                <div>
+                                                    <Vedio vdoObj={vdo} />
+                                                </div>
+                                                <div className="video-title-like-wrap">
+                                                    <div className="title">{vdo.title}</div>
+                                                    <div className="like-comment">
+                                                        {vdo.likes && vdo.likes.length > 0 && <div className="likes-count">{vdo.likes.length} Likes</div>}
+                                                        {!vdo.isLiked && <FavoriteBorder title="Unlike" onClick={() => handleLikes(vdo, 'liked')} />}
+                                                        {vdo.isLiked && <Favorite title="Like" onClick={() => handleLikes(vdo, 'unliked')} />}
+                                                        <CommentOutlined title="comment" onClick={() => handleCommentClick(vdo)} />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        })}
                                     </div>
-                                }) :
+                                    :
                                     <div>No video posted yet !</div>}
                             </div>
                         </TabPanel>
@@ -239,6 +359,7 @@ function Profile() {
                     </SwipeableViews>
                 </div>
             </div>
+            {commentModal && <VideoDetails handleClose={() => setCommentModal(false)} handleLikes={handleLikes} handleComments={handleComments} videoObj={activeVideoObj} />}
             {openUserEnrolledCompDetailsModal && <CompetitionsDetails open={openUserEnrolledCompDetailsModal} handleClose={() => setOpenUserEnrolledCompDetailsModal(false)} initialStep={initialStep} />}
         </div>
     )
