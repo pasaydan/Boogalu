@@ -22,7 +22,7 @@ const loggedInUserState = {
 const initialState = localStorage.getItem("Choreoculture") ? JSON.parse(localStorage.getItem("Choreoculture"))
   : {
     loggedInUser: {},
-    isLoading: false,
+    isLoading: null,
     currentLoginFlow: null,
     notification: {
       msg: "",

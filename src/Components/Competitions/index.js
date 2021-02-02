@@ -42,7 +42,7 @@ function Competitions() {
                     console.log(compListWithUserData)
                 })
             } else {
-                disableLoading();
+                dispatch(disableLoading());
                 setCompletitionList(allCompList);
             }
         });
