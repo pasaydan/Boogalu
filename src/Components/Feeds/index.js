@@ -62,6 +62,7 @@ function Feeds() {
                 } else {
                     feed.isLiked = false
                 }
+                addUserDetailsToFeed(feed, userList);
             })
             setFeedList(feedListCopy)
         })
@@ -82,6 +83,7 @@ function Feeds() {
                 if (feed.key == videoObj.key) {
                     feed.comments = videoObj.comments
                 }
+                addUserDetailsToFeed(feed, userList);
             })
             setFeedList(feedListCopy)
         })
@@ -90,6 +92,27 @@ function Feeds() {
     const handleCommentClick = (video) => {
         setCommentModal(true);
         setActiveVideoObj(video)
+    }
+
+    const addUserDetailsToFeed = (feed, allUser) => {
+        if (feed.likes && feed.likes.length) {
+            feed.likes.map((likeObj) => {
+                let userData = allUser.filter(userObj => userObj.key == likeObj.userId);
+                if (userData.length != 0) {
+                    likeObj.username = userData[0].username;
+                    likeObj.profileImage = userData[0].profileImage;
+                }
+            })
+        }
+        if (feed.comments && feed.comments.length) {
+            feed.comments.map((commentObj) => {
+                let userData = allUser.filter(userObj => userObj.key == commentObj.userId);
+                if (userData.length != 0) {
+                    commentObj.username = userData[0].username;
+                    commentObj.profileImage = userData[0].profileImage;
+                }
+            })
+        }
     }
 
     useEffect(() => {
@@ -109,24 +132,7 @@ function Feeds() {
                     } else {
                         feed.isLiked = false
                     }
-                    if (feed.likes && feed.likes.length) {
-                        feed.likes.map((likeObj) => {
-                            let userData = tempUserList.filter(userObj => userObj.key == likeObj.userId);
-                            if (userData.length != 0) {
-                                likeObj.username = userData[0].username;
-                                likeObj.profileImage = userData[0].profileImage;
-                            }
-                        })
-                    }
-                    if (feed.comments && feed.comments.length) {
-                        feed.comments.map((commentObj) => {
-                            let userData = tempUserList.filter(userObj => userObj.key == commentObj.userId);
-                            if (userData.length != 0) {
-                                commentObj.username = userData[0].username;
-                                commentObj.profileImage = userData[0].profileImage;
-                            }
-                        })
-                    }
+                    addUserDetailsToFeed(feed, tempUserList);
                 })
             })
             setFeedList(tempFeedList)
