@@ -149,9 +149,9 @@ function Feeds() {
                                 <div className="title">{feed.title}</div>
                                 <div className="like-comment">
                                     {feed.likes && feed.likes.length > 0 && <div className="likes-count">{feed.likes.length} Likes</div>}
-                                    {!feed.isLiked && <FavoriteBorder onClick={() => handleLikes(feed,'liked')} />}
-                                    {feed.isLiked && <Favorite onClick={() => handleLikes(feed,'unliked')} />}
-                                    <CommentOutlined onClick={() => handleCommentClick(feed)} />
+                                    {!feed.isLiked && <FavoriteBorder title="Unlike" onClick={() => handleLikes(feed,'liked')} />}
+                                    {feed.isLiked && <Favorite title="Like" onClick={() => handleLikes(feed,'unliked')} />}
+                                    <CommentOutlined title="comment" onClick={() => handleCommentClick(feed)} />
                                 </div>
 
                             </div>
