@@ -69,12 +69,12 @@ export default function EditProfile() {
     }
 
     return (
-        <div className="logout-wrap clearfix">
+        <div className="logout-wrap edit-page-wrap clearfix">
             <form className="form-wrap clearfix" onSubmit={setSignupUserCred}>
                 <div className="heading-outer">
                     <div className="heading1">Update Profile</div>
                 </div>
-                <div className="form-outer clearfix">
+                <div className="form-outer final-registration-block clearfix">
                     <div className="input-wrap">
                         <TextField className="input-field"
                             required
@@ -229,27 +229,29 @@ export default function EditProfile() {
                             variant="outlined"
                         />
                     </div>
-                    <div className="tnc-wrap">
-                        <div className="tnc-content clearfix">
-                            <div className="checkbox-wrap">
-                                <Checkbox
-                                    required
-                                    color="primary"
-                                    checked={userDetails.tnc}
-                                    onChange={(e) => setUserDetails({ ...userDetails, tnc: e.target.checked })}
-                                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                />
+                    <div className="input-wrap bio-wrap edit-profile-page-input">
+                        <div className="tnc-wrap">
+                            <div className="tnc-content clearfix">
+                                <div className="checkbox-wrap">
+                                    <Checkbox
+                                        required
+                                        color="primary"
+                                        checked={userDetails.tnc}
+                                        onChange={(e) => setUserDetails({ ...userDetails, tnc: e.target.checked })}
+                                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                    />
+                                </div>
+                                <div className="note-wrap">Yes, I agree to the terms and conditions </div>
                             </div>
-                            <div className="note-wrap">Yes, I agree to the terms and conditions </div>
                         </div>
-                    </div>
-                    {SignUpError && <div className="login-error">
-                        {SignUpError}
-                    </div>}
-                    <div className="submit-btn clearfix">
-                        <Button variant="contained" type="submit" color="primary" >Update
-                         <ArrowRightSharpIcon />
-                        </Button>
+                        {SignUpError && <div className="login-error">
+                            {SignUpError}
+                        </div>}
+                        <div className="submit-btn clearfix">
+                            <Button variant="contained" type="submit" color="primary" >Update
+                            <ArrowRightSharpIcon />
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </form>

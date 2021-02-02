@@ -274,6 +274,12 @@
             }
         }
     }
+    .input-wrap {
+        &.edit-profile-page-input {
+          display: flex;
+          justify-content: space-between;  
+        } 
+    }
     .already-login-wrap {
         margin-top: 10px;
     }
@@ -371,6 +377,20 @@
         .profile-img-wrap {
             margin: 0 auto;
         }
+        .input-wrap {
+            &.edit-profile-page-input {
+              flex-direction: column;
+              .tnc-wrap {
+                width: 100%;
+                .tnc-content .checkbox-wrap {
+                    line-height: 16px;
+                }
+              }
+              .submit-btn button {
+                float: none;
+              }  
+            } 
+        }
     }
     .final-registration-block {
         .input-wrap {
@@ -382,6 +402,18 @@
 @media screen and (max-width: 767px) {
     .logout-wrap {
         position: relative;
+        .tnc-content .note-wrap {
+            font-size: 14px;
+            width: 86%;
+        }
+        &.edit-page-wrap {
+            .form-wrap {
+                width: 98%;
+                .tnc-content .note-wrap {
+                    width: 89%;
+                }
+            }
+        }
         .step-wrap {
             position: relative;
             width: 100%;
