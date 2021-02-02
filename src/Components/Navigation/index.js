@@ -219,8 +219,8 @@ function Navigation() {
                     {loggedInUser && loggedInUser.phone && <div className="flex-2 signup-wrap" >
                         <div className="profile" ref={ref}>
                             {loggedInUser.profileImage ? <div className="profile-img-wrap">
-                                <img src={loggedInUser.profileImage} onClick={() => setShowProfileTab(true)} style={{ fontSize: '35px', paddingRight: '20px' }} />
-                            </div> : <AccountCircleOutlinedIcon onClick={() => setShowProfileTab(true)} style={{ fontSize: '35px', paddingRight: '20px' }} />}
+                                <img src={loggedInUser.profileImage} onClick={() => setShowProfileTab(true)} style={{ fontSize: '35px'}} />
+                            </div> : <AccountCircleOutlinedIcon onClick={() => setShowProfileTab(true)} style={{ fontSize: '35px'}} />}
                           
                             {showProfileTab && <div className="profile-tab-wrap">
                                 <div className="profile" onClick={() => { history.push('/profile'); setShowProfileTab(false) }}>Profile</div>
