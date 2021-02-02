@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { signupUser } from '../../Actions/User';
@@ -18,6 +18,9 @@ import Select from '@material-ui/core/Select';
 import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
 import { updateUser } from "../../Services/User.service";
 import { uploadImage } from "../../Services/Upload.service";
+import { FaPlus, FaEdit } from 'react-icons/fa';
+import { NOTIFICATION_SUCCCESS, NOTIFICATION_ERROR, MALE_PROFILE_DEFAULT_IMAGE, FEMALE_PROFILE_DEFAULT_IMAGE } from "../../Constants";
+import { enableLoading, disableLoading } from "../../Actions/Loader";
 import * as $ from 'jquery';
 
 export default function EditProfile() {
@@ -30,10 +33,12 @@ export default function EditProfile() {
         loggedInUser.name = history.location.state.name;
         // setNeedToRegisterError('You are not registered yet, Please register with Choreoculture.')
     }
+    const uploaderRef = useRef(null);
     const [userDetails, setUserDetails] = useState(loggedInUser);
     const [SignUpError, setSignUpError] = useState(null);
     const [showHidePassword, setShowHidePassword] = useState({ showPassword: false, showConfirmPassword: false });
     const [IsProfileImageChanged, setIsProfileImageChanged] = useState(false);
+    const [isUserPhotoUploaded, userPhotoUploadToggle] = useState(false);
     const handleChange = (prop) => (event) => {
         setUserDetails({ ...userDetails, [prop]: event.target.value });
         console.log(userDetails)
@@ -51,6 +56,9 @@ export default function EditProfile() {
         $('html,body').animate({
             scrollTop: 0
         }, 500);
+        if (userDetails && !userDetails.profileImage) {
+            setUserDetails({ ...userDetails, profileImage: MALE_PROFILE_DEFAULT_IMAGE })
+        }
     }, [])
 
     const setSignupUserCred = (e) => {
@@ -58,10 +66,12 @@ export default function EditProfile() {
             setSignUpError('Password dose not match.');
             return;
         }
+        dispatch(enableLoading());
         if (IsProfileImageChanged) {
             uploadImage(userDetails.profileImage, 'user', 'small').subscribe((downloadableUrl) => {
                 userDetails.profileImage = downloadableUrl;
                 updateUser(userDetails.key, userDetails).subscribe(() => {
+                    dispatch(disableLoading());
                     dispatch(signupUser(userDetails));
                     history.push(({
                         pathname: '/profile',
@@ -71,6 +81,7 @@ export default function EditProfile() {
             })
         } else {
             updateUser(userDetails.key, userDetails).subscribe(() => {
+                dispatch(disableLoading());
                 dispatch(signupUser(userDetails));
                 history.push(({
                     pathname: '/profile',
@@ -91,6 +102,7 @@ export default function EditProfile() {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = () => {
+                userPhotoUploadToggle(true);
                 setIsProfileImageChanged(true);
                 setUserDetails({ ...userDetails, profileImage: reader.result });
             }
@@ -103,6 +115,23 @@ export default function EditProfile() {
             <form className="form-wrap clearfix" onSubmit={setSignupUserCred}>
                 <div className="heading-outer">
                     <div className="heading1">Update Profile</div>
+                </div>
+                <div className="profile-img-wrap">
+                    <div className="uploaded-img" >
+                        <img src={userDetails.profileImage} onClick={() => { uploaderRef.current.click() }} />
+                    </div>
+                    {
+                        isUserPhotoUploaded ?
+                            <i className="plus-icon"><FaEdit /></i>
+                            :
+                            <i className="plus-icon"><FaPlus /></i>
+                    }
+                    <input id="myInput"
+                        type="file"
+                        accept="image/*"
+                        ref={uploaderRef}
+                        onChange={(e) => onChangeFile(e)}
+                    />
                 </div>
                 <div className="form-outer final-registration-block clearfix">
                     <div className="input-wrap">
