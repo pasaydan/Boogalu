@@ -18,7 +18,8 @@ import { getUploadedVideosByUserId } from "../../Services/UploadedVideo.service"
 import { formatDate, formatTime } from "../../Services/Utils";
 import VideoUploader from "../VideoUploader";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
-
+import { NOTIFICATION_ERROR } from "../../Constants";
+import { displayNotification } from "../../Actions/Notification";
 //activestep 1 === Competition details
 //activestep 2 === User submitted competition details if already enrolled
 //activestep 3 === Video selection
@@ -27,6 +28,7 @@ import { enableLoading, disableLoading } from "../../Actions/Loader";
 export default function CompetitionsDetails({ open, handleClose, initialStep }) {
 
     const { state, dispatch } = useStoreConsumer();
+    const uploaderRef = useRef(null);
     const history = useHistory();
     const competitionDetails = state.activeCompetition;
     console.log(competitionDetails);
@@ -162,16 +164,27 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
         var file = event.target.files[0];
         console.log(file);
         if (file) {
-            setSelectedVideo({ ...SelectedVideo, file: null });
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => {
-                setSelectedVideo({ ...SelectedVideo, file: reader.result });
-                dispatch(enableLoginFlow('competition-uploadvdo'));
-                // handleClose();
-                // open = false;
+            if (file.size > 52428800) {
+                alert("File is too big!");
+                dispatch(displayNotification({
+                    msg: "File is too big!",
+                    type: NOTIFICATION_ERROR,
+                    time: 3000
+                }))
+                setSelectedVideo({ ...SelectedVideo, file: null });
+                uploaderRef.current.click();
+            } else {
+                setSelectedVideo({ ...SelectedVideo, file: null });
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    setSelectedVideo({ ...SelectedVideo, file: reader.result });
+                    dispatch(enableLoginFlow('competition-uploadvdo'));
+                    // handleClose();
+                    // open = false;
+                }
+                reader.onerror = error => console.error(error);
             }
-            reader.onerror = error => console.error(error);
         }
     }
 
@@ -339,6 +352,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                                 <div className="input-upload-wrap">
                                                     <input
                                                         accept="video/mp4,video/x-m4v,video/*"
+                                                        ref={uploaderRef}
                                                         onChange={(e) => onChangeFile(e)}
                                                         type="file" id="video-upload" title="upload video for competition" />
                                                     <i className="upload-icon"><FaCloudUploadAlt /></i>

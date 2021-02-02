@@ -10,6 +10,8 @@ import ImageUploader from 'react-images-upload';
 import { disableLoginFlow } from "../../Actions/LoginFlow";
 import { FaCloudUploadAlt } from 'react-icons/fa';
 import { setDataRefetchModuleName } from "../../Actions/Utility";
+import { NOTIFICATION_ERROR } from "../../Constants";
+import { displayNotification } from "../../Actions/Notification";
 // modal imports
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -68,14 +70,26 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
         event.preventDefault();
         var file = event.target.files[0];
         console.log(file);
+        // 1MB in Bytes is 1,048,576 so you can multiply it by the limit you need.
         if (file) {
-            setSelectedVideo({ ...SelectedVideo, file: null });
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => {
-                setSelectedVideo({ ...SelectedVideo, file: reader.result });
+            if (file.size > 52428800) {
+                alert("File is too big!");
+                dispatch(displayNotification({
+                    msg: "File is too big!",
+                    type: NOTIFICATION_ERROR,
+                    time: 3000
+                }))
+                setSelectedVideo({ ...SelectedVideo, file: null });
+                uploaderRef.current.click();
+            } else {
+                setSelectedVideo({ ...SelectedVideo, file: null });
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    setSelectedVideo({ ...SelectedVideo, file: reader.result });
+                }
+                reader.onerror = error => console.error(error);
             }
-            reader.onerror = error => console.error(error);
         }
     }
 

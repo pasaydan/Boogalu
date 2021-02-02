@@ -113,7 +113,7 @@ function Subscriptions() {
                     </div>
                 </div>
             </div>
-            {showSubscriptionDetails && <BuySubscription handleClose={() => setShowSubscriptionDetails(false)} activeStep={activeStep} />}
+            {showSubscriptionDetails && <BuySubscription handleClose={() => setShowSubscriptionDetails(false)} activeStep={activeStep} alreadySubscribed={alreadySubscribed} />}
         </div>
     )
 }

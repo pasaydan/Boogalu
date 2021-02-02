@@ -13,7 +13,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 
-export default function BuySubsription({ handleClose, activeStep }) {
+export default function BuySubsription({ handleClose, activeStep, alreadySubscribed }) {
     const history = useHistory();
     const { state, dispatch } = useStoreConsumer();
     const loggedInUser = state.loggedInUser;
@@ -104,7 +104,7 @@ export default function BuySubsription({ handleClose, activeStep }) {
                                 {/* <div>{subscriptionDetails.amount} / {subscriptionDetails.plans}</div> */}
                                 {/* <div>Valid Upto- {subsciptionValidity}</div> */}
                             </div>
-                            <Button variant="contained" color="secondary" onClick={(e) => proceedForPayment(e)}>Subscribe</Button>
+                            {alreadySubscribed ? <Button variant="contained" color="secondary" onClick={(e) => proceedForCompetition()}>Continue to competition</Button> : <Button variant="contained" color="secondary" onClick={(e) => proceedForPayment(e)}>Subscribe</Button>}
                         </div>}
                         {activeStep == 2 && <div>
                             <div>payment success</div>
