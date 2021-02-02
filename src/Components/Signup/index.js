@@ -15,6 +15,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Checkbox from '@material-ui/core/Checkbox';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
+import { FaPlus, FaEdit } from 'react-icons/fa';
 import stepListData from '../../Data/RegistrationStepData'
 import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
 import { registerUser, getUserByEmail, getUserByPhone } from "../../Services/User.service";
@@ -47,6 +48,7 @@ export default function Signup() {
     const [showNextButton, setShowNextButton] = useState(false);
     const [stepData, setStepListData] = useState(stepListData);
     const [selectedOptionsList, setSelectedOptionsList] = useState([]);
+    const [isUserPhotoUploaded, userPhotoUploadToggle] = useState(false);
     const uploaderRef = useRef(null);
 
     const handleChange = (prop) => (event) => {
@@ -249,6 +251,7 @@ export default function Signup() {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = () => {
+                userPhotoUploadToggle(true);
                 setUserDetails({ ...userDetails, profileImage: reader.result });
             }
             reader.onerror = error => console.error(error);
@@ -427,10 +430,15 @@ export default function Signup() {
                     <div className="uploaded-img" >
                         <img src={userDetails.profileImage} onClick={() => { uploaderRef.current.click() }} />
                     </div>
+                    {
+                        isUserPhotoUploaded ?
+                            <i className="plus-icon"><FaEdit /></i>
+                        : 
+                            <i className="plus-icon"><FaPlus /></i>
+                    }
                     <input id="myInput"
                         type="file"
                         accept="image/*"
-                        style={{ 'display': 'none' }}
                         ref={uploaderRef}
                         onChange={(e) => onChangeFile(e)}
                     />

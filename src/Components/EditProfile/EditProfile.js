@@ -220,7 +220,7 @@ export default function EditProfile() {
                             </Select>
                         </FormControl>
                     </div>
-                    <div className="input-wrap" style={{ width: '93%' }}>
+                    <div className="input-wrap bio-wrap">
                         <TextField className="input-field bio-input"
                             id="outlined-required-bio"
                             label="Bio"

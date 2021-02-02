@@ -206,13 +206,43 @@
         margin-right: 20px;
     }
 }
-.profile-img-wrap{
-    .uploaded-img{
-        height: 200px;
-        width: 200px;
-        img{
+.profile-img-wrap {
+    height: 100px;
+    width: 100px;
+    margin-left: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    i.plus-icon {
+        font-size: 24px;
+        font-weight: 600;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        z-index: 0;
+        color: var(--primary-dark-grey);
+    }
+    #myInput {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        opacity: 0;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        cursor: pointer;
+    }
+    .uploaded-img {
+        border-radius: 50%;
+        overflow: hidden;
+        opacity: 0.9;
+        height: 100%;
+        width: 100%;
+        img {
             width: 100%;
             height: 100%;
+            object-fit: cover;
             border-radius: 50%;
         }
     }
@@ -276,10 +306,14 @@
             overflow: hidden;
         }
         .heading1 {
-            font-size: 20px;
-            line-height: 24px;
+            font-size: 18px;
+            line-height: 22px;
             padding: 0;
-            margin: 15px 0;
+            margin: 15px 0 10px;
+        }
+        .heading2 {
+            font-size: 14px;
+            line-height: 20px;
         }
         .list-content {
             padding: 0;
@@ -333,6 +367,9 @@
                     }
                 }
             }
+        }
+        .profile-img-wrap {
+            margin: 0 auto;
         }
     }
     .final-registration-block {
