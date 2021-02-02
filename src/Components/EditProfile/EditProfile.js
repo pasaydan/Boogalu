@@ -16,8 +16,9 @@ import Checkbox from '@material-ui/core/Checkbox';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
-import * as $ from 'jquery';
 import { updateUser } from "../../Services/User.service";
+import { uploadImage } from "../../Services/Upload.service";
+import * as $ from 'jquery';
 
 export default function EditProfile() {
     const { state, dispatch } = useStoreConsumer();
@@ -32,7 +33,7 @@ export default function EditProfile() {
     const [userDetails, setUserDetails] = useState(loggedInUser);
     const [SignUpError, setSignUpError] = useState(null);
     const [showHidePassword, setShowHidePassword] = useState({ showPassword: false, showConfirmPassword: false });
-
+    const [IsProfileImageChanged, setIsProfileImageChanged] = useState(false);
     const handleChange = (prop) => (event) => {
         setUserDetails({ ...userDetails, [prop]: event.target.value });
         console.log(userDetails)
@@ -57,15 +58,44 @@ export default function EditProfile() {
             setSignUpError('Password dose not match.');
             return;
         }
-
-        updateUser(userDetails.key, userDetails).subscribe(() => {
-            dispatch(signupUser(userDetails));
-            history.push(({
-                pathname: '/profile',
-                state: null
-            }));
-        })
+        if (IsProfileImageChanged) {
+            uploadImage(userDetails.profileImage, 'user', 'small').subscribe((downloadableUrl) => {
+                userDetails.profileImage = downloadableUrl;
+                updateUser(userDetails.key, userDetails).subscribe(() => {
+                    dispatch(signupUser(userDetails));
+                    history.push(({
+                        pathname: '/profile',
+                        state: null
+                    }));
+                })
+            })
+        } else {
+            updateUser(userDetails.key, userDetails).subscribe(() => {
+                dispatch(signupUser(userDetails));
+                history.push(({
+                    pathname: '/profile',
+                    state: null
+                }));
+            })
+        }
         e.preventDefault();
+    }
+
+    async function onChangeFile(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        var file = event.target.files[0];
+        console.log(file);
+        if (file) {
+            setUserDetails({ ...userDetails, profileImage: null });
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                setIsProfileImageChanged(true);
+                setUserDetails({ ...userDetails, profileImage: reader.result });
+            }
+            reader.onerror = error => console.error(error);
+        } else setIsProfileImageChanged(false);
     }
 
     return (

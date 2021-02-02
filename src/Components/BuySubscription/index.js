@@ -68,7 +68,8 @@ export default function BuySubsription({ handleClose, activeStep }) {
     }
     const proceedForPayment = () => {
         var params = "?phone=" + loggedInUser.phone + "&orderId=" + subscriptionDetails.key + "&amount=" + subscriptionDetails.amount + "&uId=" + loggedInUser.uId + "&email=" + loggedInUser.email;
-        window.open('http://localhost:5001/boogalusite/us-central1/payment' + params, '_self');
+        // window.open('http://localhost:5001/boogalusite/us-central1/payment' + params, '_self');
+        window.open('https://us-central1-boogalusite.cloudfunctions.net/payment' + params, '_self');
     }
 
     return (

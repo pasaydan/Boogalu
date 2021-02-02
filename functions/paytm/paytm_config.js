@@ -8,8 +8,8 @@ module.exports = {
         CHANNEL_ID: 'WEB', // Use WEB for Desktop Website and WAP for Mobile Website
         INDUSTRY_TYPE_ID: 'Retail', // Use Retail for Testing, For Production You Can Get it from here https://dashboard.paytm.com/next/apikeys
         MERCHANT_KEY: 'z1Kchzi1DI59hFNj', // Get it From https://dashboard.paytm.com/next/apikeys use Test key for test purpose and Production key for Production Purpose
-        CALLBACK_URL: 'http://localhost:5001/boogalusite/us-central1/paymentCallback', // Modify and Use this url for verifying payment, we will use cloud function DonationCallback function for Our usage
-        // CALLBACK_URL: 'https://us-central1-boogalusite.cloudfunctions.net/paymentCallback', // Modify and Use this url for verifying payment, we will use cloud function DonationCallback function for Our usage
+        // CALLBACK_URL: 'http://localhost:5001/boogalusite/us-central1/paymentCallback', // Modify and Use this url for verifying payment, we will use cloud function DonationCallback function for Our usage
+        CALLBACK_URL: 'https://us-central1-boogalusite.cloudfunctions.net/paymentCallback', // Modify and Use this url for verifying payment, we will use cloud function DonationCallback function for Our usage
         MinAmount: 100, // Munimum amount you waana accept for donation
         PaymentInitURL: 'http://localhost:3000/subscription', // Initial Location where the payment begin
         PaymentSuccessURL: 'http://localhost:3000/subscription', // Success Page URL
