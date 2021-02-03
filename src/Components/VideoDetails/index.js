@@ -31,7 +31,7 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments }) {
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
-                className='subscription-modal-box'
+                className='subscription-modal-box feeds-comment-modal'
                 open={openDetailsModal}
                 onClose={() => handleClose(false)}
                 closeAfterTransition
