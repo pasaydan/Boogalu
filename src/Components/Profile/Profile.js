@@ -75,6 +75,7 @@ function Profile() {
     const userTabsRef = useRef();
     const [activeVideoObj, setActiveVideoObj] = useState({})
     const [commentModal, setCommentModal] = useState(false)
+    const [userList, setUserList] = useState([])
 
     useEffect(() => {
         if (!loggedInUser || !loggedInUser.email) history.push('/login')
@@ -101,6 +102,7 @@ function Profile() {
             setUserUploadedVideoList(list);
             if (list.length != 0) {
                 getAllUserList().then((data) => {
+                    setUserList(data);
                     let userList = data;
                     let userVdoCopy = [...list];
                     userVdoCopy.map((vdoObj) => {
@@ -192,6 +194,28 @@ function Profile() {
         });
     }
 
+
+    const addUserDetailsToFeed = (feed, allUser) => {
+        if (feed.likes && feed.likes.length) {
+            feed.likes.map((likeObj) => {
+                let userData = allUser.filter(userObj => userObj.key == likeObj.userId);
+                if (userData.length != 0) {
+                    likeObj.username = userData[0].username;
+                    likeObj.profileImage = userData[0].profileImage;
+                }
+            })
+        }
+        if (feed.comments && feed.comments.length) {
+            feed.comments.map((commentObj) => {
+                let userData = allUser.filter(userObj => userObj.key == commentObj.userId);
+                if (userData.length != 0) {
+                    commentObj.username = userData[0].username;
+                    commentObj.profileImage = userData[0].profileImage;
+                }
+            })
+        }
+    }
+
     const handleLikes = (video, status) => {
         let videoObj = { ...video }
         if (status == 'liked') {
@@ -218,6 +242,7 @@ function Profile() {
                 } else {
                     feed.isLiked = false
                 }
+                addUserDetailsToFeed(feed, userList);
             })
             setUserUploadedVideoList(feedListCopy)
         })
@@ -238,6 +263,7 @@ function Profile() {
                 if (feed.key == videoObj.key) {
                     feed.comments = videoObj.comments
                 }
+                addUserDetailsToFeed(feed, userList);
             })
             setUserUploadedVideoList(feedListCopy)
         })
