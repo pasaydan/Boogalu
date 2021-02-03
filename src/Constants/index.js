@@ -7,6 +7,9 @@ export const PAYMENT_PROD_CALLBACK_URL = 'https://us-central1-boogalusite.cloudf
 export const THUMBNAIL_URL = 'https://firebasestorage.googleapis.com/v0/b/boogalusite.appspot.com/o/uploads%2Fthumbnail%2Fthumbnail.jpg?alt=media&token=36fb88fc-0cde-4019-890f-5bb285791575'
 export const MALE_PROFILE_DEFAULT_IMAGE = 'https://i.imgur.com/EyKfwBo.png'
 export const FEMALE_PROFILE_DEFAULT_IMAGE = 'https://firebasestorage.googleapis.com/v0/b/boogalusite.appspot.com/o/uploads%2Fuser%2Ffemale-profile.png?alt=media&token=0c40e1cd-c965-4edf-b307-1cea5f9f1f72'
+export const EMAIL_SENDING_STAGING_API_URL = 'http://localhost:5001/boogalusite/us-central1/sendEmail'
+export const EMAIL_SENDING_PROD_API_URL = 'https://us-central1-boogalusite.cloudfunctions.net/sendEmail'
+export const ADMIN_EMAIL_STAGING = 'garudkargate@gmail.com'
 
 export const LOGIN_USER = 'LOGIN_USER'
 export const LOGOUT_USER = 'LOGOUT_USER'

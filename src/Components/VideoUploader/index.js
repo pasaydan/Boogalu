@@ -10,8 +10,9 @@ import ImageUploader from 'react-images-upload';
 import { disableLoginFlow } from "../../Actions/LoginFlow";
 import { FaCloudUploadAlt } from 'react-icons/fa';
 import { setDataRefetchModuleName } from "../../Actions/Utility";
-import { NOTIFICATION_ERROR } from "../../Constants";
+import { NOTIFICATION_ERROR, ADMIN_EMAIL_STAGING } from "../../Constants";
 import { displayNotification } from "../../Actions/Notification";
+import { sendEmail } from "../../Services/Email.service";
 // modal imports
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -110,6 +111,22 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
             reader.onerror = error => console.error(error);
         }
 
+        const sendEmailToAdmin = (vdoUrl, thumbnailImage) => {
+            let emailBody = `<h6 style="font-size: 17px;margin-bottom: 26px;">New Video Uploaaded
+            <video width="320" height="176" controls poster=${thumbnailImage} src=${vdoUrl} ></video>
+            </h6>`;
+            let payload = {
+                mailTo: ADMIN_EMAIL_STAGING,
+                title: 'New Video Uploaaded',
+                content: emailBody
+            }
+            sendEmail(payload).subscribe((res) => {
+                if (!('error' in res)) {
+                    console.log('Email Send Successfully.');
+                } else console.log('Email Send Failed.');
+            })
+        }
+
         uploadVideo(SelectedVideo.file).subscribe((response) => {
             dispatch(enableLoading());
             setShowVdoUploadProgress(true);
@@ -118,6 +135,7 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
                 console.log('Upload is ' + response.donePercentage + '% done');
             }
             if (response.downloadURL && !UploadedVdoUrl) {
+                // sendEmailToAdmin(response.downloadURL, thumbnailImage);
                 // dispatch(enableLoading());
                 setShowVdoUploadProgress(false);
                 setUploadedVdoUrl(response.downloadURL);

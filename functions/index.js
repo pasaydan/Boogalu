@@ -2,6 +2,7 @@
 /* eslint-disable prefer-arrow-callback */
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const nodemailer = require('nodemailer');
 const cors = require('cors')({
     origin: true,
 });
@@ -101,3 +102,41 @@ exports.paymentCallback = functions.https.onRequest((request, response) => {
         }
     });
 });
+
+// email sending 
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'garudkardnyaneshwar@gmail.com',
+        pass: 'Pasaydan@4884'
+    }
+});
+
+//send email 
+exports.sendEmail = functions.https.onRequest((request, response) => {
+    return cors(request, response, () => {
+        console.log('emailllll request', request.body)
+        console.log('emailllll request mailTo', request.body.mailTo)
+        var to = request.body.mailTo;
+        var subject = request.body.title;
+        var html = request.body.content;
+        var attachments = request.body.attachments;
+        var mailOptions = {
+            from: '"Boogalu" <garudkardnyaneshwar@gmail.com>',
+            to: to,
+            subject: subject,
+            html: html,
+            attachments: attachments
+        }
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log("Email sending failed", error)
+                response.send({ 'status': 400, 'statusText': 'Email sending failed', 'error': error });
+                return error;
+            } else {
+                response.send({ 'status': 200, 'data': "Email sent succefully." });
+                return true;
+            }
+        });
+    })
+})
