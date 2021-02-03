@@ -12,6 +12,8 @@ import { saveCompetition, updateCompetition } from "../../Services/EnrollCompeti
 import { enableLoginFlow } from "../../Actions/LoginFlow";
 import { setActiveCompetition } from "../../Actions/Competition";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
+import { NOTIFICATION_ERROR } from "../../Constants";
+import { displayNotification } from "../../Actions/Notification";
 
 function EnrollCompetition({ handleClose, changeSelectedVdo }) {
 
@@ -72,12 +74,20 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
     }
 
     const proceedForSubscription = () => {
-        handleClose();
-        dispatch(enableLoginFlow('competition-subscription'));
-        history.push({
-            pathname: '/subscription',
-            state: null
-        })
+        if(competitionDetails.ageGroup){
+            handleClose();
+            dispatch(enableLoginFlow('competition-subscription'));
+            history.push({
+                pathname: '/subscription',
+                state: null
+            })
+        }else{
+            dispatch(displayNotification({
+                msg: "Please the age group!",
+                type: NOTIFICATION_ERROR,
+                time: 3000
+            }))
+        }
     }
 
     return (

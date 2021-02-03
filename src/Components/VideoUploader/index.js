@@ -99,6 +99,14 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
     };
 
     async function uploadSelectedVideo() {
+        if(!(SelectedVideo.title && SelectedVideo.desc)){
+            dispatch(displayNotification({
+                msg: "Title and description are mandatory!",
+                type: NOTIFICATION_ERROR,
+                time: 3000
+            }))
+            return
+        }
         var thumbnailImage = THUMBNAIL_URL;
         if (ThumbnailImage && ThumbnailImage[0]) {
             const reader = new FileReader();

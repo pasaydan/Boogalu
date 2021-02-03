@@ -9,6 +9,7 @@ import { useStoreConsumer } from '../../Providers/StateProvider';
 import VideoDetails from '../VideoDetails'
 import ProfileImage from "../ProfileImage";
 import Vedio from "../Vedio/Video";
+import { enableLoading, disableLoading } from "../../Actions/Loader";
 
 function Feeds() {
 
@@ -116,7 +117,9 @@ function Feeds() {
     }
 
     useEffect(() => {
+        dispatch(enableLoading());
         Promise.all([getAllUserList(), getAllUploadedVideos()]).then((data) => {
+            dispatch(disableLoading());
             let tempUserList = data[0]
             let tempFeedList = data[1]
 

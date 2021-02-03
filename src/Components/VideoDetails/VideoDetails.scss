@@ -1,5 +1,9 @@
 .feed-card{
-    .username{
+    iframe {
+        border-radius: 5px;
+        width: 100%;
+    }
+    .username {
         font-size: 18px;
         font-family: SemiBold;
         margin-bottom: 10px;
@@ -58,6 +62,14 @@
 .comment-modal{
     max-width: 390px;
     height: auto;
+}
+
+.feeds-comment-modal {
+    .comment-modal {
+        top: auto;
+        bottom: 10%;
+        transform: translate(-50%, 0);
+    }
 }
 
 @media screen and (max-width: 767px) {
