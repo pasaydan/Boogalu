@@ -57,3 +57,23 @@ export function updateVideo(id, data) {
         });
     });
 }
+
+export function updateVideoLikes(id, data) {
+    data.createdOn = data.createdOn || new Date();
+    data.modifiedOn = new Date();
+    return new Observable((observer) => {
+        uploadedVideosRef.doc(`/${id}`).update({ 'likes': data.likes }).then(() => {
+            observer.next();
+        });
+    });
+}
+
+export function updateVideoComments(id, data) {
+    data.createdOn = data.createdOn || new Date();
+    data.modifiedOn = new Date();
+    return new Observable((observer) => {
+        uploadedVideosRef.doc(`/${id}`).update({ 'comments': data.comments }).then(() => {
+            observer.next();
+        });
+    });
+}

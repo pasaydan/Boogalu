@@ -7,9 +7,9 @@ import IconButton from '@material-ui/core/IconButton';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import SendOutlined from '@material-ui/icons/SendOutlined';
 import Favorite from '@material-ui/icons/Favorite';
-import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import TextField from '@material-ui/core/TextField';
 import Vedio from "../Vedio/Video";
+import ProfileImage from "../ProfileImage";
 import * as $ from 'jquery';
 
 
@@ -19,8 +19,8 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments }) {
     const [commentText, setCommentText] = useState('');
 
 
-    const handleCommentClick = ()=>{
-        if(commentText != ''){
+    const handleCommentClick = () => {
+        if (commentText != '') {
             handleComments(commentText)
             setCommentText('')
         }
@@ -48,7 +48,7 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments }) {
 
                         <div key={videoObj.key} className="feed-card">
                             <div className="username">
-                                <AccountCircleOutlinedIcon />
+                                <ProfileImage src={videoObj.profileImage} />
                                 <span>{videoObj.username}</span>
                             </div>
                             <div>
@@ -58,8 +58,8 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments }) {
                                 <div className="title">{videoObj.title}</div>
                                 <div className="like-comment">
                                     {videoObj.likes && videoObj.likes.length > 0 && <div className="likes-count">{videoObj.likes.length} Likes</div>}
-                                    {!videoObj.isLiked && <FavoriteBorder onClick={() => handleLikes(videoObj,'liked')} />}
-                                    {videoObj.isLiked && <Favorite onClick={() => handleLikes(videoObj,'unliked')} />}
+                                    {!videoObj.isLiked && <FavoriteBorder onClick={() => handleLikes(videoObj, 'liked')} />}
+                                    {videoObj.isLiked && <Favorite onClick={() => handleLikes(videoObj, 'unliked')} />}
                                 </div>
 
                             </div>
@@ -68,18 +68,18 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments }) {
                         {videoObj.comments && videoObj.comments.length > 0 && <div className="comments-count">{videoObj.comments.length} Comments</div>}
 
                         <div className="comment-outer-wrap">
-                            {videoObj.comments && videoObj.comments.map((comment)=>{
-                                return <div className="comment-wrap">
-                                    <AccountCircleOutlinedIcon />
-                                    <span className="username">{comment.userName}</span>
+                            {videoObj.comments && videoObj.comments.map((comment, index) => {
+                                return <div className="comment-wrap" key={index}>
+                                    <ProfileImage src={comment.profileImage} />
+                                    <span className="username">{comment.username}</span>
                                     <span>{comment.value}</span>
                                 </div>
                             })}
                         </div>
 
                         <div className="commnet-input-wrap">
-                            <TextField id="standard-basic" label="Add Comments" value={commentText} onChange={(e)=>setCommentText(e.target.value)} />
-                            <SendOutlined onClick={() => handleCommentClick(videoObj, 'liked')}/>
+                            <TextField id="standard-basic" label="Add Comments" value={commentText} onChange={(e) => setCommentText(e.target.value)} />
+                            <SendOutlined onClick={() => handleCommentClick(videoObj, 'liked')} />
                         </div>
                     </div>
                 </Fade>
