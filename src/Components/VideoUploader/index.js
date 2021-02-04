@@ -121,22 +121,39 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
 
         const sendEmailToAdmin = (vdoUrl) => {
             let emailBody = `<div>
-            <h6 style="font-size: 17px;margin-bottom: 26px;">New Video Uploaaded</h6>
+            <h6 style="font-size: 17px;margin-bottom: 26px;">New Video Uploaded</h6>
             <h4>User details -</h4>
-            <h2>${loggedInUser.name}</h2>
-            <h2>${loggedInUser.email}</h2>
-            <h2>${loggedInUser.phone}</h2>
+            <h6>${loggedInUser.name}</h6>
+            <h6>${loggedInUser.email}</h6>
+            <h6>${loggedInUser.phone}</h6>
             <a href=${vdoUrl} >Clik here to check uploaded video</a>
             </div>`;
             let payload = {
                 mailTo: ADMIN_EMAIL_STAGING,
-                title: 'New Video Uploaaded',
+                title: 'New Video Uploaded',
                 content: emailBody
             }
             sendEmail(payload).subscribe((res) => {
                 if (!('error' in res)) {
-                    console.log('Email Send Successfully.');
-                } else console.log('Email Send Failed.');
+                    console.log('Admin Email Send Successfully.');
+                } else console.log('Admin Email Send Failed.');
+            })
+        }
+
+        const sendEmailToUser = (vdoUrl) => {
+            let emailBody = `<div>
+            <p>Hi ${loggedInUser.name}, you have recently uploaded a video, ${SelectedVideo.title}</p>. 
+            <a href=${vdoUrl} >Clik here to check uploaded video</a>
+            </div>`;
+            let payload = {
+                mailTo: loggedInUser.email,
+                title: 'Video Uploaded',
+                content: emailBody
+            }
+            sendEmail(payload).subscribe((res) => {
+                if (!('error' in res)) {
+                    console.log('User Email Send Successfully.');
+                } else console.log('User Email Send Failed.');
             })
         }
 
@@ -149,6 +166,7 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
             }
             if (response.downloadURL && !UploadedVdoUrl) {
                 sendEmailToAdmin(response.downloadURL);
+                sendEmailToUser(response.downloadURL);
                 // dispatch(enableLoading());
                 setShowVdoUploadProgress(false);
                 setUploadedVdoUrl(response.downloadURL);

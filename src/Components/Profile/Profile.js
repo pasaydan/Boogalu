@@ -184,6 +184,7 @@ function Profile() {
     const handleChange = (event, newValue) => {
         setValue(newValue);
         if (newValue == 1 && UserLikedVideoList.length == 0) {
+            dispatch(enableLoading());
             getAllUploadedVideos().then((feeds) => {
                 if (feeds) {
                     let userLikedVdos = []
@@ -193,8 +194,9 @@ function Profile() {
                             if (isAvail.length != 0) userLikedVdos.push(feed)
                         }
                     })
+                    dispatch(disableLoading());
                     setUserLikedVideoList(userLikedVdos);
-                }
+                } else dispatch(disableLoading());
             })
         }
     };

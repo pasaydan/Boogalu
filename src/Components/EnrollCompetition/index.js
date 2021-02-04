@@ -15,6 +15,7 @@ import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { NOTIFICATION_ERROR, ADMIN_EMAIL_STAGING } from "../../Constants";
 import { displayNotification } from "../../Actions/Notification";
 import { sendEmail } from "../../Services/Email.service";
+import { formatDate, formatTime } from "../../Services/Utils";
 
 function EnrollCompetition({ handleClose, changeSelectedVdo }) {
 
@@ -41,11 +42,11 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
 
     const sendEmailToAdmin = () => {
         let emailBody = `<div>
-            <h6 style="font-size: 17px;margin-bottom: 26px;">New Video Uploaaded for competition ${competitionDetails.name}</h6>
+            <h6 style="font-size: 17px;margin-bottom: 26px;">New Video Uploaded for competition ${competitionDetails.name}</h6>
             <h4>User details -</h4>
-            <h2>${loggedInUser.name}</h2>
-            <h2>${loggedInUser.email}</h2>
-            <h2>${loggedInUser.phone}</h2>
+            <h6>${loggedInUser.name}</h6>
+            <h6>${loggedInUser.email}</h6>
+            <h6>${loggedInUser.phone}</h6>
             <a href=${competitionDetails.selectedVideo.url} >Clik here to check uploaded video</a>
             </div>`;
         let payload = {
@@ -55,8 +56,30 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
         }
         sendEmail(payload).subscribe((res) => {
             if (!('error' in res)) {
-                console.log('Email Send Successfully.');
-            } else console.log('Email Send Failed.');
+                console.log('Admin Email Send Successfully.');
+            } else console.log('Admin Email Send Failed.');
+        })
+    }
+
+    const sendEmailToUser = () => {
+        let vdoUploadUpto = new Date(competitionDetails.startAt);
+        new Date(vdoUploadUpto.setDate(vdoUploadUpto.getDate() + 30));
+        let displayDate = formatDate(vdoUploadUpto, 3) + " " + formatTime(vdoUploadUpto);
+
+        let emailBody = `<div>
+        <p>Hi ${loggedInUser.name} you have enrolled in our  ${competitionDetails.name}, now you can upload/change videos till ${displayDate}. </p>
+        <h4> Upload your best performance video and be ready for exciting prizes</h4>
+        <a href=${competitionDetails.selectedVideo.url} >Clik here to check uploaded video</a>
+            </div>`;
+        let payload = {
+            mailTo: loggedInUser.email,
+            title: 'Your video submited for competition',
+            content: emailBody
+        }
+        sendEmail(payload).subscribe((res) => {
+            if (!('error' in res)) {
+                console.log('User Email Send Successfully.');
+            } else console.log('User Email Send Failed.');
         })
     }
 
@@ -88,6 +111,7 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
             saveCompetition(competitionObj).subscribe((response) => {
                 dispatch(disableLoading());
                 sendEmailToAdmin();
+                sendEmailToUser();
                 console.log('vdo uploaded for competition suceess');
                 history.push('/profile');
             })

@@ -24,9 +24,9 @@ function Subscriptions() {
         let emailBody = `<div>
             <h6 style="font-size: 17px;margin-bottom: 26px;">User subscribed for ${state.activeSubscription.name}</h6>
             <h4>User details -</h4>
-            <h2>${loggedInUser.name}</h2>
-            <h2>${loggedInUser.email}</h2>
-            <h2>${loggedInUser.phone}</h2>
+            <h6>${loggedInUser.name}</h6>
+            <h6>${loggedInUser.email}</h6>
+            <h6>${loggedInUser.phone}</h6>
             </div>`;
         let payload = {
             mailTo: ADMIN_EMAIL_STAGING,
@@ -35,8 +35,25 @@ function Subscriptions() {
         }
         sendEmail(payload).subscribe((res) => {
             if (!('error' in res)) {
-                console.log('Email Send Successfully.');
-            } else console.log('Email Send Failed.');
+                console.log('Admin Email Send Successfully.');
+            } else console.log('Admin Email Send Failed.');
+        })
+    }
+
+    const sendEmailToUser = () => {
+        let emailBody = `<div>
+            <p><span >Congratulations</span>  <strong>${loggedInUser.name}</strong>, 
+            you have subscribed to our 1-month subscription. Now, you can enroll in any active competitions for a month.</p>
+            <h4>Time To Express Your Talent on Our Platform during this Lockdown</h4>`;
+        let payload = {
+            mailTo: loggedInUser.email,
+            title: 'Boogalu subscription successfull',
+            content: emailBody
+        }
+        sendEmail(payload).subscribe((res) => {
+            if (!('error' in res)) {
+                console.log('Email to user Send Successfully.');
+            } else console.log('Email to user Send Failed.');
         })
     }
     // check for payment status if user is in payment flow
@@ -63,6 +80,7 @@ function Subscriptions() {
                 dispatch(enableLoading());
                 saveUserSubscription(state.activeSubscription.key, loggedInUserData).subscribe((response) => {
                     sendEmailToAdmin();
+                    sendEmailToUser();
                     dispatch(loginUser(loggedInUserData));
                     setShowSubscriptionDetails(true);
                     dispatch(disableLoading());
