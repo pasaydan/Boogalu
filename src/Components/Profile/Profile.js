@@ -27,6 +27,7 @@ import CommentOutlined from '@material-ui/icons/CommentOutlined';
 import { updateVideoLikes, updateVideoComments } from "../../Services/UploadedVideo.service";
 import VideoDetails from '../VideoDetails'
 import { getAllUser } from "../../Services/User.service";
+import { getUploadedVideosList } from "../../Services/UploadedVideo.service";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -93,6 +94,13 @@ function Profile() {
         return new Promise((res, rej) => {
             getAllUser().subscribe((users) => {
                 res(users);
+            });
+        })
+    }
+    const getAllUploadedVideos = () => {
+        return new Promise((res, rej) => {
+            getUploadedVideosList().subscribe((videos) => {
+                res(videos);
             });
         })
     }
@@ -175,6 +183,20 @@ function Profile() {
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
+        if (newValue == 1 && UserLikedVideoList.length == 0) {
+            getAllUploadedVideos().then((feeds) => {
+                if (feeds) {
+                    let userLikedVdos = []
+                    feeds.map((feed) => {
+                        if (feed.likes && feed.likes.length) {
+                            let isAvail = feed.likes.filter(data => data.userId == loggedInUser.key)
+                            if (isAvail.length != 0) userLikedVdos.push(feed)
+                        }
+                    })
+                    setUserLikedVideoList(userLikedVdos);
+                }
+            })
+        }
     };
 
     const handleChangeIndex = (index) => {
@@ -366,8 +388,16 @@ function Profile() {
                         <TabPanel value={value} index={1} dir={theme.direction}>
                             <div className="flex-container" >
                                 {UserLikedVideoList.length !== 0 ? UserLikedVideoList.map((vdoObj) => {
-                                    return <div className="flex-basis-3" style={{ marginRight: '30px' }} key={vdoObj.key}>
-                                        <Vedio vdoObj={vdoObj} />
+                                    return <div className="flex-basis-3" key={vdoObj.key}>
+                                        <div>
+                                            <Vedio vdoObj={vdoObj} />
+                                        </div>
+                                        <div className="video-title-like-wrap">
+                                            <div className="title">{vdoObj.title}</div>
+                                            <div className="like-comment">
+                                                {vdoObj.likes && vdoObj.likes.length > 0 && <div className="likes-count">{vdoObj.likes.length} Likes</div>}
+                                            </div>
+                                        </div>
                                     </div>
                                 }) :
                                     <div>No video liked yet !</div>}

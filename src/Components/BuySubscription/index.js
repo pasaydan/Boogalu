@@ -107,11 +107,11 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
                             {alreadySubscribed ? <Button variant="contained" color="secondary" onClick={(e) => proceedForCompetition()}>Continue to competition</Button> : <Button variant="contained" color="secondary" onClick={(e) => proceedForPayment(e)}>Subscribe</Button>}
                         </div>}
                         {activeStep == 2 && <div>
-                            <div>payment success</div>
+                            <h3>Subscription Payment Recieved Successfully</h3>
                             <Button variant="contained" color="secondary" onClick={(e) => proceedForCompetition()}>Continue to competition</Button>
                         </div>}
                         {activeStep == 3 && <div>
-                            <div>payment fail</div>
+                            <h3>Subscription Payment Fail</h3>
                             <Button variant="contained" color="secondary" onClick={(e) => proceedForPayment(e)}>Retry</Button>
                         </div>}
                     </div>

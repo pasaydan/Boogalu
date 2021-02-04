@@ -7,8 +7,9 @@ import BuySubscription from "../BuySubscription";
 import { enableLoginFlow, disableLoginFlow } from "../../Actions/LoginFlow";
 import { saveUserSubscription } from "../../Services/User.service";
 import { loginUser } from "../../Actions/User";
-import { SUBSCRIPTION_ACTIVE_STATUS } from "../../Constants";
+import { SUBSCRIPTION_ACTIVE_STATUS, ADMIN_EMAIL_STAGING } from "../../Constants";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
+import { sendEmail } from "../../Services/Email.service";
 
 function Subscriptions() {
     const { state, dispatch } = useStoreConsumer();
@@ -19,6 +20,25 @@ function Subscriptions() {
     const [activeStep, setActiveStep] = useState(1);
     const [alreadySubscribed, setAlreadySubscribed] = useState(false)
 
+    const sendEmailToAdmin = () => {
+        let emailBody = `<div>
+            <h6 style="font-size: 17px;margin-bottom: 26px;">User subscribed for ${state.activeSubscription.name}</h6>
+            <h4>User details -</h4>
+            <h2>${loggedInUser.name}</h2>
+            <h2>${loggedInUser.email}</h2>
+            <h2>${loggedInUser.phone}</h2>
+            </div>`;
+        let payload = {
+            mailTo: ADMIN_EMAIL_STAGING,
+            title: 'User subscribed',
+            content: emailBody
+        }
+        sendEmail(payload).subscribe((res) => {
+            if (!('error' in res)) {
+                console.log('Email Send Successfully.');
+            } else console.log('Email Send Failed.');
+        })
+    }
     // check for payment status if user is in payment flow
     useEffect(() => {
         dispatch(enableLoading());
@@ -42,6 +62,7 @@ function Subscriptions() {
 
                 dispatch(enableLoading());
                 saveUserSubscription(state.activeSubscription.key, loggedInUserData).subscribe((response) => {
+                    sendEmailToAdmin();
                     dispatch(loginUser(loggedInUserData));
                     setShowSubscriptionDetails(true);
                     dispatch(disableLoading());

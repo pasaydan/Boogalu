@@ -115,18 +115,14 @@ let transporter = nodemailer.createTransport({
 //send email 
 exports.sendEmail = functions.https.onRequest((request, response) => {
     return cors(request, response, () => {
-        console.log('emailllll request', request.body)
-        console.log('emailllll request mailTo', request.body.mailTo)
         var to = request.body.mailTo;
         var subject = request.body.title;
         var html = request.body.content;
-        var attachments = request.body.attachments;
         var mailOptions = {
             from: '"Boogalu" <garudkardnyaneshwar@gmail.com>',
             to: to,
             subject: subject,
-            html: html,
-            attachments: attachments
+            html: html
         }
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {

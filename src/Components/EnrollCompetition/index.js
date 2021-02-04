@@ -12,8 +12,9 @@ import { saveCompetition, updateCompetition } from "../../Services/EnrollCompeti
 import { enableLoginFlow } from "../../Actions/LoginFlow";
 import { setActiveCompetition } from "../../Actions/Competition";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
-import { NOTIFICATION_ERROR } from "../../Constants";
+import { NOTIFICATION_ERROR, ADMIN_EMAIL_STAGING } from "../../Constants";
 import { displayNotification } from "../../Actions/Notification";
+import { sendEmail } from "../../Services/Email.service";
 
 function EnrollCompetition({ handleClose, changeSelectedVdo }) {
 
@@ -36,6 +37,27 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
         let compData = { ...competitionDetails };
         compData.ageGroup = groupValue;
         dispatch(setActiveCompetition(compData));
+    }
+
+    const sendEmailToAdmin = () => {
+        let emailBody = `<div>
+            <h6 style="font-size: 17px;margin-bottom: 26px;">New Video Uploaaded for competition ${competitionDetails.name}</h6>
+            <h4>User details -</h4>
+            <h2>${loggedInUser.name}</h2>
+            <h2>${loggedInUser.email}</h2>
+            <h2>${loggedInUser.phone}</h2>
+            <a href=${competitionDetails.selectedVideo.url} >Clik here to check uploaded video</a>
+            </div>`;
+        let payload = {
+            mailTo: ADMIN_EMAIL_STAGING,
+            title: 'New video submited for competition',
+            content: emailBody
+        }
+        sendEmail(payload).subscribe((res) => {
+            if (!('error' in res)) {
+                console.log('Email Send Successfully.');
+            } else console.log('Email Send Failed.');
+        })
     }
 
     const submitForCompetition = () => {
@@ -65,6 +87,7 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
         } else {
             saveCompetition(competitionObj).subscribe((response) => {
                 dispatch(disableLoading());
+                sendEmailToAdmin();
                 console.log('vdo uploaded for competition suceess');
                 history.push('/profile');
             })
@@ -74,14 +97,14 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
     }
 
     const proceedForSubscription = () => {
-        if(competitionDetails.ageGroup){
+        if (competitionDetails.ageGroup) {
             handleClose();
             dispatch(enableLoginFlow('competition-subscription'));
             history.push({
                 pathname: '/subscription',
                 state: null
             })
-        }else{
+        } else {
             dispatch(displayNotification({
                 msg: "Please the age group!",
                 type: NOTIFICATION_ERROR,

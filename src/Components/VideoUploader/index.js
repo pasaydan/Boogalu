@@ -99,7 +99,7 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
     };
 
     async function uploadSelectedVideo() {
-        if(!(SelectedVideo.title && SelectedVideo.desc)){
+        if (!(SelectedVideo.title && SelectedVideo.desc)) {
             dispatch(displayNotification({
                 msg: "Title and description are mandatory!",
                 type: NOTIFICATION_ERROR,
@@ -119,10 +119,15 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
             reader.onerror = error => console.error(error);
         }
 
-        const sendEmailToAdmin = (vdoUrl, thumbnailImage) => {
-            let emailBody = `<h6 style="font-size: 17px;margin-bottom: 26px;">New Video Uploaaded
-            <video width="320" height="176" controls poster=${thumbnailImage} src=${vdoUrl} ></video>
-            </h6>`;
+        const sendEmailToAdmin = (vdoUrl) => {
+            let emailBody = `<div>
+            <h6 style="font-size: 17px;margin-bottom: 26px;">New Video Uploaaded</h6>
+            <h4>User details -</h4>
+            <h2>${loggedInUser.name}</h2>
+            <h2>${loggedInUser.email}</h2>
+            <h2>${loggedInUser.phone}</h2>
+            <a href=${vdoUrl} >Clik here to check uploaded video</a>
+            </div>`;
             let payload = {
                 mailTo: ADMIN_EMAIL_STAGING,
                 title: 'New Video Uploaaded',
@@ -143,7 +148,7 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
                 console.log('Upload is ' + response.donePercentage + '% done');
             }
             if (response.downloadURL && !UploadedVdoUrl) {
-                // sendEmailToAdmin(response.downloadURL, thumbnailImage);
+                sendEmailToAdmin(response.downloadURL);
                 // dispatch(enableLoading());
                 setShowVdoUploadProgress(false);
                 setUploadedVdoUrl(response.downloadURL);
