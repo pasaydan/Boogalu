@@ -142,11 +142,19 @@ function Feeds() {
         })
     }, [])
 
+    const openUserStory = (user) => {
+        let userVdos = feedList.filter((feed) => user.key == feed.userId);
+        if (userVdos.length) {
+            setActiveVideoObj(userVdos[0]);
+            setCommentModal(true);
+        };
+    }
+
     return (
         <div className="user-dashboard-wrap">
             <div className="user-list-wrap">
                 {userList && userList.map((user) => {
-                    return <div key={user.key} className="user-icon-wrap">
+                    return <div key={user.key} className="user-icon-wrap" onClick={() => openUserStory(user)}>
                         <ProfileImage src={user.profileImage} type="large" />
                         <div>{user.username}</div>
                     </div>

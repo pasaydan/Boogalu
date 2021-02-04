@@ -39,11 +39,22 @@ function Competitions() {
                 // get user submitted competition details
                 prepareUserCompData(allCompList).then((compListWithUserData) => {
                     setCompletitionList(compListWithUserData);
-                    console.log(compListWithUserData)
+                    if (state.currentLoginFlow === 'profile-competition') {
+                        // if user come from profile page by clicking upload for competition
+                        dispatch(setActiveCompetition(compListWithUserData[0]));
+                        setIsOpenDetailsModal(true);
+                        setInitialStep(1);
+                    }
                 })
             } else {
                 dispatch(disableLoading());
                 setCompletitionList(allCompList);
+                if (state.currentLoginFlow === 'profile-competition') {
+                    // if user come from profile page by clicking upload for competition
+                    dispatch(setActiveCompetition(allCompList[0]));
+                    setIsOpenDetailsModal(true);
+                    setInitialStep(1);
+                }
             }
         });
         // if user come from login page

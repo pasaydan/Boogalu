@@ -3,7 +3,7 @@ import Button from '@material-ui/core/Button';
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { useHistory } from "react-router-dom";
 import { formatDate } from "../../Services/Utils";
-import { disableLoginFlow } from "../../Actions/LoginFlow";
+import { disableLoginFlow, enableLoginFlow } from "../../Actions/LoginFlow";
 import { saveCompetition } from "../../Services/EnrollCompetition.service";
 // modal imports
 import Modal from '@material-ui/core/Modal';
@@ -56,7 +56,7 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
         saveCompetition(competitionObj).subscribe((response) => {
             dispatch(disableLoading());
             console.log('vdo uploaded for competition suceess');
-            dispatch(disableLoginFlow());
+            dispatch(enableLoginFlow('profile-competition'));
             history.push('/profile');
         })
     }
@@ -104,7 +104,7 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
                                 {/* <div>{subscriptionDetails.amount} / {subscriptionDetails.plans}</div> */}
                                 {/* <div>Valid Upto- {subsciptionValidity}</div> */}
                             </div>
-                            {alreadySubscribed ? <Button variant="contained" color="secondary" onClick={(e) => proceedForCompetition()}>Continue to competition</Button> : <Button variant="contained" color="secondary" onClick={(e) => proceedForPayment(e)}>Subscribe</Button>}
+                            {alreadySubscribed ? <Button variant="contained" color="secondary" onClick={(e) => proceedForCompetition()}>Continue</Button> : <Button variant="contained" color="secondary" onClick={(e) => proceedForPayment(e)}>Subscribe</Button>}
                         </div>}
                         {activeStep == 2 && <div>
                             <h3>Subscription Payment Recieved Successfully</h3>

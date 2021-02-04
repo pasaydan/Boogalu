@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FaHome, FaBookReader, FaCloudUploadAlt, FaTrophy, FaStaylinked } from 'react-icons/fa';
+import { FaHome, FaBookReader, FaCloudUploadAlt, FaTrophy, FaStaylinked, FaUserAlt } from 'react-icons/fa';
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
@@ -206,9 +206,9 @@ function Navigation() {
                     {
                         !isMobile ?
                             <ul className="flex-1 nav-ul">
-                                <li><a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')}>Lessons</a></li>
+                                {loggedInUser.username && <li><a href="#profile" onClick={(e) => onClickNav(e, 'profile')}>Profile</a></li>}
                                 <li><a href="#Competitions" onClick={(e) => onClickNav(e, 'competitions')}>Competitions</a></li>
-                                <li><a href="#Subscription" onClick={(e) => onClickNav(e, 'subscription')}>Subscription</a></li>
+                                <li><a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')}>Lessons</a></li>
                             </ul> : ''
                     }
                     {(!loggedInUser || !loggedInUser.phone) && <div className="flex-2 signup-wrap" >
@@ -219,12 +219,11 @@ function Navigation() {
                     {loggedInUser && loggedInUser.phone && <div className="flex-2 signup-wrap" >
                         <div className="profile" ref={ref}>
                             {loggedInUser.profileImage ? <div className="profile-img-wrap">
-                                <img src={loggedInUser.profileImage} onClick={() => setShowProfileTab(true)} style={{ fontSize: '35px'}} />
-                            </div> : <AccountCircleOutlinedIcon onClick={() => setShowProfileTab(true)} style={{ fontSize: '35px'}} />}
-                          
+                                <img src={loggedInUser.profileImage} onClick={() => setShowProfileTab(true)} style={{ fontSize: '35px' }} />
+                            </div> : <AccountCircleOutlinedIcon onClick={() => setShowProfileTab(true)} style={{ fontSize: '35px' }} />}
+
                             {showProfileTab && <div className="profile-tab-wrap">
-                                <div className="profile" onClick={() => { history.push('/profile'); setShowProfileTab(false) }}>Profile</div>
-                                <div className="profile" onClick={() => { history.push('/feeds'); setShowProfileTab(false) }}>Feeds</div>
+                                <div className="profile" onClick={() => { history.push('/subscription'); setShowProfileTab(false) }}>Subscription</div>
                                 <div className="logout" onClick={() => logout()}>Logout</div>
                             </div>}
                         </div>
@@ -249,6 +248,12 @@ function Navigation() {
                                         <span>Home</span>
                                     </a>
                                 </li>
+                                {loggedInUser.username && <li>
+                                    <a href="#profile" onClick={(e) => onClickNav(e, 'profile')}>
+                                        <i><FaUserAlt /></i>
+                                        <span>Profile</span>
+                                    </a>
+                                </li>}
                                 <li>
                                     <a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')}>
                                         <i><FaBookReader /></i>
@@ -261,12 +266,12 @@ function Navigation() {
                                         <span>Competition</span>
                                     </a>
                                 </li>
-                                <li>
+                                {/* <li>
                                     <a href="#Subscription" onClick={(e) => onClickNav(e, 'subscription')}>
                                         <i><FaStaylinked /></i>
                                         <span>Subscription</span>
                                     </a>
-                                </li>
+                                </li> */}
                             </ul>
                         </div>
                         : ''

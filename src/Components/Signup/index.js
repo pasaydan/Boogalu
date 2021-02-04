@@ -44,7 +44,7 @@ export default function Signup() {
     const [SignUpError, setSignUpError] = useState(null);
     const [showHidePassword, setShowHidePassword] = useState({ showPassword: false, showConfirmPassword: false });
 
-    const [activeStep, setActiveStep] = useState('stepOne');
+    const [activeStep, setActiveStep] = useState(6);
     const [showNextButton, setShowNextButton] = useState(false);
     const [stepData, setStepListData] = useState(stepListData);
     const [selectedOptionsList, setSelectedOptionsList] = useState([]);
@@ -146,6 +146,22 @@ export default function Signup() {
         })
     }
 
+    const redirection = () => {
+        dispatch(signupUser(userDetails));
+        dispatch(displayNotification({
+            msg: "Registration successfully",
+            type: NOTIFICATION_SUCCCESS,
+            time: 3000
+        }));
+        if (state.currentLoginFlow == 'competition') history.push('/competitions');
+        else if (state.currentLoginFlow == 'subscription') history.push('/subscription');
+        if (state.currentLoginFlow == 'upload-video') history.push('/upload-video');
+        else history.push(({
+            pathname: '/',
+            state: null
+        }));
+    }
+
     const setSignupUserCred = (e) => {
         dispatch(enableLoading());
         if (userDetails.password != userDetails.confirmPassword) {
@@ -158,19 +174,13 @@ export default function Signup() {
                 .then((userKey) => {
                     userDetails.key = userKey;
                     dispatch(disableLoading());
-                    dispatch(signupUser(userDetails));
-                    dispatch(displayNotification({
-                        msg: "Registration successfully",
-                        type: NOTIFICATION_SUCCCESS,
-                        time: 3000
-                    }));
-                    if (state.currentLoginFlow == 'competition') history.push('/competitions');
-                    else if (state.currentLoginFlow == 'subscription') history.push('/subscription');
-                    if (state.currentLoginFlow == 'upload-video') history.push('/upload-video');
-                    else history.push(({
-                        pathname: '/',
-                        state: null
-                    }));
+                    // dispatch(signupUser(userDetails));
+                    // dispatch(displayNotification({
+                    //     msg: "Registration successfully",
+                    //     type: NOTIFICATION_SUCCCESS,
+                    //     time: 3000
+                    // }));
+                    setActiveStep('stepOne');
                 })
                 .catch((error) => {
                     // error in user registration
@@ -189,8 +199,8 @@ export default function Signup() {
             case 'stepOne': setActiveStep('stepTwo'); break;
             case 'stepTwo': setActiveStep('stepThree'); break;
             case 'stepThree': setActiveStep('stepFour'); break;
-            case 'stepFour': setActiveStep('stepFive'); break;
-            case 'stepFive': setActiveStep(6); break;
+            case 'stepFour': redirection(); break;
+            // case 'stepFive': setActiveStep(6); break;
         }
     }
 
@@ -199,8 +209,8 @@ export default function Signup() {
             case 'stepTwo': setActiveStep('stepOne'); break;
             case 'stepThree': setActiveStep('stepTwo'); break;
             case 'stepFour': setActiveStep('stepThree'); break;
-            case 'stepFive': setActiveStep('stepFour'); break;
-            case 6: setActiveStep('stepFive'); break;
+            // case 'stepFive': setActiveStep('stepFour'); break;
+            // case 6: setActiveStep('stepFour'); break;
         }
     }
 
@@ -409,13 +419,19 @@ export default function Signup() {
                         pathname: '/login',
                         state: null
                     })}>SIGN IN</Button>
-                    {
+                    {/* {
                         showNextButton ?
                             <div className={`next-prev-actions ${activeStep != 'stepOne' ? 'next-step-active' : ''} `}>
                                 {activeStep != 'stepOne' && <Button color="primary" variant="contained" className="next-btn previous" onClick={() => setPrevStep()}>Prev</Button>}
                                 {showNextButton && <Button color="primary" variant="contained" className="next-btn" onClick={() => setNextStep()}>Next</Button>}
                             </div> : ''
-                    }
+                    } */}
+                    <div className={`next-prev-actions ${activeStep != 'stepOne' ? 'next-step-active' : ''} `}>
+                        {activeStep != 'stepOne' && <Button color="primary" variant="contained" className="next-btn previous" onClick={() => setPrevStep()}>Prev</Button>}
+                        {/* <Button color="primary" variant="contained" className="next-btn" onClick={() => setNextStep()}>Next</Button> */}
+                        <Button color="primary" variant="contained" className="next-btn" onClick={() => setNextStep()}>Skip</Button>
+                        {activeStep != 'stepFour' && <Button color="primary" variant="contained" className="next-btn" onClick={() => redirection()}>Skip All</Button>}
+                    </div>
                 </div>}
             </div>}
             {activeStep == 6 && <form className="form-wrap final-registration-block clearfix" onSubmit={setSignupUserCred}>
@@ -433,7 +449,7 @@ export default function Signup() {
                     {
                         isUserPhotoUploaded ?
                             <i className="plus-icon"><FaEdit /></i>
-                        : 
+                            :
                             <i className="plus-icon"><FaPlus /></i>
                     }
                     <input id="myInput"
@@ -621,7 +637,7 @@ export default function Signup() {
                         <Button variant="contained" type="submit" color="primary" >Sign Up
                          <ArrowRightSharpIcon />
                         </Button>
-                        {activeStep != 'stepOne' && <Button color="primary" variant="contained" className="next-btn previous" onClick={() => setPrevStep()}>Prev</Button>}
+                        {/* {activeStep != 'stepOne' && <Button color="primary" variant="contained" className="next-btn previous" onClick={() => setPrevStep()}>Prev</Button>} */}
                     </div>
                     <div className="already-login-wrap">
                         <div className="text-wrap">Already have an account?</div>

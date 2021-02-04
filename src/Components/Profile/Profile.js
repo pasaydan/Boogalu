@@ -28,6 +28,8 @@ import { updateVideoLikes, updateVideoComments } from "../../Services/UploadedVi
 import VideoDetails from '../VideoDetails'
 import { getAllUser } from "../../Services/User.service";
 import { getUploadedVideosList } from "../../Services/UploadedVideo.service";
+import { FaBars } from 'react-icons/fa';
+import { disableLoginFlow, enableLoginFlow } from "../../Actions/LoginFlow";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -77,12 +79,21 @@ function Profile() {
     const [activeVideoObj, setActiveVideoObj] = useState({})
     const [commentModal, setCommentModal] = useState(false)
     const [userList, setUserList] = useState([])
+    const [showProfileTab, setShowProfileTab] = useState(false);
+    const [openUploadCompModalFor, setOpenUploadCompModalFor] = useState(null)
+    const ref = useRef();
+    useOnClickOutside(ref, () => { setShowProfileTab(false); setOpenUploadCompModalFor(null) });
 
     useEffect(() => {
         if (!loggedInUser || !loggedInUser.email) history.push('/login')
         $('html,body').animate({
             scrollTop: 0
         }, 500);
+
+        if (state.currentLoginFlow == 'profile-competition') {
+            setValue(2);
+            dispatch(disableLoginFlow());
+        };
 
         document.addEventListener('scroll', onWindowScroll);
         dispatch(enableLoading());
@@ -298,6 +309,35 @@ function Profile() {
         setActiveVideoObj(video)
     }
 
+    const redirectToCompetition = () => {
+        dispatch(enableLoginFlow('profile-competition'));
+        history.push('/competitions');
+        setShowProfileTab(false);
+    }
+
+    // Hook
+    function useOnClickOutside(ref, handler) {
+        useEffect(
+            () => {
+                const listener = event => {
+                    if (!ref.current || ref.current.contains(event.target)) {
+                        return;
+                    }
+
+                    handler(event);
+                };
+                document.addEventListener('mousedown', listener);
+                document.addEventListener('touchstart', listener);
+                return () => {
+                    document.removeEventListener('mousedown', listener);
+                    document.removeEventListener('touchstart', listener);
+                };
+            },
+            [ref, handler]
+        );
+    }
+
+
     return (
         <div className="profile-outer" ref={profileOuterRef}>
             <div className="profile-details-wrap clearfix">
@@ -366,19 +406,27 @@ function Profile() {
                                 {UserUploadedVideoList.length !== 0 ?
                                     <div className="feed-wrap">
                                         {UserUploadedVideoList && UserUploadedVideoList.map((vdo) => {
-                                            return <div key={vdo.key} className="vdo-card">
-                                                <div>
-                                                    <Vedio vdoObj={vdo} />
+                                            return <div key={vdo.key} className="profile-vdo-wrap">
+                                                <div className="menu" onClick={() => { setOpenUploadCompModalFor(vdo.key); setShowProfileTab(true) }}>
+                                                    <i><FaBars /></i>
                                                 </div>
-                                                <div className="video-title-like-wrap">
-                                                    <div className="title">{vdo.title}</div>
-                                                    <div className="like-comment">
-                                                        {vdo.likes && vdo.likes.length > 0 && <div className="likes-count">{vdo.likes.length} Likes</div>}
-                                                        {!vdo.isLiked && <FavoriteBorder title="Unlike" onClick={() => handleLikes(vdo, 'liked')} />}
-                                                        {vdo.isLiked && <Favorite title="Like" onClick={() => handleLikes(vdo, 'unliked')} />}
-                                                        <CommentOutlined title="comment" onClick={() => handleCommentClick(vdo)} />
+                                                {showProfileTab && openUploadCompModalFor == vdo.key && <div className="profile-tab-wrap" ref={ref}>
+                                                    <div className="profile" onClick={() => redirectToCompetition()}>Upload for competition</div>
+                                                </div>}
+                                                <div className="vdo-card">
+                                                    <div>
+                                                        <Vedio vdoObj={vdo} />
                                                     </div>
+                                                    <div className="video-title-like-wrap">
+                                                        <div className="title">{vdo.title}</div>
+                                                        <div className="like-comment">
+                                                            {vdo.likes && vdo.likes.length > 0 && <div className="likes-count">{vdo.likes.length} Likes</div>}
+                                                            {!vdo.isLiked && <FavoriteBorder title="Unlike" onClick={() => handleLikes(vdo, 'liked')} />}
+                                                            {vdo.isLiked && <Favorite title="Like" onClick={() => handleLikes(vdo, 'unliked')} />}
+                                                            <CommentOutlined title="comment" onClick={() => handleCommentClick(vdo)} />
+                                                        </div>
 
+                                                    </div>
                                                 </div>
                                             </div>
                                         })}

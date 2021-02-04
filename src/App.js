@@ -79,7 +79,7 @@ function App() {
                   <Profile />
                 </Route>
                 <Route exact path="/home">
-                  <Homepage />
+                  {state.loggedInUser && state.loggedInUser.username ? <Feeds /> : <Homepage />}
                 </Route>
                 <Route exact path="/upload-video">
                   <VideoUploader />
@@ -88,7 +88,7 @@ function App() {
                   <Feeds />
                 </Route>
                 <Route exact path="/">
-                  <Homepage />
+                  {state.loggedInUser && state.loggedInUser.username ? <Feeds /> : <Homepage />}
                 </Route>
 
                 {/* admin routes */}

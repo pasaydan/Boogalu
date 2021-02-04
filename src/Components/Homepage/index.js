@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import bgImg from '../../Images/hip-hop.png';
 import { useHistory } from "react-router-dom";
+import { getUploadedVideosList } from "../../Services/UploadedVideo.service";
+import Vedio from "../Vedio/Video";
+import Favorite from '@material-ui/icons/Favorite';
 import * as $ from 'jquery';
 
 export default function Homepage() {
@@ -9,17 +12,28 @@ export default function Homepage() {
     const { state, dispatch } = useStoreConsumer();
     let loggedInUser = state.loggedInUser;
     const [danceImageVisibleClass, activeDanceImage] = useState('');
+    const [UserUploadedVideoList, setUserUploadedVideoList] = useState([]);
+    const [isMobile, toggleMobile] = useState(false);
 
     useEffect(() => {
+        getUploadedVideosList().subscribe((videos) => {
+            setUserUploadedVideoList(videos)
+        });
         setTimeout(() => {
             activeDanceImage('show');
         }, 800);
+        let windowViewPortWidth = window.innerWidth;
+        if (windowViewPortWidth > 1023) {
+            toggleMobile(false);
+        } else {
+            toggleMobile(true);
+        }
     }, []);
 
     return (
         <div className="homepage charcoal-bg clearfix">
             <div className="homepage-wrap clearfix">
-                <div className="banner_vdo">
+                {!isMobile && <div className="banner_vdo">
                     <div className="vdo_wrap rounded-dark-box">
                         <iframe width="100%" src="https://www.youtube.com/embed/i3yMXpeLPuU" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
                     </div>
@@ -29,7 +43,7 @@ export default function Homepage() {
                     <div className="vdo_wrap rounded-dark-box">
                         <iframe width="100%" src="https://www.youtube.com/embed/U7NaFiqSeVE" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
                     </div>
-                </div>
+                </div>}
                 <div className="banner_img">
                     <h1>Dance Classes for Everyone</h1>
                     <div className="get-started-wrap">
@@ -44,7 +58,7 @@ export default function Homepage() {
                 <img src={bgImg} alt="" />
             </div>
             <div className="homepage-display-1 charcoal-bg-dark">
-                <div className="learn_choreo" id="Lessons">
+                {/* <div className="learn_choreo" id="Lessons">
                     <div className="heading-wrap">
                         <h2>
                             Learn Choreography To <br /> Your Favorite Songs
@@ -65,6 +79,28 @@ export default function Homepage() {
                             </iframe>
                         </div>
                     </div>
+                </div> */}
+                <div className="flex-container" >
+                    {UserUploadedVideoList.length !== 0 ?
+                        <div className="feed-wrap">
+                            {UserUploadedVideoList && UserUploadedVideoList.map((vdo) => {
+                                return <div key={vdo.key} className="vdo-card">
+                                    <div>
+                                        <Vedio vdoObj={vdo} />
+                                    </div>
+                                    <div className="video-title-like-wrap">
+                                        <div className="title">{vdo.title}</div>
+                                        <div className="like-comment">
+                                            <Favorite title="Likes" />
+                                            {vdo.likes && vdo.likes.length > 0 && <div className="likes-count">{vdo.likes.length} Likes</div>}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            })}
+                        </div>
+                        :
+                        <div>No video posted yet !</div>}
                 </div>
             </div>
         </div>

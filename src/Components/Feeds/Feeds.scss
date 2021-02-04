@@ -66,6 +66,9 @@
     order: 1;
     flex-wrap: wrap;
     margin-right: 30px;
+    .vdo-card{
+        z-index: -2;
+    }
 
     .username{
         font-size: 18px;

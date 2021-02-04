@@ -159,6 +159,21 @@
     right: 0;
     z-index: 1500;
 }
+
+.profile-vdo-wrap{
+    position: relative;
+    padding-right: 30px;
+    .menu{
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    .profile-tab-wrap{
+        position: absolute;
+        right: 20px;
+        top: 20px;  
+    }
+}
 @media screen and (max-width: 1023px) {
   .profile-outer {
         &.sticky {
