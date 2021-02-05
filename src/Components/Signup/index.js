@@ -429,8 +429,9 @@ export default function Signup() {
                     <div className={`next-prev-actions ${activeStep != 'stepOne' ? 'next-step-active' : ''} `}>
                         {activeStep != 'stepOne' && <Button color="primary" variant="contained" className="next-btn previous" onClick={() => setPrevStep()}>Prev</Button>}
                         {/* <Button color="primary" variant="contained" className="next-btn" onClick={() => setNextStep()}>Next</Button> */}
-                        <Button color="primary" variant="contained" className="next-btn" onClick={() => setNextStep()}>Skip</Button>
-                        {activeStep != 'stepFour' && <Button color="primary" variant="contained" className="next-btn" onClick={() => redirection()}>Skip All</Button>}
+                        {showNextButton && <Button color="primary" variant="contained" className="next-btn" onClick={() => setNextStep()}>Next</Button>}
+                        {!showNextButton && <Button color="primary" variant="contained" className="next-btn skip-btn" onClick={() => setNextStep()}>Skip</Button>}
+                        {activeStep != 'stepFour' && <Button color="primary" variant="contained" className="next-btn skip-all-btn" onClick={() => redirection()}>Skip All</Button>}
                     </div>
                 </div>}
             </div>}

@@ -4,6 +4,10 @@
     margin: 30px 0;
     .next-prev-actions {
         float: right;
+        .next-btn,
+        .skip-btn {
+            margin-left: 10px;
+        }
     }
 }
 
@@ -185,7 +189,7 @@
     padding-left: 100px;
     text-align: left;
     .text-wrap {
-        line-height: 52px;
+        line-height: 36px;
     }
 }
 
@@ -195,15 +199,15 @@
 }
 
 .step-already-login-wrap .next-btn {
-    font-size: 15px;
-    padding: 13px 47px;
+    font-size: 12px;
+    padding: 8px 30px;
     filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
     float: right;
     border-radius: 25px;
     font-family: 'SemiBold';
     &.previous {
         float: left;
-        margin-right: 20px;
+        margin-right: 0;
     }
 }
 .profile-img-wrap {
@@ -260,7 +264,7 @@
     .submit-btn {
         .next-btn {
             &.previous {
-                margin-right: 20px;
+                margin-right: 0;
             }
         }
     }
@@ -295,11 +299,6 @@
             text-align: left;
             margin-top: 20px;
         }
-    }
-    .step-already-login-wrap {
-        .next-btn {
-            padding: 10px 30px;
-        }       
     }
 }
 
