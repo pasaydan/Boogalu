@@ -64,7 +64,7 @@ function Navigation() {
         setTimeout(() => {
             const pathName = history?.location?.pathname.split('/')[1];
             const navLinks = document.querySelectorAll('.nav-ul a');
-            if (pathName.includes('register') || pathName.includes('login') || pathName.includes('upload-video') || pathName.includes('admin') || pathName.includes('admin')) {
+            if (pathName.includes('admin')) {
                 setHideVdoUploadBtn(true);
             }
             if (navLinks && navLinks.length) {
@@ -85,7 +85,7 @@ function Navigation() {
     useEffect(() => {
         const listenRouteChange = history.listen((location, action) => {
             const pathName = location?.pathname.split('/')[1];
-            if (pathName.includes('register') || pathName.includes('login') || pathName.includes('upload-video') || pathName.includes('admin') || pathName.includes('admin')) setHideVdoUploadBtn(true);
+            if (pathName.includes('admin')) setHideVdoUploadBtn(true);
             else setHideVdoUploadBtn(false);
             if ((!pathName || pathName.includes('lessons') || pathName.includes('contactus') || pathName.includes('home')) && state.currentLoginFlow) {
                 dispatch(disableLoginFlow());
@@ -196,7 +196,7 @@ function Navigation() {
 
     return (
         <>
-            <nav className={`navigation-wrap ${goingUpClass} ${goingDownClass}`}>
+            <nav className={`navigation-wrap ${goingUpClass} ${goingDownClass} ${!loggedInUser.username ? 'user-logged-out' : ''}`}>
                 <div className="flex-container desktop-navigation">
                     <h1 title="home" >
                         <a href="/" onClick={(e) => onClickNav(e, '')}>
@@ -209,6 +209,12 @@ function Navigation() {
                                 {loggedInUser.username && <li><a href="#profile" onClick={(e) => onClickNav(e, 'profile')}>Profile</a></li>}
                                 <li><a href="#Competitions" onClick={(e) => onClickNav(e, 'competitions')}>Competitions</a></li>
                                 <li><a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')}>Lessons</a></li>
+                                {
+                                    !hideVdoUploadBtn ?
+                                    <li>
+                                        <a href="" onClick={(e) => uploadVdo(e)}>Upload</a> 
+                                    </li> : ''
+                                }
                             </ul> : ''
                     }
                     {(!loggedInUser || !loggedInUser.phone) && <div className="flex-2 signup-wrap" >

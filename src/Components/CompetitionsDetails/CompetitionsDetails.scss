@@ -184,6 +184,12 @@
                     }
                 }
             }
+            .error_message {
+                text-align: center;
+                font-size: 14px;
+                margin: 10px auto 0;
+                color: var(--red-text-color);
+            }
         }
     }
     .close-modal-btn {

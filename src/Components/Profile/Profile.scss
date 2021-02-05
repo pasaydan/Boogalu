@@ -1,5 +1,5 @@
 .profile-details-wrap {
-    padding: 50px 20% 30px;
+    padding: 20px 20% 0;
 }
 
 .profile-details-wrap {
@@ -182,6 +182,16 @@
         cursor: pointer;
         z-index: 1;
         color: var(--primary-white);
+    }
+    .winners-badges {
+        position: absolute;
+        width: 40px;
+        left: -17px;
+        top: -17px;
+        img {
+            width: 100%;
+        }
+        z-index: 1;
     }
     .profile-tab-wrap{
         position: absolute;

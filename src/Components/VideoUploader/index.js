@@ -203,7 +203,9 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
         }
         // else if (state.currentLoginFlow == 'competition-uploadvdo') history.push('/competition');
         // handleClose();
-        handleVdoUploadResponse();
+        if (typeof(handleVdoUploadResponse) !== 'undefined') {
+            handleVdoUploadResponse();
+        }
         setOpenVdoUploaderModal(false);
 
     }

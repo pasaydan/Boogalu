@@ -36,7 +36,10 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
     const [userUploadedVdos, setUserUploadedVideoList] = useState([]);
     const tncRef = useRef();
     const [TnC, setTnC] = useState(false);
+    const [isTncAccepted, tncAcceptedValue] = useState(false);
     const [ActiveStep, setActiveStep] = useState(initialStep || 1);
+    const [isVideoSelected, toggleVideoSelect] = useState(false);
+    const [selectedVideoData, setVideoData] = useState(null);
     const [disableSubmitVdoButton, setDisableSubmitVdoButton] = useState(false);
     const [VdoUploadDateLimit, setVdoUploadDateLimit] = useState(null)
     const [SelectedVideo, setSelectedVideo] = useState({ title: "", desc: "", file: null });
@@ -109,6 +112,10 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
     const selectVdo = (e, vdo) => {
         e.preventDefault();
         e.stopPropagation();
+        if (vdo && vdo?.key && vdo?.key.length) {
+            toggleVideoSelect(false);
+            setVideoData(vdo);
+        }
         if (competitionDetails.isUserEnrolled && competitionDetails.userSubmitedDetails.vdo.key == vdo.key) {
             setDisableSubmitVdoButton(true);
             let updatedCompetition = competitionDetails;
@@ -212,6 +219,20 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
         }
     }
 
+    function acceptTnC(event) {
+        const isTncChecked = event.target.checked;
+        tncAcceptedValue(isTncChecked);
+    }
+
+    function setActiveVideoActiveStep(step) {
+        if (selectedVideoData?.key && selectedVideoData?.key.length) {
+            toggleVideoSelect(false);
+            setActiveStep(step);
+        } else {
+            toggleVideoSelect(true);
+        }
+    }
+
     return (
         <div>
             <Modal
@@ -301,6 +322,9 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
 
                                 <div className="action-wrap">
                                     <div className="terms-button" ref={tncRef} onClick={() => setTnC((TnC ? false : true))}>
+                                        <input type="checkbox" 
+                                        checked={isTncAccepted}
+                                        title="accept terms and condition" onClick={(e) => acceptTnC(e)} />
                                         Terms &amp; Conditions
                                     {TnC && <div className="tool-tip-wrap">
                                             <div>You may not be able to attend the live session if you are late.</div>
@@ -312,7 +336,11 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                     {/* check for user logged in or not */}
                                     {loggedInUser.email && loggedInUser.username ?
                                         <div>
-                                            {!competitionDetails?.isUserEnrolled && <Button variant="contained" color="primary" onClick={() => setActiveStep(3)}>Submit Video</Button>}
+                                            {!competitionDetails?.isUserEnrolled && <Button variant="contained"
+                                            disabled={!isTncAccepted} 
+                                            color="primary" 
+                                            onClick={() => setActiveStep(3)}
+                                            >Select Video</Button>}
                                         </div> :
                                         <div>
                                             {/* <div>To upload video you need to login first</div> */}
@@ -361,7 +389,11 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                         </div>
                                     </div>
                                 </div>
-                                {!disableSubmitVdoButton && <Button variant="contained" color="primary" onClick={() => setActiveStep(4)}>Upload</Button>}
+                                {!disableSubmitVdoButton && <Button variant="contained" color="primary" onClick={() => setActiveVideoActiveStep(4)}>Upload</Button>}
+                                {
+                                    isVideoSelected ?
+                                    <p className="error_message">Please select a video from top list or upload a new</p> : ''
+                                }
                             </div>}
 
                             {ActiveStep === 4 && <div>

@@ -12,6 +12,9 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import firstPrizeBadge from '../../Images/1st-prize-badge.png';
+import secondPrizeBadge from '../../Images/2nd-prize-badge.png';
+import thirdPrizeBadge from '../../Images/3rd-prize-badge.png';
 import * as $ from 'jquery';
 import { getUploadedVideosByUserId } from "../../Services/UploadedVideo.service";
 import { getCompetitionByUserId } from "../../Services/EnrollCompetition.service";
@@ -393,8 +396,8 @@ function Profile() {
                             aria-label="full width tabs example"
                         >
                             <Tab label="Posts" icon={<CollectionsOutlinedIcon />} {...a11yProps(0)} />
-                            <Tab label="Liked" icon={<FavoriteBorderOutlinedIcon />}{...a11yProps(1)} />
-                            <Tab label="Competitions" icon={<LoyaltyOutlinedIcon />} {...a11yProps(2)} />
+                            <Tab label="Competitions" icon={<LoyaltyOutlinedIcon />} {...a11yProps(1)} />
+                            {/* <Tab label="Liked" icon={<FavoriteBorderOutlinedIcon />}{...a11yProps(1)} /> */}
                         </Tabs>
                     </div>
                     <SwipeableViews
@@ -407,6 +410,30 @@ function Profile() {
                                     <div className="feed-wrap">
                                         {UserUploadedVideoList && UserUploadedVideoList.map((vdo) => {
                                             return <div key={vdo.key} className="profile-vdo-wrap">
+                                                {/* TODO: This badges code block will be dynamic once we have
+                                                    winners data and on the basis of their rank the respective 
+                                                    badge will apper on that video
+                                                */}
+                                                {/* {
+                                                    index === 0 ? 
+                                                    <div className="winners-badges">
+                                                        <img src={firstPrizeBadge} alt="first prize" />
+                                                    </div>: ''
+                                                }
+
+                                                {
+                                                    index === 2 ?
+                                                    <div className="winners-badges">
+                                                        <img src={secondPrizeBadge} alt="Second prize" />
+                                                    </div>: ''
+                                                }
+
+{
+                                                    index === 3 ?
+                                                    <div className="winners-badges">
+                                                        <img src={thirdPrizeBadge} alt="Third prize" />
+                                                    </div>: ''
+                                                } */}
                                                 <div className="menu" onClick={() => { setOpenUploadCompModalFor(vdo.key); setShowProfileTab(true) }}>
                                                     <i><FaBars /></i>
                                                 </div>
@@ -435,7 +462,7 @@ function Profile() {
                                     <div>No video posted yet !</div>}
                             </div>
                         </TabPanel>
-                        <TabPanel value={value} index={1} dir={theme.direction}>
+                        {/* <TabPanel value={value} index={1} dir={theme.direction}>
                             <div className="flex-container" >
                                 {UserLikedVideoList.length !== 0 ? UserLikedVideoList.map((vdoObj) => {
                                     return <div className="flex-basis-3 like-tab" key={vdoObj.key}>
@@ -452,11 +479,11 @@ function Profile() {
                                 }) :
                                     <div>No video liked yet !</div>}
                             </div>
-                        </TabPanel>
-                        <TabPanel value={value} index={2} dir={theme.direction}>
+                        </TabPanel> */}
+                        <TabPanel value={value} index={1} dir={theme.direction}>
                             <div className="flex-container" >
                                 {UserCompetitionsList.length !== 0 ? UserCompetitionsList.map((competition) => {
-                                    return <div className="flex-basis-3 competition-tab" style={{ marginRight: '30px' }} key={competition.key} onClick={() => openCompetitionDetailsModal(competition)}>
+                                    return <div className="flex-basis-3 competition-tab" key={competition.key} onClick={() => openCompetitionDetailsModal(competition)}>
                                         <div>{competition.compName}</div>
                                         <img src={competition.compImg} />
                                     </div>
