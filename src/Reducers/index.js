@@ -1,4 +1,4 @@
-import { LOGIN_USER, LOGOUT_USER, SIGN_UP_USER, ENABLE_LOGIN_FLOW, DISABLE_LOGIN_FLOW, SET_ACTIVE_COMPETITION, SET_ACTIVE_SUBSCRIPTION, ENABLE_LOADER, DISABLE_LOADER, SET_REFETCH_DATA_MODULE, REMOVE_REFETCH_DATA_MODULE, DISPLAY_NOTIFICATION, REMOVE_NOTIFICATION } from '../Constants'
+import { LOGIN_USER, LOGOUT_USER, SIGN_UP_USER, ENABLE_LOGIN_FLOW, DISABLE_LOGIN_FLOW, SET_ACTIVE_COMPETITION, SET_ACTIVE_VIDEO_FOR_COMPETITION, SET_ACTIVE_SUBSCRIPTION, ENABLE_LOADER, DISABLE_LOADER, SET_REFETCH_DATA_MODULE, REMOVE_REFETCH_DATA_MODULE, DISPLAY_NOTIFICATION, REMOVE_NOTIFICATION } from '../Constants'
 
 const storeReducer = (initialState, action) => {
     switch (action.type) {
@@ -22,6 +22,8 @@ const storeReducer = (initialState, action) => {
             return { ...initialState, refetchDataModule: action.payload };
         case SET_ACTIVE_COMPETITION:
             return { ...initialState, activeCompetition: action.payload };
+        case SET_ACTIVE_VIDEO_FOR_COMPETITION:
+            return { ...initialState, activeVideoForCompetition: action.payload };
         case SET_ACTIVE_SUBSCRIPTION:
             return { ...initialState, activeSubscription: action.payload };
         case DISPLAY_NOTIFICATION:

@@ -128,6 +128,7 @@ function Feeds() {
                     if (user.key == feed.userId) {
                         feed.username = user.name;
                         feed.profileImage = user.profileImage;
+                        user.isAnyVideoSubmitted = true;
                     }
                     if (feed.likes && feed.likes.length) {
                         let isAvail = feed.likes.filter(data => data.userId == loggedInUser.key)
@@ -139,6 +140,7 @@ function Feeds() {
                 })
             })
             setFeedList(tempFeedList)
+            setUserList(tempUserList);
         })
     }, [])
 
@@ -154,10 +156,10 @@ function Feeds() {
         <div className="user-dashboard-wrap">
             <div className="user-list-wrap">
                 {userList && userList.map((user) => {
-                    return <div key={user.key} className="user-icon-wrap" onClick={() => openUserStory(user)}>
+                    return (user.isAnyVideoSubmitted ? <div key={user.key} className="user-icon-wrap" onClick={() => openUserStory(user)}>
                         <ProfileImage src={user.profileImage} type="large" />
                         <div>{user.username}</div>
-                    </div>
+                    </div> : null)
                 })}
             </div>
             <div className="feed-dashboard-wrap">

@@ -33,7 +33,7 @@ import { getAllUser } from "../../Services/User.service";
 import { getUploadedVideosList } from "../../Services/UploadedVideo.service";
 import { FaBars } from 'react-icons/fa';
 import { disableLoginFlow, enableLoginFlow } from "../../Actions/LoginFlow";
-
+import { setActiveVideoForCompetition } from "../../Actions/Competition";
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -94,8 +94,9 @@ function Profile() {
         }, 500);
 
         if (state.currentLoginFlow == 'profile-competition') {
-            setValue(2);
+            setValue(1);
             dispatch(disableLoginFlow());
+            dispatch(setActiveVideoForCompetition());
         };
 
         document.addEventListener('scroll', onWindowScroll);
@@ -313,6 +314,7 @@ function Profile() {
     }
 
     const redirectToCompetition = () => {
+        dispatch(setActiveVideoForCompetition(openUploadCompModalFor));
         dispatch(enableLoginFlow('profile-competition'));
         history.push('/competitions');
         setShowProfileTab(false);
@@ -363,14 +365,14 @@ function Profile() {
                     </div>
                     <div className="followers-wrap clearfix">
                         <div className="posts">
-                            <span>999</span> Posts
+                            <span>{UserUploadedVideoList.length}</span> Posts
                         </div>
-                        <div className="followers">
+                        {/* <div className="followers">
                             <span>999</span> Followers
                         </div>
                         <div className="following">
                             <span>999</span> Followings
-                        </div>
+                        </div> */}
                     </div>
                     <div className="bio-wrap">
                         <div className="fullname">

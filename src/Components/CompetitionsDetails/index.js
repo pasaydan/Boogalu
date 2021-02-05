@@ -72,6 +72,14 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                             dispatch(setActiveCompetition(updatedCompetition));
                             setDisableSubmitVdoButton(true);
                         }
+                    } else if (state.currentLoginFlow === 'profile-competition' && state.activeVideoForCompetition == uploadedVdo.key) {
+                        // if user come from profile page by clicking upload for competition
+                        uploadedVdo.isSelected = true;
+                        let updatedCompetition = competitionDetails;
+                        updatedCompetition.selectedVideo = uploadedVdo;
+                        dispatch(setActiveCompetition(updatedCompetition));
+                        setVideoData(uploadedVdo);
+                        toggleVideoSelect(false);
                     }
                 })
                 setUserUploadedVideoList(vdoList)
@@ -322,9 +330,9 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
 
                                 <div className="action-wrap">
                                     <div className="terms-button" ref={tncRef} onClick={() => setTnC((TnC ? false : true))}>
-                                        <input type="checkbox" 
-                                        checked={isTncAccepted}
-                                        title="accept terms and condition" onClick={(e) => acceptTnC(e)} />
+                                        <input type="checkbox"
+                                            checked={isTncAccepted}
+                                            title="accept terms and condition" onClick={(e) => acceptTnC(e)} />
                                         Terms &amp; Conditions
                                     {TnC && <div className="tool-tip-wrap">
                                             <div>You may not be able to attend the live session if you are late.</div>
@@ -337,9 +345,9 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                     {loggedInUser.email && loggedInUser.username ?
                                         <div>
                                             {!competitionDetails?.isUserEnrolled && <Button variant="contained"
-                                            disabled={!isTncAccepted} 
-                                            color="primary" 
-                                            onClick={() => setActiveStep(3)}
+                                                disabled={!isTncAccepted}
+                                                color="primary"
+                                                onClick={() => setActiveStep(3)}
                                             >Select Video</Button>}
                                         </div> :
                                         <div>
@@ -392,7 +400,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                 {!disableSubmitVdoButton && <Button variant="contained" color="primary" onClick={() => setActiveVideoActiveStep(4)}>Upload</Button>}
                                 {
                                     isVideoSelected ?
-                                    <p className="error_message">Please select a video from top list or upload a new</p> : ''
+                                        <p className="error_message">Please select a video from top list or upload a new</p> : ''
                                 }
                             </div>}
 
