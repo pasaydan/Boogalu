@@ -438,7 +438,7 @@ function Profile() {
                         <TabPanel value={value} index={1} dir={theme.direction}>
                             <div className="flex-container" >
                                 {UserLikedVideoList.length !== 0 ? UserLikedVideoList.map((vdoObj) => {
-                                    return <div className="flex-basis-3" key={vdoObj.key}>
+                                    return <div className="flex-basis-3 like-tab" key={vdoObj.key}>
                                         <div>
                                             <Vedio vdoObj={vdoObj} />
                                         </div>
@@ -456,7 +456,7 @@ function Profile() {
                         <TabPanel value={value} index={2} dir={theme.direction}>
                             <div className="flex-container" >
                                 {UserCompetitionsList.length !== 0 ? UserCompetitionsList.map((competition) => {
-                                    return <div className="flex-basis-3" style={{ marginRight: '30px' }} key={competition.key} onClick={() => openCompetitionDetailsModal(competition)}>
+                                    return <div className="flex-basis-3 competition-tab" style={{ marginRight: '30px' }} key={competition.key} onClick={() => openCompetitionDetailsModal(competition)}>
                                         <div>{competition.compName}</div>
                                         <img src={competition.compImg} />
                                     </div>
