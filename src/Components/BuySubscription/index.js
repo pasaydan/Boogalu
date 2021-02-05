@@ -5,13 +5,13 @@ import { useHistory } from "react-router-dom";
 import { formatDate } from "../../Services/Utils";
 import { disableLoginFlow, enableLoginFlow } from "../../Actions/LoginFlow";
 import { saveCompetition } from "../../Services/EnrollCompetition.service";
+import { enableLoading, disableLoading } from "../../Actions/Loader";
 // modal imports
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
-import { enableLoading, disableLoading } from "../../Actions/Loader";
 
 export default function BuySubsription({ handleClose, activeStep, alreadySubscribed }) {
     const history = useHistory();
