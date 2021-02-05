@@ -32,7 +32,7 @@ export default function Homepage() {
 
     return (
         <div className="homepage charcoal-bg clearfix">
-            <div className="homepage-wrap clearfix">
+            {/* <div className="homepage-wrap clearfix">
                 {!isMobile && <div className="banner_vdo">
                     <div className="vdo_wrap rounded-dark-box">
                         <iframe width="100%" src="https://www.youtube.com/embed/i3yMXpeLPuU" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
@@ -56,7 +56,7 @@ export default function Homepage() {
             </div>
             <div className={`home-img-wrap ${danceImageVisibleClass}`}>
                 <img src={bgImg} alt="" />
-            </div>
+            </div> */}
             <div className="homepage-display-1 charcoal-bg-dark">
                 {/* <div className="learn_choreo" id="Lessons">
                     <div className="heading-wrap">
@@ -80,6 +80,10 @@ export default function Homepage() {
                         </div>
                     </div>
                 </div> */}
+                <h4>The world’s best dance learning tools – at your fingertips.</h4>
+                <button className="btn primary-light get_started" onClick={() => {
+                    loggedInUser ? history.push('/competitions') : history.push('/login');
+                }}>Get Started</button>
                 <div className="flex-container" >
                     {UserUploadedVideoList.length !== 0 ?
                         <div className="feed-wrap">

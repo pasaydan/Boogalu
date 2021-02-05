@@ -173,12 +173,12 @@ function Feeds() {
                 <div className="feed-wrap">
                     {feedList && feedList.map((feed) => {
                         return <div key={feed.key} className="feed-card">
-                            <div className="username">
-                                <ProfileImage src={feed.profileImage} />
-                                <span>{feed.username}</span>
-                            </div>
                             <div>
                                 <Vedio vdoObj={feed} />
+                            </div>
+                            <div className="username">
+                                <ProfileImage src={feed.profileImage} />
+                                <span className="name">{feed.username}</span>
                             </div>
                             <div className="video-title-like-wrap">
                                 <div className="title">{feed.title}</div>
