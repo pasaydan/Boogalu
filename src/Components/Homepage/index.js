@@ -57,7 +57,7 @@ export default function Homepage() {
             <div className={`home-img-wrap ${danceImageVisibleClass}`}>
                 <img src={bgImg} alt="" />
             </div> */}
-            <div className="homepage-display-1 charcoal-bg-dark">
+            <div className={`homepage-display-1 gradient-bg-animation ${!UserUploadedVideoList.length ? 'no-video': ''}`}>
                 {/* <div className="learn_choreo" id="Lessons">
                     <div className="heading-wrap">
                         <h2>
@@ -104,7 +104,7 @@ export default function Homepage() {
                             })}
                         </div>
                         :
-                        <div>No video posted yet !</div>}
+                        ''}
                 </div>
             </div>
         </div>
