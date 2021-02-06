@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import LessonsCategories from '../../Data/LessonsCategory';
 import Video from "../Vedio/Video";
+import LessonsVideoContainer from '../LessonVideoComponent';
 
 function Upcoming () {
     const [activeCategory, setActiveCategory] = useState(LessonsCategories[0]);
@@ -16,9 +17,10 @@ function Upcoming () {
                 <p className="launching-soon">Videos launching soon! Stay connected!</p>
                 <p className="from-our-expert-title">Few sample lessons</p>
                 <div className="lessons-vdo-wrap">
-                    {activeCategory.upcoming.map((item, index) => {
+                    <LessonsVideoContainer />
+                    {/* {activeCategory.upcoming.map((item, index) => {
                         return <Video key={'upcoming-'+index} vdoObj={item}></Video>
-                    })}
+                    })} */}
                 </div>
             </div>
         </div>

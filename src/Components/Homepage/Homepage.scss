@@ -95,6 +95,9 @@
     position: relative;
     z-index: 4;
     color: var(--primary-white);
+    .flex-container {
+        justify-content: center;
+    }
     &.no-video {
         display: flex;
         flex-direction: column;
