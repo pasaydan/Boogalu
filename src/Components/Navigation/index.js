@@ -26,6 +26,8 @@ function Navigation() {
     const { state, dispatch } = useStoreConsumer();
     const loggedInUser = state.loggedInUser;
     const [openVdoUploadModal, setOpenVdoUploadModal] = useState(false)
+    const [activeRoute, setActiveRoute] = useState('');
+
     useOnClickOutside(ref, () => setShowProfileTab(false));
 
     useEffect(() => {
@@ -90,6 +92,9 @@ function Navigation() {
             if ((!pathName || pathName.includes('lessons') || pathName.includes('contactus') || pathName.includes('home')) && state.currentLoginFlow) {
                 dispatch(disableLoginFlow());
             }
+            if (state.currentLoginFlow == 'upload-video' && pathName.includes('competitions') || pathName.includes('lessons')) dispatch(disableLoginFlow());
+            //set active route name
+
         });
     })
 
@@ -211,9 +216,9 @@ function Navigation() {
                                 <li><a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')}>Lessons</a></li>
                                 {
                                     !hideVdoUploadBtn ?
-                                    <li>
-                                        <a href="" onClick={(e) => uploadVdo(e)}>Upload</a> 
-                                    </li> : ''
+                                        <li>
+                                            <a href="" onClick={(e) => uploadVdo(e)}>Upload</a>
+                                        </li> : ''
                                 }
                             </ul> : ''
                     }
@@ -247,7 +252,7 @@ function Navigation() {
                         <div className="sticky-mobile-menu">
                             <ul className="flex-1 nav-ul">
                                 <li>
-                                    <a href="/" ref={mobilHomelinkRef} onClick={(e) => onClickNav(e, '')}>
+                                    <a href="/" ref={mobilHomelinkRef} onClick={(e) => onClickNav(e, '')} className={activeRoute == '' ? 'active' : ''}>
                                         <i>
                                             <FaHome />
                                         </i>
@@ -255,19 +260,19 @@ function Navigation() {
                                     </a>
                                 </li>
                                 {loggedInUser.username && <li>
-                                    <a href="#profile" onClick={(e) => onClickNav(e, 'profile')}>
+                                    <a href="#profile" onClick={(e) => onClickNav(e, 'profile')} className={activeRoute == '' ? 'active' : ''}>
                                         <i><FaUserAlt /></i>
                                         <span>Profile</span>
                                     </a>
                                 </li>}
                                 <li>
-                                    <a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')}>
+                                    <a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')} className={activeRoute == 'competitions' ? 'active' : ''}>
                                         <i><FaBookReader /></i>
                                         <span>Lessons</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#upload" onClick={(e) => onClickNav(e, 'competitions')}>
+                                    <a href="#upload" onClick={(e) => onClickNav(e, 'competitions')} className={activeRoute == 'competitions' ? 'active' : ''}>
                                         <i><FaTrophy /></i>
                                         <span>Competition</span>
                                     </a>
