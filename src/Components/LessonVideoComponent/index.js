@@ -4,7 +4,7 @@ import RupeshVideoBack from '../../videos/lessons/Lesson-Rupesh-back.mp4';
 import VideoThumbnail from '../../videos/lessons/Lesson-Rupesh-thumbnail.jpg';
 import VideoThumbnailBack from '../../videos/lessons/Lesson-Rupesh-thumbnail-back.jpg';
 
-function LessonsVideoContainer () {
+function LessonsVideoContainer() {
     const [isFlipToggled, frontBackToggle] = useState(true);
 
     useEffect(() => {
@@ -14,13 +14,20 @@ function LessonsVideoContainer () {
         videoFront.muted = false;
         // Video Mirror will also come here
     }, []);
-    
+
     function triggerFullScreen(e) {
         const fullScreenWrapper = document.getElementById('innerVideoWrap');
         if (!document.fullscreenElement) {
-            fullScreenWrapper.requestFullscreen().catch(err => {
-              console.log(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-            });
+            if (fullScreenWrapper.requestFullscreen) {
+                fullScreenWrapper.requestFullscreen();
+            } else if (fullScreenWrapper.webkitRequestFullscreen) { /* Safari */
+                fullScreenWrapper.webkitRequestFullscreen();
+            } else if (fullScreenWrapper.msRequestFullscreen) { /* IE11 */
+                fullScreenWrapper.msRequestFullscreen();
+            }
+            // fullScreenWrapper.requestFullscreen().catch(err => {
+            //   console.log(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+            // });
         } else {
             document.exitFullscreen();
         }
@@ -30,17 +37,17 @@ function LessonsVideoContainer () {
         const videoBack = document.getElementById('videoBack');
         videoBack.play();
     }
-    
+
     function frontVideoPaused(event) {
         const videoBack = document.getElementById('videoBack');
         videoBack.pause();
     }
-    
+
     function backVideoPlayed(event) {
         const videoFront = document.getElementById('videoFront');
         videoFront.play();
     }
-    
+
     function backVideoPaused(event) {
         const videoFront = document.getElementById('videoFront');
         videoFront.pause();
@@ -68,7 +75,7 @@ function LessonsVideoContainer () {
         // const videoBack = document.getElementById('videoBack');    
         // videoBack.currentTime = videoFront.currentTime;
     }
-    
+
     // This seeking function is to sync all the videos on a specific time
     // when user use video slider to go ahead or back
     function onBackVideoSeek(event) {
