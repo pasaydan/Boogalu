@@ -203,7 +203,7 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
         }
         // else if (state.currentLoginFlow == 'competition-uploadvdo') history.push('/competition');
         // handleClose();
-        if (typeof(handleVdoUploadResponse) !== 'undefined') {
+        if (typeof (handleVdoUploadResponse) !== 'undefined') {
             handleVdoUploadResponse();
         }
         setOpenVdoUploaderModal(false);
@@ -248,7 +248,7 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
             >
                 <Fade in={openVdoUploaderModal}>
                     <div className="video-uploader-inner-modal">
-                        <IconButton className="close-modal-btn" onClick={() => closeUploaderModal(false)}>
+                        <IconButton className="close-modal-btn" onClick={() => { closeUploaderModal(false); dispatch(disableLoginFlow()); }}>
                             <CloseIcon />
                         </IconButton>
                         <h3>Upload your dance performance video!</h3>
