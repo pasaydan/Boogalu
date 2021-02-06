@@ -31,7 +31,7 @@ export default function Homepage() {
     }, []);
 
     return (
-        <div className="homepage charcoal-bg clearfix">
+        <div className="homepage gradient-bg-animation clearfix">
             {/* <div className="homepage-wrap clearfix">
                 {!isMobile && <div className="banner_vdo">
                     <div className="vdo_wrap rounded-dark-box">
@@ -57,7 +57,7 @@ export default function Homepage() {
             <div className={`home-img-wrap ${danceImageVisibleClass}`}>
                 <img src={bgImg} alt="" />
             </div> */}
-            <div className={`homepage-display-1 gradient-bg-animation ${!UserUploadedVideoList.length ? 'no-video': ''}`}>
+            <div className={`homepage-display-1 ${!UserUploadedVideoList.length ? 'no-video': ''}`}>
                 {/* <div className="learn_choreo" id="Lessons">
                     <div className="heading-wrap">
                         <h2>
@@ -107,6 +107,18 @@ export default function Homepage() {
                         ''}
                 </div>
             </div>
+            <ul class="circles">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
         </div>
     );
 }
