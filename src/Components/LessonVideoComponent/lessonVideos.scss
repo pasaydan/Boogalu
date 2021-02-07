@@ -14,6 +14,16 @@
             z-index: 2;
             right: 10px;
             top: 5px;
+            .vdo-controlls{
+                background-color: #dee1ec8f;
+                color: white;
+                padding: 5px;
+                border-radius: 6px;
+                margin-right: 10px;
+            }
+            .vdo-controlls:hover{
+                cursor: pointer;
+            }
         }
         video {
             position: absolute;
@@ -33,5 +43,27 @@
         video::-webkit-media-controls-fullscreen-button {
             display: none;
         }
+    }
+}
+
+@media screen and (max-width: 784px) {
+    .video-component-wrap {
+        width: 100%;
+        padding: 10px;
+        height: 200px;
+        box-sizing: border-box;
+        border-radius: 5px;
+        background: var(--box-dark-bg);
+    }
+}
+
+@media screen and (max-width: 480px) {
+   .video-component-wrap {
+        width: 100%;
+        padding: 10px;
+        height: 200px;
+        box-sizing: border-box;
+        border-radius: 5px;
+        background: var(--box-dark-bg);
     }
 }
