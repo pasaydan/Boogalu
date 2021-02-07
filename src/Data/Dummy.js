@@ -1,12 +1,12 @@
 const Lessons = [
     {
-        title: 'Salsa Class',
-        category: 'Salsa',
-        desc: "Stans salsa performance on stage and lesson",
+        title: 'Ghungroo Song Dance Tutorial',
+        category: 'Free Style',
+        desc: "Bollywood song dance performance of Ghungroo Song By Rupesh Sir",
         videos: [
             {
-                title: "Salsa by Stan Dey",
-                desc: "Stans salsa performance on stage and lesson",
+                title: "Ghungroo Song Dance Tutorial",
+                desc: "Bollywood song dance performance of Ghungroo Song By Rupesh Sir",
                 active: true,
                 length: 24,
                 levels: ['Bigginer', 'Intermediate', 'Professional'],

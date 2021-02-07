@@ -15,14 +15,16 @@ function Upcoming() {
                     From Hip-Hop to Bharatnatyam. You'll get all learning videos
                     at one place.
                 </p>
-                <p className="launching-soon">Videos launching soon! Stay connected!</p>
-                <p className="from-our-expert-title">Few sample lessons</p>
+                <p className="launching-soon">More lessons launching soon! Stay connected!</p>
+                {/* <p className="from-our-expert-title">Few sample lessons</p> */}
                 <div className="lesson-wrap">
-                    <div className="lesson-title">{activeCategory.title}</div>
-                    <div className="lesson-desc">{activeCategory.desc}</div>
                     <div className="lessons-vdo-wrap">
-                        {activeCategory.videos && activeCategory.videos.map((activeVideo, index) => {
-                            return <LessonsVideoContainer activeVideosList={activeVideo} key={index} />
+                        {activeCategory?.videos.map((activeVideo, index) => {
+                            return <LessonsVideoContainer
+                                title={activeCategory?.title}
+                                desc={activeCategory?.desc} 
+                                activeVideosList={activeVideo} 
+                                key={index} />
                         })}
                     </div>
                 </div>

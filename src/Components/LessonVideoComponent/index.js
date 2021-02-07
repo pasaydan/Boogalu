@@ -6,7 +6,7 @@ import FlipIcon from '@material-ui/icons/Flip';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 
-function LessonsVideoContainer({ activeVideosList }) {
+function LessonsVideoContainer({ title, desc, activeVideosList }) {
     const [activeVideoState, setActiveVideoState] = useState('front'); // front,back,front-mirror,back-mirror
     const [fullScreenMode, setFullScreenMode] = useState(false);
 
@@ -171,6 +171,8 @@ function LessonsVideoContainer({ activeVideosList }) {
 
     return (
         <div className="video-component-wrap">
+            <h4>{title}</h4>
+            <p className="desc">{desc}</p>
             <div className="inner-video-wrap" id="innerVideoWrap">
                 <div className="actions">
                     <FlipCameraAndroidOutlinedIcon title="Flip video" className="vdo-controlls" variant="contained" type="submit" onClick={(e) => flipVideos(e)} />
