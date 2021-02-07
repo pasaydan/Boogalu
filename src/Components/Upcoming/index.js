@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react'
-import LessonsCategories from '../../Data/LessonsCategory';
 import Video from "../Vedio/Video";
 import LessonsVideoContainer from '../LessonVideoComponent';
+import Lessons from "../../Data/Dummy";
+function Upcoming() {
 
-function Upcoming () {
-    const [activeCategory, setActiveCategory] = useState(LessonsCategories[0]);
+    const [activeCategory, setActiveCategory] = useState(Lessons[0]);
+
     return (
         <div className="lessons lessons-wrap" id="upcomingLessons">
             <div className="inner-page">
@@ -16,11 +17,14 @@ function Upcoming () {
                 </p>
                 <p className="launching-soon">Videos launching soon! Stay connected!</p>
                 <p className="from-our-expert-title">Few sample lessons</p>
-                <div className="lessons-vdo-wrap">
-                    <LessonsVideoContainer />
-                    {/* {activeCategory.upcoming.map((item, index) => {
-                        return <Video key={'upcoming-'+index} vdoObj={item}></Video>
-                    })} */}
+                <div className="lesson-wrap">
+                    <div className="lesson-title">{activeCategory.title}</div>
+                    <div className="lesson-desc">{activeCategory.desc}</div>
+                    <div className="lessons-vdo-wrap">
+                        {activeCategory.videos && activeCategory.videos.map((activeVideo, index) => {
+                            return <LessonsVideoContainer activeVideosList={activeVideo} key={index} />
+                        })}
+                    </div>
                 </div>
             </div>
         </div>
