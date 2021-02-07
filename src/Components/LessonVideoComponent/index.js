@@ -1,23 +1,32 @@
 import React, { useState, useRef, useEffect } from 'react';
-import RupeshVideoFront from '../../videos/lessons/Lesson-Rupesh-front.mp4';
-import RupeshVideoBack from '../../videos/lessons/Lesson-Rupesh-back.mp4';
 import VideoThumbnail from '../../videos/lessons/Lesson-Rupesh-thumbnail.jpg';
 import VideoThumbnailBack from '../../videos/lessons/Lesson-Rupesh-thumbnail-back.jpg';
+import LoopIcon from '@material-ui/icons/Loop';
+import FlipIcon from '@material-ui/icons/Flip';
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 
-function LessonsVideoContainer() {
-    const [isFlipToggled, frontBackToggle] = useState(true);
+function LessonsVideoContainer({ activeVideosList }) {
+    const [activeVideoState, setActiveVideoState] = useState('front'); // front,back,front-mirror,back-mirror
+    const [fullScreenMode, setFullScreenMode] = useState(false);
 
     useEffect(() => {
-        const videoFront = document.getElementById('videoFront');
-        const videoBack = document.getElementById('videoBack');
-        videoBack.muted = true;
-        videoFront.muted = false;
+        const videoFront = document.getElementById(activeVideosList.fUrl);
+        const videoBack = document.getElementById(activeVideosList.bUrl);
+        const videoFrontMirror = document.getElementById(activeVideosList.fMUrl);
+        const videoBackMirror = document.getElementById(activeVideosList.bMUrl);
+        videoFront.muted = true;
+        videoBack.muted = false;
+        videoFrontMirror.muted = true;
+        videoBackMirror.muted = true;
+        console.log(activeVideosList)
         // Video Mirror will also come here
     }, []);
 
     function triggerFullScreen(e) {
         const fullScreenWrapper = document.getElementById('innerVideoWrap');
         if (!document.fullscreenElement) {
+            setFullScreenMode(true);
             if (fullScreenWrapper.requestFullscreen) {
                 fullScreenWrapper.requestFullscreen();
             } else if (fullScreenWrapper.webkitRequestFullscreen) { /* Safari */
@@ -25,79 +34,165 @@ function LessonsVideoContainer() {
             } else if (fullScreenWrapper.msRequestFullscreen) { /* IE11 */
                 fullScreenWrapper.msRequestFullscreen();
             }
-            // fullScreenWrapper.requestFullscreen().catch(err => {
-            //   console.log(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-            // });
         } else {
+            setFullScreenMode(false);
             document.exitFullscreen();
         }
     }
 
-    function frontVideoPlayed(event) {
-        const videoBack = document.getElementById('videoBack');
-        videoBack.play();
-    }
-
-    function frontVideoPaused(event) {
-        const videoBack = document.getElementById('videoBack');
-        videoBack.pause();
-    }
-
-    function backVideoPlayed(event) {
-        const videoFront = document.getElementById('videoFront');
-        videoFront.play();
-    }
-
-    function backVideoPaused(event) {
-        const videoFront = document.getElementById('videoFront');
-        videoFront.pause();
-    }
-
-    function flipVideos(event) {
-        const videoFront = document.getElementById('videoFront');
-        const videoBack = document.getElementById('videoBack');
-        if (isFlipToggled) {
-            frontBackToggle(false);
-            videoFront.muted = true;
-            videoBack.muted = false;
+    function pauseVideo(params) {
+        const videoFront = document.getElementById(activeVideosList.fUrl);
+        const videoBack = document.getElementById(activeVideosList.bUrl);
+        const videoFrontMirror = document.getElementById(activeVideosList.fMUrl);
+        const videoBackMirror = document.getElementById(activeVideosList.bMUrl);
+        const currentVideoState = activeVideoState;
+        if (currentVideoState == 'front') {
+            videoFrontMirror.pause();
+            videoBack.pause();
+            videoBackMirror.pause();
+        } else if (currentVideoState == 'front-mirror') {
+            videoFront.pause();
+            videoBack.pause();
+            videoBackMirror.pause();
+        } else if (currentVideoState == 'back') {
+            videoFrontMirror.pause();
+            videoFront.pause();
+            videoBackMirror.pause();
         } else {
-            frontBackToggle(true);
-            videoFront.muted = false;
-            videoBack.muted = true;
+            videoFront.pause();
+            videoFrontMirror.pause();
+            videoBack.pause();
         }
     }
 
-    // This seeking function is to sync all the videos on a specific time
-    // when user use video slider to go ahead or back
-    function onFrontVideoSeek(event) {
-        console.log(event);
-        // const videoFront = document.getElementById('videoFront');
-        // const videoBack = document.getElementById('videoBack');    
-        // videoBack.currentTime = videoFront.currentTime;
+    function playVideo(params) {
+        const videoFront = document.getElementById(activeVideosList.fUrl);
+        const videoBack = document.getElementById(activeVideosList.bUrl);
+        const videoFrontMirror = document.getElementById(activeVideosList.fMUrl);
+        const videoBackMirror = document.getElementById(activeVideosList.bMUrl);
+        if (activeVideoState == 'front') {
+            videoFrontMirror.play();
+            videoBack.play();
+            videoBackMirror.play();
+        } else if (activeVideoState == 'front-mirror') {
+            videoFront.play();
+            videoBack.play();
+            videoBackMirror.play();
+        } else if (activeVideoState == 'back') {
+            videoFrontMirror.play();
+            videoFront.play();
+            videoBackMirror.play();
+        } else {
+            videoFront.play();
+            videoFrontMirror.play();
+            videoBack.play();
+        }
     }
 
+    function flipVideos(event) {
+        const videoFront = document.getElementById(activeVideosList.fUrl);
+        const videoBack = document.getElementById(activeVideosList.bUrl);
+        const videoFrontMirror = document.getElementById(activeVideosList.fMUrl);
+        const videoBackMirror = document.getElementById(activeVideosList.bMUrl);
+        if (activeVideoState == 'front' || activeVideoState == 'front-mirror') {
+            setActiveVideoState('back');
+            videoFront.muted = true;
+            videoBack.muted = false;
+            videoFrontMirror.muted = true;
+            videoBackMirror.muted = true;
+        } else {
+            setActiveVideoState('front');
+            videoFront.muted = false;
+            videoBack.muted = true;
+            videoFrontMirror.muted = true;
+            videoBackMirror.muted = true;
+        }
+    }
+
+    function mirrorVideos(event) {
+        const videoFront = document.getElementById(activeVideosList.fUrl);
+        const videoBack = document.getElementById(activeVideosList.bUrl);
+        const videoFrontMirror = document.getElementById(activeVideosList.fMUrl);
+        const videoBackMirror = document.getElementById(activeVideosList.bMUrl);
+        if (activeVideoState == 'front') {
+            setActiveVideoState('front-mirror');
+            videoFront.muted = true;
+            videoBack.muted = true;
+            videoFrontMirror.muted = false;
+            videoBackMirror.muted = true;
+        } else if (activeVideoState == 'front-mirror') {
+            setActiveVideoState('front');
+            videoFront.muted = false;
+            videoBack.muted = true;
+            videoFrontMirror.muted = true;
+            videoBackMirror.muted = true;
+        } else if (activeVideoState == 'back') {
+            setActiveVideoState('back-mirror');
+            videoFront.muted = true;
+            videoBack.muted = true;
+            videoFrontMirror.muted = true;
+            videoBackMirror.muted = false;
+        } else {
+            setActiveVideoState('back');
+            videoFront.muted = true;
+            videoBack.muted = false;
+            videoFrontMirror.muted = true;
+            videoBackMirror.muted = true;
+        }
+    }
     // This seeking function is to sync all the videos on a specific time
     // when user use video slider to go ahead or back
-    function onBackVideoSeek(event) {
-        console.log(event);
-        // const videoFront = document.getElementById('videoFront');
-        // const videoBack = document.getElementById('videoBack');
-        // videoFront.currentTime = videoBack.currentTime;
+    function onVideoSeek(event, status) {
+        if (activeVideoState == status) {
+            const videoFront = document.getElementById(activeVideosList.fUrl);
+            const videoBack = document.getElementById(activeVideosList.bUrl);
+            const videoFrontMirror = document.getElementById(activeVideosList.fMUrl);
+            const videoBackMirror = document.getElementById(activeVideosList.bMUrl);
+            if (activeVideoState == 'front') {
+                videoBack.currentTime = videoFront.currentTime;
+                videoFrontMirror.currentTime = videoFront.currentTime;
+                videoBackMirror.currentTime = videoFront.currentTime;
+            } else if (activeVideoState == 'front-mirror') {
+                videoFront.currentTime = videoFrontMirror.currentTime;
+                videoBack.currentTime = videoFrontMirror.currentTime;
+                videoBackMirror.currentTime = videoFrontMirror.currentTime;
+            } else if (activeVideoState == 'back') {
+                videoFront.currentTime = videoBack.currentTime;
+                videoFrontMirror.currentTime = videoBack.currentTime;
+                videoBackMirror.currentTime = videoBack.currentTime;
+            } else {
+                videoFront.currentTime = videoBackMirror.currentTime;
+                videoBack.currentTime = videoBackMirror.currentTime;
+                videoFrontMirror.currentTime = videoBackMirror.currentTime;
+            }
+            event.preventDefault();
+            event.stopPropagation();
+        }
     }
 
     return (
         <div className="video-component-wrap">
             <div className="inner-video-wrap" id="innerVideoWrap">
                 <div className="actions">
-                    <button onClick={(e) => flipVideos(e)}>Flip</button>
-                    <button>Mirror</button>
-                    <button onClick={(e) => triggerFullScreen(e)}>Fullscreen</button>
+                    <FlipIcon className="vdo-controlls" variant="contained" type="submit" onClick={(e) => flipVideos(e)} />
+                    <LoopIcon className="vdo-controlls" variant="contained" type="submit" onClick={(e) => mirrorVideos(e)} />
+                    {fullScreenMode ?
+                        <FullscreenIcon className="vdo-controlls" variant="contained" type="submit" onClick={(e) => triggerFullScreen(e)} />
+                        :
+                        <FullscreenExitIcon className="vdo-controlls" variant="contained" type="submit" onClick={(e) => triggerFullScreen(e)} />
+                    }
                 </div>
-                <video id="videoFront" className={isFlipToggled ? 'active' : ''} onPause={(e) => frontVideoPaused(e)} onPlay={(e) => frontVideoPlayed(e)} onSeeking={(e) => onFrontVideoSeek(e)} poster={VideoThumbnail} controls>
-                    <source src={RupeshVideoFront} type="video/mp4" />
+                <video id={activeVideosList.fUrl} className={(activeVideoState == 'front') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'front')} poster={VideoThumbnail} controls>
+                    <source src={activeVideosList.fMUrl} type="video/mp4" />
                 </video>
-                <video id="videoBack" poster={VideoThumbnailBack} className={!isFlipToggled ? 'active' : ''} onSeeking={(e) => onBackVideoSeek(e)} onPause={(e) => backVideoPaused(e)} onPlay={(e) => backVideoPlayed(e)} controls>
-                    <source src={RupeshVideoBack} type="video/mp4" />
+                <video id={activeVideosList.fMUrl} className={(activeVideoState == 'front-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'front-mirror')} poster={VideoThumbnail} controls>
+                    <source src={activeVideosList.fMUrl} type="video/mp4" />
+                </video>
+                <video id={activeVideosList.bUrl} className={(activeVideoState == 'back') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back')} poster={VideoThumbnailBack} controls>
+                    <source src={activeVideosList.bUrl} type="video/mp4" />
+                </video>
+                <video id={activeVideosList.bMUrl} className={(activeVideoState == 'back-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back-mirror')} poster={VideoThumbnailBack} controls>
+                    <source src={activeVideosList.bMUrl} type="video/mp4" />
                 </video>
             </div>
         </div>
