@@ -1,3 +1,8 @@
+.navigation-wrap {
+    &.hide-nav {
+        display: none;
+    }
+}
 .login-wrap {
     text-align: center;
     width: 100%;
@@ -188,6 +193,7 @@
 
 .new-login-signup-ui {
     padding: 20px 0 50px;
+    margin-top: -73px;
     .inner-form-wrap {
         position: relative;
         z-index: 10;
@@ -196,6 +202,26 @@
         background-color: var(--primary-white);
         display: flex;
         justify-content: space-between;
+        .heading-outer {
+            position: relative;
+            .logo {
+                display: block;
+                width: 90px;
+                margin: 0 auto 10px;
+                img {
+                    width: 100%;
+                }
+            }
+            .arrow-back-home {
+                position: absolute;
+                left: 0;
+                top: 0;
+                padding: 5px;
+                font-size: 16px;
+                z-index: 10;
+                color: var(--secondary-color);
+            }
+        }
         .heading1 {
             font-family: 'Open Sans', sans-serif;
             font-size: 22px;
@@ -388,6 +414,7 @@
             }
         }
         &.new-login-signup-ui {
+            margin-top: -58px;
             .inner-form-wrap {
                 width: 95%;
                 flex-direction: column;
@@ -395,8 +422,13 @@
                 .form-wrap {
                     flex-basis: 100%;
                     width: 100%;
-                    padding: 20px;
+                    padding: 10px;
+                    left: 0;
+                    top: 150px;
                     .heading-outer {
+                        .logo {
+                            width: 90px;
+                        }
                         .heading1 {
                             font-size: 20px;
                             line-height: 24px;
@@ -409,13 +441,18 @@
                     .form-outer {
                         margin-top: 10px;
                         box-sizing: border-box;
-                        flex-direction: row;
+                        flex-direction: column;
                         .input-wrap {
                             box-sizing: border-box;
                             float: none;
                             display: inline-block;
                             vertical-align: top;
                             padding: 5px 0;
+                            width: 100%;
+                            margin-top: 10px;
+                            &:first-child {
+                                margin-top: 0;
+                            }
                         }
                         .action-wrap {
                             margin-top: 10px;
@@ -466,16 +503,32 @@
                 .image-wrap {
                     flex-basis: 100%;
                     width: 100%;
-                    min-height: 150px;
-                    height: 150px;
+                    min-height: 180px;
+                    height: 180px;
                     position: relative;
                     z-index: 1;
+                    right: 0;
+                    bottom: 150px;
                     img {
                         position: absolute;
                         height: 100%;
                         top: 0;
                         left: 0;
                         width: 100%;
+                    }
+                }
+                .or-seprator {
+                    display: none;
+                    width: 100%;
+                }
+                &.show {
+                    .form-wrap {
+                        top: 0;
+                        left: 0;
+                    }
+                    .image-wrap {
+                        bottom: 0;
+                        right: 0;
                     }
                 }
             }

@@ -9,8 +9,10 @@ import IconButton from '@material-ui/core/IconButton';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
+import boogaluLogo from '../../Images/Boogalu-logo.svg';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
@@ -248,6 +250,12 @@ export default function Login() {
             <div className={`inner-form-wrap ${componentShowClass}`}>
                 <form className="form-wrap clearfix" onSubmit={(e) => signinUser(e, 'cred')}>
                     <div className="heading-outer">
+                        <a href="/" className="arrow-back-home" title="Back to Home">
+                            <ArrowBackIcon />
+                        </a>
+                        <a href="/" className="logo" title="Back to Home">
+                            <img src={boogaluLogo} alt="Boogalu" />
+                        </a>
                         <div className="heading1">Welcome Back!</div>
                         <div className="heading2">Login to your existing Boogalu account.</div>
                     </div>
