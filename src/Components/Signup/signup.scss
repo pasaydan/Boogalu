@@ -9,6 +9,65 @@
             margin-left: 10px;
         }
     }
+    &.signup-wrap {
+        margin: -73px 0 0 0;
+        .inner-signup-wrap {
+            width: 80%;
+            padding: 20px;
+            background: var(--primary-white);
+            box-sizing: border-box;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+            .header-outer {
+                position: relative;
+                width: 100%;
+                display: block;
+                .logo {
+                    display: block;
+                    width: 90px;
+                    margin: 0 auto;
+                    img {
+                        width: 100%;
+                    }
+                }
+                .arrow-back-home {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    padding: 5px;
+                    font-size: 16px;
+                    z-index: 10;
+                    color: var(--secondary-color);
+                }
+            }
+            .form-wrap {
+                .profile-img-wrap {
+                    margin: 0 auto;
+                }
+                .form-outer {
+                    .input-wrap {
+                        width: 49%;
+                        &.bio-wrap {
+                            width: 100%;
+                        }
+                    }
+                }
+                &.final-registration-block {
+                    .tnc-wrap {
+                        width: 60%;
+                        .note-wrap {
+                            font-size: 14px;
+                            line-height: 50px;
+                        }
+                    }
+                } 
+            }
+            .img-wrap {
+                display: inline-block !important;
+            }
+        }
+        
+    }
 }
 
 .logout-wrap .form-wrap, .logout-wrap .img-wrap {
@@ -307,8 +366,50 @@
         margin: 0;
         padding: 20px 10px;
         box-sizing: border-box;
+        &.signup-wrap {
+            .inner-signup-wrap {
+                .header-outer {
+                    z-index: 10;
+                    margin-bottom: 10px;
+                }
+            }
+        }
+        .final-registration-block {
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            border-radius: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+            float: none;
+            background: rgba(227, 235, 249, 0.9);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+            .tnc-wrap {
+                width: 45%;
+                .tnc-content {
+                    line-height: 36px;
+                    padding-top: 7px;
+                    .MuiCheckbox-colorPrimary.Mui-checked {
+                        padding-top: 0;
+                    }
+                    .note-wrap {
+                        line-height: 16px;
+                    }
+                }
+            }
+            .submit-btn {
+                button {
+                    padding: 10px 30px;
+                }
+            }
+            .already-login-wrap {
+                text-align: center;
+            }
+        }
         .img-wrap {
+            position: relative;
             overflow: hidden;
+            top: 10px;
         }
         .heading1 {
             font-size: 18px;
@@ -401,9 +502,26 @@
 @media screen and (max-width: 767px) {
     .logout-wrap {
         position: relative;
+        &.signup-wrap {
+            .inner-signup-wrap {
+                padding: 10px;
+                width: 98%;
+                .final-registration-block {
+                    .form-outer {
+                        .input-wrap {
+                            width: 100%;
+                        }
+                        .tnc-wrap {
+                            width: 100%;
+                        }     
+                    }
+                }
+            }
+        } 
         .tnc-content .note-wrap {
             font-size: 14px;
-            width: 86%;
+            width: 84%;
+            line-height: 42px !important;
         }
         &.edit-page-wrap {
             .form-wrap {
@@ -451,8 +569,8 @@
             float: none;
             position: absolute;
             right: 0;
-            top: 0;
-            width: 100%;
+            top: 10px;
+            width: 90%;
             height: 100%;
             z-index: 0;
             img {
@@ -463,38 +581,6 @@
                 width: 131%;
                 height: 62%;
                 object-fit: contain;
-            }
-        }
-        .final-registration-block {
-            width: 100%;
-            position: relative;
-            z-index: 1;
-            border-radius: 10px;
-            padding: 10px;
-            box-sizing: border-box;
-            float: none;
-            background: rgba(227, 235, 249, 0.9);
-            box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-            .tnc-wrap {
-                width: 45%;
-                .tnc-content {
-                    line-height: 36px;
-                    padding-top: 7px;
-                    .MuiCheckbox-colorPrimary.Mui-checked {
-                        padding-top: 0;
-                    }
-                    .note-wrap {
-                        line-height: 16px;
-                    }
-                }
-            }
-            .submit-btn {
-                button {
-                    padding: 10px 30px;
-                }
-            }
-            .already-login-wrap {
-                text-align: center;
             }
         }
     }

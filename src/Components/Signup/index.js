@@ -4,6 +4,8 @@ import { useStoreConsumer } from '../../Providers/StateProvider';
 import { signupUser } from '../../Actions/User';
 import bgImg from '../../Images/bg1.svg';
 import Button from '@material-ui/core/Button';
+import boogaluLogo from '../../Images/Boogalu-logo.svg';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import IconButton from '@material-ui/core/IconButton';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -269,389 +271,399 @@ export default function Signup() {
     }
 
     return (
-        <div className="logout-wrap clearfix">
-            {activeStep != 6 && <div className="step-wrap">
-                <div className="heading1">Let's Get Started!</div>
-                {activeStep === 'stepOne' && <>
-                    <div className="list-content">
-                        <div className="list-heading-wrap">
-                            <div className="heading2">What’s your experience with dancing?</div>
-                            <div className="heading3">Select One Option</div>
-                        </div>
-                        <div className="list">
-                            {stepData.stepOne.map((item, i) => {
-                                return (
-                                    <div key={i} className={item.isSelected ? 'list-item selected-item' : 'list-item'} onClick={(e) => setStepListItemData(e, item)}>
-                                        <div className="title">{item.title}</div>
-                                        <div className="desc">{item.desc}</div>
-                                        <Checkbox
-                                            required
-                                            color="primary"
-                                            className="selected-item-checkbox"
-                                            checked={item.isSelected}
-                                            onChange={(e) => setStepListItemData(e, item)}
-                                            inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                        />
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    </div>
-                </>}
-                {activeStep === 'stepTwo' && <>
-                    <div className="list-content">
-                        <div className="list-heading-wrap">
-                            <div className="heading2">What is your first goal that you want to work on?</div>
-                            <div className="heading3">Select One Option</div>
-                        </div>
-                        <div className="list">
-                            {stepData.stepTwo.map((item, i) => {
-                                return (
-                                    <div key={i} className={item.isSelected ? 'list-item selected-item' : 'list-item'} onClick={(e) => setStepListItemData(e, item)}>
-                                        <div className="title">{item.title}</div>
-                                        <div className="desc">{item.desc}</div>
-                                        <Checkbox
-                                            required
-                                            color="primary"
-                                            className="selected-item-checkbox"
-                                            checked={item.isSelected}
-                                            onChange={(e) => setStepListItemData(e, item)}
-                                            inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                        />
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    </div>
-                </>}
-                {activeStep === 'stepThree' && <>
-                    <div className="list-content">
-                        <div className="list-heading-wrap">
-                            <div className="heading2">What are you interested in?</div>
-                            <div className="heading3">Select all that apply</div>
-                        </div>
-                        <div className="list">
-                            {stepData.stepThree.map((item, i) => {
-                                return (
-                                    <div key={i} className={item.isSelected ? 'list-item selected-item' : 'list-item'} onClick={(e) => setStepListItemData(e, item, 'multi-select')}>
-                                        <div className="title">{item.title}</div>
-                                        <div className="desc" style={{ paddingRight: '25px' }}>{item.desc}</div>
-                                        <Checkbox
-                                            required
-                                            color="primary"
-                                            className="selected-item-checkbox"
-                                            checked={item.isSelected}
-                                            onChange={(e) => setStepListItemData(e, item, 'multi-select')}
-                                            inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                        />
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    </div>
-                </>}
-                {activeStep === 'stepFour' && <>
-                    <div className="list-content">
-                        <div className="list-heading-wrap">
-                            <div className="heading2">How long would you like your dance sessions to be?</div>
-                            <div className="heading3">Select One Option</div>
-                        </div>
-                        <div className="list">
-                            {stepData.stepFour.map((item, i) => {
-                                return (
-                                    <div key={i} className={item.isSelected ? 'list-item selected-item' : 'list-item'} onClick={(e) => setStepListItemData(e, item)}>
-                                        <div className="title">{item.title}</div>
-                                        <div className="desc">{item.desc}</div>
-                                        <Checkbox
-                                            required
-                                            color="primary"
-                                            className="selected-item-checkbox"
-                                            checked={item.isSelected}
-                                            onChange={(e) => setStepListItemData(e, item)}
-                                            inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                        />
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    </div>
-                </>}
-                {activeStep === 'stepFive' && <>
-                    <div className="list-content">
-                        <div className="list-heading-wrap">
-                            <div style={{ paddingBottom: 0 }} className="heading2">Your Personal Schedule & Recommendations</div>
-                        </div>
-                        <div className="list">
-                            {selectedOptionsList.map((item, i) => {
-                                return (
-                                    <div key={i} className="list-item selected-item" onClick={() => setActiveStep(item.key)}>
-                                        <div className="title">{item.heading}</div>
-                                        <div className="desc">
-                                            {item.value.length === 1 &&
-                                                item.value.map((listValue, j) => {
-                                                    return <span key={j}>{listValue} </span>
-                                                })
-                                            }
-                                            {item.value.length != 1 &&
-                                                item.value.map((listValue, j) => {
-                                                    return <span key={j}>{listValue}, </span>
-                                                })
-                                            }
-
-                                        </div>
-                                        {/* <Checkbox
-                                            required
-                                            color="primary"
-                                            className="selected-item-checkbox"
-                                            checked={true}
-                                            disabled={true}
-                                            inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                        /> */}
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    </div>
-                </>}
-                {activeStep != 6 && <div className="step-already-login-wrap clearfix">
-                    <div className="text-wrap">Already have an account?</div>
-                    <Button color="primary" onClick={() => history.push({
-                        pathname: '/login',
-                        state: null
-                    })}>SIGN IN</Button>
-                    {/* {
-                        showNextButton ?
-                            <div className={`next-prev-actions ${activeStep != 'stepOne' ? 'next-step-active' : ''} `}>
-                                {activeStep != 'stepOne' && <Button color="primary" variant="contained" className="next-btn previous" onClick={() => setPrevStep()}>Prev</Button>}
-                                {showNextButton && <Button color="primary" variant="contained" className="next-btn" onClick={() => setNextStep()}>Next</Button>}
-                            </div> : ''
-                    } */}
-                    <div className={`next-prev-actions ${activeStep != 'stepOne' ? 'next-step-active' : ''} `}>
-                        {activeStep != 'stepOne' && <Button color="primary" variant="contained" className="next-btn previous" onClick={() => setPrevStep()}>Prev</Button>}
-                        {/* <Button color="primary" variant="contained" className="next-btn" onClick={() => setNextStep()}>Next</Button> */}
-                        {showNextButton && <Button color="primary" variant="contained" className="next-btn" onClick={() => setNextStep()}>Next</Button>}
-                        {!showNextButton && <Button color="primary" variant="contained" className="next-btn skip-btn" onClick={() => setNextStep()}>Skip</Button>}
-                        {activeStep != 'stepFour' && <Button color="primary" variant="contained" className="next-btn skip-all-btn" onClick={() => redirection()}>Skip All</Button>}
-                    </div>
-                </div>}
-            </div>}
-            {activeStep == 6 && <form className="form-wrap final-registration-block clearfix" onSubmit={setSignupUserCred}>
-                <div className="heading-outer">
+        <div className="logout-wrap new-login-signup-ui signup-wrap gradient-bg-animation clearfix">
+            <div className="inner-signup-wrap">
+                <div className="header-outer">
+                    <a href="/" className="arrow-back-home" title="Back to Home">
+                        <ArrowBackIcon />
+                    </a>
+                    <a href="/" className="logo" title="Back to Home">
+                        <img src={boogaluLogo} alt="Boogalu" />
+                    </a>
+                </div>
+                {activeStep != 6 && <div className="step-wrap">
                     <div className="heading1">Let's Get Started!</div>
-                    <div className="heading2">Create an account to Choreoculture to get all features.</div>
-                </div>
-                {/* {NeedToRegisterError && <div className="login-error">
-                    {NeedToRegisterError}
-                </div>} */}
-                <div className="profile-img-wrap">
-                    <div className="uploaded-img" >
-                        <img src={userDetails.profileImage} onClick={() => { uploaderRef.current.click() }} />
-                    </div>
-                    {
-                        isUserPhotoUploaded ?
-                            <i className="plus-icon"><FaEdit /></i>
-                            :
-                            <i className="plus-icon"><FaPlus /></i>
-                    }
-                    <input id="myInput"
-                        type="file"
-                        accept="image/*"
-                        ref={uploaderRef}
-                        onChange={(e) => onChangeFile(e)}
-                    />
-                    {/* <div className="upload-btn-file">
-                        <Button
-                            variant="contained" color="primary"
-                            onClick={() => { uploaderRef.current.click() }}>Upload Video</Button>
-                    </div>  */}
-                </div>
-                <div className="form-outer clearfix">
-                    <div className="input-wrap">
-                        <TextField className="input-field"
-                            required
-                            id="outlined-required-Name"
-                            label="Name"
-                            onChange={handleChange('name')}
-                            value={userDetails.name}
-                            variant="outlined"
-                        />
-                    </div>
-                    <div className="input-wrap">
-                        <TextField className="input-field"
-                            required
-                            id="outlined-required-Username"
-                            label="Username"
-                            onChange={handleChange('username')}
-                            value={userDetails.username}
-                            variant="outlined"
-                        />
-                    </div>
-                    <div className="input-wrap">
-                        <TextField className="input-field"
-                            required
-                            type="tel"
-                            id="outlined-required-phone"
-                            label="Phone"
-                            onChange={handleChange('phone')}
-                            value={userDetails.phone}
-                            variant="outlined"
-                        />
-                    </div>
-                    <div className="input-wrap">
-                        <TextField className="input-field"
-                            required
-                            id="outlined-required-email"
-                            label="Email"
-                            type="email"
-                            onChange={handleChange('email')}
-                            value={userDetails.email}
-                            variant="outlined"
-                        />
-                    </div>
-                    <div className="input-wrap">
-                        <TextField className="input-field"
-                            required
-                            id="outlined-required-country"
-                            label="Country"
-                            onChange={handleChange('country')}
-                            value={userDetails.country}
-                            variant="outlined"
-                        />
-                    </div>
-                    <div className="input-wrap">
-                        <TextField className="input-field"
-                            required
-                            id="outlined-required-state"
-                            label="State"
-                            onChange={handleChange('state')}
-                            value={userDetails.state}
-                            variant="outlined"
-                        />
-                    </div>
-                    <div className="input-wrap">
-                        <FormControl className="" variant="outlined">
-                            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-                            <OutlinedInput
-                                required
-                                id="outlined-adornment-password"
-                                type={showHidePassword.showPassword ? 'text' : 'password'}
-                                value={userDetails.password}
-                                onChange={handleChange('password')}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="toggle password visibility"
-                                            onClick={() => handleClickShowPassword('showPassword')}
-                                            onMouseDown={handleMouseDownPassword}
-                                            edge="end"
-                                        >
-                                            {showHidePassword.showPassword ? <Visibility /> : <VisibilityOff />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
-                                labelWidth={70}
-                            />
-                        </FormControl>
-                    </div>
-                    <div className="input-wrap">
-                        <FormControl className="" variant="outlined">
-                            <InputLabel htmlFor="outlined-adornment-confirm-password">Confirm Password</InputLabel>
-                            <OutlinedInput
-                                required
-                                id="outlined-adornment-confirm-password"
-                                type={showHidePassword.showConfirmPassword ? 'text' : 'password'}
-                                value={userDetails.confirmPassword}
-                                onChange={handleChange('confirmPassword')}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="toggle confirm password visibility"
-                                            onClick={() => handleClickShowPassword('showConfirmPassword')}
-                                            onMouseDown={handleMouseDownPassword}
-                                            edge="end"
-                                        >
-                                            {showHidePassword.showConfirmPassword ? <Visibility /> : <VisibilityOff />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
-                                labelWidth={70}
-                            />
-                        </FormControl>
-                    </div>
-                    <div className="input-wrap">
-                        <div className="dob-wrap">
-                            <TextField className="input-field"
-                                id="date"
-                                label="Birthday"
-                                type="date"
-                                onChange={handleChange('dob')}
-                                value={userDetails.dob}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                            />
-                        </div>
-                    </div>
-                    <div className="input-wrap">
-                        <FormControl variant="outlined" className="input-field">
-                            <InputLabel id="select-outlined-label">Gender</InputLabel>
-                            <Select
-                                labelId="select-outlined-label"
-                                id="select-outlined"
-                                value={userDetails.gender}
-                                onChange={handleChange('gender')}
-                                label="Gender"
-                            >
-                                <MenuItem value="Male">Male</MenuItem>
-                                <MenuItem value="Female">Female</MenuItem>
-                                <MenuItem value="Other">Other</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </div>
-                    <div className="input-wrap bio-wrap">
-                        <TextField className="input-field bio-input"
-                            id="outlined-required-bio"
-                            label="Bio"
-                            value={userDetails.bio}
-                            onChange={handleChange('bio')}
-                            variant="outlined"
-                        />
-                    </div>
-                    <div className="tnc-wrap">
-                        <div className="tnc-content clearfix">
-                            <div className="checkbox-wrap">
-                                <Checkbox
-                                    required
-                                    color="primary"
-                                    checked={userDetails.tnc}
-                                    onChange={(e) => setUserDetails({ ...userDetails, tnc: e.target.checked })}
-                                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                />
+                    {activeStep === 'stepOne' && <>
+                        <div className="list-content">
+                            <div className="list-heading-wrap">
+                                <div className="heading2">What’s your experience with dancing?</div>
+                                <div className="heading3">Select One Option</div>
                             </div>
-                            <div className="note-wrap">Yes, I agree to the terms and conditions </div>
+                            <div className="list">
+                                {stepData.stepOne.map((item, i) => {
+                                    return (
+                                        <div key={i} className={item.isSelected ? 'list-item selected-item' : 'list-item'} onClick={(e) => setStepListItemData(e, item)}>
+                                            <div className="title">{item.title}</div>
+                                            <div className="desc">{item.desc}</div>
+                                            <Checkbox
+                                                required
+                                                color="primary"
+                                                className="selected-item-checkbox"
+                                                checked={item.isSelected}
+                                                onChange={(e) => setStepListItemData(e, item)}
+                                                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                            />
+                                        </div>
+                                    )
+                                })}
+                            </div>
                         </div>
-                    </div>
-                    {SignUpError && <div className="login-error">
-                        {SignUpError}
-                    </div>}
-                    <div className="submit-btn clearfix">
-                        <Button variant="contained" type="submit" color="primary" >Sign Up
-                         <ArrowRightSharpIcon />
-                        </Button>
-                        {/* {activeStep != 'stepOne' && <Button color="primary" variant="contained" className="next-btn previous" onClick={() => setPrevStep()}>Prev</Button>} */}
-                    </div>
-                    <div className="already-login-wrap">
+                    </>}
+                    {activeStep === 'stepTwo' && <>
+                        <div className="list-content">
+                            <div className="list-heading-wrap">
+                                <div className="heading2">What is your first goal that you want to work on?</div>
+                                <div className="heading3">Select One Option</div>
+                            </div>
+                            <div className="list">
+                                {stepData.stepTwo.map((item, i) => {
+                                    return (
+                                        <div key={i} className={item.isSelected ? 'list-item selected-item' : 'list-item'} onClick={(e) => setStepListItemData(e, item)}>
+                                            <div className="title">{item.title}</div>
+                                            <div className="desc">{item.desc}</div>
+                                            <Checkbox
+                                                required
+                                                color="primary"
+                                                className="selected-item-checkbox"
+                                                checked={item.isSelected}
+                                                onChange={(e) => setStepListItemData(e, item)}
+                                                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                            />
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </>}
+                    {activeStep === 'stepThree' && <>
+                        <div className="list-content">
+                            <div className="list-heading-wrap">
+                                <div className="heading2">What are you interested in?</div>
+                                <div className="heading3">Select all that apply</div>
+                            </div>
+                            <div className="list">
+                                {stepData.stepThree.map((item, i) => {
+                                    return (
+                                        <div key={i} className={item.isSelected ? 'list-item selected-item' : 'list-item'} onClick={(e) => setStepListItemData(e, item, 'multi-select')}>
+                                            <div className="title">{item.title}</div>
+                                            <div className="desc" style={{ paddingRight: '25px' }}>{item.desc}</div>
+                                            <Checkbox
+                                                required
+                                                color="primary"
+                                                className="selected-item-checkbox"
+                                                checked={item.isSelected}
+                                                onChange={(e) => setStepListItemData(e, item, 'multi-select')}
+                                                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                            />
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </>}
+                    {activeStep === 'stepFour' && <>
+                        <div className="list-content">
+                            <div className="list-heading-wrap">
+                                <div className="heading2">How long would you like your dance sessions to be?</div>
+                                <div className="heading3">Select One Option</div>
+                            </div>
+                            <div className="list">
+                                {stepData.stepFour.map((item, i) => {
+                                    return (
+                                        <div key={i} className={item.isSelected ? 'list-item selected-item' : 'list-item'} onClick={(e) => setStepListItemData(e, item)}>
+                                            <div className="title">{item.title}</div>
+                                            <div className="desc">{item.desc}</div>
+                                            <Checkbox
+                                                required
+                                                color="primary"
+                                                className="selected-item-checkbox"
+                                                checked={item.isSelected}
+                                                onChange={(e) => setStepListItemData(e, item)}
+                                                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                            />
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </>}
+                    {activeStep === 'stepFive' && <>
+                        <div className="list-content">
+                            <div className="list-heading-wrap">
+                                <div style={{ paddingBottom: 0 }} className="heading2">Your Personal Schedule & Recommendations</div>
+                            </div>
+                            <div className="list">
+                                {selectedOptionsList.map((item, i) => {
+                                    return (
+                                        <div key={i} className="list-item selected-item" onClick={() => setActiveStep(item.key)}>
+                                            <div className="title">{item.heading}</div>
+                                            <div className="desc">
+                                                {item.value.length === 1 &&
+                                                    item.value.map((listValue, j) => {
+                                                        return <span key={j}>{listValue} </span>
+                                                    })
+                                                }
+                                                {item.value.length != 1 &&
+                                                    item.value.map((listValue, j) => {
+                                                        return <span key={j}>{listValue}, </span>
+                                                    })
+                                                }
+
+                                            </div>
+                                            {/* <Checkbox
+                                                required
+                                                color="primary"
+                                                className="selected-item-checkbox"
+                                                checked={true}
+                                                disabled={true}
+                                                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                            /> */}
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </>}
+                    {activeStep != 6 && <div className="step-already-login-wrap clearfix">
                         <div className="text-wrap">Already have an account?</div>
                         <Button color="primary" onClick={() => history.push({
                             pathname: '/login',
                             state: null
                         })}>SIGN IN</Button>
+                        {/* {
+                            showNextButton ?
+                                <div className={`next-prev-actions ${activeStep != 'stepOne' ? 'next-step-active' : ''} `}>
+                                    {activeStep != 'stepOne' && <Button color="primary" variant="contained" className="next-btn previous" onClick={() => setPrevStep()}>Prev</Button>}
+                                    {showNextButton && <Button color="primary" variant="contained" className="next-btn" onClick={() => setNextStep()}>Next</Button>}
+                                </div> : ''
+                        } */}
+                        <div className={`next-prev-actions ${activeStep != 'stepOne' ? 'next-step-active' : ''} `}>
+                            {activeStep != 'stepOne' && <Button color="primary" variant="contained" className="next-btn previous" onClick={() => setPrevStep()}>Prev</Button>}
+                            {/* <Button color="primary" variant="contained" className="next-btn" onClick={() => setNextStep()}>Next</Button> */}
+                            {showNextButton && <Button color="primary" variant="contained" className="next-btn" onClick={() => setNextStep()}>Next</Button>}
+                            {!showNextButton && <Button color="primary" variant="contained" className="next-btn skip-btn" onClick={() => setNextStep()}>Skip</Button>}
+                            {activeStep != 'stepFour' && <Button color="primary" variant="contained" className="next-btn skip-all-btn" onClick={() => redirection()}>Skip All</Button>}
+                        </div>
+                    </div>}
+                </div>}
+                {activeStep == 6 && <form className="form-wrap final-registration-block clearfix" onSubmit={setSignupUserCred}>
+                    <div className="heading-outer">
+                        <div className="heading1">Let's Get Started!</div>
+                        <div className="heading2">Create an account to Choreoculture to get all features.</div>
                     </div>
-                </div>
-            </form>}
+                    {/* {NeedToRegisterError && <div className="login-error">
+                        {NeedToRegisterError}
+                    </div>} */}
+                    <div className="profile-img-wrap">
+                        <div className="uploaded-img" >
+                            <img src={userDetails.profileImage} onClick={() => { uploaderRef.current.click() }} />
+                        </div>
+                        {
+                            isUserPhotoUploaded ?
+                                <i className="plus-icon"><FaEdit /></i>
+                                :
+                                <i className="plus-icon"><FaPlus /></i>
+                        }
+                        <input id="myInput"
+                            type="file"
+                            accept="image/*"
+                            ref={uploaderRef}
+                            onChange={(e) => onChangeFile(e)}
+                        />
+                        {/* <div className="upload-btn-file">
+                            <Button
+                                variant="contained" color="primary"
+                                onClick={() => { uploaderRef.current.click() }}>Upload Video</Button>
+                        </div>  */}
+                    </div>
+                    <div className="form-outer clearfix">
+                        <div className="input-wrap">
+                            <TextField className="input-field"
+                                required
+                                id="outlined-required-Name"
+                                label="Name"
+                                onChange={handleChange('name')}
+                                value={userDetails.name}
+                                variant="outlined"
+                            />
+                        </div>
+                        <div className="input-wrap">
+                            <TextField className="input-field"
+                                required
+                                id="outlined-required-Username"
+                                label="Username"
+                                onChange={handleChange('username')}
+                                value={userDetails.username}
+                                variant="outlined"
+                            />
+                        </div>
+                        <div className="input-wrap">
+                            <TextField className="input-field"
+                                required
+                                type="tel"
+                                id="outlined-required-phone"
+                                label="Phone"
+                                onChange={handleChange('phone')}
+                                value={userDetails.phone}
+                                variant="outlined"
+                            />
+                        </div>
+                        <div className="input-wrap">
+                            <TextField className="input-field"
+                                required
+                                id="outlined-required-email"
+                                label="Email"
+                                type="email"
+                                onChange={handleChange('email')}
+                                value={userDetails.email}
+                                variant="outlined"
+                            />
+                        </div>
+                        <div className="input-wrap">
+                            <TextField className="input-field"
+                                required
+                                id="outlined-required-country"
+                                label="Country"
+                                onChange={handleChange('country')}
+                                value={userDetails.country}
+                                variant="outlined"
+                            />
+                        </div>
+                        <div className="input-wrap">
+                            <TextField className="input-field"
+                                required
+                                id="outlined-required-state"
+                                label="State"
+                                onChange={handleChange('state')}
+                                value={userDetails.state}
+                                variant="outlined"
+                            />
+                        </div>
+                        <div className="input-wrap">
+                            <FormControl className="" variant="outlined">
+                                <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                                <OutlinedInput
+                                    required
+                                    id="outlined-adornment-password"
+                                    type={showHidePassword.showPassword ? 'text' : 'password'}
+                                    value={userDetails.password}
+                                    onChange={handleChange('password')}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={() => handleClickShowPassword('showPassword')}
+                                                onMouseDown={handleMouseDownPassword}
+                                                edge="end"
+                                            >
+                                                {showHidePassword.showPassword ? <Visibility /> : <VisibilityOff />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                    labelWidth={70}
+                                />
+                            </FormControl>
+                        </div>
+                        <div className="input-wrap">
+                            <FormControl className="" variant="outlined">
+                                <InputLabel htmlFor="outlined-adornment-confirm-password">Confirm Password</InputLabel>
+                                <OutlinedInput
+                                    required
+                                    id="outlined-adornment-confirm-password"
+                                    type={showHidePassword.showConfirmPassword ? 'text' : 'password'}
+                                    value={userDetails.confirmPassword}
+                                    onChange={handleChange('confirmPassword')}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle confirm password visibility"
+                                                onClick={() => handleClickShowPassword('showConfirmPassword')}
+                                                onMouseDown={handleMouseDownPassword}
+                                                edge="end"
+                                            >
+                                                {showHidePassword.showConfirmPassword ? <Visibility /> : <VisibilityOff />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                    labelWidth={70}
+                                />
+                            </FormControl>
+                        </div>
+                        <div className="input-wrap">
+                            <div className="dob-wrap">
+                                <TextField className="input-field"
+                                    id="date"
+                                    label="Birthday"
+                                    type="date"
+                                    onChange={handleChange('dob')}
+                                    value={userDetails.dob}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                />
+                            </div>
+                        </div>
+                        <div className="input-wrap">
+                            <FormControl variant="outlined" className="input-field">
+                                <InputLabel id="select-outlined-label">Gender</InputLabel>
+                                <Select
+                                    labelId="select-outlined-label"
+                                    id="select-outlined"
+                                    value={userDetails.gender}
+                                    onChange={handleChange('gender')}
+                                    label="Gender"
+                                >
+                                    <MenuItem value="Male">Male</MenuItem>
+                                    <MenuItem value="Female">Female</MenuItem>
+                                    <MenuItem value="Other">Other</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </div>
+                        <div className="input-wrap bio-wrap">
+                            <TextField className="input-field bio-input"
+                                id="outlined-required-bio"
+                                label="Bio"
+                                value={userDetails.bio}
+                                onChange={handleChange('bio')}
+                                variant="outlined"
+                            />
+                        </div>
+                        <div className="tnc-wrap">
+                            <div className="tnc-content clearfix">
+                                <div className="checkbox-wrap">
+                                    <Checkbox
+                                        required
+                                        color="primary"
+                                        checked={userDetails.tnc}
+                                        onChange={(e) => setUserDetails({ ...userDetails, tnc: e.target.checked })}
+                                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                    />
+                                </div>
+                                <div className="note-wrap">Yes, I agree to the terms and conditions </div>
+                            </div>
+                        </div>
+                        {SignUpError && <div className="login-error">
+                            {SignUpError}
+                        </div>}
+                        <div className="submit-btn clearfix">
+                            <Button variant="contained" type="submit" color="primary" >Sign Up
+                             <ArrowRightSharpIcon />
+                            </Button>
+                            {/* {activeStep != 'stepOne' && <Button color="primary" variant="contained" className="next-btn previous" onClick={() => setPrevStep()}>Prev</Button>} */}
+                        </div>
+                        <div className="already-login-wrap">
+                            <div className="text-wrap">Already have an account?</div>
+                            <Button color="primary" onClick={() => history.push({
+                                pathname: '/login',
+                                state: null
+                            })}>SIGN IN</Button>
+                        </div>
+                    </div>
+                </form>}
 
-            <div className="img-wrap">
-                <img src={bgImg} alt="bg1" />
+                <div className="img-wrap">
+                    <img src={bgImg} alt="bg1" />
+                </div>
             </div>
         </div>
     );

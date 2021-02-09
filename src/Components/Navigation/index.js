@@ -27,6 +27,7 @@ function Navigation() {
     const loggedInUser = state.loggedInUser;
     const [openVdoUploadModal, setOpenVdoUploadModal] = useState(false)
     const [activeRoute, setActiveRoute] = useState('');
+    const [isNavHidden, toggleNavHidden] = useState(false);
 
     useOnClickOutside(ref, () => setShowProfileTab(false));
 
@@ -63,12 +64,13 @@ function Navigation() {
         }
 
 
+        const pathName = history?.location?.pathname.split('/')[1];
+        const navLinks = document.querySelectorAll('.nav-ul a');
+        if (pathName.includes('login') || pathName.includes('register') || pathName.includes('admin')) {
+            setHideVdoUploadBtn(true);
+            toggleNavHidden(true);
+        }
         setTimeout(() => {
-            const pathName = history?.location?.pathname.split('/')[1];
-            const navLinks = document.querySelectorAll('.nav-ul a');
-            if (pathName.includes('register') || pathName.includes('admin')) {
-                setHideVdoUploadBtn(true);
-            }
             if (navLinks && navLinks.length) {
                 navLinks.forEach((ele) => {
                     const getHref = ele.getAttribute('href').toLocaleLowerCase();
@@ -87,8 +89,10 @@ function Navigation() {
     useEffect(() => {
         const listenRouteChange = history.listen((location, action) => {
             const pathName = location?.pathname.split('/')[1];
-            if (pathName.includes('admin') || pathName.includes('register')) setHideVdoUploadBtn(true);
-            else setHideVdoUploadBtn(false);
+            if (pathName.includes('admin') || pathName.includes('register') || pathName.includes('login')) {
+                setHideVdoUploadBtn(true);   
+                toggleNavHidden(true);
+            } else setHideVdoUploadBtn(false);
             if ((!pathName || pathName.includes('lessons') || pathName.includes('contactus') || pathName.includes('home')) && state.currentLoginFlow) {
                 dispatch(disableLoginFlow());
             }
@@ -174,6 +178,7 @@ function Navigation() {
 
     function navigateToUserRegistrationLogin(path) {
         setHideVdoUploadBtn(true);
+        toggleNavHidden(true);
         history.push(`/${path}`)
     }
 
@@ -201,7 +206,7 @@ function Navigation() {
 
     return (
         <>
-            <nav className={`navigation-wrap ${goingUpClass} ${goingDownClass} ${!loggedInUser.username ? 'user-logged-out' : ''}`}>
+            <nav className={`navigation-wrap ${goingUpClass} ${isNavHidden ? 'hide-nav' : ''} ${goingDownClass} ${!loggedInUser.username ? 'user-logged-out' : ''}`}>
                 <div className="flex-container desktop-navigation">
                     <h1 title="home" >
                         <a href="/" onClick={(e) => onClickNav(e, '')}>

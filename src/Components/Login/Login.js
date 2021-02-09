@@ -9,8 +9,10 @@ import IconButton from '@material-ui/core/IconButton';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
+import boogaluLogo from '../../Images/Boogalu-logo.svg';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
@@ -19,7 +21,7 @@ import { loginUser, signupUser } from '../../Actions/User/index';
 import { getUserByEmail, getUserByPhone } from "../../Services/User.service";
 import VideoUploader from "../VideoUploader";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
-import { displayNotification } from "../../Actions/Notification";
+import { displayNotification, removeNotification } from "../../Actions/Notification";
 import { NOTIFICATION_SUCCCESS, NOTIFICATION_ERROR } from "../../Constants";
 import * as $ from 'jquery';
 
@@ -30,6 +32,7 @@ export default function Login() {
     const [LoginError, setLoginError] = useState(null);
     const [thirdPartyResponse, setThirdPartyResponse] = useState({ isLogginSuccess: false, data: null, source: '' })
     const [openVdoUploadModal, setOpenVdoUploadModal] = useState(false)
+    const [componentShowClass, toggleShowClass] = useState('')
 
     useEffect(() => {
         if (thirdPartyResponse.source === 'Facebook') signinUser('', 'Facebook');
@@ -37,6 +40,16 @@ export default function Login() {
     }, [thirdPartyResponse]);
 
     useEffect(() => {
+        dispatch(removeNotification({
+            msg: "",
+            type: NOTIFICATION_SUCCCESS,
+            time: 0
+        }));
+        
+        setTimeout(() => {
+            toggleShowClass('show');
+        }, 300);
+
         $('html,body').animate({
             scrollTop: 0
         }, 500);
@@ -233,101 +246,128 @@ export default function Login() {
     }
 
     return (
-        <div className="login-wrap clearfix">
-            <form className="form-wrap clearfix" onSubmit={(e) => signinUser(e, 'cred')}>
-                <div className="heading-outer">
-                    <div className="heading1">Welcome Back!</div>
-                    <div className="heading2">Login to your existing Boogalu account.</div>
-                </div>
-                <div className="form-outer clearfix">
-                    <div className="input-wrap">
-                        <TextField className="input-field"
-                            required
-                            id="outlined-required-username"
-                            label="Username / Email / Phone"
-                            onChange={handleChange('username')}
-                            value={loginCred.username}
-                            variant="outlined"
-                        />
+        <div className="login-wrap new-login-signup-ui clearfix gradient-bg-animation">
+            <div className={`inner-form-wrap ${componentShowClass}`}>
+                <form className="form-wrap clearfix" onSubmit={(e) => signinUser(e, 'cred')}>
+                    <div className="heading-outer">
+                        <a href="/" className="arrow-back-home" title="Back to Home">
+                            <ArrowBackIcon />
+                        </a>
+                        <a href="/" className="logo" title="Back to Home">
+                            <img src={boogaluLogo} alt="Boogalu" />
+                        </a>
+                        <div className="heading1">Welcome Back!</div>
+                        <div className="heading2">Login to your existing Boogalu account.</div>
                     </div>
-                    <div className="input-wrap">
-                        <FormControl className="" variant="outlined" style={{ width: '100%' }}>
-                            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-                            <OutlinedInput
+                    <div className="form-outer clearfix">
+                        <div className="input-wrap">
+                            <TextField className="input-field"
                                 required
-                                id="outlined-adornment-password"
-                                type={loginCred.showPassWord ? 'text' : 'password'}
-                                value={loginCred.password}
-                                onChange={handleChange('password')}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="toggle password visibility"
-                                            onClick={showPassword}
-                                            onMouseDown={handleMouseDownPassword}
-                                            edge="end"
-                                        >
-                                            {loginCred.showPassWord ? <Visibility /> : <VisibilityOff />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
-                                labelWidth={70}
+                                id="outlined-required-username"
+                                label="Username / Email / Phone"
+                                onChange={handleChange('username')}
+                                value={loginCred.username}
+                                variant="outlined"
                             />
-                        </FormControl>
-                    </div>
-                    <div className="action-wrap">
-                        {LoginError && <div className="login-error">
-                            {LoginError}
-                        </div>}
-                        <div className="submit-btn clearfix">
-                            <Button variant="contained" type="submit" color="primary">Sign In
-                            <ArrowRightSharpIcon />
-                            </Button>
                         </div>
-                        <div className="forgot-password clearfix">
-                            <div>Forgot Password ?</div>
-                        </div>
-                    </div>
-                    <div className="or-seprator clearfix">
-                        <span></span>
-                        <div>OR</div>
-                        <span></span>
-                    </div>
-                    <div className="login-with">
-                        <p className="loginWithTitle">Login with</p>
-                        <div className="login-with-google">
-                            <GoogleLogin
-                                className="google-login-btn"
-                                clientId="417866547364-mesv7a9cn6bj4n3ge45s8b6hhl1vdam0.apps.googleusercontent.com"
-                                buttonText="Login with Google"
-                                onSuccess={successResponseGoogle}
-                                onFailure={failureResponseGoogle} >
-                            </GoogleLogin>
-                        </div>
-                        <div className="login-with-fb">
-                            <div className="login-with-fb">
-                                <FacebookLogin
-                                    appId="813330422546108"
-                                    autoLoad={false}
-                                    fields="name,email,picture"
-                                    callback={responseFacebook}
-                                    cssClass="facebook-login-btn"
-                                    icon={<FacebookIcon />}
+                        <div className="input-wrap">
+                            <FormControl className="" variant="outlined" style={{ width: '100%' }}>
+                                <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                                <OutlinedInput
+                                    required
+                                    id="outlined-adornment-password"
+                                    type={loginCred.showPassWord ? 'text' : 'password'}
+                                    value={loginCred.password}
+                                    onChange={handleChange('password')}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={showPassword}
+                                                onMouseDown={handleMouseDownPassword}
+                                                edge="end"
+                                            >
+                                                {loginCred.showPassWord ? <Visibility /> : <VisibilityOff />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                    labelWidth={70}
                                 />
+                            </FormControl>
+                        </div>
+                        <div className="action-wrap">
+                            {LoginError && <div className="login-error">
+                                {LoginError}
+                            </div>}
+                            <div className="submit-btn clearfix">
+                                <Button variant="contained" type="submit" color="primary">Sign In
+                                <ArrowRightSharpIcon />
+                                </Button>
+                            </div>
+                            <div className="forgot-password clearfix">
+                                <div>Forgot Password ?</div>
+                            </div>
+                        </div>
+                        <div className="or-seprator clearfix">
+                            <span></span>
+                            <div>OR</div>
+                            <span></span>
+                        </div>
+                        <div className="login-with">
+                            <p className="loginWithTitle">Login with</p>
+                            <div className="login-with-google">
+                                <GoogleLogin
+                                    className="google-login-btn"
+                                    clientId="417866547364-mesv7a9cn6bj4n3ge45s8b6hhl1vdam0.apps.googleusercontent.com"
+                                    buttonText="Login with Google"
+                                    onSuccess={successResponseGoogle}
+                                    onFailure={failureResponseGoogle} >
+                                </GoogleLogin>
+                            </div>
+                            <div className="login-with-fb">
+                                <div className="login-with-fb">
+                                    <FacebookLogin
+                                        appId="813330422546108"
+                                        autoLoad={false}
+                                        fields="name,email,picture"
+                                        callback={responseFacebook}
+                                        cssClass="facebook-login-btn"
+                                        icon={<FacebookIcon />}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div className="already-login-wrap">
-                        <div className="text-wrap">New to Boogalu?</div>
-                        <Button color="primary" onClick={() => history.push('/register')}>SIGN UP</Button>
+                </form>
+                <div className="image-wrap">
+                    <img src="https://i.imgur.com/KS2W5BM.jpg" alt="signup-image" />
+                    <div className="singup-details">
+                        <div className="already-login-wrap">
+                            <div className="text-wrap">
+                                New to Boogalu?
+                                <p className="sub-text">Singup and get a chance to enroll on different competitions and win awesome prizes!</p>
+                            </div>
+                            <Button className="singup-btn" color="primary" onClick={() => history.push('/register')}>SIGN UP</Button>
+                        </div>
                     </div>
                 </div>
-            </form>
-
+            </div>
             <div className="img-wrap">
                 <img src={bgImg} />
             </div>
             {openVdoUploadModal && <VideoUploader handleClose={() => setOpenVdoUploadModal(false)} />}
+            <ul class="circles">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
         </div>
     );
 }
