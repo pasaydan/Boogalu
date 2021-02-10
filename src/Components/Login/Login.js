@@ -254,7 +254,7 @@ export default function Login() {
             <div className={`inner-form-wrap ${componentShowClass}`}>
                 <form className="form-wrap clearfix" onSubmit={(e) => signinUser(e, 'cred')}>
                     <div className="heading-outer">
-                        <a onClick={(e) => goToPrevious(e)} className="arrow-back-home" title="Back to Home">
+                        <a onClick={(e) => goToPrevious(e)} className="arrow-back-home" title="Back">
                             <ArrowBackIcon />
                         </a>
                         <a href="/" className="logo" title="Back to Home">

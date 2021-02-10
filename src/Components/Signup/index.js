@@ -278,7 +278,7 @@ export default function Signup() {
         <div className="logout-wrap new-login-signup-ui signup-wrap gradient-bg-animation clearfix">
             <div className="inner-signup-wrap">
                 <div className="header-outer">
-                    <a onClick={(e) => goToPrevious(e)} className="arrow-back-home" title="Back to Home">
+                    <a onClick={(e) => goToPrevious(e)} className="arrow-back-home" title="Back">
                         <ArrowBackIcon />
                     </a>
                     <a href="/" className="logo" title="Back to Home">
