@@ -69,6 +69,8 @@ function Navigation() {
         if (pathName.includes('login') || pathName.includes('register') || pathName.includes('admin')) {
             setHideVdoUploadBtn(true);
             toggleNavHidden(true);
+        } else {
+            toggleNavHidden(false);
         }
         setTimeout(() => {
             if (navLinks && navLinks.length) {
@@ -92,7 +94,10 @@ function Navigation() {
             if (pathName.includes('admin') || pathName.includes('register') || pathName.includes('login')) {
                 setHideVdoUploadBtn(true);   
                 toggleNavHidden(true);
-            } else setHideVdoUploadBtn(false);
+            } else {
+                setHideVdoUploadBtn(false);
+                toggleNavHidden(false);
+            }
             if ((!pathName || pathName.includes('lessons') || pathName.includes('contactus') || pathName.includes('home')) && state.currentLoginFlow) {
                 dispatch(disableLoginFlow());
             }

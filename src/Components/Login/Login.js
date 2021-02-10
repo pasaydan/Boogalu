@@ -245,12 +245,16 @@ export default function Login() {
         }
     }
 
+    function goToPrevious(event) {
+        history.goBack();
+    }
+
     return (
         <div className="login-wrap new-login-signup-ui clearfix gradient-bg-animation">
             <div className={`inner-form-wrap ${componentShowClass}`}>
                 <form className="form-wrap clearfix" onSubmit={(e) => signinUser(e, 'cred')}>
                     <div className="heading-outer">
-                        <a href="/" className="arrow-back-home" title="Back to Home">
+                        <a onClick={(e) => goToPrevious(e)} className="arrow-back-home" title="Back to Home">
                             <ArrowBackIcon />
                         </a>
                         <a href="/" className="logo" title="Back to Home">
@@ -356,7 +360,7 @@ export default function Login() {
                 <img src={bgImg} />
             </div>
             {openVdoUploadModal && <VideoUploader handleClose={() => setOpenVdoUploadModal(false)} />}
-            <ul class="circles">
+            <ul className="circles">
                 <li></li>
                 <li></li>
                 <li></li>

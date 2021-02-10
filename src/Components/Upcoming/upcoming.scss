@@ -105,6 +105,11 @@
             iframe {
                 height: 163px;
             }
+            .video-component-wrap {
+                .inner-video-wrap {
+                    height: 100%;
+                }
+            }
         }
     }
 }
