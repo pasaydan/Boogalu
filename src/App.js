@@ -29,11 +29,11 @@ function App() {
   useEffect(() => {
     setTimeout(() => {
       toggleSplash(false);
-    }, 2500);
+    }, 5000);
 
     setTimeout(() => {
       toggleTransition('visible-transition');
-    }, 2800);
+    }, 5500);
   }, []);
 
   return (

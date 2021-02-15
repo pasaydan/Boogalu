@@ -2,6 +2,8 @@
 
 :root {
   --primary-color: #2c0b8e;
+  --primary-bg-color: #512da8;
+  --secondary-bg-blue: #039be5;
   --secondary-color: #6d58ab;
   --black: #000000;
   --dark-blue-bg: #0f0e14; 
@@ -28,6 +30,10 @@
   --info-blue-opaque: rgb(0, 184, 255, 0.8);
   --warning-yellow-dark: #634a05;
   --warning-yellow-opaque: rgb(255, 188, 0, 0.95);
+}
+
+html, body {
+  background-color: var(--primary-bg-color);
 }
 
 .clearfix::after {
