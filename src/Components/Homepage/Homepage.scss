@@ -333,6 +333,12 @@
 @media screen and (max-width: 659px) {
     .homepage {
         .homepage-display-1 {
+            .main-background-image {
+                transform: rotate(30deg) scale(2.5) translate(0%, 10%);
+                &.show {
+                    transform: rotate(0deg) scale(1) translate(0, 0);
+                }
+            }
             .main-bg-message {
                 padding-top: 80px;
                 h4, h5 {
