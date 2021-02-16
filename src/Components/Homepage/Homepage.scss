@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Bad+Script&family=Courgette&display=swap');
+
 .homepage {
     position: relative;
     width: 100%;
+    min-height: 100vh;
     overflow: hidden;
     z-index: 0;
 }
@@ -88,31 +91,100 @@
 }
 
 .homepage-display-1 {
-    padding: 20px;
+    padding: 0;
     box-sizing: border-box;
     justify-content: center;
-    min-height: 80vh;
+    min-height: 100vh;
     position: relative;
     z-index: 4;
     color: var(--primary-white);
-    .flex-container {
+    .main-bg-message {
+        position: relative;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding-top: 60px;
+        min-height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        transition: all 0.8s ease-in-out;
+        display: flex;
         justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        h4, h5 {
+            font-size: 40px;
+            line-height: 44px;
+            margin: 0 0 10px;
+            font-weight: 500;
+            text-align: center;
+            position: relative;
+            opacity: 0;
+            font-family: 'Courgette', cursive;
+            transition: all 2s ease-in-out;
+            .color-text-red {
+                color: var(--warning-yellow-opaque);
+            }
+            .color-text-purple {
+                color: var(--success-green-opaque);
+            }
+        }
+        h4 {
+            left: 50px;
+            &.animate {
+                opacity: 1;
+                left: 0;
+            }
+        }
+        h5 {
+            right: 50px;
+            &.animate {
+                opacity: 1;
+                right: 0;
+            }
+        }
+        button.get_started {
+            margin: 10px auto 30px;
+            width: 150px;
+            display: block;
+            opacity: 0;
+            transition: all 0.8s ease-in-out;
+            &.animate {
+                opacity: 1;
+            }
+        }
+        &.show {
+            opacity: 1;
+        }
+
+    }
+    .main-background-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transition: all 4s ease-in-out;
+        opacity: 0;
+        transform: rotate(30deg) scale(2.5) translate(20%, 10%);
+        width: 100%;
+        height: 100%;
+        background: url('../../Images/hiphop-CC-image.JPG') no-repeat center/cover;
+        &.show {
+            opacity: 1;
+            transform: rotate(0deg) scale(1) translate(0, 0);
+        }
+    }
+    .video-main-wrap {
+        justify-content: center;
+        transition: all 0.8s ease-in-out;
+        opacity: 0;
+        &.animate {
+            opacity: 1;
+        }
     }
     &.no-video {
         display: flex;
         flex-direction: column;
         align-items: center;
-    }
-    h4 {
-        font-size: 24px;
-        margin: 10px 0 20px;
-        font-weight: 400;
-        text-align: center;
-    }
-    button.get_started {
-        margin: 0 auto 20px;
-        width: 150px;
-        display: block;
     }
     .feed-wrap {
         display: flex;
@@ -174,12 +246,19 @@
 @media screen and (max-width: 1023px) {
     .homepage {
         .homepage-wrap, .homepage-display-1 {
-            padding: 20px 10px;
+            padding: 0;
             display: flex;
             flex-direction: column;
             position: relative;
             z-index: 2;
             box-sizing: border-box;
+            .main-bg-message {
+                h4, h5 {
+                    font-size: 30px;
+                    line-height: 30px;
+                    padding: 0 10px;
+                }
+            } 
             .banner_vdo, .banner_img {
                 width: 100%;
             }
@@ -254,8 +333,12 @@
 @media screen and (max-width: 659px) {
     .homepage {
         .homepage-display-1 {
-            h4 {
-                font-size: 22px;
+            .main-bg-message {
+                padding-top: 80px;
+                h4, h5 {
+                    font-size: 20px;
+                    line-height: 20px;
+                }
             }
             .feed-wrap {
                 .vdo-card {

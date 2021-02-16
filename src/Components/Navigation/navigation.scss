@@ -1,9 +1,19 @@
 nav {
     box-shadow: 1px 1px 10px 0 rgba(0, 0, 0, .25);
     padding: 10px 0;
-    background-color: var(--secondary-dark-grey);
     background-image: linear-gradient(to right, var(--secondary-dark-grey), var(--primary-dark-grey));
+    background-color: var(--secondary-dark-grey);
     color: var(--primary-white);
+    &.home-nav-style {
+        box-shadow: none;
+        background-color: transparent;
+        background-image: none;
+    }
+    transition: all 0.5s ease-in-out;
+    opacity: 0;
+    &.animate {
+        opacity: 1;
+    }
 }
 
 nav img {
@@ -78,6 +88,9 @@ nav img {
 .navigation-wrap.scrolled-down {
     position: fixed;
     top: 0;
+    box-shadow: 1px 1px 10px 0 rgba(0, 0, 0, .25);
+    background-color: var(--secondary-dark-grey);
+    background-image: linear-gradient(to right, var(--secondary-dark-grey), var(--primary-dark-grey));
 }
 
 .navigation-wrap h1 {

@@ -11,17 +11,37 @@ export default function Homepage() {
     const history = useHistory();
     const { state, dispatch } = useStoreConsumer();
     let loggedInUser = state.loggedInUser;
-    const [danceImageVisibleClass, activeDanceImage] = useState('');
+    // const [danceImageVisibleClass, activeDanceImage] = useState('');
     const [UserUploadedVideoList, setUserUploadedVideoList] = useState([]);
     const [isMobile, toggleMobile] = useState(false);
+    const [loadImageClass, toggleLoadImage] = useState('');
+    const [loadMessageBox, toggleMessageClass] = useState('');
+    const [headingAnimateClass1, toggleHeadingClass] = useState('');
+    const [headingAnimateClass2, toggleHeadingClassNew] = useState('');
+    const [startButtonAnimateClass, animateStartButton] = useState('');
+    const [videoAnimateClass, animateVideoContainer] = useState('');
 
     useEffect(() => {
         getUploadedVideosList().subscribe((videos) => {
             setUserUploadedVideoList(videos)
         });
         setTimeout(() => {
-            activeDanceImage('show');
-        }, 800);
+            // activeDanceImage('show');
+            toggleLoadImage('show');
+        }, 100);
+        setTimeout(() => {
+            toggleMessageClass('show');
+        }, 3500);
+        setTimeout(() => {
+            toggleHeadingClass('animate');
+            toggleHeadingClassNew('animate');
+        }, 4500);
+        setTimeout(() => {
+            animateStartButton('animate')
+        }, 5200);
+        setTimeout(() => {
+            animateVideoContainer('animate')
+        }, 6000);
         let windowViewPortWidth = window.innerWidth;
         if (windowViewPortWidth > 1023) {
             toggleMobile(false);
@@ -31,7 +51,7 @@ export default function Homepage() {
     }, []);
 
     return (
-        <div className="homepage gradient-bg-animation clearfix">
+        <div className="homepage clearfix">
             {/* <div className="homepage-wrap clearfix">
                 {!isMobile && <div className="banner_vdo">
                     <div className="vdo_wrap rounded-dark-box">
@@ -80,34 +100,42 @@ export default function Homepage() {
                         </div>
                     </div>
                 </div> */}
-                <h4>The world’s best dance learning tools – at your fingertips.</h4>
-                <button className="btn primary-light get_started" onClick={() => {
-                    loggedInUser ? history.push('/competitions') : history.push('/login');
-                }}>Get Started</button>
-                <div className="flex-container" >
-                    {UserUploadedVideoList.length !== 0 ?
-                        <div className="feed-wrap">
-                            {UserUploadedVideoList && UserUploadedVideoList.map((vdo) => {
-                                return <div key={vdo.key} className="vdo-card">
-                                    <div>
-                                        <Vedio vdoObj={vdo} />
-                                    </div>
-                                    <div className="video-title-like-wrap">
-                                        <div className="title">{vdo.title}</div>
-                                        <div className="like-comment">
-                                            <Favorite title="Likes" />
-                                            {vdo.likes && vdo.likes.length > 0 && <div className="likes-count">{vdo.likes.length} Likes</div>}
+                <div className={`main-background-image ${loadImageClass}`}></div>
+                <div className={`main-bg-message ${loadMessageBox}`}>
+                    <h4 className={headingAnimateClass1}>
+                        The world’s best <span className="color-text-red">Dance</span> learning tools,
+                    </h4>
+                    <h5 className={headingAnimateClass2}>
+                        at your <span className="color-text-purple">Fingertips</span>.
+                    </h5>
+                    <button className={`btn primary-light get_started ${startButtonAnimateClass}`} onClick={() => {
+                        loggedInUser ? history.push('/competitions') : history.push('/login');
+                    }}>Get Started</button>
+                    <div className={`flex-container video-main-wrap ${videoAnimateClass}`}>
+                        {UserUploadedVideoList.length !== 0 ?
+                            <div className="feed-wrap">
+                                {UserUploadedVideoList && UserUploadedVideoList.map((vdo) => {
+                                    return <div key={vdo.key} className="vdo-card">
+                                        <div>
+                                            <Vedio vdoObj={vdo} />
                                         </div>
+                                        <div className="video-title-like-wrap">
+                                            <div className="title">{vdo.title}</div>
+                                            <div className="like-comment">
+                                                <Favorite title="Likes" />
+                                                {vdo.likes && vdo.likes.length > 0 && <div className="likes-count">{vdo.likes.length} Likes</div>}
+                                            </div>
 
+                                        </div>
                                     </div>
-                                </div>
-                            })}
-                        </div>
-                        :
-                        ''}
+                                })}
+                            </div>
+                            :
+                            ''}
+                    </div>
                 </div>
             </div>
-            <ul className="circles">
+            {/* <ul className="circles">
                 <li></li>
                 <li></li>
                 <li></li>
@@ -118,7 +146,7 @@ export default function Homepage() {
                 <li></li>
                 <li></li>
                 <li></li>
-            </ul>
+            </ul> */}
         </div>
     );
 }

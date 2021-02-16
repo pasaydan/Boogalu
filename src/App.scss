@@ -261,6 +261,9 @@ button:focus {
 /* Main app custom style */
 .App {
   padding-top: 73px;
+  &.top-padding0 {
+    padding-top: 0;
+  }
 }
 
 .main-content-wrapper {

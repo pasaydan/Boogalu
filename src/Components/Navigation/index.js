@@ -13,13 +13,14 @@ import { displayNotification } from "../../Actions/Notification";
 import * as $ from 'jquery';
 const SCROLL_TOP_LIMIT = 200;
 
-function Navigation() {
+function Navigation( {routeChangeTrigger} ) {
     const [goingUpClass, setGoingUpClass] = useState('');
     const [hideVdoUploadBtn, setHideVdoUploadBtn] = useState(false);
     const [didMount, setDidMount] = useState(false);
     const [isMobile, toggleMobile] = useState(false);
     const [goingDownClass, setGoingDownClass] = useState('');
     const [showProfileTab, setShowProfileTab] = useState(false);
+    const [isHomeRoute, togglHomeRouteValue] = useState(true);
     const ref = useRef();
     const mobilHomelinkRef = useRef();
     const history = useHistory();
@@ -28,6 +29,7 @@ function Navigation() {
     const [openVdoUploadModal, setOpenVdoUploadModal] = useState(false)
     const [activeRoute, setActiveRoute] = useState('');
     const [isNavHidden, toggleNavHidden] = useState(false);
+    const [animateNavClass, toggleNavAnimation] = useState('animate');
 
     useOnClickOutside(ref, () => setShowProfileTab(false));
 
@@ -44,8 +46,10 @@ function Navigation() {
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
             if (currentScrollY < SCROLL_TOP_LIMIT) {
-                setGoingUpClass('');
-                setGoingDownClass('');
+                setTimeout(() => {
+                    setGoingUpClass('');
+                    setGoingDownClass('');
+                }, 200);
             } else {
                 setGoingUpClass('scrolled-up');
                 setTimeout(() => {
@@ -66,6 +70,17 @@ function Navigation() {
 
         const pathName = history?.location?.pathname.split('/')[1];
         const navLinks = document.querySelectorAll('.nav-ul a');
+        if (pathName === '') {
+            togglHomeRouteValue(true);
+            toggleNavAnimation('');
+            setTimeout(() => {
+                toggleNavAnimation('animate');
+            }, 7000);
+        } else {
+            togglHomeRouteValue(false);
+            routeChangeTrigger(false);
+        }
+
         if (pathName.includes('login') || pathName.includes('register') || pathName.includes('admin')) {
             setHideVdoUploadBtn(true);
             toggleNavHidden(true);
@@ -94,9 +109,14 @@ function Navigation() {
             if (pathName.includes('admin') || pathName.includes('register') || pathName.includes('login')) {
                 setHideVdoUploadBtn(true);   
                 toggleNavHidden(true);
+                routeChangeTrigger(false);
             } else {
                 setHideVdoUploadBtn(false);
                 toggleNavHidden(false);
+                if (pathName !== "") {
+                    routeChangeTrigger(false);
+                    togglHomeRouteValue(false);
+                }
             }
             if ((!pathName || pathName.includes('lessons') || pathName.includes('contactus') || pathName.includes('home')) && state.currentLoginFlow) {
                 dispatch(disableLoginFlow());
@@ -125,9 +145,17 @@ function Navigation() {
 
         setTimeout(() => {
             const pathName = history?.location?.pathname.split('/')[1];
-            if (pathName.includes('register') || pathName.includes('admin')) setHideVdoUploadBtn(true);
-            else setHideVdoUploadBtn(false);
-        });
+            if (pathName.includes('register') || pathName.includes('admin')) {
+                setHideVdoUploadBtn(true);
+            } else {
+                setHideVdoUploadBtn(false);
+            } 
+
+            if (pathName !== "") {
+                routeChangeTrigger(false);
+                togglHomeRouteValue(false);
+            }
+        }, 0);
 
         if (navLinks && navLinks.length) {
             navLinks.forEach((ele) => {
@@ -211,7 +239,7 @@ function Navigation() {
 
     return (
         <>
-            <nav className={`navigation-wrap ${goingUpClass} ${isNavHidden ? 'hide-nav' : ''} ${goingDownClass} ${!loggedInUser.username ? 'user-logged-out' : ''}`}>
+            <nav className={`navigation-wrap ${animateNavClass} ${isHomeRoute ? 'home-nav-style': ''} ${goingUpClass} ${isNavHidden ? 'hide-nav' : ''} ${goingDownClass} ${!loggedInUser.username ? 'user-logged-out' : ''}`}>
                 <div className="flex-container desktop-navigation">
                     <h1 title="home" >
                         <a href="/" onClick={(e) => onClickNav(e, '')}>

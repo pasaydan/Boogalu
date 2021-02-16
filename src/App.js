@@ -25,9 +25,17 @@ import Notification from "./Components/Notification";
 function App() {
   const { state } = useStoreConsumer();
   const [isSplashVisible, toggleSplash] = useState(true);
+  const [isRootPath, rootPathToggle] = useState(true);
   const [transitionOpacityClass, toggleTransition] = useState('');
   useEffect(() => {
+
     setTimeout(() => {
+      const pathName = window.location.pathname.split('/')[1];
+      if (pathName === "") {
+        rootPathToggle(true);
+      } else {
+        rootPathToggle(false);
+      }
       toggleSplash(false);
     }, 5000);
 
@@ -36,15 +44,21 @@ function App() {
     }, 5500);
   }, []);
 
+  function routeChanged(event) {
+    rootPathToggle(event);
+  }
+
   return (
     <Router>
-      <div className="App">
+      <div className={`App ${isRootPath ? 'top-padding0': ''}`}>
         {
           isSplashVisible ?
             <SplashScreen />
             :
             <div className={`main-content-wrapper ${transitionOpacityClass}`}>
-              <Navigation />
+              <Navigation 
+                routeChangeTrigger={(e) => routeChanged(e)}
+              />
               <Notification />
               {state?.isLoading && <Loader />}
               <Switch>
