@@ -1,34 +1,34 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./App.scss"
 import Login from "./Components/Login/Login";
-import SplashScreen from './Components/Splash';
-import Navigation from "./Components/Navigation/index";
-import Homepage from "./Components/Homepage";
+import Feeds from "./Components/Feeds";
+import Loader from "./Components/Loader";
 import Footer from "./Components/Footer/index";
 import Signup from "./Components/Signup";
-import Profile from "./Components/Profile/Profile";
-import Upcoming from "./Components/Upcoming";
-import Competitions from "./Components/Competitions";
-import Competition from "./Components/Admin/Competition"
-import Subscriptions from "./Components/Subscriptions";
-import EditProfile from "./Components/EditProfile/EditProfile";
-import ContactUs from "./Components/Contactus";
-import VideoUploader from "./Components/VideoUploader";
-import Subscription from "./Components/Admin/Subscription";
-import Feeds from "./Components/Feeds";
 import Page404 from './Components/Page404';
-import Loader from "./Components/Loader";
-import { useStoreConsumer } from './Providers/StateProvider';
+import Profile from "./Components/Profile/Profile";
+import Homepage from "./Components/Homepage";
+import Upcoming from "./Components/Upcoming";
+import ContactUs from "./Components/Contactus";
+import Navigation from "./Components/Navigation/index";
+import Competition from "./Components/Admin/Competition"
+import EditProfile from "./Components/EditProfile/EditProfile";
+import Subscription from "./Components/Admin/Subscription";
+import SplashScreen from './Components/Splash';
+import Competitions from "./Components/Competitions";
 import Notification from "./Components/Notification";
+import Subscriptions from "./Components/Subscriptions";
+import VideoUploader from "./Components/VideoUploader";
+import { useStoreConsumer } from './Providers/StateProvider';
 
 function App() {
   const { state } = useStoreConsumer();
   const [isSplashVisible, toggleSplash] = useState(true);
   const [isRootPath, rootPathToggle] = useState(true);
   const [transitionOpacityClass, toggleTransition] = useState('');
+  
   useEffect(() => {
-
     setTimeout(() => {
       const pathName = window.location.pathname.split('/')[1];
       if (pathName === "") {
@@ -50,13 +50,14 @@ function App() {
 
   return (
     <Router>
-      <div className={`App ${isRootPath ? 'top-padding0': ''}`}>
+      <div className={`App ${isRootPath && !state.loggedInUser && !state.loggedInUser.username ? 'top-padding0': ''}`}>
         {
           isSplashVisible ?
             <SplashScreen />
             :
             <div className={`main-content-wrapper ${transitionOpacityClass}`}>
               <Navigation 
+                isUserLoggedIn = {state.loggedInUser && state.loggedInUser.username}
                 routeChangeTrigger={(e) => routeChanged(e)}
               />
               <Notification />

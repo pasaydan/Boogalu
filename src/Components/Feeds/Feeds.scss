@@ -14,16 +14,18 @@
     border-bottom: 1px solid rgba(0, 0 , 0, 0.1);
     width: 100%;
     overflow-x: auto;
-    .user-icon-wrap{
+    .user-icon-wrap {
         width: 86px;
         margin-right: 10px;
         text-align: center;
-        >div{
+        cursor: pointer;
+        > div {
             font-size: 16px;
             color: var(--secondary-dark-grey);
             text-overflow: ellipsis;
             overflow: hidden; 
             white-space: nowrap;
+            margin: 0 auto;
         }
 
         >svg{

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useStoreConsumer } from '../../Providers/StateProvider';
-import bgImg from '../../Images/hip-hop.png';
 import { useHistory } from "react-router-dom";
 import { getUploadedVideosList } from "../../Services/UploadedVideo.service";
 import Vedio from "../Vedio/Video";

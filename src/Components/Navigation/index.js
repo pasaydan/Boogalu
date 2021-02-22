@@ -13,7 +13,7 @@ import { displayNotification } from "../../Actions/Notification";
 import * as $ from 'jquery';
 const SCROLL_TOP_LIMIT = 200;
 
-function Navigation( {routeChangeTrigger} ) {
+function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
     const [goingUpClass, setGoingUpClass] = useState('');
     const [hideVdoUploadBtn, setHideVdoUploadBtn] = useState(false);
     const [didMount, setDidMount] = useState(false);
@@ -239,7 +239,7 @@ function Navigation( {routeChangeTrigger} ) {
 
     return (
         <>
-            <nav className={`navigation-wrap ${animateNavClass} ${isHomeRoute ? 'home-nav-style': ''} ${goingUpClass} ${isNavHidden ? 'hide-nav' : ''} ${goingDownClass} ${!loggedInUser.username ? 'user-logged-out' : ''}`}>
+            <nav className={`navigation-wrap ${animateNavClass} ${isHomeRoute && !isUserLoggedIn ? 'home-nav-style': ''} ${goingUpClass} ${isNavHidden ? 'hide-nav' : ''} ${goingDownClass} ${!loggedInUser.username ? 'user-logged-out' : ''}`}>
                 <div className="flex-container desktop-navigation">
                     <h1 title="home" >
                         <a href="/" onClick={(e) => onClickNav(e, '')}>

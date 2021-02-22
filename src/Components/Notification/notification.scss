@@ -9,6 +9,9 @@
     z-index: 9999;
     text-align: center;
     transform: translateX(-50%);
+    &.noNotification {
+        z-index: -9999;
+    }
     &.NOTIFICATION_SUCCCESS {
         background-color: var(--success-green-opaque);
         color: var(--success-green-dark);

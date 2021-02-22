@@ -32,10 +32,6 @@
   --warning-yellow-opaque: rgb(255, 188, 0, 0.95);
 }
 
-html, body {
-  background-color: var(--primary-bg-color);
-}
-
 .clearfix::after {
   display: block;
   content: "";
