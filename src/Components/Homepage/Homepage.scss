@@ -164,13 +164,13 @@
         left: 0;
         transition: all 4s ease-in-out;
         opacity: 0;
-        transform: rotate(30deg) scale(2.5) translate(20%, 10%);
+        transform: scale(2.5);
         width: 100%;
         height: 100%;
         background: url('../../Images/hiphop-CC-image.JPG') no-repeat center/cover;
         &.show {
             opacity: 1;
-            transform: rotate(0deg) scale(1) translate(0, 0);
+            transform: scale(1);
         }
     }
     .video-main-wrap {
@@ -333,12 +333,6 @@
 @media screen and (max-width: 659px) {
     .homepage {
         .homepage-display-1 {
-            .main-background-image {
-                transform: rotate(30deg) scale(2.5) translate(0%, 10%);
-                &.show {
-                    transform: rotate(0deg) scale(1) translate(0, 0);
-                }
-            }
             .main-bg-message {
                 padding-top: 80px;
                 h4, h5 {
