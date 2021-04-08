@@ -37,7 +37,7 @@
 .user-list-wrap::-webkit-scrollbar { 
     display: none;  /* Safari and Chrome */
 }
-.feed-dashboard-wrap{
+.feed-dashboard-wrap {
     display: flex;
 }
 .loggedin-user{
@@ -140,6 +140,16 @@
     }
 }
 
+.feed-dashboard-wrap {
+    .feed-card {
+        flex-basis: 80%;
+        margin: 0 0 20px 0;
+        .iframe {
+            height: calc(100vh - 350px);
+        }
+    }
+}
+
 @media screen and (max-width: 1023px) {
     .user-dashboard-wrap {
         max-width: 95%;
@@ -165,6 +175,16 @@
             }
         }
     }
+
+    .feed-dashboard-wrap {
+        .feed-card {
+            flex-basis: 100%;
+            margin: 0 0 20px 0;
+            .iframe {
+                height: calc(100vh - 400px);
+            }
+        }
+    }
 }
 
 @media screen and (max-width: 767px) {
@@ -183,11 +203,11 @@
 
         > .feed-card {
             margin: 0 auto 20px;
-            width: 300px;
+            width: 100%;
             &:nth-child(3n + 3) {
                 margin-right: auto;
             }
-            .iframe{
+            .iframe {
                 width: 100%;
             }
         }

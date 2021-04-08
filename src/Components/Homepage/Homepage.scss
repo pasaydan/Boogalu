@@ -113,9 +113,9 @@
         align-items: center;
         flex-direction: column;
         h4, h5 {
-            font-size: 40px;
-            line-height: 44px;
-            margin: 0 0 10px;
+            font-size: 28px;
+            line-height: 28px;
+            margin: 0 0 5px;
             font-weight: 500;
             text-align: center;
             position: relative;
@@ -144,7 +144,7 @@
             }
         }
         button.get_started {
-            margin: 10px auto 30px;
+            margin: 10px auto;
             width: 150px;
             display: block;
             opacity: 0;
@@ -191,16 +191,17 @@
         justify-content: center;
         .vdo-card {
             z-index: 0;
-            flex-basis: 28%;
-            margin: 0 20px 20px 0;
-            &:nth-child(3n + 3) {
-                margin-right: 0;
-            }
+            flex-basis: 54%;
+            margin: 0 0 20px 0;
+            height: calc(100vh - 155px);
+            // &:nth-child(3n + 3) {
+            //     margin-right: 0;
+            // }
             .vdo-outer {
                 .vdo-wrap {
                     iframe {
                         width: 100%;
-                        height: 180px;
+                        height: calc(100vh - 218px);
                         border-radius: 5px;
                     }
                 }
@@ -310,17 +311,18 @@
             .feed-wrap {
                 flex-wrap: wrap;
                 .vdo-card {
-                    flex-basis: 290px;
-                    &:nth-child(3n + 3) {
-                        margin-right: 20px;
-                    }
-                    &:nth-child(2n + 2) {
-                        margin-right: 0;
-                    }
+                    // flex-basis: 290px;
+                    // &:nth-child(3n + 3) {
+                    //     margin-right: 20px;
+                    // }
+                    // &:nth-child(2n + 2) {
+                    //     margin-right: 0;
+                    // }
+                    height: calc(100vh - 290px);
                     .vdo-outer {
                         .vdo-wrap {
                             iframe {
-                                height: 160px;
+                                height: calc(100vh - 340px);
                             }
                         }
                     }
@@ -342,8 +344,9 @@
             }
             .feed-wrap {
                 .vdo-card {
-                    flex-basis: 300px;
+                    flex-basis: 95%;
                     margin: 0 0 20px 0;
+                    height: calc(100vh - 280px);
                     &:nth-child(3n + 3) {
                         margin-right: 0;
                     }
@@ -353,7 +356,7 @@
                     .vdo-outer {
                         .vdo-wrap {
                             iframe {
-                                height: 200px;
+                                height: calc(100vh - 340px);
                             }
                         }
                     }
