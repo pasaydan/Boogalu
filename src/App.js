@@ -48,9 +48,13 @@ function App() {
     rootPathToggle(event);
   }
 
+  function isObjectEmpty(obj) {
+    return (Object.keys(obj).length === 0 && obj.constructor === Object);
+  }
+
   return (
     <Router>
-      <div className={`App ${isRootPath && !state.loggedInUser && !state.loggedInUser.username ? 'top-padding0': ''}`}>
+      <div className={`App ${isRootPath && isObjectEmpty(state.loggedInUser) ? 'top-padding0': ''}`}>
         {
           isSplashVisible ?
             <SplashScreen />
