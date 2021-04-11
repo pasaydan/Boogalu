@@ -10,7 +10,10 @@ import Page404 from './Components/Page404';
 import Profile from "./Components/Profile/Profile";
 import Homepage from "./Components/Homepage";
 import Upcoming from "./Components/Upcoming";
+import AboutUs from './Components/Aboutus';
 import ContactUs from "./Components/Contactus";
+import Pricing from './Components/Pricing';
+import PrivacyPolicy from './Components/PrivacyPolicy';
 import Navigation from "./Components/Navigation/index";
 import Competition from "./Components/Admin/Competition"
 import EditProfile from "./Components/EditProfile/EditProfile";
@@ -21,6 +24,8 @@ import Notification from "./Components/Notification";
 import Subscriptions from "./Components/Subscriptions";
 import VideoUploader from "./Components/VideoUploader";
 import { useStoreConsumer } from './Providers/StateProvider';
+import TermsConditions from './Components/TermsConditions';
+import RefundPolicy from './Components/RefundPolicy';
 
 function App() {
   const { state } = useStoreConsumer();
@@ -67,8 +72,23 @@ function App() {
               <Notification />
               {state?.isLoading && <Loader />}
               <Switch>
+                <Route exact path="/aboutus">
+                  <AboutUs />
+                </Route>
                 <Route exact path="/contactus">
                   <ContactUs />
+                </Route>
+                <Route exact path="/pricing">
+                  <Pricing />
+                </Route>
+                <Route exact path="/privacypolicy">
+                  <PrivacyPolicy />
+                </Route>
+                <Route exact path="/termsandconditions">
+                  <TermsConditions />
+                </Route>
+                <Route exact path="/refundpolicy">
+                  <RefundPolicy />
                 </Route>
                 <Route exact path="/login:plan">
                   <Login />

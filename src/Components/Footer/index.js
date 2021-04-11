@@ -73,11 +73,24 @@ function Footer() {
                 </div>
                 <div className="footer-menus flex-1">
                     <ul className="menu-lists js-page-links flex-1">
-                        <li data-name="career">Careers</li>
+                        <li data-name="aboutus">
+                            <a onClick={(e) => navigatePageLinks(e, 'aboutus')}>About us</a>
+                        </li>
                         <li data-name="contactus">
                             <a onClick={(e) => navigatePageLinks(e, 'contactus')}>Contact us</a>
                         </li>
-                        <li data-name="terms">Terms</li>
+                        <li data-name="pricing">
+                            <a onClick={(e) => navigatePageLinks(e, 'pricing')}>Pricing</a>
+                        </li>
+                        <li data-name="privacypolicy">
+                            <a onClick={(e) => navigatePageLinks(e, 'privacypolicy')}>Privacy Policy</a>
+                        </li>
+                        <li data-name="terms">
+                            <a onClick={(e) => navigatePageLinks(e, 'termsandconditions')}>Terms &amp; Conditions</a>
+                        </li>
+                        <li data-name="refundpolicy">
+                            <a onClick={(e) => navigatePageLinks(e, 'refundpolicy')}>Cancellation/Refund Policy</a>
+                        </li>
                     </ul>
                     <ul className="menu-lists menu-lists-2 flex-1">
                         <li>

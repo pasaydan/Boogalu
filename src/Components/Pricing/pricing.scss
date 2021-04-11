@@ -1,0 +1,68 @@
+.pricing-page {
+    .container {
+        padding: 40px;
+        h1 {
+            margin: 0 0 20px 0;
+            text-align: center;
+        }
+        .pricingWrap {
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            .pricingBox {
+                width: 300px;
+                padding: 20px;
+                background: var(--footer-background-grey);
+                border-radius: 20px;
+                color: var(--primary-white);
+                transition: all 0.3s ease-in-out;
+                box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+                &:hover {
+                    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+                }
+                h3 {
+                    font-size: 26px;
+                    line-height: 30px;
+                    margin: 0 0 5px 0;
+                    font-weight: 500;
+                    letter-spacing: 1.5px;
+                    text-align: center;
+                }
+                .user {
+                    margin: 0;
+                    font-size: 20px;
+                    line-height: 26px;
+                    text-align: center;
+                    strong {
+                        font-weight: 500;
+                    }
+                }
+                .featuresBox {
+                    margin: 15px 0 30px;
+                    padding: 15px 0 0 0;
+                    border-top: 1px solid var(--footer-text-grey);
+                    p {
+                        margin: 15px 0 0 0;
+                        position: relative;
+                        padding-left: 20px;
+                        &:before {
+                            content:'\2713';
+                            position: absolute;
+                            left: 0;
+                            top: 1px;
+                            // transform: translateY(-50%);
+                            color:var(--success-green);
+                            padding: 0 6px 0 0;
+                        }
+                        &:first-child {
+                            margin-top: 0;
+                        }
+                        strong {
+                            font-weight: 500;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
