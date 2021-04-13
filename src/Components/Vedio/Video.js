@@ -1,15 +1,24 @@
-import React, { useEffect } from 'react'
+import React from 'react';
+import ReactPlayer from 'react-player';
 
 const Video = ({ vdoObj }) => {
-    const vdoUrl = vdoObj.url + '?wmode=opaque&amp;autoplay=0&amp;theme=dark&amp;controls=0&amp;autohide=0&amp;loop=0&amp;showinfo=0&amp;rel=0&amp;playlist=false&amp;enablejsapi=0';
-    useEffect(() => {
-    }, [])
-
+    const vdoUrl = vdoObj.url;
     return (
         <div className="vdo-outer">
             <div className="vdo-wrap">
-                <iframe className="iframe" src={vdoUrl} scrolling="no" title="Vimeo embed" frameBorder="0" allowFullScreen={true}>
-                </iframe>
+                <ReactPlayer
+                    className='react-player' 
+                    url={vdoUrl}
+                    controls={true}
+                    style={{
+                        'position': 'relative',
+                        'min-width': '100%',
+                        'min-height': '100%',
+                        'background': 'var(--ternary-dark-grey)',
+                        'border-radius': '5px',
+                        'margin': '0 auto'
+                    }}
+                />
             </div>
         </div>
     )
