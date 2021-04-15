@@ -56,7 +56,7 @@ function App() {
   function isObjectEmpty(obj) {
     return (Object.keys(obj).length === 0 && obj.constructor === Object);
   }
-
+  console.log('process.env >>>>>>> ', process.env)
   return (
     <Router>
       <div className={`App ${isRootPath && isObjectEmpty(state.loggedInUser) ? 'top-padding0': ''}`}>

@@ -6,10 +6,14 @@ const nodemailer = require('nodemailer');
 const cors = require('cors')({
     origin: true,
 });
+let razorpayconfig = require('./env.json');
+const Razorpay = require('razorpay');
 
 admin.initializeApp(functions.config().firebase);
 var db = admin.firestore();
-
+if (Object.keys(functions.config()).length) {
+    razorpayconfig = functions.config().razorpayservice;
+}
 // paytm payment 
 exports.payment = functions.https.onRequest((request, response) => {
     return cors(request, response, () => {
@@ -100,6 +104,22 @@ exports.paymentCallback = functions.https.onRequest((request, response) => {
             response.send("<script>window.location = '" + paytm_config.PaymentFailureURL + "?status=fail'</script>");
             return
         }
+    });
+});
+// post order to razorpay
+exports.postOrder = functions.https.onRequest((request, response) => {
+    return cors(request, response, () => {
+        var instance = new Razorpay({ key_id: razorpayconfig.razorpayservice.RAZORPAY_KEY, key_secret: razorpayconfig.razorpayservice.RAZORPAY_SECRET })
+        var options = request.body;
+        instance.orders.create(options, function(err, order) {
+            if (err) {
+                response.send(err)
+                console.error('err >>>>>', err);
+            } else {
+                response.send(order)
+                console.log("order", order);
+            }
+        });
     });
 });
 
