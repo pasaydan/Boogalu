@@ -25,6 +25,7 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
     const subscriptionDetails = state.activeSubscription;
     const [subsciptionValidity, setsubsciptionValidity] = useState(null);
     const [subscription, setSubscription] = useState(null);
+    const [buttonLoadingClass, toggleButtonLoading] = useState('');
     const competitionDetails = state.activeCompetition;
     const RAZORPAY_TEST_KEY = process.env.REACT_APP_RAZORPAY_KEY;
     useEffect(() => {
@@ -86,10 +87,12 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
         });
     }
     const proceedForPayment = async () => {
+        toggleButtonLoading('loading');
         const res = await loadScript(
             "https://checkout.razorpay.com/v1/checkout.js"
         );
         if (!res) {
+            toggleButtonLoading('');
             alert("Razorpay SDK failed to load. Are you online?");
             return;
         }
@@ -115,6 +118,7 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
                     order_id: order_id,
                     handler: function (response){
                         console.log("on payment success >>>>>>>>", response)
+                        toggleButtonLoading('');
                     },
                     prefill: {
                         name: loggedInUser.name,
@@ -127,6 +131,7 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
                     modal: {
                         ondismiss: function(e) {
                             console.log("Checkout form closed!")
+                            toggleButtonLoading('');
                         }
                     }
                 };
@@ -134,11 +139,15 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
 
                 const razorpay = new window.Razorpay(subscriptionData);
                 razorpay.on('payment.failed', function (response){
+                    toggleButtonLoading('');
                     console.log(" on payment failure >>>>>> ", response);
                 });
+                toggleButtonLoading('');
                 razorpay.open();
             });
+        
         if (!subscriptionData) {
+            toggleButtonLoading('');
             alert("Server error. Are you online?");
             return;
         }
@@ -265,7 +274,7 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
                             </div>
                             {alreadySubscribed ? 
                                 <Button variant="contained" color="secondary" onClick={(e) => proceedForCompetition()}>Continue</Button> : 
-                                <Button variant="contained" color="secondary" onClick={(e) => proceedForPayment(e)}>Subscribe</Button>
+                                <Button variant="contained" color="secondary" className={buttonLoadingClass} onClick={(e) => proceedForPayment(e)}>Subscribe</Button>
                                 // <a href="#" onClick={(e) => proceedForPayment(e)}> Subscribe </a>
                             }
                         </div>}
