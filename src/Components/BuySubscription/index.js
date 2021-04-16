@@ -72,6 +72,7 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
     }
 
     const proceedForPayment = () => {
+        toggleButtonLoading('loading');
         const userData = {
             "amount": subscriptionDetails.amount * 100,
             "currency": "INR",
@@ -83,6 +84,7 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
                 const responseData = response.data;
                 setSubscription(responseData);
                 console.log('postOrder response >>>>>', response);
+                toggleButtonLoading('');
             });
     }
 
