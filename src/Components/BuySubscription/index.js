@@ -1,6 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
-// import $ from 'jquery'
-import { Base64 } from 'js-base64';
+import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { useHistory } from "react-router-dom";
@@ -73,172 +71,22 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
         } else history.push('/competition');
     }
 
-    function loadScript(src) {
-        return new Promise((resolve) => {
-            const script = document.createElement("script");
-            script.src = src;
-            script.onload = () => {
-                resolve(true);
-            };
-            script.onerror = () => {
-                resolve(false);
-            };
-            document.body.appendChild(script);
-        });
-    }
-    const proceedForPayment = async () => {
+    const proceedForPayment = () => {
         toggleButtonLoading('loading');
-        const res = await loadScript(
-            "https://checkout.razorpay.com/v1/checkout.js"
-        );
-        if (!res) {
-            toggleButtonLoading('');
-            alert("Razorpay SDK failed to load. Are you online?");
-            return;
-        }
-        let subscriptionData = {};
         const userData = {
             "amount": subscriptionDetails.amount * 100,
             "currency": "INR",
-            "receipt": loggedInUser.key
+            "receipt": loggedInUser.uId
         };
-        await postOrder(userData)
+        let subscriptionData = {};
+        postOrder(userData, loggedInUser)
             .subscribe((response) => {
-                subscriptionData = response;
-
-
-                const { amount, id: order_id, currency } = subscriptionData.data;
-                subscriptionData = {
-                    key: RAZORPAY_TEST_KEY,
-                    amount: amount.toString(),
-                    currency: currency,
-                    name: loggedInUser.name,
-                    description: "Monthly Subscription",
-                    image: boogaluLogo,
-                    order_id: order_id,
-                    handler: function (response){
-                        console.log("on payment success >>>>>>>>", response)
-                        toggleButtonLoading('');
-                    },
-                    prefill: {
-                        name: loggedInUser.name,
-                        email: loggedInUser.email,
-                        contact: loggedInUser.phone
-                    },
-                    theme: {
-                        color: "#191313"
-                    },
-                    modal: {
-                        ondismiss: function(e) {
-                            console.log("Checkout form closed!")
-                            toggleButtonLoading('');
-                        }
-                    }
-                };
-
-
-                const razorpay = new window.Razorpay(subscriptionData);
-                razorpay.on('payment.failed', function (response){
-                    toggleButtonLoading('');
-                    console.log(" on payment failure >>>>>> ", response);
-                });
+                const responseData = response.data;
+                setSubscription(responseData);
+                console.log('postOrder response >>>>>', response);
                 toggleButtonLoading('');
-                razorpay.open();
             });
-        
-        if (!subscriptionData) {
-            toggleButtonLoading('');
-            alert("Server error. Are you online?");
-            return;
-        }
-
-        // const { amount, id: order_id, currency } = result.data;
-        // let subscriptionData = {};
-        // postOrder(userData)
-        //     .subscribe((response) => {
-        //         const responseData = response.data;
-        //         setSubscription(responseData);
-        //         console.log('postOrder response >>>>>', response);
-        //         subscriptionData = {
-        //             key: RAZORPAY_TEST_KEY,
-        //             amount: responseData.amount,
-        //             currency: responseData.currency,
-        //             name: loggedInUser.name,
-        //             description: "Monthly Subscription",
-        //             image: boogaluLogo,
-        //             order_id: responseData.id,
-        //             handler: function (response){
-        //                 console.log("on payment success >>>>>>>>", response)
-        //             },
-        //             prefill: {
-        //                 name: loggedInUser.name,
-        //                 email: loggedInUser.email,
-        //                 contact: loggedInUser.phone
-        //             },
-        //             theme: {
-        //                 color: "#191313"
-        //             },
-        //             modal: {
-        //                 ondismiss: function(e) {
-        //                     console.log("Checkout form closed!")
-        //                 }
-        //             }
-        //         };
-
-
-        //         const razorpay = new window.Razorpay(subscriptionData);
-        //         razorpay.on('payment.failed', function (response){
-        //             console.log(" on payment failure >>>>>> ", response);
-        //         });
-        //         razorpay.open();
-        //     });
     }
-    // const proceedForPayment = () => {
-    //     const userData = {
-    //         "amount": subscriptionDetails.amount * 100,
-    //         "currency": "INR",
-    //         "receipt": loggedInUser.uId
-    //     };
-    //     let subscriptionData = {};
-    //     postOrder(userData)
-    //         .subscribe((response) => {
-    //             const responseData = response.data;
-    //             setSubscription(responseData);
-    //             console.log('postOrder response >>>>>', response);
-    //             subscriptionData = {
-    //                 key: RAZORPAY_TEST_KEY,
-    //                 amount: responseData.amount,
-    //                 currency: responseData.currency,
-    //                 name: loggedInUser.name,
-    //                 description: "Monthly Subscription",
-    //                 image: boogaluLogo,
-    //                 order_id: responseData.id,
-    //                 handler: function (response){
-    //                     console.log("on payment success >>>>>>>>", response)
-    //                 },
-    //                 prefill: {
-    //                     name: loggedInUser.name,
-    //                     email: loggedInUser.email,
-    //                     contact: loggedInUser.phone
-    //                 },
-    //                 theme: {
-    //                     color: "#191313"
-    //                 },
-    //                 modal: {
-    //                     ondismiss: function(e) {
-    //                         console.log("Checkout form closed!")
-    //                     }
-    //                 }
-    //             };
-
-
-    //             const razorpay = new window.Razorpay(subscriptionData);
-    //             razorpay.on('payment.failed', function (response){
-    //                 console.log(" on payment failure >>>>>> ", response);
-    //             });
-    //             razorpay.open();
-    //         });
-    // }
 
     return (
         <div className="subscription-modal-wrap">
@@ -253,6 +101,7 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
                 BackdropProps={{
                     timeout: 500,
                 }}
+                disableEnforceFocus
             >
                 <Fade in={openDetailsModal}>
                     <div className="subscription-inner-modal">

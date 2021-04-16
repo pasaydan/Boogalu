@@ -6,11 +6,13 @@ const nodemailer = require('nodemailer');
 const cors = require('cors')({
     origin: true,
 });
-let razorpayconfig = require('./env.json');
+let razorpayconfig = require('./test.json');
+razorpayconfig = razorpayconfig.razorpayservice;
 const Razorpay = require('razorpay');
 
 admin.initializeApp(functions.config().firebase);
 var db = admin.firestore();
+
 if (Object.keys(functions.config()).length) {
     razorpayconfig = functions.config().razorpayservice;
 }
@@ -109,7 +111,7 @@ exports.paymentCallback = functions.https.onRequest((request, response) => {
 // post order to razorpay
 exports.postOrder = functions.https.onRequest((request, response) => {
     return cors(request, response, () => {
-        var instance = new Razorpay({ key_id: razorpayconfig.razorpayservice.RAZORPAY_KEY, key_secret: razorpayconfig.razorpayservice.RAZORPAY_SECRET })
+        var instance = new Razorpay({ key_id: razorpayconfig.key, key_secret: razorpayconfig.secret })
         var options = request.body;
         instance.orders.create(options, function(err, order) {
             if (err) {
