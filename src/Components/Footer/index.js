@@ -73,9 +73,9 @@ function Footer() {
                 </div>
                 <div className="footer-menus flex-1">
                     <ul className="menu-lists js-page-links flex-1">
-                        <li data-name="admin">
+                        {/* <li data-name="admin">
                             <a href="/adminpanel" title="Admin panel">Admin panel</a>
-                        </li>
+                        </li> */}
                         <li data-name="aboutus">
                             <a onClick={(e) => navigatePageLinks(e, 'aboutus')} title="about us">About us</a>
                         </li>
