@@ -23,6 +23,7 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
     const subscriptionDetails = state.activeSubscription;
     const [subsciptionValidity, setsubsciptionValidity] = useState(null);
     const [subscription, setSubscription] = useState(null);
+    const [buttonLoadingClass, toggleButtonLoading] = useState('');
     const competitionDetails = state.activeCompetition;
     const RAZORPAY_TEST_KEY = process.env.REACT_APP_RAZORPAY_KEY;
     useEffect(() => {
@@ -120,7 +121,8 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
                             </div>
                             {alreadySubscribed ? 
                                 <Button variant="contained" color="secondary" onClick={(e) => proceedForCompetition()}>Continue</Button> : 
-                                <Button variant="contained" color="secondary" onClick={(e) => proceedForPayment(e)}>Subscribe</Button>
+                                <Button variant="contained" color="secondary" className={buttonLoadingClass} onClick={(e) => proceedForPayment(e)}>Subscribe</Button>
+                                // <a href="#" onClick={(e) => proceedForPayment(e)}> Subscribe </a>
                             }
                         </div>}
                         {activeStep == 2 && <div>

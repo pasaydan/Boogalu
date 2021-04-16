@@ -98,6 +98,16 @@
     position: relative;
     z-index: 4;
     color: var(--primary-white);
+    background: url('../../Images/hiphop-CC-image.JPG') center top/500%;
+    &.noFirstImageLoad {
+        background-size: 100%;
+    }
+    &.firstTimeLoaded {
+        transition: all 3s ease-in-out;
+        &.show {
+            background-size: 100%;
+        }
+    }
     .main-bg-message {
         position: relative;
         top: 0;
@@ -106,12 +116,20 @@
         padding-top: 60px;
         min-height: 100vh;
         background: rgba(0, 0, 0, 0.5);
-        opacity: 0;
-        transition: all 0.8s ease-in-out;
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
         flex-direction: column;
+        opacity: 0;
+        transition: all 0.8s ease-in-out;
+        &.noFirstMessageLoad {
+            opacity: 1;
+        }
+        &.firstMessageLoaded {
+            &.show {
+                opacity: 1;
+            }
+        }
         h4, h5 {
             font-size: 28px;
             line-height: 28px;
@@ -119,67 +137,76 @@
             font-weight: 500;
             text-align: center;
             position: relative;
-            opacity: 0;
             font-family: 'Courgette', cursive;
-            transition: all 2s ease-in-out;
             .color-text-red {
                 color: var(--warning-yellow-opaque);
             }
             .color-text-purple {
                 color: var(--success-green-opaque);
             }
+            &.firstHeadingLoaded {
+                opacity: 0;
+                transition: all 2s ease-in-out;
+            }
         }
         h4 {
             margin-top: 20px;
-            left: 50px;
-            &.animate {
-                opacity: 1;
-                left: 0;
+            &.firstHeadingLoaded {
+                left: 50px;
+                &.animate {
+                    opacity: 1;
+                    left: 0;
+                }
             }
         }
         h5 {
-            right: 50px;
-            &.animate {
-                opacity: 1;
-                right: 0;
+            &.firstHeadingLoaded {
+                right: 50px;
+                &.animate {
+                    opacity: 1;
+                    right: 0;
+                }
             }
         }
         button.get_started {
             margin: 10px auto;
             width: 150px;
             display: block;
-            opacity: 0;
-            transition: all 0.8s ease-in-out;
-            &.animate {
-                opacity: 1;
+            &.firstButtonLoaded {
+                transition: all 0.8s ease-in-out;
+                opacity: 0;
+                &.animate {
+                    opacity: 1;
+                }
             }
         }
-        &.show {
-            opacity: 1;
-        }
-
     }
     .main-background-image {
         position: absolute;
         top: 0;
         left: 0;
-        transition: all 4s ease-in-out;
-        opacity: 0;
-        transform: scale(2.5);
         width: 100%;
         height: 100%;
         background: url('../../Images/hiphop-CC-image.JPG') center top/contain;
-        &.show {
-            opacity: 1;
-            transform: scale(1);
+        transition: all 4s ease-in-out;
+        transform: scale(1);
+        &.firstTimeLoaded {
+            opacity: 0;
+            transform: scale(2.5);
+            &.show {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
     }
     .video-main-wrap {
         justify-content: center;
-        transition: all 0.8s ease-in-out;
-        opacity: 0;
-        &.animate {
-            opacity: 1;
+        &.firstVideoLoaded {
+            opacity: 0;
+            transition: all 0.8s ease-in-out;
+            &.animate {
+                opacity: 1;
+            }
         }
     }
     &.no-video {

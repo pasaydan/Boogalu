@@ -30,6 +30,11 @@
   --info-blue-opaque: rgb(0, 184, 255, 0.8);
   --warning-yellow-dark: #634a05;
   --warning-yellow-opaque: rgb(255, 188, 0, 0.95);
+  --light-pink-bg: #f50057;
+  --dark-pink-hover-bg: #c51162;
+  --dark-pink-bg: #962049;
+  --mui-button-hover: #303f9f;
+  --mui-button-loader: #17247c;
 }
 
 .clearfix::after {
@@ -234,17 +239,134 @@ button:focus {
   cursor: pointer;
   text-transform: uppercase;
   font-weight: 600;
+  position: relative;
   filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
+  &:before, &:after {
+    position: absolute;
+    content: '';
+    opacity: 0;
+    z-index: -1;
+    transition: all 0.3s ease-out;    
+  }
+  &:before {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    animation: spin 1s ease-in-out infinite;
+    -webkit-animation: spin 1s ease-in-out infinite;
+  }
+  &:after {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
+  }
+  &.loading {
+    pointer-events: none;
+    &:before, &:after {
+      opacity: 1;
+      z-index: 1;
+    }
+    &:before {
+      z-index: 2;
+    }
+  }
+}
+
+.MuiButton-containedSecondary, .MuiButton-containedPrimary {
+  position: relative;
+  &:before, &:after {
+    position: absolute;
+    content: '';
+    opacity: 0;
+    z-index: -1;
+    transition: all 0.3s ease-out;    
+  }
+  &:before {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    animation: spin 1s ease-in-out infinite;
+    -webkit-animation: spin 1s ease-in-out infinite;
+  }
+  &:after {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
+  }
+  &.loading {
+    pointer-events: none;
+    &:before, &:after {
+      opacity: 1;
+      z-index: 1;
+    }
+    &:before {
+      z-index: 2;
+    }
+  }
+}
+
+.MuiButton-containedPrimary {
+  &:after {
+    background: var(--mui-button-hover);
+  }
+  &:before {
+    border: 3px solid var(--mui-button-loader);
+    border-top-color: var(--primary-white);
+  }
+}
+
+.MuiButton-containedSecondary {
+  &:after {
+    background: var(--dark-pink-hover-bg);
+  }
+  &:before {
+    border: 3px solid var(--dark-pink-bg);
+    border-top-color: var(--primary-white);
+  }
 }
 
 .btn.primary-light {
   background-image: linear-gradient(180deg, var(--btn-primary-light-bg), var(--btn-primary-light-bg));
   color: var(--btn-primary-dark-bg);
+  &:after {
+    background-image: linear-gradient(180deg, var(--btn-primary-light-bg), var(--btn-primary-light-bg));
+  }
+  &:before {
+    border: 3px solid var(--footer-list-text-grey);
+    border-top-color: var(--primary-white);
+  }
 }
 
 .btn.primary-dark {
   background-color: var(--btn-primary-dark-bg);
   color: var(--primary-white);
+  &:after {
+    background: var(--btn-primary-dark-bg);
+  }
+  &:before {
+    border: 3px solid var(--footer-list-text-grey);
+    border-top-color: var(--primary-white);
+  }
+}
+
+@keyframes spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@-webkit-keyframes spin {
+  to { -webkit-transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 .rounded-dark-box {
@@ -363,6 +485,23 @@ button:focus {
 @media screen and (max-width: 1023px) {
   .App {
     padding-top: 58px;
+  }
+  .privacy-policy-page, .terms-page {
+    padding: 20px 10px !important;
+    .container {
+      padding: 0 !important;
+      h1 {
+        font-size: 22px !important;
+        line-height: 30px !important;
+        margin-bottom: 15px !important;
+      }
+    }
+  }
+  .btn, .MuiButton-containedPrimary, .MuiButton-containedSecondary {
+    &:before {
+      width: 20px;
+      height: 20px;
+    }
   }
 }
 

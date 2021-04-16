@@ -30,7 +30,8 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
     const [activeRoute, setActiveRoute] = useState('');
     const [isNavHidden, toggleNavHidden] = useState(false);
     const [animateNavClass, toggleNavAnimation] = useState('animate');
-
+    
+    const isAppAlreadyLoaded = JSON.parse(localStorage.getItem('isAppLoaded'));
     useOnClickOutside(ref, () => setShowProfileTab(false));
 
     useEffect(() => {
@@ -73,9 +74,15 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
         if (pathName === '') {
             togglHomeRouteValue(true);
             toggleNavAnimation('');
-            setTimeout(() => {
-                toggleNavAnimation('animate');
-            }, 7000);
+            if (isAppAlreadyLoaded) {
+                setTimeout(() => {
+                    toggleNavAnimation('animate');
+                }, 1000);
+            } else {
+                setTimeout(() => {
+                    toggleNavAnimation('animate');
+                }, 7000);
+            }
         } else {
             togglHomeRouteValue(false);
             routeChangeTrigger(false);
