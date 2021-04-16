@@ -18,6 +18,7 @@ export default function Homepage() {
     const [firstImageLoaded, toggleFirstImageLoad] = useState('');
     const [loadMessageBox, toggleMessageClass] = useState('');
     const [firstMessageLoaded, toggleFirstMessageLoad] = useState('');
+    const [defaultFirstMessageLoaded, toggleDefaultMessageLoad] = useState('');
     const [headingAnimateClass1, toggleHeadingClass] = useState('');
     const [headingAnimateClass2, toggleHeadingClassNew] = useState('');
     const [firstHeadingLoaded, toggleFirstHeadingLoad] = useState('');
@@ -32,6 +33,7 @@ export default function Homepage() {
         });
         if (isAppAlreadyLoaded) {
             toggleFirstImageLoad('noFirstImageLoad');
+            toggleDefaultMessageLoad('noFirstMessageLoad')
             toggleFirstMessageLoad('');
             toggleFirstHeadingLoad('');
             toggleFirstStartButtonLoad('');
@@ -120,7 +122,7 @@ export default function Homepage() {
                     </div>
                 </div> */}
                 {/* <div className={`main-background-image ${firstImageLoaded} ${loadImageClass}`}></div> */}
-                <div className={`main-bg-message ${firstMessageLoaded} ${loadMessageBox}`}>
+                <div className={`main-bg-message ${defaultFirstMessageLoaded} ${firstMessageLoaded} ${loadMessageBox}`}>
                     <h4 className={`${firstHeadingLoaded} ${headingAnimateClass1}`}>
                         The world’s best <span className="color-text-red">Dance</span> learning tools,
                     </h4>

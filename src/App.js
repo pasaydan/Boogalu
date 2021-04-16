@@ -46,7 +46,7 @@ function App() {
 
     setTimeout(() => {
       toggleTransition('visible-transition');
-    }, 5500);
+    }, 5100);
   }, []);
 
   function routeChanged(event) {
