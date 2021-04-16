@@ -380,8 +380,13 @@ button:focus {
 /* Main app custom style */
 .App {
   padding-top: 73px;
-  &.top-padding0 {
+  &.top-padding0, &.adminPanel {
     padding-top: 0;
+  }
+  &.adminPanel {
+    footer {
+      display: none;
+    }
   }
 }
 
