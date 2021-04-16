@@ -6,6 +6,14 @@
       "**/.*",
       "**/node_modules/**"
     ],
+    "rewrites": [{
+      "source": "/public/**",
+      "destination": "/public.html"
+    },
+    {
+      "source": "**",
+      "destination": "/index.html"
+    }],
     "headers": [ {
       "source": "**/*.@(eot|otf|ttf|ttc|woff|font.css)",
       "headers": [ {
