@@ -16,7 +16,7 @@ export default function AdminPanel() {
                 <p className="subHeading">Here you can create Championships, Subscriptions or Lessons for our users</p>
 
                 <div className="optionsWrap">
-                    <Link to="/admin/competition" title="create championship" className="panelLink">
+                    <Link to="/adminpanel/competition" title="create championship" className="panelLink">
                         <span className="iconsWrap championIconWrap">
                             <img src={championIcon} alt="championship" />
                         </span>
@@ -24,7 +24,7 @@ export default function AdminPanel() {
                             Create Championship
                         </span>
                     </Link>
-                    <Link to="/admin/lessons" title="upload new lessons" className="panelLink">
+                    <Link to="/adminpanel/lessons" title="upload new lessons" className="panelLink">
                         <span className="iconsWrap lessonsIconWrap">
                             <img src={lessonsIcon} alt="lessons" />
                         </span>
@@ -32,7 +32,7 @@ export default function AdminPanel() {
                             Upload Lessons
                         </span>
                     </Link>
-                    <Link to="/admin/subscription" title="create subscription" className="panelLink">
+                    <Link to="/adminpanel/subscription" title="create subscription" className="panelLink">
                         <span className="iconsWrap subscribeIconWrap">
                             <img src={subscribeIcon} alt="subscription" />
                         </span>

@@ -44,7 +44,7 @@ function App() {
         rootPathToggle(false);
       }
 
-      if (pathName.includes('admin')) {
+      if (pathName.includes('adminpanel')) {
         setAdminPathClass('adminPanel');
       }
 
@@ -138,13 +138,13 @@ function App() {
                 </Route>
 
                 {/* admin routes */}
-                <Route exact path="/admin">
+                <Route exact path="/adminpanel">
                   <AdminPanel />
                 </Route>
-                <Route exact path="/admin/competition">
+                <Route exact path="/adminpanel/competition">
                   <Competition />
                 </Route>
-                <Route exact path="/admin/subscription">
+                <Route exact path="/adminpanel/subscription">
                   <Subscription />
                 </Route>
 

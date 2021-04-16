@@ -91,7 +91,7 @@ export default function Competition() {
                 {
                     isAdminLoggedIn ?
                         <h1>
-                            <Link to="/admin" title="back to admin" className="backToAdmin">
+                            <Link to="/adminpanel" title="back to admin" className="backToAdmin">
                                 <span>
                                     &#8592;
                                 </span>
@@ -100,7 +100,7 @@ export default function Competition() {
                         </h1>
                     : 
                         <h1>
-                            <Link to="/admin" title="back to admin" className="backToAdmin">
+                            <Link to="/adminpanel" title="back to admin" className="backToAdmin">
                                 <span>
                                     &#8592;
                                 </span>
