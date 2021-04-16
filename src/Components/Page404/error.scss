@@ -2,7 +2,7 @@
 
 .error-page {
     position: relative;
-    height: 50vh;
+    height: 100vh;
     .error-board {
         position: absolute;
         top: 50%;
@@ -28,13 +28,14 @@
     h3 {
         color: var(--primary-white);
         position: absolute;
-        bottom: 20px;
+        bottom: 20%;
         width: 100%;
         text-align: center;
         font-weight: normal;
         padding: 0 30px;
         box-sizing: border-box;
         a {
+            cursor: pointer;
             color: var(--primary-link-color-blue);
         }
     }
@@ -43,7 +44,6 @@
 @media screen and (max-width: 767px) {
     .error-page {
         h3 {
-            bottom: 0;
             padding: 0;
             a {
                 display: block;

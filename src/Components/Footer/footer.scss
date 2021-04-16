@@ -18,8 +18,12 @@ footer {
             text-transform: uppercase;
             transition: all 0.3s ease-in-out;
             cursor: pointer;
-            &:hover, &.active {
-                color: var(--primary-white);
+            a {
+                color: var(--footer-list-text-grey);
+                text-decoration: none;
+                &:hover, &.active {
+                    color: var(--primary-white);
+                }
             }
         }
         &.menu-lists-2 {

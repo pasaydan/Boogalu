@@ -1,6 +1,7 @@
 .about-us-page {
+    padding: 40px;
     .container {
-        padding: 40px;
+        padding: 0;
         h1 {
             margin: 0 0 20px 0;
             text-align: center;
@@ -9,4 +10,10 @@
             margin: 20px 0 0 0;
         }
     }
+}
+
+@media screen and (max-width: 1023px) {
+    .about-us-page {
+        padding: 20px;
+    }    
 }
