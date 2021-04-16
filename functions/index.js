@@ -109,7 +109,7 @@ exports.paymentCallback = functions.https.onRequest((request, response) => {
 // post order to razorpay
 exports.postOrder = functions.https.onRequest((request, response) => {
     return cors(request, response, () => {
-        var instance = new Razorpay({ key_id: razorpayconfig.razorpayservice.RAZORPAY_KEY, key_secret: razorpayconfig.razorpayservice.RAZORPAY_SECRET })
+        var instance = new Razorpay({ key_id: 'rzp_test_I6E2xi7pm2VOPG', key_secret: '120I15dXhVxr68bXaYTzRMDT' })
         var options = request.body;
         instance.orders.create(options, function(err, order) {
             if (err) {
