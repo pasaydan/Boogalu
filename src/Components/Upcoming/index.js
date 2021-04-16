@@ -17,16 +17,16 @@ function Upcoming() {
                 </p>
                 <p className="launching-soon">More lessons launching soon! Stay connected!</p>
                 {/* <p className="from-our-expert-title">Few sample lessons</p> */}
-                <div className="lesson-wrap">
-                    <div className="lessons-vdo-wrap">
-                        {activeCategory?.videos.map((activeVideo, index) => {
-                            return <LessonsVideoContainer
-                                title={activeCategory?.title}
-                                desc={activeCategory?.desc} 
-                                activeVideosList={activeVideo} 
-                                key={index} />
-                        })}
-                    </div>
+            </div>
+            <div className="lesson-wrap">
+                <div className="lessons-vdo-wrap">
+                    {activeCategory?.videos.map((activeVideo, index) => {
+                        return <LessonsVideoContainer
+                        title={activeCategory?.title}
+                        desc={activeCategory?.desc} 
+                        activeVideosList={activeVideo} 
+                        key={index} />
+                    })}
                 </div>
             </div>
         </div>
