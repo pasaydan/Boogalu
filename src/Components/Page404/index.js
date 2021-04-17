@@ -12,7 +12,7 @@ export default function Page404() {
             </div>
             <h3>
                 You are looking for a wrong page!
-                &nbsp;<a onClick={() => history.goBack()} title="previous page">Take me to the Home</a>
+                &nbsp;<a onClick={() => history.goBack()} title="previous page">Let's go back!</a>
             </h3>
         </div>
     )

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -9,10 +9,13 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import ImageUploader from 'react-images-upload';
 import Button from '@material-ui/core/Button';
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
+import logOutIcon from '../../Images/logout-icon.png';
 import { saveCompetition } from "../../Services/Competition.service";
 import { uploadImage } from "../../Services/Upload.service";
-import { toBase64 } from "../../Services/Utils";
 import { Link } from 'react-router-dom';
+import { ADMIN_USER, ADMIN_PWD } from '../../Constants';
+
+const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
 
 export default function Competition() {
     const initialCompetitionData = {
@@ -33,6 +36,12 @@ export default function Competition() {
     const [adminPwd, setAdminPwd] = useState('');
     const [loggedInMessages, setLoginMessage] = useState('');
 
+    useEffect(() => {
+        if (checkAdminLogIn) {
+          toggleAdminLogin(checkAdminLogIn);
+        }  
+    }, []);
+
     function handleAdminLogin(value, type) {
         if (type === 'email') {
             setAdminEmail(value?.target?.value);
@@ -41,13 +50,23 @@ export default function Competition() {
         }
     }
 
-    function triggerLogin(event) {
-        if (adminEmail && adminEmail === 'b2b@boxpuppet.com' && adminPwd && adminPwd === 'Box-puppet@1001') {
+    function triggerLogin(event, action) {
+        if (action && (adminEmail && adminEmail === ADMIN_USER && adminPwd && adminPwd === ADMIN_PWD)) {
+            setLoginMessage('');
             toggleAdminLogin(true);
+            localStorage.setItem('adminLoggedIn', true);
         } else {
             toggleAdminLogin(false);
+            localStorage.setItem('adminLoggedIn', false);
             setLoginMessage('Invalid credentials, please enter valid email-Id and Password!');
         }
+    }
+
+    function tiggerAdminLogout(event, action) {
+        setAdminEmail('');
+        setAdminPwd('');
+        toggleAdminLogin(action);
+        localStorage.setItem('adminLoggedIn', action);
     }
 
     const handleChange = (prop, index) => (event) => {
@@ -87,9 +106,15 @@ export default function Competition() {
             <div className="logoWrap">
                 <img src={boogaluLogo} alt="Boogalu" />
             </div>
-            <div className={`competition-bo-wrap clearfix ${isAdminLoggedIn && 'loggedInAdmin'}`}>
+            <div className={`competition-bo-wrap clearfix ${(isAdminLoggedIn || checkAdminLogIn) && 'loggedInAdmin'}`}>
                 {
-                    isAdminLoggedIn ?
+                    isAdminLoggedIn || checkAdminLogIn ?
+                    <a className="logOutIconWrap" title="logout" onClick={(e) => tiggerAdminLogout(e, false)}>
+                        <img src={logOutIcon} alt="logout" />
+                    </a> : ''
+                }
+                {
+                    isAdminLoggedIn || checkAdminLogIn ?
                         <h1>
                             <Link to="/adminpanel" title="back to admin" className="backToAdmin">
                                 <span>
@@ -109,7 +134,7 @@ export default function Competition() {
                         </h1>
                 }
                 {
-                    isAdminLoggedIn ? 
+                    isAdminLoggedIn || checkAdminLogIn ? 
                     <div className="inner-form-wrap">
                         <div className="input-wrap">
                             <TextField className="input-field"
@@ -261,7 +286,7 @@ export default function Competition() {
                             />
                         </div>
                         <div className="input-wrap action-wrap">
-                            <Button variant="contained" color="secondary" onClick={(e) => triggerLogin(e)}>Login</Button>
+                            <Button variant="contained" color="secondary" onClick={(e) => triggerLogin(e, true)}>Login</Button>
                         </div>
                     </div>
                 }

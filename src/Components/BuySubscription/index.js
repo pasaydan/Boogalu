@@ -7,7 +7,6 @@ import { disableLoginFlow, enableLoginFlow } from "../../Actions/LoginFlow";
 import { saveCompetition } from "../../Services/EnrollCompetition.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { postOrder } from "./../../Services/Razorpay.service";
-import boogaluLogo from '../../Images/Boogalu-logo.svg';
 // modal imports
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';

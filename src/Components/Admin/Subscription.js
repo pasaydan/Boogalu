@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -6,12 +6,15 @@ import Checkbox from '@material-ui/core/Checkbox';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import ImageUploader from 'react-images-upload';
 import Button from '@material-ui/core/Button';
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
+import logOutIcon from '../../Images/logout-icon.png';
 import { uploadImage } from "../../Services/Upload.service";
 import { Link } from 'react-router-dom';
 import { saveSubscription } from "../../Services/Subscription.service";
+import { ADMIN_USER, ADMIN_PWD } from '../../Constants';
+
+const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
 
 export default function Subscription() {
     const initialSubscriptionData = {
@@ -31,6 +34,12 @@ export default function Subscription() {
     const [adminPwd, setAdminPwd] = useState('');
     const [loggedInMessages, setLoginMessage] = useState('');
 
+    useEffect(() => {
+      if (checkAdminLogIn) {
+        toggleAdminLogin(checkAdminLogIn);
+      }  
+    }, []);
+
     function handleAdminLogin(value, type) {
         if (type === 'email') {
             setAdminEmail(value?.target?.value);
@@ -39,13 +48,23 @@ export default function Subscription() {
         }
     }
 
-    function triggerLogin(event) {
-        if (adminEmail && adminEmail === 'b2b@boxpuppet.com' && adminPwd && adminPwd === 'Box-puppet@1001') {
+    function triggerLogin(event, action) {
+        if (action && (adminEmail && adminEmail === ADMIN_USER && adminPwd && adminPwd === ADMIN_PWD)) {
+            setLoginMessage('');
             toggleAdminLogin(true);
+            localStorage.setItem('adminLoggedIn', true);
         } else {
             toggleAdminLogin(false);
+            localStorage.setItem('adminLoggedIn', false);
             setLoginMessage('Invalid credentials, please enter valid email-Id and Password!');
         }
+    }
+
+    function tiggerAdminLogout(event, action) {
+        setAdminEmail('');
+        setAdminPwd('');
+        toggleAdminLogin(action);
+        localStorage.setItem('adminLoggedIn', action);
     }
 
     const handleChange = (prop, index) => (event) => {
@@ -57,10 +76,6 @@ export default function Subscription() {
         }
         setSubscription({ ...Subscription, [prop]: value });
     };
-
-    const onimageUpload = (picture) => {
-        setSubscription({ ...Subscription, img: picture });
-    }
 
     async function saveDetails(e) {
         console.log(Subscription)
@@ -90,9 +105,15 @@ export default function Subscription() {
             <div className="logoWrap">
                 <img src={boogaluLogo} alt="Boogalu" />
             </div>
-            <div className={`subscription-bo-wrap clearfix ${isAdminLoggedIn && 'loggedInAdmin'}`}>
+            <div className={`subscription-bo-wrap clearfix ${(isAdminLoggedIn || checkAdminLogIn) && 'loggedInAdmin'}`}>
                 {
-                    isAdminLoggedIn ?
+                    isAdminLoggedIn || checkAdminLogIn ?
+                    <a className="logOutIconWrap" title="logout" onClick={(e) => tiggerAdminLogout(e, false)}>
+                        <img src={logOutIcon} alt="logout" />
+                    </a> : ''
+                }
+                {
+                    isAdminLoggedIn || checkAdminLogIn ?
                         <h1>
                             <Link to="/adminpanel" title="back to admin" className="backToAdmin">
                                 <span>
@@ -112,7 +133,7 @@ export default function Subscription() {
                         </h1>
                 }
                 {
-                    isAdminLoggedIn ?
+                    isAdminLoggedIn || checkAdminLogIn ?
                     <div className="inner-form-wrap">
                         <div className="input-wrap">
                             <TextField className="input-field"
@@ -179,19 +200,6 @@ export default function Subscription() {
                                 }}
                             />
                         </div>
-                        {/* <div className="input-wrap">
-                            <ImageUploader
-                                withIcon={true}
-                                buttonText='Upload image'
-                                onChange={onimageUpload}
-                                imgExtension={['.jpg', '.gif', '.png', '.gif', '.svg']}
-                                maxFileSize={5242880}
-                                accept="image/*"
-                                withPreview={true}
-                                singleImage={true}
-                                label="Select subscription image"
-                            />
-                        </div> */}
                         <div className="input-wrap action-wrap">
                             <Button variant="contained" color="primary">Cancel</Button>
                             <Button variant="contained" color="secondary" onClick={(e) => saveDetails(e)}>Save</Button>
@@ -233,7 +241,7 @@ export default function Subscription() {
                             />
                         </div>
                         <div className="input-wrap action-wrap">
-                            <Button variant="contained" color="secondary" onClick={(e) => triggerLogin(e)}>Login</Button>
+                            <Button variant="contained" color="secondary" onClick={(e) => triggerLogin(e, true)}>Login</Button>
                         </div>
                     </div>
                 }
