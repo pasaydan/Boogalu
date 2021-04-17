@@ -110,9 +110,7 @@ exports.sendEmail = functions.https.onRequest((request, response) => {
 
 		async function sendMail() {
 			try {
-				console.log("inside try block >>>>>>>>>>> ");
 				const accessToken = await oAuth2Client.getAccessToken();
-				console.log('accessToken', accessToken)
 				const transport = nodemailer.createTransport({
 					service: 'gmail',
 					auth: {
@@ -135,13 +133,11 @@ exports.sendEmail = functions.https.onRequest((request, response) => {
 				const result = await transport.sendMail(mailOptions);
 				return result;
 			} catch (error) {
-				console.log("inside catch block >>>>>>>>>>> ");
 				return error;
 			}
 		}
 		sendMail()
 			.then((result) => {
-				console.log('results after email sent >>>>>', result)
 				response.send({
 					'status': 200,
 					'data': "Email sent succefully."
