@@ -35,28 +35,31 @@ exports.postOrder = functions.https.onRequest((request, response) => {
             }
         }
 
-        getPaymentByUserKey(options).then(() => {
-            if (paymentDetails && paymentDetails.id !== paymentDetails.razorpay_payment_id) {
-                console.log('then if')
-                response.send(paymentDetails)
+        getPaymentByUserKey(options)
+            .then(() => {
+                if (paymentDetails && paymentDetails.id !== paymentDetails.razorpay_payment_id) {
+                    response.send(paymentDetails)
+                    return paymentDetails;
+                } else {
+                    instance.orders.create(options, function(err, order) {
+                        if (err) {
+                            response.send(err)
+                            console.error('err >>>>>', err);
+                            return err;
+                        } else {
+                            const paymentRef = db.collection('payments');
+                            paymentRef
+                                .doc(order.receipt)
+                                .set(order);
+                            response.send(order)
+                            return order;
+                        }
+                    });
+                }
                 return;
-            } else {
-                console.log('then else')
-                instance.orders.create(options, function(err, order) {
-                    if (err) {
-                        response.send(err)
-                        console.error('err >>>>>', err);
-                    } else {
-                        const paymentRef = db.collection('payments');
-                        paymentRef
-                            .doc(order.receipt)
-                            .set(order);
-                        response.send(order)
-                        return;
-                    }
-                });
-            }
-        });
+            }).catch((err) => {
+                return err;
+            });
     });
 });
 
@@ -75,12 +78,30 @@ exports.updatePayment = functions.https.onRequest((request, response) => {
         return
     });
 });
-// email sending 
+
+const oAuthClientSecret = 's5Ig826BsWQ-rZgKgCJXSvLK';
+const oAuthClientId = '464245437134-1qccb55ud19aia82tdnv6rbi237g6lbc.apps.googleusercontent.com';
+const refreshToken = '1//04ZOcCUbJxxhJCgYIARAAGAQSNwF-L9Irgytn1oVM25nbKDYA-4PTsjocBIVtnWguQTPCApZ0M1d8iAhewPmYJFiKUiX8alX_n-g';
+const accessToken = 'ya29.a0AfH6SMBLHbXiegiILpPpJiwRBvSC2D9a5SGruXhFy_8s0MJm0mhMq4ms8div_nvakQeDsa2hoPHkFEYyyKLqYxqFv8kTZ_63XwWvfytZIEbHGpkKF5avZUJ_o2jjOrzKvZe4RKAcUtn5Hxu8Au2L5LjTLj-w';
 let transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
-        user: 'garudkardnyaneshwar@gmail.com',
-        pass: 'Pasaydan@4884'
+        type: 'OAuth2',
+        clientId: oAuthClientId,
+        clientSecret: oAuthClientSecret,
+        refreshToken: refreshToken,
+        accessToken: accessToken,
+    }
+});
+
+transporter.set('oauth2_provision_cb', (user, renew, callback) => {
+    let accessToken = userTokens[user];
+    if(!accessToken){
+        return callback(new Error('Unknown user'));
+    }else{
+        return callback(null, accessToken);
     }
 });
 
@@ -91,11 +112,15 @@ exports.sendEmail = functions.https.onRequest((request, response) => {
         var subject = request.body.title;
         var html = request.body.content;
         var mailOptions = {
-            from: '"Boogalu" <garudkardnyaneshwar@gmail.com>',
+            from: '"Boogalu" <boogalu.email.test@gmail.com>',
             to: to,
             subject: subject,
-            html: html
+            html: html,
+            auth: {
+                user: 'boogalu.email.test@gmail.com'
+            }
         }
+        
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.log("Email sending failed", error)
