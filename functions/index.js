@@ -3,10 +3,8 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
+const { google } = require('googleapis');
 const EMAIL_CONFIG = require('./credentials.json');
-const {
-	google
-} = require('googleapis');
 
 const {
 	CLIENT_SECRET,
@@ -14,7 +12,7 @@ const {
     REDIRECT_URI,
     REFRESH_TOKEN,
     SEND_EMAIL_FROM,
-} = EMAIL_CONFIG
+} = EMAIL_CONFIG;
 
 const cors = require('cors')({
 	origin: true,
@@ -95,6 +93,7 @@ exports.updatePayment = functions.https.onRequest((request, response) => {
 	});
 });
 // send email
+// new implementation is below :
 exports.sendEmail = functions.https.onRequest((request, response) => {
 	const oAuth2Client = new google.auth.OAuth2(
 		CLIENT_ID,
@@ -111,6 +110,7 @@ exports.sendEmail = functions.https.onRequest((request, response) => {
 
 		async function sendMail() {
 			try {
+				console.log("inside try block >>>>>>>>>>> ");
 				const accessToken = await oAuth2Client.getAccessToken();
 				console.log('accessToken', accessToken)
 				const transport = nodemailer.createTransport({
@@ -135,11 +135,13 @@ exports.sendEmail = functions.https.onRequest((request, response) => {
 				const result = await transport.sendMail(mailOptions);
 				return result;
 			} catch (error) {
+				console.log("inside catch block >>>>>>>>>>> ");
 				return error;
 			}
 		}
 		sendMail()
 			.then((result) => {
+				console.log('results after email sent >>>>>', result)
 				response.send({
 					'status': 200,
 					'data': "Email sent succefully."
