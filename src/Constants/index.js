@@ -42,3 +42,5 @@ export const NOTIFICATION_WARNING = 'NOTIFICATION_WARNING'
 // Admin Login
 export const ADMIN_USER = 'b2b@boxpuppet.com';
 export const ADMIN_PWD = 'Box-puppet@1001';
+
+// boogalu.email.test@gmail.com / Box-puppet@1001

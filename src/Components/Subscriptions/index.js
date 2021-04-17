@@ -20,7 +20,7 @@ function Subscriptions() {
     const [showSubscriptionDetails, setShowSubscriptionDetails] = useState(false);
     const [activeStep, setActiveStep] = useState(activeStepCount);
     const [alreadySubscribed, setAlreadySubscribed] = useState(false)
-
+    console.log(" loggedInUser >>>>>", loggedInUser)
     const sendEmailToAdmin = () => {
         let emailBody = `<div>
             <h6 style="font-size: 17px;margin-bottom: 26px;">User subscribed for ${state.activeSubscription.name}</h6>
@@ -140,6 +140,7 @@ function Subscriptions() {
         if (userDetails.subscribed) {
             setActiveStep(2);
             setAlreadySubscribed(true);
+            sendEmailToUser();
         }
     }
 
