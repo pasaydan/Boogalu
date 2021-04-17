@@ -21,6 +21,7 @@ import usersIcon from '../../Images/users-icon.png';
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { getCompetitionsList } from "../../Services/Competition.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
+import ActionToolTip from '../ActionTooltip';
 
 const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
 
@@ -45,7 +46,6 @@ export default function Competition() {
     const [loggedInMessages, setLoginMessage] = useState('');
     const [isCreateFormTab, toggleCreateList] = useState(true);
     const [CompletitionList, setCompletitionList] = useState(null);
-    const [isActionClick, toggleCompActions] = useState(false);
 
     const createTabRef = useRef(null);
     const listTabRef = useRef(null);
@@ -104,22 +104,12 @@ export default function Competition() {
         }
     }
 
-    function toggleMenuAction(event) {
-        event.stopPropagation();
-        if (event && event.currentTarget.classList.contains('actionBtn')) {
-            toggleCompActions(!isActionClick);
-        } else {
-            toggleCompActions(false);
-        }
-    }
-
     const getCompetitionsListdata = () =>  {
         try {
             dispatch(enableLoading());
             getCompetitionsList().subscribe(allCompList => {
                 dispatch(disableLoading());
                 if (allCompList.length) {
-                    console.log('Competitions: ', allCompList);
                     setCompletitionList(allCompList);
                     
                 }
@@ -162,8 +152,13 @@ export default function Competition() {
         }
     }
 
+    function onItemActionSelected(event, value) {
+        console.log('Event: ', event);
+        console.log('Value: ', value);
+    }
+
     return (
-        <div className="adminPanelSection" onClick={(e) => toggleMenuAction(e)}>
+        <div className="adminPanelSection">
             <nav className="adminNavigation">
                 <Link to="/adminpanel/competition" title="create championship" className="panelLink active">
                     <span className="iconsWrap championIconWrap">
@@ -382,18 +377,11 @@ export default function Competition() {
                                         <div className="compImageWrap">
                                             <img src={item.img} alt="comp image" />
                                         </div>
-                                        <p className="actionLink">
-                                            <button className="actionBtn" onClick={(e) => toggleMenuAction(e)}>
-                                                <span></span>
-                                            </button>
-                                            {
-                                                isActionClick ?
-                                                <div className="menu">
-                                                    <a>Inactive</a>
-                                                    <a>Delete</a>
-                                                </div> : ''
-                                            }
-                                        </p>
+                                        <ActionToolTip 
+                                            id={item.key}
+                                            name={item.name}
+                                            onActionClicked={(e) => onItemActionSelected(e, {id: item.key, name: item.name})}
+                                        />
                                         <p className="statusBlock">Status: <span>{item.active ? 'Active' : 'Inactive'}</span></p>
                                         <p className="date">Starting Date: <span>{item.startingDate}</span></p>
                                     </div>)
