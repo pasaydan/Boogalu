@@ -67,7 +67,7 @@ export function postOrder(data, loggedInUser, handlerFn) {
 
 export function updatePayment(data) {
     return new Observable((observer) => {
-        axios.post("http://localhost:5001/boogalusite/us-central1/updatePayment", data, header).then((response) => {
+        axios.post(APP_API_URL + "/updatePayment", data, header).then((response) => {
             console.log('updatePayment API response', response)
             observer.next(response);
         });
