@@ -15,8 +15,9 @@ import ContactUs from "./Components/Contactus";
 import Pricing from './Components/Pricing';
 import PrivacyPolicy from './Components/PrivacyPolicy';
 import Navigation from "./Components/Navigation/index";
-import Competition from "./Components/Admin/Competition"
 import EditProfile from "./Components/EditProfile/EditProfile";
+import AdminPanel from './Components/Admin/Admin';
+import Competition from "./Components/Admin/Competition"
 import Subscription from "./Components/Admin/Subscription";
 import SplashScreen from './Components/Splash';
 import Competitions from "./Components/Competitions";
@@ -31,6 +32,7 @@ function App() {
   const { state } = useStoreConsumer();
   const [isSplashVisible, toggleSplash] = useState(true);
   const [isRootPath, rootPathToggle] = useState(true);
+  const [adminPathClass, setAdminPathClass] = useState('');
   const [transitionOpacityClass, toggleTransition] = useState('');
   
   useEffect(() => {
@@ -41,6 +43,11 @@ function App() {
       } else {
         rootPathToggle(false);
       }
+
+      if (pathName.includes('adminpanel')) {
+        setAdminPathClass('adminPanel');
+      }
+
       toggleSplash(false);
     }, 5000);
 
@@ -59,7 +66,7 @@ function App() {
   console.log('process.env >>>>>>> ', process.env)
   return (
     <Router>
-      <div className={`App ${isRootPath && isObjectEmpty(state.loggedInUser) ? 'top-padding0': ''}`}>
+      <div className={`App ${adminPathClass} ${isRootPath && isObjectEmpty(state.loggedInUser) ? 'top-padding0': ''}`}>
         {
           isSplashVisible ?
             <SplashScreen />
@@ -131,10 +138,13 @@ function App() {
                 </Route>
 
                 {/* admin routes */}
-                <Route exact path="/admin/competition">
+                <Route exact path="/adminpanel">
+                  <AdminPanel />
+                </Route>
+                <Route exact path="/adminpanel/competition">
                   <Competition />
                 </Route>
-                <Route exact path="/admin/subscription">
+                <Route exact path="/adminpanel/subscription">
                   <Subscription />
                 </Route>
 

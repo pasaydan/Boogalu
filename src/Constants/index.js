@@ -38,3 +38,7 @@ export const NOTIFICATION_SUCCCESS = 'NOTIFICATION_SUCCCESS'
 export const NOTIFICATION_ERROR = 'NOTIFICATION_ERROR'
 export const NOTIFICATION_INFO = 'NOTIFICATION_INFO'
 export const NOTIFICATION_WARNING = 'NOTIFICATION_WARNING'
+
+// Admin Login
+export const ADMIN_USER = 'b2b@boxpuppet.com';
+export const ADMIN_PWD = 'Box-puppet@1001';

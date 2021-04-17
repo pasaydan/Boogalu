@@ -73,23 +73,26 @@ function Footer() {
                 </div>
                 <div className="footer-menus flex-1">
                     <ul className="menu-lists js-page-links flex-1">
+                        {/* <li data-name="admin">
+                            <a href="/adminpanel" title="Admin panel">Admin panel</a>
+                        </li> */}
                         <li data-name="aboutus">
-                            <a onClick={(e) => navigatePageLinks(e, 'aboutus')}>About us</a>
+                            <a onClick={(e) => navigatePageLinks(e, 'aboutus')} title="about us">About us</a>
                         </li>
                         <li data-name="contactus">
-                            <a onClick={(e) => navigatePageLinks(e, 'contactus')}>Contact us</a>
+                            <a onClick={(e) => navigatePageLinks(e, 'contactus')} title="contact us">Contact us</a>
                         </li>
                         <li data-name="pricing">
-                            <a onClick={(e) => navigatePageLinks(e, 'pricing')}>Pricing</a>
+                            <a onClick={(e) => navigatePageLinks(e, 'pricing')} title="pricing">Pricing</a>
                         </li>
                         <li data-name="privacypolicy">
-                            <a onClick={(e) => navigatePageLinks(e, 'privacypolicy')}>Privacy Policy</a>
+                            <a onClick={(e) => navigatePageLinks(e, 'privacypolicy')} title="privacy policy">Privacy Policy</a>
                         </li>
                         <li data-name="terms">
-                            <a onClick={(e) => navigatePageLinks(e, 'termsandconditions')}>Terms &amp; Conditions</a>
+                            <a onClick={(e) => navigatePageLinks(e, 'termsandconditions')} title="terms and conditions">Terms &amp; Conditions</a>
                         </li>
                         <li data-name="refundpolicy">
-                            <a onClick={(e) => navigatePageLinks(e, 'refundpolicy')}>Cancellation/Refund Policy</a>
+                            <a onClick={(e) => navigatePageLinks(e, 'refundpolicy')} title="refund policy">Cancellation/Refund Policy</a>
                         </li>
                     </ul>
                     <ul className="menu-lists menu-lists-2 flex-1">

@@ -26,6 +26,7 @@
   --red-text-color: #cc0000;
   --error-red-dark: #5f0707;
   --error-green-opaque: rgba(251, 32, 32, 0.85);
+  --white-opaque-bg: rgba(255, 255, 255, 0.8);
   --info-blue-dark: #06465f;
   --info-blue-opaque: rgb(0, 184, 255, 0.8);
   --warning-yellow-dark: #634a05;
@@ -379,8 +380,13 @@ button:focus {
 /* Main app custom style */
 .App {
   padding-top: 73px;
-  &.top-padding0 {
+  &.top-padding0, &.adminPanel {
     padding-top: 0;
+  }
+  &.adminPanel {
+    footer {
+      display: none;
+    }
   }
 }
 
