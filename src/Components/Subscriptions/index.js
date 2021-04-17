@@ -15,9 +15,10 @@ function Subscriptions() {
     const { state, dispatch } = useStoreConsumer();
     const history = useHistory();
     const loggedInUser = state.loggedInUser;
+    const activeStepCount = loggedInUser && loggedInUser.subscribed ? 2 : 1;
     const [AvailableSubscriptions, setAvailableSubscriptions] = useState([]);
     const [showSubscriptionDetails, setShowSubscriptionDetails] = useState(false);
-    const [activeStep, setActiveStep] = useState(1);
+    const [activeStep, setActiveStep] = useState(activeStepCount);
     const [alreadySubscribed, setAlreadySubscribed] = useState(false)
 
     const sendEmailToAdmin = () => {
@@ -101,7 +102,7 @@ function Subscriptions() {
                 if (state.currentLoginFlow == 'competition-subscription') {
                     let subscriptionForCompetition = subscriptionsList.filter((data) => data.type === 'competition-enrollment');
                     dispatch(setActiveSubscription(subscriptionForCompetition[0]));
-                    setActiveStep(1);
+                    setActiveStep(activeStepCount);
                     setShowSubscriptionDetails(true);
                 }
             })
@@ -114,13 +115,14 @@ function Subscriptions() {
     }, [])
 
     useEffect(() => {
-        let isSubscribed = loggedInUser?.subscriptions?.filter((data) => data.type === 'competition-enrollment');
-        if (isSubscribed && isSubscribed.length) setAlreadySubscribed(true);
+        // let isSubscribed = loggedInUser?.subscriptions?.filter((data) => data.type === 'competition-enrollment');
+        let loggedInUser = state.loggedInUser && state.loggedInUser.subscribed ? true : false
+        setAlreadySubscribed(loggedInUser);
     }, [state.loggedInUser])
 
     const setSubscription = (subscription) => {
         dispatch(setActiveSubscription(subscription));
-        setActiveStep(1);
+        setActiveStep(activeStepCount);
         if (loggedInUser.name && loggedInUser.phone && loggedInUser.username) {
             setShowSubscriptionDetails(true);
         } else {
@@ -129,6 +131,15 @@ function Subscriptions() {
                 pathname: '/login',
                 state: null
             })
+        }
+    }
+
+
+    const fnCallbackFromBuySubscription = (userDetails) => {
+        // console.log("fnCallbackFromBuySubscription", userDetails);
+        if (userDetails.subscribed) {
+            setActiveStep(2);
+            setAlreadySubscribed(true);
         }
     }
 
@@ -152,7 +163,7 @@ function Subscriptions() {
                     </div>
                 </div>
             </div>
-            {showSubscriptionDetails && <BuySubscription handleClose={() => setShowSubscriptionDetails(false)} activeStep={activeStep} alreadySubscribed={alreadySubscribed} />}
+            {showSubscriptionDetails && <BuySubscription handleClose={() => setShowSubscriptionDetails(false)} activeStep={activeStep} alreadySubscribed={alreadySubscribed} fnCallback={fnCallbackFromBuySubscription}/>}
         </div>
     )
 }

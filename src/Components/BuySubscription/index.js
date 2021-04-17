@@ -6,7 +6,11 @@ import { formatDate } from "../../Services/Utils";
 import { disableLoginFlow, enableLoginFlow } from "../../Actions/LoginFlow";
 import { saveCompetition } from "../../Services/EnrollCompetition.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
-import { postOrder } from "./../../Services/Razorpay.service";
+import { postOrder, updatePayment } from "./../../Services/Razorpay.service";
+import { updateUser } from "../../Services/User.service";
+import { loginUser, signupUser } from '../../Actions/User/index';
+
+import boogaluLogo from '../../Images/Boogalu-logo.svg';
 // modal imports
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -14,7 +18,7 @@ import Fade from '@material-ui/core/Fade';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 
-export default function BuySubsription({ handleClose, activeStep, alreadySubscribed }) {
+export default function BuySubsription({ handleClose, activeStep, alreadySubscribed, fnCallback }) {
     const history = useHistory();
     const { state, dispatch } = useStoreConsumer();
     const loggedInUser = state.loggedInUser;
@@ -65,9 +69,33 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
     }
 
     const proceedForCompetition = () => {
+        // if (state.loggedInUser && state.loggedInUser.subscribed) {
         if (state.currentLoginFlow == 'competition-subscription') {
             submitForCompetition();
-        } else history.push('/competition');
+        } else {
+            history.push('/competitions');
+        }
+    }
+
+    const handlerFn = (response) => {
+        console.log("response", response);
+        updatePayment(response).subscribe((res) => {
+            const responseData = res.data;
+            // setSubscription(responseData);
+            console.log('postOrder response >>>>>', response);
+            const userDetails = {
+                ...loggedInUser,
+                subscribed: true,
+                subscribedOn: new Date()
+            };
+            updateUser(userDetails.key, userDetails).subscribe(() => {
+
+                dispatch(loginUser(userDetails));
+                console.log('updateUser userDetails>>>>>> ', userDetails);
+                fnCallback(userDetails)
+            })
+            // toggleButtonLoading('');
+        });
     }
 
     const proceedForPayment = () => {
@@ -75,10 +103,10 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
         const userData = {
             "amount": subscriptionDetails.amount * 100,
             "currency": "INR",
-            "receipt": loggedInUser.uId
+            "receipt": loggedInUser.key
         };
         let subscriptionData = {};
-        postOrder(userData, loggedInUser)
+        postOrder(userData, loggedInUser, handlerFn)
             .subscribe((response) => {
                 const responseData = response.data;
                 setSubscription(responseData);

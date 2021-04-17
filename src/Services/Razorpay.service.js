@@ -2,10 +2,17 @@ import { Observable } from 'rxjs';
 import axios from 'axios';
 import boogaluLogo from '../Images/Boogalu-logo.svg';
 const 
+    APP_API_URL = process.env.REACT_APP_API_URL,
     RAZORPAY_ORDERS_API_URL = process.env.REACT_APP_RAZORPAY_ORDERS_API_URL,
     RAZORPAY_TEST_KEY = process.env.REACT_APP_RAZORPAY_KEY,
     RAZORPAY_TEST_SECRET = process.env.REACT_APP_RAZORPAY_SECRET;
-export function postOrder(data, loggedInUser) {
+
+const header = new Headers();
+header.append('Access-Control-Allow-Origin', '*');
+header.append('Content-Type', 'application/json');
+header.append('mode', 'cors');
+
+export function postOrder(data, loggedInUser, handlerFn) {
     const ORDERS_POST_API_URL = RAZORPAY_ORDERS_API_URL;
     return new Observable((observer) => {
         axios.post
@@ -24,8 +31,12 @@ export function postOrder(data, loggedInUser) {
                     description: "Monthly Subscription",
                     image: boogaluLogo,
                     order_id: responseData.id,
-                    handler: function (response){
-                        console.log("on payment success >>>>>>>>", response)
+                    handler: function (successResponse){
+                        const data = {
+                            ...responseData,
+                            ...successResponse
+                        }
+                        handlerFn(data);
                     },
                     prefill: {
                         name: loggedInUser.name,
@@ -50,7 +61,15 @@ export function postOrder(data, loggedInUser) {
                 checkOutForm.open();
 
                 observer.next(response);
-                // window.location.reload(false);
             });
+    });
+}
+
+export function updatePayment(data) {
+    return new Observable((observer) => {
+        axios.post(APP_API_URL + "/updatePayment", data, header).then((response) => {
+            console.log('updatePayment API response', response)
+            observer.next(response);
+        });
     });
 }
