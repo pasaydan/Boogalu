@@ -147,6 +147,12 @@ function App() {
                 <Route exact path="/adminpanel/subscription">
                   <Subscription />
                 </Route>
+                <Route exact path="/adminpanel/lessons">
+                  <Upcoming />
+                </Route>
+                <Route exact path="/adminpanel/users">
+                  <Subscription />
+                </Route>
 
                 {/* Handling 404 */}
                 <Route>

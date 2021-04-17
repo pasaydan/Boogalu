@@ -8,9 +8,8 @@ import { saveCompetition } from "../../Services/EnrollCompetition.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { postOrder, updatePayment } from "./../../Services/Razorpay.service";
 import { updateUser } from "../../Services/User.service";
-import { loginUser, signupUser } from '../../Actions/User/index';
+import { loginUser } from '../../Actions/User/index';
 
-import boogaluLogo from '../../Images/Boogalu-logo.svg';
 // modal imports
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';

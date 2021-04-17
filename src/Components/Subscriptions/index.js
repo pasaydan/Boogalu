@@ -140,6 +140,7 @@ function Subscriptions() {
         if (userDetails.subscribed) {
             setActiveStep(2);
             setAlreadySubscribed(true);
+            sendEmailToAdmin();
             sendEmailToUser();
         }
     }
