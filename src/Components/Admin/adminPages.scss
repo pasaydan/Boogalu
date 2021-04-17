@@ -87,6 +87,65 @@
     }
 }
 
+.adminNavigation {
+    position: fixed;
+    width: 60px;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    opacity: 1;
+    background: var(--primary-dark-grey);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    overflow: hidden;
+    transition: all 0.3s ease-out;
+    display: flex;
+    white-space: nowrap;
+    justify-content: flex-start;
+    flex-direction: column;
+    &:hover {
+        width: 236px;
+    }
+    .panelLink {
+        width: 100%;
+        padding: 5px 10px;
+        box-sizing: border-box;
+        transition: all 0.3s ease-in-out;
+        white-space: nowrap;
+        margin-top: 40px;
+        text-decoration: none;
+        color: var(--primary-white);
+        span {
+            display: inline-block;
+            vertical-align: top;
+            &.title {
+                margin-top: 10px;
+                &.champion {
+                    margin-top: 13px;
+                }
+            }
+        }
+        &.active {
+            background: var(--primary-white);
+            pointer-events: none;
+            span.title {
+                color: var(--info-blue-dark);
+            }
+        }
+        .iconsWrap {
+            width: 100%;
+            box-sizing: border-box;
+            height: 49px;
+            margin-right: 20px;
+            max-width: 40px;
+            img {
+                width: 100%;
+                height: auto;
+            }
+        }
+    }
+}
+
 .competition-bo-wrap, .subscription-bo-wrap {
     width: 410px;
     margin: 20px auto;
@@ -193,9 +252,49 @@
     }
 }
 
+@media screen and (max-width: 1023px) {
+    .adminPanelSection {
+        padding: 20px 20px 100px;
+    }
+    .adminNavigation {
+        bottom: 0;
+        top: auto;
+        width: 100%;
+        height: 60px;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 0;
+        box-sizing: border-box;
+        box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.3);
+        .panelLink {
+            justify-content: center;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 0;
+            .iconsWrap {
+                height: 30px;
+                margin-right: 0;
+                max-width: 30px;
+                img {
+                    height: 100%;
+                    object-fit: contain;
+                }
+            }
+            span {
+                &.title {
+                    margin-top: 2px;
+                    &.champion {
+                        margin-top: 2px;
+                    }
+                }
+            }
+        }
+    }
+}
+
 @media screen and (max-width: 800px) {
     .adminPanelSection {
-        padding: 20px 20px 40px;
         .logoWrap {
             margin: 10px auto 20px;
         }

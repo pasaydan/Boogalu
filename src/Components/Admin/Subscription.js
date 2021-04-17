@@ -13,6 +13,9 @@ import { uploadImage } from "../../Services/Upload.service";
 import { Link } from 'react-router-dom';
 import { saveSubscription } from "../../Services/Subscription.service";
 import { ADMIN_USER, ADMIN_PWD } from '../../Constants';
+import championIcon from '../../Images/champion-box-icon.png';
+import lessonsIcon from '../../Images/lessons-icon.png';
+import subscribeIcon from '../../Images/subscribe-icon.png';
 
 const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
 
@@ -65,6 +68,7 @@ export default function Subscription() {
         setAdminPwd('');
         toggleAdminLogin(action);
         localStorage.setItem('adminLoggedIn', action);
+        window.location.reload();
     }
 
     const handleChange = (prop, index) => (event) => {
@@ -102,6 +106,32 @@ export default function Subscription() {
     }
     return (
         <div className="adminPanelSection">
+            <nav className="adminNavigation">
+                <Link to="/adminpanel/competition" title="create championship" className="panelLink">
+                    <span className="iconsWrap championIconWrap">
+                        <img src={championIcon} alt="championship" />
+                    </span>
+                    <span className="title champion">
+                        Championship
+                    </span>
+                </Link>
+                <Link to="/adminpanel/lessons" title="upload new lessons" className="panelLink">
+                    <span className="iconsWrap lessonsIconWrap">
+                        <img src={lessonsIcon} alt="lessons" />
+                    </span>
+                    <span className="title">
+                        Lessons
+                    </span>
+                </Link>
+                <Link to="/adminpanel/subscription" title="create subscription" className="panelLink active">
+                    <span className="iconsWrap subscribeIconWrap">
+                        <img src={subscribeIcon} alt="subscription" />
+                    </span>
+                    <span className="title">
+                        Subscription
+                    </span>
+                </Link>
+            </nav>
             <div className="logoWrap">
                 <img src={boogaluLogo} alt="Boogalu" />
             </div>
