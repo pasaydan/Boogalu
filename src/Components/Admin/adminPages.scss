@@ -1,7 +1,7 @@
 .adminPanelSection {
     box-sizing: border-box;
     min-height: 100vh;
-    padding: 40px 20px;
+    padding: 20px 20px 40px;
     background: var(--info-blue-dark);
     color: var(--primary-white);
     position: relative;
@@ -26,6 +26,9 @@
     .logoWrap {
         width: 140px;
         margin: 10px auto 30px;
+        a {
+            display: block;
+        }
         img {
             width: 100%;
         }
@@ -115,6 +118,9 @@
         margin-top: 40px;
         text-decoration: none;
         color: var(--primary-white);
+        &:hover {
+            color: var(--primary-link-color-blue);
+        }
         span {
             display: inline-block;
             vertical-align: top;
@@ -142,6 +148,33 @@
                 width: 100%;
                 height: auto;
             }
+        }
+    }
+}
+
+.optionsTab {
+    width: 80%;
+    margin: 10px auto;
+    display: flex;
+    justify-content: flex-start;
+    border-bottom: 1px solid var(--primary-white);
+    padding: 0 10px;
+    a {
+        display: block;
+        cursor: pointer;
+        width: 100px;
+        padding: 10px;
+        box-sizing: border-box;
+        text-align: center;
+        border-radius: 5px 5px 0 0;
+        color: var(--btn-primary-light-bg);
+        &:hover {
+            color: var(--success-green);
+        }
+        &.active {
+            background: var(--primary-white);
+            color: var(--success-green); 
+            pointer-events: none;
         }
     }
 }
@@ -252,6 +285,113 @@
     }
 }
 
+.adminItemlistView {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    .boxItem {
+        margin: 0 10px 10px;
+        border: 1px solid var(--copyright-grey);
+        padding: 10px;
+        box-sizing: border-box;
+        border-radius: 5px;
+        flex-basis: 236px;
+        color: var(--copyright-grey);
+        font-weight: 500;
+        .actionLink {
+            margin: 0;
+            position: relative;
+            z-index: 2;
+            .actionBtn {
+                position: absolute;
+                right: 0;
+                top: 5px;
+                padding: 0 5px;
+                background: none;
+                border: none;
+                box-shadow: none;
+                cursor: pointer;
+                span {
+                    width: 5px;
+                    height: 5px;
+                    display: block;
+                    border-radius: 50%;
+                    background: var(--footer-list-text-grey);
+                    &:before, &:after {
+                        content: '';
+                        position: absolute;
+                        background: var(--footer-list-text-grey);
+                        width: 5px;
+                        height: 5px;
+                        left: 5px;
+                        border-radius: 50%;
+                    }
+                    &:before {
+                        top: -6px;
+                    }
+                    &:after {
+                        top: 6px;
+                    }
+                }
+            }
+            .menu {
+                top: 22px;
+                right: -2px;
+                position: absolute;
+                background: var(--primary-white);
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+                border-radius: 5px;
+                &:before {
+                    content: '';
+                    position: absolute;
+                    width: 8px;
+                    height: 8px;
+                    transform: rotate(45deg);
+                    background: var(--primary-white);
+                    top: -4px;
+                    right: 5px;
+                    border-top: 1px solid rgba(0, 0, 0, 0.2);
+                    border-left: 1px solid rgba(0, 0, 0, 0.2);
+                }
+                a {
+                    cursor: pointer;
+                    font-size: 14px;
+                    display: block;
+                    line-height: 16px;
+                    padding: 5px 20px;
+                    text-align: left;
+                    font-weight: normal;
+                    transition: all 0.3s ease-out;
+                    color: var(--footer-list-text-grey);
+                    &:hover {
+                        color: var(--primary-link-color-blue);
+                    }
+                }
+            }
+        }
+        span {
+            font-weight: normal;
+        }
+        .title {
+            font-size: 14px;
+            line-height: 18px;
+            margin: 0 0 10px;
+        }
+        .compImageWrap {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+    }
+}
+
 @media screen and (max-width: 1023px) {
     .adminPanelSection {
         padding: 20px 20px 100px;
@@ -296,7 +436,8 @@
 @media screen and (max-width: 800px) {
     .adminPanelSection {
         .logoWrap {
-            margin: 10px auto 20px;
+            margin: 0 auto 10px;
+            width: 100px;
         }
         h1 {
             font-size: 22px;

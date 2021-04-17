@@ -16,6 +16,7 @@ import { ADMIN_USER, ADMIN_PWD } from '../../Constants';
 import championIcon from '../../Images/champion-box-icon.png';
 import lessonsIcon from '../../Images/lessons-icon.png';
 import subscribeIcon from '../../Images/subscribe-icon.png';
+import usersIcon from '../../Images/users-icon.png';
 
 const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
 

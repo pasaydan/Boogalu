@@ -4,6 +4,7 @@ import boogaluLogo from '../../Images/Boogalu-logo.svg';
 import championIcon from '../../Images/champion-box-icon.png';
 import lessonsIcon from '../../Images/lessons-icon.png';
 import subscribeIcon from '../../Images/subscribe-icon.png';
+import usersIcon from '../../Images/users-icon.png';
 
 export default function AdminPanel() {
     return (
@@ -38,6 +39,14 @@ export default function AdminPanel() {
                         </span>
                         <span className="title">
                             Create Subscription
+                        </span>
+                    </Link>
+                    <Link to="/adminpanel/users" title="manage users" className="panelLink">
+                        <span className="iconsWrap usersIconWrap">
+                            <img src={usersIcon} alt="users" />
+                        </span>
+                        <span className="title">
+                            Manage Users
                         </span>
                     </Link>
                 </div>

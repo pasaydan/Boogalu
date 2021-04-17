@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -17,6 +17,10 @@ import { ADMIN_USER, ADMIN_PWD } from '../../Constants';
 import championIcon from '../../Images/champion-box-icon.png';
 import lessonsIcon from '../../Images/lessons-icon.png';
 import subscribeIcon from '../../Images/subscribe-icon.png';
+import usersIcon from '../../Images/users-icon.png';
+import { useStoreConsumer } from '../../Providers/StateProvider';
+import { getCompetitionsList } from "../../Services/Competition.service";
+import { enableLoading, disableLoading } from "../../Actions/Loader";
 
 const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
 
@@ -33,11 +37,18 @@ export default function Competition() {
         prices: [],
     }
 
+    const { state, dispatch } = useStoreConsumer();
     const [isAdminLoggedIn, toggleAdminLogin] = useState(false);
     const [CompetitionData, setCompetitionData] = useState(initialCompetitionData);
     const [adminEmail, setAdminEmail] = useState('');
     const [adminPwd, setAdminPwd] = useState('');
     const [loggedInMessages, setLoginMessage] = useState('');
+    const [isCreateFormTab, toggleCreateList] = useState(true);
+    const [CompletitionList, setCompletitionList] = useState(null);
+    const [isActionClick, toggleCompActions] = useState(false);
+
+    const createTabRef = useRef(null);
+    const listTabRef = useRef(null);
 
     useEffect(() => {
         if (checkAdminLogIn) {
@@ -45,6 +56,7 @@ export default function Competition() {
         }  
     }, []);
 
+    
     function handleAdminLogin(value, type) {
         if (type === 'email') {
             setAdminEmail(value?.target?.value);
@@ -71,6 +83,50 @@ export default function Competition() {
         toggleAdminLogin(action);
         localStorage.setItem('adminLoggedIn', action);
         window.location.reload();
+    }
+
+    function switchTabs(event, action) {
+        if (action && action === 'create') {
+            if (createTabRef.current && listTabRef.current) {
+                createTabRef.current.classList.add('active');
+                listTabRef.current.classList.remove('active');
+            }
+            toggleCreateList(true);
+        } else {
+            if (createTabRef.current && listTabRef.current) {
+                listTabRef.current.classList.add('active');
+                createTabRef.current.classList.remove('active');
+                if (!(CompletitionList && CompletitionList.length)) {
+                    getCompetitionsListdata();
+                }
+            }
+            toggleCreateList(false);
+        }
+    }
+
+    function toggleMenuAction(event) {
+        event.stopPropagation();
+        if (event && event.currentTarget.classList.contains('actionBtn')) {
+            toggleCompActions(!isActionClick);
+        } else {
+            toggleCompActions(false);
+        }
+    }
+
+    const getCompetitionsListdata = () =>  {
+        try {
+            dispatch(enableLoading());
+            getCompetitionsList().subscribe(allCompList => {
+                dispatch(disableLoading());
+                if (allCompList.length) {
+                    console.log('Competitions: ', allCompList);
+                    setCompletitionList(allCompList);
+                    
+                }
+            });
+        } catch(e) {
+            console.log('Error: ', e);
+        }
     }
 
     const handleChange = (prop, index) => (event) => {
@@ -105,8 +161,9 @@ export default function Competition() {
             }
         }
     }
+
     return (
-        <div className="adminPanelSection">
+        <div className="adminPanelSection" onClick={(e) => toggleMenuAction(e)}>
             <nav className="adminNavigation">
                 <Link to="/adminpanel/competition" title="create championship" className="panelLink active">
                     <span className="iconsWrap championIconWrap">
@@ -132,12 +189,27 @@ export default function Competition() {
                         Subscription
                     </span>
                 </Link>
+                <Link to="/adminpanel/users" title="manage users" className="panelLink">
+                    <span className="iconsWrap subscribeIconWrap">
+                        <img src={usersIcon} alt="users" />
+                    </span>
+                    <span className="title">
+                        Users
+                    </span>
+                </Link>
             </nav>
             <div className="logoWrap">
                 <a href="/" title="boogalu home">
                     <img src={boogaluLogo} alt="Boogalu" />
                 </a>
             </div>
+            {
+                isAdminLoggedIn || checkAdminLogIn ?
+                <div className="optionsTab">
+                    <a onClick={(e) => switchTabs(e, 'create')} className="active" ref={createTabRef}>Create new</a>
+                    <a onClick={(e) => switchTabs(e, 'list')} ref={listTabRef}>View list</a>
+                </div>: ''
+            }
             <div className={`competition-bo-wrap clearfix ${(isAdminLoggedIn || checkAdminLogIn) && 'loggedInAdmin'}`}>
                 {
                     isAdminLoggedIn || checkAdminLogIn ?
@@ -153,7 +225,12 @@ export default function Competition() {
                                     &#8592;
                                 </span>
                             </Link>
-                            Launch a new competition
+                            {
+                                isCreateFormTab ?
+                                'Launch a new competition'
+                                : 
+                                'List of competitions'
+                            }
                         </h1>
                     : 
                         <h1>
@@ -167,134 +244,163 @@ export default function Competition() {
                 }
                 {
                     isAdminLoggedIn || checkAdminLogIn ? 
-                    <div className="inner-form-wrap">
-                        <div className="input-wrap">
-                            <TextField className="input-field"
-                                required
-                                id="outlined-required-name"
-                                label="Name"
-                                onChange={handleChange('name')}
-                                value={CompetitionData.name}
-                                variant="outlined"
-                            />
+                        isCreateFormTab ?
+                        <div className="inner-form-wrap">
+                            <div className="input-wrap">
+                                <TextField className="input-field"
+                                    required
+                                    id="outlined-required-name"
+                                    label="Name"
+                                    onChange={handleChange('name')}
+                                    value={CompetitionData.name}
+                                    variant="outlined"
+                                />
+                            </div>
+                            <div className="input-wrap">
+                                <TextField className="input-field"
+                                    id="outlined-required-desc"
+                                    label="Description"
+                                    onChange={handleChange('desc')}
+                                    value={CompetitionData.desc}
+                                    variant="outlined"
+                                />
+                            </div>
+                            <div className="input-wrap">
+                                <TextField className="input-field"
+                                    id="outlined-required-fee"
+                                    label="Fee"
+                                    type="number"
+                                    onChange={handleChange('fee')}
+                                    value={CompetitionData.fee}
+                                    variant="outlined"
+                                />
+                            </div>
+                            <div className="input-wrap">
+                                <FormControl variant="outlined" className="input-field">
+                                    <InputLabel id="select-outlined-label">Type</InputLabel>
+                                    <Select
+                                        labelId="select-outlined-label"
+                                        id="select-outlined"
+                                        value={CompetitionData.type}
+                                        onChange={handleChange('type')}
+                                        label="Type"
+                                    >
+                                        <MenuItem value="running">Currently Running</MenuItem>
+                                        <MenuItem value="upcomming">Up-Comming</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </div>
+                            <div className="input-wrap data-time-wrap">
+                                <TextField
+                                    id="datetime-local-start"
+                                    label="Start Date & Time"
+                                    type="datetime-local"
+                                    value={CompetitionData.startAt}
+                                    onChange={handleChange('startAt')}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                />
+                                <TextField
+                                    id="datetime-local-end"
+                                    label="End Date & Time"
+                                    type="datetime-local"
+                                    value={CompetitionData.endAt}
+                                    onChange={handleChange('endAt')}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                />
+                            </div>
+                            <div className="input-wrap">
+                                <TextField className="input-field"
+                                    required
+                                    id="outlined-required-name"
+                                    label="First Price"
+                                    onChange={handleChange('prices', 0)}
+                                    value={CompetitionData.prices[0]}
+                                    variant="outlined"
+                                />
+                            </div>
+                            <div className="input-wrap">
+                                <TextField className="input-field"
+                                    required
+                                    id="outlined-required-name"
+                                    label="Second Price"
+                                    onChange={handleChange('prices', 1)}
+                                    value={CompetitionData.prices[1]}
+                                    variant="outlined"
+                                />
+                            </div>
+                            <div className="input-wrap">
+                                <TextField className="input-field"
+                                    required
+                                    id="outlined-required-name"
+                                    label="Third Price"
+                                    onChange={handleChange('prices', 2)}
+                                    value={CompetitionData.prices[2]}
+                                    variant="outlined"
+                                />
+                            </div>
+                            <div className="input-wrap">
+                                <ImageUploader
+                                    withIcon={true}
+                                    buttonText='Upload image'
+                                    onChange={onimageUpload}
+                                    imgExtension={['.jpg', '.gif', '.png', '.gif', '.svg']}
+                                    maxFileSize={5242880}
+                                    accept="image/*"
+                                    withPreview={true}
+                                    singleImage={true}
+                                    label="Select competition image"
+                                />
+                            </div>
+                            <div className="input-wrap action-wrap">
+                                <Button variant="contained" color="primary">Cancel</Button>
+                                <Button variant="contained" color="secondary" onClick={(e) => saveDetails(e)}>Save</Button>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            required
+                                            color="primary"
+                                            className="selected-item-checkbox"
+                                            checked={CompetitionData.active}
+                                            onChange={handleChange('active')}
+                                            inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                        />
+                                    }
+                                    label="Active Competition"
+                                />
+                            </div>
                         </div>
-                        <div className="input-wrap">
-                            <TextField className="input-field"
-                                id="outlined-required-desc"
-                                label="Description"
-                                onChange={handleChange('desc')}
-                                value={CompetitionData.desc}
-                                variant="outlined"
-                            />
+                        : <div className="adminItemlistView">
+                            {
+                                CompletitionList && CompletitionList.length ?
+                                CompletitionList.map( item => {
+                                    return (<div className="boxItem compBox">
+                                        <p className="title">{item.name}</p>
+                                        <div className="compImageWrap">
+                                            <img src={item.img} alt="comp image" />
+                                        </div>
+                                        <p className="actionLink">
+                                            <button className="actionBtn" onClick={(e) => toggleMenuAction(e)}>
+                                                <span></span>
+                                            </button>
+                                            {
+                                                isActionClick ?
+                                                <div className="menu">
+                                                    <a>Inactive</a>
+                                                    <a>Delete</a>
+                                                </div> : ''
+                                            }
+                                        </p>
+                                        <p className="statusBlock">Status: <span>{item.active ? 'Active' : 'Inactive'}</span></p>
+                                        <p className="date">Starting Date: <span>{item.startingDate}</span></p>
+                                    </div>)
+                                })
+                                : ''
+                            }
                         </div>
-                        <div className="input-wrap">
-                            <TextField className="input-field"
-                                id="outlined-required-fee"
-                                label="Fee"
-                                type="number"
-                                onChange={handleChange('fee')}
-                                value={CompetitionData.fee}
-                                variant="outlined"
-                            />
-                        </div>
-                        <div className="input-wrap">
-                            <FormControl variant="outlined" className="input-field">
-                                <InputLabel id="select-outlined-label">Type</InputLabel>
-                                <Select
-                                    labelId="select-outlined-label"
-                                    id="select-outlined"
-                                    value={CompetitionData.type}
-                                    onChange={handleChange('type')}
-                                    label="Type"
-                                >
-                                    <MenuItem value="running">Currently Running</MenuItem>
-                                    <MenuItem value="upcomming">Up-Comming</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </div>
-                        <div className="input-wrap data-time-wrap">
-                            <TextField
-                                id="datetime-local-start"
-                                label="Start Date & Time"
-                                type="datetime-local"
-                                value={CompetitionData.startAt}
-                                onChange={handleChange('startAt')}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                            />
-                            <TextField
-                                id="datetime-local-end"
-                                label="End Date & Time"
-                                type="datetime-local"
-                                value={CompetitionData.endAt}
-                                onChange={handleChange('endAt')}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                            />
-                        </div>
-                        <div className="input-wrap">
-                            <TextField className="input-field"
-                                required
-                                id="outlined-required-name"
-                                label="First Price"
-                                onChange={handleChange('prices', 0)}
-                                value={CompetitionData.prices[0]}
-                                variant="outlined"
-                            />
-                        </div>
-                        <div className="input-wrap">
-                            <TextField className="input-field"
-                                required
-                                id="outlined-required-name"
-                                label="Second Price"
-                                onChange={handleChange('prices', 1)}
-                                value={CompetitionData.prices[1]}
-                                variant="outlined"
-                            />
-                        </div>
-                        <div className="input-wrap">
-                            <TextField className="input-field"
-                                required
-                                id="outlined-required-name"
-                                label="Third Price"
-                                onChange={handleChange('prices', 2)}
-                                value={CompetitionData.prices[2]}
-                                variant="outlined"
-                            />
-                        </div>
-                        <div className="input-wrap">
-                            <ImageUploader
-                                withIcon={true}
-                                buttonText='Upload image'
-                                onChange={onimageUpload}
-                                imgExtension={['.jpg', '.gif', '.png', '.gif', '.svg']}
-                                maxFileSize={5242880}
-                                accept="image/*"
-                                withPreview={true}
-                                singleImage={true}
-                                label="Select competition image"
-                            />
-                        </div>
-                        <div className="input-wrap action-wrap">
-                            <Button variant="contained" color="primary">Cancel</Button>
-                            <Button variant="contained" color="secondary" onClick={(e) => saveDetails(e)}>Save</Button>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        required
-                                        color="primary"
-                                        className="selected-item-checkbox"
-                                        checked={CompetitionData.active}
-                                        onChange={handleChange('active')}
-                                        inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                    />
-                                }
-                                label="Active Competition"
-                            />
-                        </div>
-                    </div> 
                     :
                     <div className="login-admin-form">
                         <p className="errorMessage">{loggedInMessages}</p>
