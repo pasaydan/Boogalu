@@ -22,6 +22,7 @@ import { useStoreConsumer } from '../../Providers/StateProvider';
 import { getCompetitionsList } from "../../Services/Competition.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import ActionToolTip from '../ActionTooltip';
+import AddMoreInputGroup from '../AddMoreInputGroup';
 
 const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
 
@@ -46,6 +47,9 @@ export default function Competition() {
     const [loggedInMessages, setLoginMessage] = useState('');
     const [isCreateFormTab, toggleCreateList] = useState(true);
     const [CompletitionList, setCompletitionList] = useState(null);
+    const [formMessageBox, setFormMessage] = useState('');
+    const [messageClass, setFormMessageClass] = useState('');
+    const [isSaveLoadingTrue, toggleSaveLoading] = useState(false); 
 
     const createTabRef = useRef(null);
     const listTabRef = useRef(null);
@@ -73,7 +77,11 @@ export default function Competition() {
         } else {
             toggleAdminLogin(false);
             localStorage.setItem('adminLoggedIn', false);
-            setLoginMessage('Invalid credentials, please enter valid email-Id and Password!');
+            if (adminEmail === '' || adminPwd === '') {
+                setLoginMessage('Please enter Email and Password!');
+            } else {
+                setLoginMessage('Invalid credentials, please enter valid email-Id and Password!');
+            }
         }
     }
 
@@ -133,21 +141,56 @@ export default function Competition() {
         setCompetitionData({ ...CompetitionData, img: picture });
     }
 
+    function setPricesData(e) {
+        CompetitionData.prices = e;
+    }
+
+    function validatePriceData(priceData) {
+        let isValid = true;
+        priceData.forEach(item => {
+            if (!Object.values(item).every(o => o)) {
+                isValid = false;
+            }
+        });
+        return isValid;
+    }
+
     async function saveDetails(e) {
-        console.log(CompetitionData)
         // upload competition image to bucket
-        if (CompetitionData.img[0]) {
+        if (CompetitionData.img === '' || CompetitionData.desc === '' || CompetitionData.endAt === '' || CompetitionData.fee === '' || CompetitionData.name === '' || CompetitionData.startAt === '' || CompetitionData.prices.length < 3) {
+            setFormMessageClass('error');
+            setFormMessage('Please fill all fields!');
+        } else if (CompetitionData.prices.length < 3) {
+            setFormMessageClass('error');
+            setFormMessage('Please enter min 3 Price details!');
+        } else if (CompetitionData.prices.length >= 3 && !validatePriceData(CompetitionData.prices)) {
+            setFormMessageClass('error');
+            setFormMessage('Please enter both name and value for Prices!');
+        } else {
+            setFormMessageClass('');
+            setFormMessage('');
+            toggleSaveLoading(true);
             const reader = new FileReader();
-            reader.readAsDataURL(CompetitionData.img[0]);
-            reader.onload = () => {
-                uploadImage(reader.result, 'competition', 'small').subscribe((downloadableUrl) => {
-                    CompetitionData.img = downloadableUrl;
-                    // save competition data to db with imag url
-                    saveCompetition(CompetitionData).subscribe((response) => {
-                        console.log('competition success', response);
-                        setCompetitionData(initialCompetitionData);
+            try {
+                reader.readAsDataURL(CompetitionData.img[0]);
+                reader.onload = () => {
+                    uploadImage(reader.result, 'competition', 'small').subscribe((downloadableUrl) => {
+                        CompetitionData.img = downloadableUrl;
+                        // save competition data to db with imag url
+                        saveCompetition(CompetitionData).subscribe((response) => {
+                            toggleSaveLoading(false);
+                            setFormMessageClass('success');
+                            setFormMessage('Competition created successfully!');
+                            console.log('competition success', response);
+                            setCompetitionData(initialCompetitionData);
+                        })
                     })
-                })
+                }
+            } catch (e) {
+                toggleSaveLoading(false);
+                setFormMessageClass('error');
+                setFormMessage('Something went wrong, please try after sometime!');
+                console.log('Erro: ', e);
             }
         }
     }
@@ -253,6 +296,7 @@ export default function Competition() {
                             </div>
                             <div className="input-wrap">
                                 <TextField className="input-field"
+                                    required
                                     id="outlined-required-desc"
                                     label="Description"
                                     onChange={handleChange('desc')}
@@ -262,6 +306,7 @@ export default function Competition() {
                             </div>
                             <div className="input-wrap">
                                 <TextField className="input-field"
+                                    required
                                     id="outlined-required-fee"
                                     label="Fee"
                                     type="number"
@@ -274,6 +319,7 @@ export default function Competition() {
                                 <FormControl variant="outlined" className="input-field">
                                     <InputLabel id="select-outlined-label">Type</InputLabel>
                                     <Select
+                                        required
                                         labelId="select-outlined-label"
                                         id="select-outlined"
                                         value={CompetitionData.type}
@@ -287,6 +333,7 @@ export default function Competition() {
                             </div>
                             <div className="input-wrap data-time-wrap">
                                 <TextField
+                                    required
                                     id="datetime-local-start"
                                     label="Start Date & Time"
                                     type="datetime-local"
@@ -297,6 +344,7 @@ export default function Competition() {
                                     }}
                                 />
                                 <TextField
+                                    required
                                     id="datetime-local-end"
                                     label="End Date & Time"
                                     type="datetime-local"
@@ -306,8 +354,19 @@ export default function Competition() {
                                         shrink: true,
                                     }}
                                 />
+                                <ImageUploader
+                                    withIcon={true}
+                                    buttonText='Upload image'
+                                    onChange={onimageUpload}
+                                    imgExtension={['.jpg', '.gif', '.png', '.gif', '.svg']}
+                                    maxFileSize={5242880}
+                                    accept="image/*"
+                                    withPreview={true}
+                                    singleImage={true}
+                                    label="Select competition image"
+                                />
                             </div>
-                            <div className="input-wrap">
+                            {/* <div className="input-wrap">
                                 <TextField className="input-field"
                                     required
                                     id="outlined-required-name"
@@ -337,22 +396,16 @@ export default function Competition() {
                                     variant="outlined"
                                 />
                             </div>
+                             */}
                             <div className="input-wrap">
-                                <ImageUploader
-                                    withIcon={true}
-                                    buttonText='Upload image'
-                                    onChange={onimageUpload}
-                                    imgExtension={['.jpg', '.gif', '.png', '.gif', '.svg']}
-                                    maxFileSize={5242880}
-                                    accept="image/*"
-                                    withPreview={true}
-                                    singleImage={true}
-                                    label="Select competition image"
+                                <AddMoreInputGroup
+                                    setPriceData = {(e) => setPricesData(e)}
                                 />
                             </div>
                             <div className="input-wrap action-wrap">
+                                <p className={`messageWrap ${messageClass}`}>{formMessageBox}</p>
                                 <Button variant="contained" color="primary">Cancel</Button>
-                                <Button variant="contained" color="secondary" onClick={(e) => saveDetails(e)}>Save</Button>
+                                <Button variant="contained" className={isSaveLoadingTrue ? 'loading' : ''} color="secondary" onClick={(e) => saveDetails(e)}>Save</Button>
                                 <FormControlLabel
                                     control={
                                         <Checkbox

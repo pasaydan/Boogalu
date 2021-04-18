@@ -60,7 +60,11 @@ export default function Subscription() {
         } else {
             toggleAdminLogin(false);
             localStorage.setItem('adminLoggedIn', false);
-            setLoginMessage('Invalid credentials, please enter valid email-Id and Password!');
+            if (adminEmail === '' || adminPwd === '') {
+                setLoginMessage('Please enter Email and Password!');
+            } else {
+                setLoginMessage('Invalid credentials, please enter valid email-Id and Password!');
+            }
         }
     }
 
@@ -130,6 +134,14 @@ export default function Subscription() {
                     </span>
                     <span className="title">
                         Subscription
+                    </span>
+                </Link>
+                <Link to="/adminpanel/users" title="manage users" className="panelLink">
+                    <span className="iconsWrap subscribeIconWrap">
+                        <img src={usersIcon} alt="users" />
+                    </span>
+                    <span className="title">
+                        Users
                     </span>
                 </Link>
             </nav>

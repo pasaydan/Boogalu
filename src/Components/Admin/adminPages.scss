@@ -49,11 +49,13 @@
     .optionsWrap {
         display: flex;
         width: 100%;
-        justify-content: space-between;
+        max-width: 845px;
+        justify-content: center;
         margin: 20px auto;
         flex-wrap: wrap;
         .panelLink {
             display: block;
+            min-width: 242px;
             flex-basis: calc(100% / 4 - 20px);
             margin: 10px;
             border-radius: 5px;
@@ -234,13 +236,38 @@
                 padding-bottom: 18px;
             }
             &.data-time-wrap {
-                display: flex;
-                justify-content: space-between;
                 .MuiFormControl-root {
-                    flex-basis: 45%;
+                    width: 45%;
+                    display: inline-block;
+                    vertical-align: top;
+                    margin-left: 10px;
+                    .MuiInputBase-root {
+                        width: 100%;
+                    }
+                    &:first-child {
+                        margin-left: 0;
+                    }
+                }
+                .fileUploader {
+                    display: block;
+                    width: 100%;
+                    margin-top: 48px;
                 }
             }
             &.action-wrap {
+                .messageWrap {
+                    height: 20px;
+                    margin: 0 0 10px 0;
+                    font-size: 14px; 
+                    line-height: 16px;
+                    color: var(--secondary-bg-blue);
+                    &.error {
+                        color: var(--error-red-opaque);
+                    }
+                    &.success {
+                        color: var(--success-green-opaque);
+                    }
+                }
                 button, label {
                     display: inline-block;
                     margin-right: 20px;

@@ -301,21 +301,30 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
 
                                         <div className="sub-titles">Winners and Prizes Rule</div>
                                         <ul>
-                                            <li>Top 3 Winner From Each Category Get Award.</li>
+                                            <li>Top {competitionDetails.prices.length} Winner From Each Category Get Award.</li>
                                             <li>There will be a three category as mention above.</li>
                                             <li>Winner will be based on best performance.</li>
                                         </ul>
 
                                         <ul className="prices">
-                                            <li className="sub-titles price-details">
-                                                First Price : <span>{competitionDetails.prices[0]}</span>
-                                            </li>
-                                            <li className="sub-titles price-details">
-                                                Second Price : <span>{competitionDetails.prices[1]}</span>
-                                            </li>
-                                            <li className="sub-titles price-details">
-                                                Third Price : <span>{competitionDetails.prices[2]}</span>
-                                            </li>
+                                            {
+                                                competitionDetails.prices && competitionDetails.prices.length &&
+                                                competitionDetails.prices.map( (item, index) => {
+                                                    if (item.key) {
+                                                        return (
+                                                            <li className="sub-titles price-details" key={item.key}>
+                                                                {item.name} : <span>{item.value}</span>
+                                                            </li>                
+                                                        )
+                                                    } else {
+                                                        return (
+                                                            <li className="sub-titles price-details">
+                                                                {`${index + 1} ${ index === 0 ? 'st' : index === 1 ? 'nd' : 'rd'}`} : <span>{item}</span>
+                                                            </li>
+                                                        )
+                                                    }
+                                                })
+                                            }
                                         </ul>
 
                                         <div className="sub-titles">Submission And Result</div>
