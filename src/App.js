@@ -146,7 +146,13 @@ function App() {
                 <Route exact path="/adminpanel/competition">
                   <Competition />
                 </Route>
+                <Route exact path="/adminpanel/competitions">
+                  <Competition />
+                </Route>
                 <Route exact path="/adminpanel/subscription">
+                  <Subscription />
+                </Route>
+                <Route exact path="/adminpanel/subscriptions">
                   <Subscription />
                 </Route>
                 <Route exact path="/adminpanel/lessons">

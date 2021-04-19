@@ -95,8 +95,12 @@ function Competitions() {
                 <ul className="competition-list" >
                     {CompletitionList && CompletitionList.map((competition) => {
                         return <li key={competition.name + '-id'} onClick={() => openDetailsModal(competition)}>
+                            {
+                                competition.type && competition.type === 'upcoming' ?
+                                <span className="upcomingLabel">Upcoming</span> : ''
+                            }
                             <img src={competition.img} alt={competition.name} />
-                            <h2>{competition.name}  {competition.isUserEnrolled && <span>- Video submitted</span>}</h2>
+                            <h2>{competition.name}  {competition.isUserEnrolled ? <span className="enrolledMessage">Already Enrolled</span> : ''} </h2>
                         </li>
                     })}
                 </ul>
