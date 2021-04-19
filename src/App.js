@@ -19,6 +19,7 @@ import EditProfile from "./Components/EditProfile/EditProfile";
 import AdminPanel from './Components/Admin/Admin';
 import Competition from "./Components/Admin/Competition"
 import Subscription from "./Components/Admin/Subscription";
+import UsersInfo from './Components/Admin/Users';
 import SplashScreen from './Components/Splash';
 import Competitions from "./Components/Competitions";
 import Notification from "./Components/Notification";
@@ -151,7 +152,7 @@ function App() {
                   <Upcoming />
                 </Route>
                 <Route exact path="/adminpanel/users">
-                  <Subscription />
+                  <UsersInfo />
                 </Route>
 
                 {/* Handling 404 */}
