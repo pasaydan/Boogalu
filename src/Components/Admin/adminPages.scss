@@ -432,28 +432,43 @@
         padding:0;
         border-collapse: collapse;
         border-spacing: 0;
-    }
-
-    table tr {
-        border: 1px solid var(--btn-primary-light-bg);
-        padding: 5px;
-        background: var(--primary-white);
-        &:hover {
-            background: var(--btn-primary-light-bg);
+        display: block;
+        thead, tbody {
+            width: 100%;
+            display: block;
+        }
+        tr {
+            border: 1px solid var(--btn-primary-light-bg);
+            padding: 5px;
+            background: var(--primary-white);
+            display: block;
+            width: 100%;
+            text-align: left;
+            box-sizing: border-box;
+            &:hover {
+                background: var(--btn-primary-light-bg);
+            }
+        }
+    
+        th, td {
+            padding: 10px;
+            text-align: left;
+            color: var(--copyright-grey);
+            width: calc(100% / 7);
+            display: inline-block;
+            line-height: 22px;
+            vertical-align: top;
+            word-break: break-word;
+            box-sizing: border-box;
+        }
+    
+        th {
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
         }
     }
 
-    table th, table td {
-        padding: 10px;
-        text-align: left;
-        color: var(--copyright-grey);
-    }
-
-    table th {
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        font-weight: 500;
-    }
 }
 
 @media screen and (max-width: 1023px) {
@@ -470,6 +485,9 @@
         padding: 0;
         box-sizing: border-box;
         box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.3);
+        &:hover {
+            width: 100%;
+        }
         .panelLink {
             justify-content: center;
             display: flex;
@@ -497,7 +515,7 @@
         }
     }
     .competition-bo-wrap.usersListBox {
-        margin-left: 0;
+        margin: 0 auto;
     }
 }
 
@@ -559,15 +577,33 @@
             width: 100%;
             border-collapse: collapse;
             border-spacing: 0;
+            display: flex;
+            justify-content: flex-start;
             thead {
                 display: block;
-                float: left;
+                min-width: 120px;
                 tr {
-                    display: block;
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: space-between;
+                    flex-direction: column;
                     th {
                         text-align: left;
                         display: block;
+                        width: 100%;
                     }
+                }
+            }
+            tr {
+                display: inline-block;
+                vertical-align: top;
+                height: 100%;
+                min-width: 150px;
+                th,
+                td {
+                    margin: 0;
+                    display: block;
+                    text-align: left;
                 }
             }
             tbody {
@@ -576,18 +612,15 @@
                 position: relative;
                 overflow-x: auto;
                 white-space: nowrap;
+                tr {
+                    width: 30%;
+                    white-space: normal;
+                    td {
+                        width: 100%;
+                        word-break: break-all;
+                    }
+                }
             }
-            tr {
-                display: inline-block;
-                vertical-align: top;
-            }
-            th,
-            td {
-                margin: 0;
-                display: block;
-                text-align: left;
-            }
-            
         }
     }
 }

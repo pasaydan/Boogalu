@@ -336,8 +336,9 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                         <h4 className="before-submit-message">Time To Express Your Talent on Our Platform during this Lockdown</h4>
                                     </div>
                                 </div>
-
-                                <div className="action-wrap">
+                                {
+                                    competitionDetails.type &&  competitionDetails.type !== 'upcoming' ?
+                                    <div className="action-wrap">
                                     <div className="terms-button" ref={tncRef} onClick={() => setTnC((TnC ? false : true))}>
                                         <input type="checkbox"
                                             checked={isTncAccepted}
@@ -374,6 +375,8 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                         </div>
                                     </div>}
                                 </div>
+                                : '' 
+                                }
                             </div>}
                             {ActiveStep === 3 && <div className="video-submit-section">
                                 <div className="lessons-vdo-wrap">
@@ -417,6 +420,11 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                 <EnrollCompetition handleClose={(e) => handleClose(e)} changeSelectedVdo={() => setActiveStep(3)} />
                             </div>}
                             {SelectedVideo?.file && <VideoUploader selectedVdo={SelectedVideo} handleVdoUploadResponse={(e) => handleVdoUploadResponse(e)} />}
+                            {
+                                competitionDetails.type && competitionDetails.type === 'upcoming' ?
+                                <span className="upcomingEventMessage">Upcoming Event, we'll notify you once active!</span>
+                                : ''
+                            }
                         </div>}
                     </div>
                 </Fade>
