@@ -43,12 +43,17 @@ export function deleteImage(imageUrl) {
     storageRef.refFromURL(imageUrl).delete();
 }
 
-export function uploadVideo(video) {
+export function uploadVideo(video, uploadPath, pathId, view) {
 
     let date = new Date();
     let id = date.getTime().toString();
     FILE_NAME = 'user' + id + '.mp4';
     FILE_PATH = BASE_PATH + '/video/' + FILE_NAME;
+    if (uploadPath && pathId && view) {
+        FILE_NAME = view + '_' + id + '.mp4';
+        FILE_PATH = BASE_PATH + '/' + uploadPath + '/' + pathId + '/' + FILE_NAME;
+    }
+    console.log("FILE_PATH in Upload service is : ", FILE_PATH)
 
     let uploadTask = storageRef.child(FILE_PATH).putString(video, 'data_url');
 

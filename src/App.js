@@ -20,6 +20,7 @@ import AdminPanel from './Components/Admin/Admin';
 import Competition from "./Components/Admin/Competition"
 import Subscription from "./Components/Admin/Subscription";
 import UsersInfo from './Components/Admin/Users';
+import UploadLessons from './Components/Admin/UploadLessons';
 import SplashScreen from './Components/Splash';
 import Competitions from "./Components/Competitions";
 import Notification from "./Components/Notification";
@@ -149,7 +150,7 @@ function App() {
                   <Subscription />
                 </Route>
                 <Route exact path="/adminpanel/lessons">
-                  <Upcoming />
+                  <UploadLessons />
                 </Route>
                 <Route exact path="/adminpanel/users">
                   <UsersInfo />
