@@ -21,14 +21,12 @@ import { uploadVideo } from "../../Services/Upload.service";
 const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
 
 export default function UploadLessons() {
-    const {
-        uploaderRef,
-        uploaderRefFrontView,
-        uploaderRefFrontMirrorView,
-        uploaderRefRearView,
-        uploaderRefRearMirrorView,
-        uploaderRefVRView,
-    } = useRef(null);
+    const   uploaderRef = useRef(),
+            uploaderRefFrontView = useRef(),
+            uploaderRefFrontMirrorView = useRef(),
+            uploaderRefRearView = useRef(),
+            uploaderRefRearMirrorView = useRef(),
+            uploaderRefVRView = useRef();
     const lessonFormDetails = {
         name: "",
         teacher: "",
@@ -74,6 +72,7 @@ export default function UploadLessons() {
         vrView: false        
     }
     const [showVideoProgressBar, setShowVideoProgressBar] = useState(initialVideoProgressBarState);
+    const [fileUploadValue, setFileUploadValue] = useState(null);
 
     const [disableUploadButton, setUploadButtonState] = useState(true);
     const [SelectedVideoData, setSelectedVideoData] = useState(lessonFormDetails);
@@ -157,10 +156,11 @@ export default function UploadLessons() {
         event.stopPropagation();
         event.preventDefault();
         var file = event.target.files[0];
-        if (ref === 'textField') {
-
-        }
         const selectedElement = event.currentTarget.parentNode;
+        if (!file) {
+            selectedElement.classList.remove('selected');
+            setShowVideoProgressBar({...showVideoProgressBar, [view]: false});
+        }
         // 1MB in Bytes is 1,048,576 so you can multiply it by the limit you need.
         if (file) {
             if (file.size > 52428800) {
@@ -249,6 +249,7 @@ export default function UploadLessons() {
                     dispatch(enableLoading());
                     if (response.donePercentage) {
                         videoProgess[key] = response.donePercentage;
+                        setVideoUploadProgess(videoProgess);
                     }
                     if (response.downloadURL) {
                         videoListObj = {...videoListObj, [key]: response.downloadURL};
@@ -260,24 +261,29 @@ export default function UploadLessons() {
                 })
             }
         }
+    }
 
-        const saveLessonToDB = (lessonObj) => {
-            saveLesson(lessonObj).subscribe((response) => {
-                console.log("vedio data saved to db", response);
-                setSelectedVideoData(lessonFormDetails);
-                setVideosToUpload(initialVideosToUploadData);
-                setVideoUploadProgess(initialVideoUploadProgress);
-                setShowVideoProgressBar(initialVideoProgressBarState);
-                setUploadButtonState(true);
-                toggleUploadingMessage(false);
-                dispatch(displayNotification({
-                    msg: "Lesson uploaded successfully!",
-                    type: NOTIFICATION_SUCCCESS,
-                    time: 3000
-                }));
-                dispatch(disableLoading());
-            })
-        }
+    const saveLessonToDB = (lessonObj) => {
+        saveLesson(lessonObj).subscribe((response) => {
+            console.log("vedio data saved to db", response);
+            setFormMessageClass('success');
+            // setFormMessage(`Lesson ${lessonObj.name} created!`);
+            setSelectedVideoData(lessonFormDetails);
+            setVideosToUpload(initialVideosToUploadData);
+            setVideoUploadProgess(initialVideoUploadProgress);
+            setShowVideoProgressBar(initialVideoProgressBarState);
+            setUploadButtonState(true);
+            setFileUploadValue("");
+            toggleUploadingMessage(false);
+            setFormMessageClass('');
+            // setFormMessage('');
+            dispatch(displayNotification({
+                msg: "Lesson uploaded successfully!",
+                type: NOTIFICATION_SUCCCESS,
+                time: 3000
+            }));
+            dispatch(disableLoading());
+        })
     }
 
     return (
@@ -411,6 +417,7 @@ export default function UploadLessons() {
                                                 <input id="frontView"
                                                     type="file"
                                                     accept="video/mp4,video/x-m4v,video/*"
+                                                    value={fileUploadValue}
                                                     ref={uploaderRefFrontView}
                                                     onChange={(e) => onChangeFile(e, uploaderRefFrontView, 'frontView')}
                                                 />
@@ -422,6 +429,7 @@ export default function UploadLessons() {
                                                 <input id="frontMirrorView"
                                                     type="file"
                                                     accept="video/mp4,video/x-m4v,video/*"
+                                                    value={fileUploadValue}
                                                     ref={uploaderRefFrontMirrorView}
                                                     onChange={(e) => onChangeFile(e, uploaderRefFrontMirrorView, 'frontMirrorView')}
                                                 />
@@ -433,6 +441,7 @@ export default function UploadLessons() {
                                                 <input id="rearView"
                                                     type="file"
                                                     accept="video/mp4,video/x-m4v,video/*"
+                                                    value={fileUploadValue}
                                                     ref={uploaderRefRearView}
                                                     onChange={(e) => onChangeFile(e, uploaderRefRearView, 'rearView')}
                                                 />
@@ -444,6 +453,7 @@ export default function UploadLessons() {
                                                 <input id="rearMirrorView"
                                                     type="file"
                                                     accept="video/mp4,video/x-m4v,video/*"
+                                                    value={fileUploadValue}
                                                     ref={uploaderRefRearMirrorView}
                                                     onChange={(e) => onChangeFile(e, uploaderRefRearMirrorView, 'rearMirrorView')}
                                                 />
@@ -455,6 +465,7 @@ export default function UploadLessons() {
                                                 <input id="vrView"
                                                     type="file"
                                                     accept="video/mp4,video/x-m4v,video/*"
+                                                    value={fileUploadValue}
                                                     ref={uploaderRefVRView}
                                                     onChange={(e) => onChangeFile(e, uploaderRefVRView, 'vrView')}
                                                 />
