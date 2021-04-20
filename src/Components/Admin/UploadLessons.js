@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { LinearProgress } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import { TextareaAutosize } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
@@ -13,7 +14,7 @@ import subscribeIcon from '../../Images/subscribe-icon.png';
 import usersIcon from '../../Images/users-icon.png';
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { getAllUser } from "../../Services/User.service";
-import { saveLesson } from "../../Services/Lessons.service";
+import { saveLesson, getLessonByName } from "../../Services/Lessons.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { NOTIFICATION_ERROR } from "../../Constants";
 import { displayNotification } from "../../Actions/Notification";
@@ -46,13 +47,30 @@ export default function UploadLessons() {
     const [uploadNewLesson, setInternalLink] = useState(true);
     const [formMessageBox, setFormMessage] = useState('');
     const [messageClass, setFormMessageClass] = useState('');
-    const [videosToUpload, setVideosToUpload] = useState({
-            frontView: null,
-            frontMirrorView: null,
-            rearView: null,
-            rearMirrorView: null,
-            vrView: null
-        });
+    const initialVideosToUploadData = {
+        frontView: null,
+        frontMirrorView: null,
+        rearView: null,
+        rearMirrorView: null,
+        vrView: null
+    }
+    const [videosToUpload, setVideosToUpload] = useState(initialVideosToUploadData);
+    const initialVideoUploadProgress = {
+        frontView: 0,
+        frontMirrorView: 0,
+        rearView: 0,
+        rearMirrorView: 0,
+        vrView: 0
+    }
+    const [videoUploadProgess, setVideoUploadProgess] = useState(initialVideoUploadProgress);
+    const initialVideoProgressBarState = {
+        frontView: false,
+        frontMirrorView: false,
+        rearView: false,
+        rearMirrorView: false,
+        vrView: false        
+    }
+    const [showVideoProgressBar, setShowVideoProgressBar] = useState(initialVideoProgressBarState);
 
     const [disableUploadButton, setUploadButtonState] = useState(true);
     const [SelectedVideoData, setSelectedVideoData] = useState(lessonFormDetails);
@@ -76,8 +94,9 @@ export default function UploadLessons() {
     }, [videosToUpload]);
 
     useEffect(() => {
-        console.log(" lessonData to save to DB", lessonData);
-    }, [lessonData]);
+        // console.log(" lessonData to save to DB", lessonData);
+        console.log("  videoUploadProgess >>>>>>>>>> ", videoUploadProgess)
+    }, [lessonData, videoUploadProgess]);
 
     function handleAdminLogin(value, type) {
         if (type === 'email') {
@@ -163,34 +182,11 @@ export default function UploadLessons() {
                 reader.readAsDataURL(file);
                 reader.onload = () => {
                     setVideosToUpload({...videosToUpload, [view] : reader.result});
+                    setShowVideoProgressBar({...showVideoProgressBar, [view] : true});
                     selectedElement.classList.add('selected')
                 }
                 reader.onerror = error => console.error(error);
             }
-        }
-    }
-
-    const handleVdoUploadResponse = (value) => {
-        if (value) {
-            // dispatch(enableLoading());
-            // getUploadedVideosByUserId(loggedInUser.key).subscribe((vdoList) => {
-            //     if (vdoList) {
-            //         setActiveTabInVdoSelection(1);
-            //         vdoList.map((uploadedVdo) => {
-            //             if (competitionDetails.isUserEnrolled) {
-            //                 if (uploadedVdo.key == competitionDetails.userSubmitedDetails.vdo.key) {
-            //                     uploadedVdo.isSelected = true;
-            //                     let updatedCompetition = competitionDetails;
-            //                     updatedCompetition.selectedVideo = uploadedVdo;
-            //                     dispatch(setActiveCompetition(updatedCompetition));
-            //                     setDisableSubmitVdoButton(true);
-            //                 }
-            //             }
-            //         })
-            //         dispatch(disableLoading());
-            //         setUserUploadedVideoList(vdoList)
-            //     }
-            // });
         }
     }
 
@@ -212,9 +208,21 @@ export default function UploadLessons() {
             } else {
                 setFormMessageClass('');
                 setFormMessage('');
-                uploadLessonVideos();
+                getLessonByNameCall(name);
             }
         }
+    }
+
+    const getLessonByNameCall = (name) => {
+        getLessonByName(name).subscribe((response) => {
+            console.log(" response received from get LessonByName", response);
+            if (Object.keys(response).length === 0) {
+                uploadLessonVideos();
+            } else {
+                setFormMessageClass('error');
+                setFormMessage(`Lesson is already exist with this name : ${name}, Please enter unique Lesson Name each time!`);
+            }
+        });
     }
 
     const uploadLessonVideos = () => {
@@ -223,54 +231,20 @@ export default function UploadLessons() {
             name, teacher, desc, videoList: []
         }
         let videoListObj = {};
-        // setLessonData(lessonDetails);
-        // const lessonVideoList = [files];
+        let videoProgess = {};
         if (Object.values(files) && Object.values(files).length > 0) {
             for (const [key, value] of Object.entries(files)) {
-                // console.log(`${key}: ${value}`);
-                // console.log(" data to upload ", key, value, 'lessons', name)
                 uploadVideo(value, 'lessons', name, key).subscribe((response) => {
-                    // dispatch(enableLoading());
-                    // setShowVdoUploadProgress(true);
+                    dispatch(enableLoading());
                     if (response.donePercentage) {
-                        // setProgress(response.donePercentage);
-                        console.log('Upload for ', key, 'is ' + response.donePercentage + '% done');
+                        videoProgess[key] = response.donePercentage;
                     }
                     if (response.downloadURL) {
-                        // sendEmailToAdmin(response.downloadURL);
-                        // sendEmailToUser(response.downloadURL);
-                        // dispatch(enableLoading());
-                        // setShowVdoUploadProgress(false);
-                        // setUploadedVdoUrl(response.downloadURL);
-                        // setLessonData(...lessonDetails);
                         videoListObj = {...videoListObj, [key]: response.downloadURL};
                         lessonDetails.videoList = videoListObj;
-
-                        console.log("======")
                         if (Object.values(files).length  === Object.values(lessonDetails.videoList).length) {
-                            console.log("matched selected files length with uploaded files length");
-                            console.log("lessonDetails >>>>>> ", lessonDetails);
                             saveLessonToDB(lessonDetails);
                         }
-
-                        // console.log("lessonDetails >>>>>> ", lessonDetails)
-                        // setLessonData(...lessonDetails);
-                        // const uploadObj = {
-                        //     title: SelectedVideoData.title,
-                        //     desc: SelectedVideoData.desc,
-                        //     url: response.downloadURL,
-                        //     userId: loggedInUser.key,
-                        //     // thumbnail: thumbnailImage
-                        // }
-                        // saveUploadedVideo(uploadObj).subscribe((response) => {
-                        //     console.log("vedio data saved to db", response);
-                        //     dispatch(disableLoading());
-                        //     const pathName = history?.location?.pathname.split('/')[1];
-                        //     pathName.includes('profile') && dispatch(setDataRefetchModuleName('user-uploaded-video'));
-                        //     closeUploaderModal();
-                        //     if (state.currentLoginFlow == 'competition-uploadvdo') handleVdoUploadResponse(3);
-                        //     else history.push('/profile');
-                        // })
                     }
                 })
             }
@@ -279,45 +253,14 @@ export default function UploadLessons() {
         const saveLessonToDB = (lessonObj) => {
             saveLesson(lessonObj).subscribe((response) => {
                 console.log("vedio data saved to db", response);
-                // dispatch(disableLoading());
-                // const pathName = history?.location?.pathname.split('/')[1];
-                // pathName.includes('profile') && dispatch(setDataRefetchModuleName('user-uploaded-video'));
-                // closeUploaderModal();
-                // if (state.currentLoginFlow == 'competition-uploadvdo') handleVdoUploadResponse(3);
-                // else history.push('/profile');
+                setSelectedVideoData(lessonFormDetails);
+                setVideosToUpload(initialVideosToUploadData);
+                setVideoUploadProgess(initialVideoUploadProgress);
+                setShowVideoProgressBar(initialVideoProgressBarState);
+                setUploadButtonState(true);
+                dispatch(disableLoading());
             })
         }
-        // uploadVideo(SelectedVideo.file).subscribe((response) => {
-        //     dispatch(enableLoading());
-        //     setShowVdoUploadProgress(true);
-        //     if (response.donePercentage) {
-        //         setProgress(response.donePercentage);
-        //         console.log('Upload is ' + response.donePercentage + '% done');
-        //     }
-        //     if (response.downloadURL && !UploadedVdoUrl) {
-        //         // sendEmailToAdmin(response.downloadURL);
-        //         // sendEmailToUser(response.downloadURL);
-        //         // dispatch(enableLoading());
-        //         // setShowVdoUploadProgress(false);
-        //         // setUploadedVdoUrl(response.downloadURL);
-        //         const uploadObj = {
-        //             title: SelectedVideo.title,
-        //             desc: SelectedVideo.desc,
-        //             url: response.downloadURL,
-        //             userId: loggedInUser.key,
-        //             thumbnail: thumbnailImage
-        //         }
-        //         // saveUploadedVideo(uploadObj).subscribe((response) => {
-        //         //     console.log("vedio data saved to db", response);
-        //         //     dispatch(disableLoading());
-        //         //     const pathName = history?.location?.pathname.split('/')[1];
-        //         //     pathName.includes('profile') && dispatch(setDataRefetchModuleName('user-uploaded-video'));
-        //         //     closeUploaderModal();
-        //         //     if (state.currentLoginFlow == 'competition-uploadvdo') handleVdoUploadResponse(3);
-        //         //     else history.push('/profile');
-        //         // })
-        //     }
-        // })
     }
 
     return (
@@ -445,26 +388,6 @@ export default function UploadLessons() {
                                             value={SelectedVideoData.desc}
                                             onChange={handleChange('desc')}
                                         />
-                                        {/* <label className="controlLabel">Desciprion *</label>
-                                        <TextareaAutosize
-                                            required
-                                            className="input-field textarea"
-                                            label="Artist/Teacher"
-                                            variant="outlined"
-                                            value={SelectedVideoData.desc}
-                                            onChange={handleChange('desc')}
-                                        /> */}
-                                        {/* <label className="controlLabel">Desciprion</label>
-                                        <textarea
-                                            required
-                                            className="textarea"
-                                            id="outlined-required-desc"
-                                            label="Artist/Teacher"
-                                            variant="outlined"
-                                            value={SelectedVideoData.desc}
-                                            onChange={handleChange('desc')}
-                                        >
-                                        </textarea> */}
                                     </div>
 
                                     <div className="input-wrap input-wrap-full">
@@ -480,6 +403,7 @@ export default function UploadLessons() {
                                                     ref={uploaderRefFrontView}
                                                     onChange={(e) => onChangeFile(e, uploaderRefFrontView, 'frontView')}
                                                 />
+                                                {showVideoProgressBar?.frontView && <LinearProgress className="uploadProgessBar" variant="determinate" value={videoUploadProgess.frontView} />}
                                             </div>
                                             <div className={videosToUpload.frontMirrorView !== null ? 'upload-input-wrap selected' : 'upload-input-wrap'}>
                                                 <h6 className="heading">Front Mirror</h6>
@@ -488,8 +412,9 @@ export default function UploadLessons() {
                                                     type="file"
                                                     accept="video/mp4,video/x-m4v,video/*"
                                                     ref={uploaderRefFrontMirrorView}
-                                                    onChange={(e) => onChangeFile(e, uploaderRefFrontView, 'frontMirrorView')}
+                                                    onChange={(e) => onChangeFile(e, uploaderRefFrontMirrorView, 'frontMirrorView')}
                                                 />
+                                                {showVideoProgressBar?.frontMirrorView && <LinearProgress className="uploadProgessBar" variant="determinate" value={videoUploadProgess.frontMirrorView} />}
                                             </div>
                                             <div className={videosToUpload.rearView !== null ? 'upload-input-wrap selected' : 'upload-input-wrap'}>
                                                 <h6 className="heading">Back Side</h6>
@@ -500,6 +425,7 @@ export default function UploadLessons() {
                                                     ref={uploaderRefRearView}
                                                     onChange={(e) => onChangeFile(e, uploaderRefRearView, 'rearView')}
                                                 />
+                                                {showVideoProgressBar?.rearView && <LinearProgress className="uploadProgessBar" variant="determinate" value={videoUploadProgess.rearView} />}
                                             </div>
                                             <div className={videosToUpload.rearMirrorView !== null ? 'upload-input-wrap selected' : 'upload-input-wrap'}>
                                                 <h6 className="heading">Back Mirror</h6>
@@ -510,6 +436,7 @@ export default function UploadLessons() {
                                                     ref={uploaderRefRearMirrorView}
                                                     onChange={(e) => onChangeFile(e, uploaderRefRearMirrorView, 'rearMirrorView')}
                                                 />
+                                                {showVideoProgressBar?.rearMirrorView && <LinearProgress className="uploadProgessBar" variant="determinate" value={videoUploadProgess.rearMirrorView} />}
                                             </div>
                                             <div className={videosToUpload.vrView !== null ? 'upload-input-wrap selected' : 'upload-input-wrap'}>
                                                 <h6 className="heading">VR Mode</h6>
@@ -520,26 +447,17 @@ export default function UploadLessons() {
                                                     ref={uploaderRefVRView}
                                                     onChange={(e) => onChangeFile(e, uploaderRefVRView, 'vrView')}
                                                 />
+                                                {showVideoProgressBar?.vrView && <LinearProgress className="uploadProgessBar" variant="determinate" value={videoUploadProgess.vrView} />}
                                             </div>
                                             <div className="upload-input-wrap button-container">
                                                 <Button
                                                     disabled = {disableUploadButton ? true : false}
                                                     variant="contained" color="primary"
-                                                    onClick={() => { sendSelectedVdosToUpload() }}>Upload Video
+                                                    onClick={() => { sendSelectedVdosToUpload() }}>Upload Video <br />&amp;<br /> Create Lesson
                                                 </Button>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <Button
-                                        disabled={!validateUploadForm ? true : false}
-                                        variant="contained" color="primary"
-                                        onClick={() => { console.log() }}>Create New Lesson
-                                    </Button>
-
-                                    <p className={`messageWrap ${messageClass}`}>{formMessageBox}</p>
-                                    {/* <VideoUploader selectedVdo={SelectedVideo} handleVdoUploadResponse={(e) => handleVdoUploadResponse(e)} /> */}
-                                    {SelectedVideoData?.file && <VideoUploader selectedVdo={SelectedVideoData} handleVdoUploadResponse={(e) => handleVdoUploadResponse(e)} />}
                                 </div>
                             </div>
                         :   <div className="usersListWrap">

@@ -467,6 +467,11 @@
             margin: 20px 20px 20px 0;
             cursor: pointer;
             color:  var(--footer-text-grey);
+            .uploadProgessBar {
+                position: absolute;
+                bottom: -10px;
+                width: 100%;
+            }
             .heading {
                 font-size: 14px;
                 color:  var(--footer-text-grey);
@@ -507,6 +512,11 @@
                 cursor: auto;
             }
             &.selected {
+                .progressbar {
+                    // position: absolute;
+                    // bottom: -10px;
+                    // width: 100%;
+                }
                 color:  var(--success-green);
                 .heading {
                     color:  inherit;

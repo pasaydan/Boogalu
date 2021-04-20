@@ -25,6 +25,7 @@ const lessonsVideosRef = db.collection('lessons');
 export function saveLesson(data) {
     data.createdOn = new Date();
     data.modifiedOn = new Date();
+    data.id = data.name.toLowerCase();
     return new Observable((observer) => {
         lessonsVideosRef.add(data).then((doc) => {
             observer.next({
@@ -34,19 +35,20 @@ export function saveLesson(data) {
     });
 }
 
-// export function getUploadedVideosByUserId(id) {
-//     return new Observable((observer) => {
-//         uploadedVideosRef.where('userId', '==', id).get().then((querySnapshot) => {
-//             let videos = []
-//             querySnapshot.forEach(function (doc) {
-//                 let data = doc.data();
-//                 data.key = doc.id;
-//                 videos.push(data);
-//             })
-//             observer.next(videos);
-//         })
-//     })
-// }
+export function getLessonByName(name) {
+    return new Observable((observer) => {
+        lessonsVideosRef.where('id', '==', name.toLowerCase()).get().then((querySnapshot) => {
+            let lesson = {}
+            querySnapshot.forEach(function (doc) {
+                let data = doc.data();
+                console.log(" getLessonByName data is ", data);
+                data.key = doc.id;
+                lesson = data;
+            })
+            observer.next(lesson);
+        })
+    })
+}
 
 // export function updateVideo(id, data) {
 //     data.createdOn = data.createdOn || new Date();
