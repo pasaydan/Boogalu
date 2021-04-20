@@ -119,7 +119,6 @@ export default function Competition() {
                 dispatch(disableLoading());
                 if (allCompList.length) {
                     setCompletitionList(allCompList);
-                    
                 }
             });
         } catch(e) {
@@ -439,7 +438,7 @@ export default function Competition() {
                                         <p className="date">Starting Date: <span>{item.startingDate}</span></p>
                                     </div>)
                                 })
-                                : ''
+                                : <p className="noDataInListMessage">You haven't created any Competition!</p>
                             }
                         </div>
                     :

@@ -6,7 +6,7 @@
     border-radius: 5px;
     top: 120px;
     left: 50%;
-    z-index: 9999;
+    z-index: 999999999;
     text-align: center;
     transform: translateX(-50%);
     &.noNotification {
@@ -17,8 +17,8 @@
         color: var(--success-green-dark);
     }
     &.NOTIFICATION_ERROR {
-        background-color: var(--success-green-opaque);
-        color: var(--success-green-dark);
+        background-color: var(--error-red-opaque);
+        color: var(--error-red-dark);
     }
     &.NOTIFICATION_INFO {
         background-color: var(--info-blue-opaque);

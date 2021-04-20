@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import db from '../Database';
-import { formatDate, formatTime } from "./Utils";
+import { formatDate, formatTime, timeStampToNewDate} from "./Utils";
 
 const lessonsVideosRef = db.collection('lessons');
 
@@ -48,6 +48,22 @@ export function getLessonByName(name) {
             observer.next(lesson);
         })
     })
+}
+
+export function getAllLessons() {
+    return new Observable((observer) => {
+        lessonsVideosRef.onSnapshot((querySnapshot) => {
+            let lessons = [];
+            querySnapshot.forEach((doc) => {
+                let data = doc.data();
+                data.key = doc.id;
+                // let startingDate = new Date(data.createdOn.seconds);
+                data.uploadedTime = formatDate(timeStampToNewDate(data.createdOn), 3);
+                lessons.push(data);
+            });
+            observer.next(lessons);
+        });
+    });
 }
 
 // export function updateVideo(id, data) {

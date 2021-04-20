@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { LinearProgress } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
-import { TextareaAutosize } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import { FaCloudUploadAlt } from 'react-icons/fa';
+import { FaCloudUploadAlt, FaInfoCircle } from 'react-icons/fa';
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
 import logOutIcon from '../../Images/logout-icon.png';
 import { Link } from 'react-router-dom';
@@ -13,13 +12,12 @@ import lessonsIcon from '../../Images/lessons-icon.png';
 import subscribeIcon from '../../Images/subscribe-icon.png';
 import usersIcon from '../../Images/users-icon.png';
 import { useStoreConsumer } from '../../Providers/StateProvider';
-import { getAllUser } from "../../Services/User.service";
-import { saveLesson, getLessonByName } from "../../Services/Lessons.service";
+import { saveLesson, getLessonByName, getAllLessons } from "../../Services/Lessons.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
-import { NOTIFICATION_ERROR } from "../../Constants";
+import { NOTIFICATION_ERROR, NOTIFICATION_SUCCCESS, NOTIFICATION_INFO } from "../../Constants";
 import { displayNotification } from "../../Actions/Notification";
-import { uploadVideo, uploadImage } from "../../Services/Upload.service";
-import VideoUploader from "../VideoUploader";
+import { uploadVideo } from "../../Services/Upload.service";
+
 const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
 
 export default function UploadLessons() {
@@ -43,10 +41,15 @@ export default function UploadLessons() {
     const [adminEmail, setAdminEmail] = useState('');
     const [adminPwd, setAdminPwd] = useState('');
     const [loggedInMessages, setLoginMessage] = useState('');
-    const [userListData, setUsersList] = useState(null);
     const [uploadNewLesson, setInternalLink] = useState(true);
     const [formMessageBox, setFormMessage] = useState('');
     const [messageClass, setFormMessageClass] = useState('');
+    const [lessonsData, setLessonsList] = useState(null);
+    const [isUploadingInProgress, toggleUploadingMessage] = useState(false);
+    
+    const createTabRef = useRef(null);
+    const listTabRef = useRef(null);
+
     const initialVideosToUploadData = {
         frontView: null,
         frontMirrorView: null,
@@ -81,7 +84,6 @@ export default function UploadLessons() {
         if (checkAdminLogIn) {
             toggleAdminLogin(checkAdminLogIn);
             setInternalLink(true);
-            getUsersList();
         }
     }, []);
 
@@ -110,7 +112,6 @@ export default function UploadLessons() {
         if (action && (adminEmail && adminEmail === ADMIN_USER && adminPwd && adminPwd === ADMIN_PWD)) {
             setLoginMessage('');
             toggleAdminLogin(true);
-            getUsersList();
             localStorage.setItem('adminLoggedIn', true);
         } else {
             toggleAdminLogin(false);
@@ -131,25 +132,19 @@ export default function UploadLessons() {
         window.location.reload();
     }
 
-    const getUsersList = () => {
-        try {
-            dispatch(enableLoading());
-            getAllUser().subscribe(users => {
-                console.log('USERS LISTS: ', users);
-                dispatch(disableLoading());
-                if (users.length) {
-                    setUsersList(users);
-
-                }
-            });
-        } catch (e) {
-            dispatch(disableLoading());
-            console.log('Error: ', e);
-        }
-    }
-
     const setInternalLinkFn = (internalLink) => {
-        console.log('interal link is ', internalLink);
+        if (internalLink) {
+            if (createTabRef.current && listTabRef.current) {
+                createTabRef.current.classList.add('active');
+                listTabRef.current.classList.remove('active');
+            }
+        } else {
+            getAllLessonsData();
+            if (createTabRef.current && listTabRef.current) {
+                createTabRef.current.classList.remove('active');
+                listTabRef.current.classList.add('active');
+            }
+        }
         setInternalLink(internalLink);
     }
 
@@ -169,12 +164,11 @@ export default function UploadLessons() {
         // 1MB in Bytes is 1,048,576 so you can multiply it by the limit you need.
         if (file) {
             if (file.size > 52428800) {
-                alert("File is too big!");
                 dispatch(displayNotification({
                     msg: "File is too big!",
                     type: NOTIFICATION_ERROR,
                     time: 3000
-                }))
+                }));
                 setVideosToUpload({...videosToUpload});
             } else {
                 setVideosToUpload({...videosToUpload});
@@ -225,6 +219,22 @@ export default function UploadLessons() {
         });
     }
 
+    const getAllLessonsData = () => {
+        try {
+            dispatch(enableLoading());
+            getAllLessons().subscribe(lessons => {
+                console.log('LESSONS LISTS: ', lessons);
+                dispatch(disableLoading());
+                if (lessons.length) {
+                    setLessonsList(lessons);
+                }
+            });
+        } catch (e) {
+            dispatch(disableLoading());
+            console.log('Error: ', e);
+        }
+    }
+
     const uploadLessonVideos = () => {
         const { name, teacher, desc, files } = SelectedVideoData;
         let lessonDetails = {
@@ -233,6 +243,7 @@ export default function UploadLessons() {
         let videoListObj = {};
         let videoProgess = {};
         if (Object.values(files) && Object.values(files).length > 0) {
+            toggleUploadingMessage(true);
             for (const [key, value] of Object.entries(files)) {
                 uploadVideo(value, 'lessons', name, key).subscribe((response) => {
                     dispatch(enableLoading());
@@ -258,6 +269,12 @@ export default function UploadLessons() {
                 setVideoUploadProgess(initialVideoUploadProgress);
                 setShowVideoProgressBar(initialVideoProgressBarState);
                 setUploadButtonState(true);
+                toggleUploadingMessage(false);
+                dispatch(displayNotification({
+                    msg: "Lesson uploaded successfully!",
+                    type: NOTIFICATION_SUCCCESS,
+                    time: 3000
+                }));
                 dispatch(disableLoading());
             })
         }
@@ -304,6 +321,13 @@ export default function UploadLessons() {
                     <img src={boogaluLogo} alt="Boogalu" />
                 </a>
             </div>
+            {
+                isAdminLoggedIn || checkAdminLogIn ?
+                <div className="optionsTab">
+                    <a onClick={(e) => setInternalLinkFn(true)} className="active" ref={createTabRef}>Upload new</a>
+                    <a onClick={(e) => setInternalLinkFn(false)} ref={listTabRef}>View lessons</a>
+                </div>: ''
+            }
             <div className={`competition-bo-wrap clearfix ${(isAdminLoggedIn || checkAdminLogIn) && 'loggedInAdmin usersListBox'}`}>
                 {
                     isAdminLoggedIn || checkAdminLogIn ?
@@ -321,24 +345,12 @@ export default function UploadLessons() {
                             </Link>
 
 
-                            <Link onClick={
-                                () => {
-                                    setInternalLinkFn(true)
-                                }} 
-                                title="Upload New Lessons" className="mainLink">
-                                <span>
-                                    Upload New Lessons
-                                </span>
-                            </Link>
-                            <Link onClick={
-                                () => {
-                                    setInternalLinkFn(false)
-                                }} 
-                                title="List of Uploaded Lessons" className="mainLink">
-                                <span>
-                                    List of Uploaded Lessons
-                                </span>
-                            </Link>
+                            {
+                                uploadNewLesson ?
+                                'Upload a new lesson'
+                                :
+                                'View lists of lessons created'
+                            }
                         </h1>
                         :
                         <h1>
@@ -354,7 +366,6 @@ export default function UploadLessons() {
                     isAdminLoggedIn || checkAdminLogIn ?
                         uploadNewLesson
                         ?   <div className="usersListWrap">
-                                <p className={`messageWrap ${messageClass}`}>{formMessageBox}</p>
                                 <div className="inner-form-wrap">
                                     <div className="input-wrap">
                                         <TextField className="input-field"
@@ -382,7 +393,7 @@ export default function UploadLessons() {
                                             className="textarea"
                                             id="outlined-required-desc"
                                             variant="outlined"
-                                            label="Artist/Teacher"
+                                            label="About lesson"
                                             multiline
                                             rowsMax={4}
                                             value={SelectedVideoData.desc}
@@ -391,7 +402,7 @@ export default function UploadLessons() {
                                     </div>
 
                                     <div className="input-wrap input-wrap-full">
-                                        <label className="controlLabel">Lesson Videos</label>
+                                        <label className="controlLabel">Lesson Videos&nbsp;*</label>
                                         <div className="uploadContainer">
                                             <div className={videosToUpload.frontView !== null ? 'upload-input-wrap selected' : 'upload-input-wrap'}>
                                                 <h6 className="heading">Front Side</h6>
@@ -449,49 +460,32 @@ export default function UploadLessons() {
                                                 />
                                                 {showVideoProgressBar?.vrView && <LinearProgress className="uploadProgessBar" variant="determinate" value={videoUploadProgess.vrView} />}
                                             </div>
-                                            <div className="upload-input-wrap button-container">
-                                                <Button
-                                                    disabled = {disableUploadButton ? true : false}
-                                                    variant="contained" color="primary"
-                                                    onClick={() => { sendSelectedVdosToUpload() }}>Upload Video <br />&amp;<br /> Create Lesson
-                                                </Button>
-                                            </div>
+                                        </div>
+                                        <p className={`messageWrap ${messageClass}`}>{formMessageBox}</p>
+                                        <div className="upload-input-wrap button-container">
+                                            <Button
+                                                disabled = {disableUploadButton ? true : false}
+                                                variant="contained" color="primary"
+                                                onClick={() => { sendSelectedVdosToUpload() }}>
+                                                Upload Video &amp; Create Lesson
+                                            </Button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        :   <div className="usersListWrap">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Phone</th>
-                                            <th>Gender</th>
-                                            <th>State</th>
-                                            <th>Country</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            userListData && userListData.length &&
-                                            userListData.map( item => {
-                                                return (
-                                                    <tr>
-                                                        <td>{item.name}</td>
-                                                        <td>{item.email || 'N/A'}</td>
-                                                        <td>{item.phone || 'N/A'}</td>
-                                                        <td>{item.gender || 'N/A'}</td>
-                                                        <td>{item.state || 'N/A'}</td>
-                                                        <td>{item.country || 'N/A'}</td>
-                                                        <td></td>
-                                                    </tr>
-                                                )
-                                            })
-                                        }
-                                    </tbody>
-                                </table>
+                        :   <div className="lessonsList adminItemlistView">
+                                {
+                                    lessonsData && lessonsData.length ?
+                                    lessonsData.map( item => {
+                                        return (<div className="boxItem compBox">
+                                            <p className="title">Name: <span>{ item.name }</span></p>
+                                            <p className="statusBlock">
+                                                Teacher: <span>{ item.teacher }</span></p>
+                                            <p className="date">Date Created: <span>{item.uploadedTime}</span></p>
+                                        </div>)
+                                    })
+                                    : <p className="noDataInListMessage">You haven't uploaded any Lessons!</p>
+                                }
                             </div>
                         :
                         <div className="login-admin-form">
@@ -521,6 +515,13 @@ export default function UploadLessons() {
                         </div>
                 }
             </div>
+            {
+                isUploadingInProgress ?
+                <div className="uploadingNotificationForAdmin">
+                    <i className="infoIcon"><FaInfoCircle /></i>
+                    Uploading is in progress, please do not redirect, refresh or close the browser!
+                </div> : ''
+            }
             <div className="footerBox">
                 &copy; 2021 Box Puppet Ent. Pvt. Ltd., All rights reserved.
             </div>
