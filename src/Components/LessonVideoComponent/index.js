@@ -9,12 +9,14 @@ import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 function LessonsVideoContainer({ title, desc, activeVideosList }) {
     const [activeVideoState, setActiveVideoState] = useState('front'); // front,back,front-mirror,back-mirror
     const [fullScreenMode, setFullScreenMode] = useState(false);
+    const [videoDuration, setVideoDurationValue] = useState('');
 
     useEffect(() => {
         const videoFront = document.getElementById(activeVideosList?.fUrl);
         const videoBack = document.getElementById(activeVideosList?.bUrl);
         const videoFrontMirror = document.getElementById(activeVideosList?.fMUrl);
         const videoBackMirror = document.getElementById(activeVideosList?.bMUrl);
+  
         videoBack.muted = false;
         videoFrontMirror.muted = true;
         videoBackMirror.muted = true;
@@ -169,10 +171,18 @@ function LessonsVideoContainer({ title, desc, activeVideosList }) {
         }
     }
 
+    function setVideoDuration(videoMetaData) {
+        const minutes = parseInt(videoMetaData / 60, 10);
+        const seconds = videoMetaData % 60;
+        const totalDuration = `${minutes} ${minutes < 2 ? 'min' : 'mins'} ${Math.floor(seconds)} ${Math.floor(seconds) < 2 ? 'sec' : 'secs'}`
+        setVideoDurationValue(totalDuration);
+    }
+
     return (
         <div className="video-component-wrap">
             <h4>{title}</h4>
             <p className="desc">{desc}</p>
+            <p className="durationBox">Duration: <strong>{videoDuration}</strong> </p>
             <div className="inner-video-wrap" id="innerVideoWrap">
                 <div className="actions">
                     <FlipCameraAndroidOutlinedIcon title="Flip video" className="vdo-controlls" variant="contained" type="submit" onClick={(e) => flipVideos(e)} />
@@ -183,7 +193,15 @@ function LessonsVideoContainer({ title, desc, activeVideosList }) {
                         <FullscreenIcon  title="Exit fullscreen" className="vdo-controlls" variant="contained" type="submit" onClick={(e) => triggerFullScreen(e)} />
                     }
                 </div>
-                <video id={activeVideosList?.fUrl} className={(activeVideoState == 'front') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'front')} poster={VideoThumbnail} controls>
+                <video 
+                    id={activeVideosList?.fUrl} 
+                    className={(activeVideoState == 'front') ? 'active' : ''} 
+                    onPause={(e) => pauseVideo(e)} 
+                    onPlay={(e) => playVideo(e)} 
+                    onSeeked={(e) => onVideoSeek(e, 'front')} 
+                    poster={VideoThumbnail} controls
+                    onLoadedMetadata={(e) => setVideoDuration(e.target.duration)}
+                    >
                     <source src={activeVideosList?.fMUrl} type="video/mp4" />
                 </video>
                 <video id={activeVideosList?.fMUrl} className={(activeVideoState == 'front-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'front-mirror')} poster={VideoThumbnail} controls>
