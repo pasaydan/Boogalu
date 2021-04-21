@@ -256,6 +256,7 @@ export default function UploadLessons() {
         let videoListObj = {};
         let videoProgess = {};
         let filesToUpload = {};
+        lessonDetails.name = lessonDetails.name.trim();
         if (Object.values(files) && Object.values(files).length > 0) {
             toggleUploadingMessage(true);
             for (const [key, value] of Object.entries(files)) {
