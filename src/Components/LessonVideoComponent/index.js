@@ -14,6 +14,9 @@ function LessonsVideoContainer({ title, desc, uploadedOn, activeVideosList, vide
     const [videoFrontMirror, setVideoFrontMirror] = useState(null);
     const [videoBack, setVideoBack] = useState(null);
     const [videoBackMirror, setVideoBackMirror] = useState(null);
+    const [lessonsCrossBtn, toggleLessonsCrossBtn] = useState(false);
+
+    const thumbNailOverlayRef = useRef(null);
 
     useEffect(() => {
         const videoElements = document.querySelectorAll('video');
@@ -173,15 +176,21 @@ function LessonsVideoContainer({ title, desc, uploadedOn, activeVideosList, vide
         setVideoDurationValue(totalDuration);
     }
 
-    function enableOverlay(event, overlayBox) {
+    function toggleVideoOverlay(event, overlayBox, from) {
         event.stopPropagation();
         const overlayItem = document.getElementsByClassName(overlayBox)[0];
         
         if (overlayItem.classList.contains('activeOverlay')) {
+            toggleLessonsCrossBtn(false);
             videoFront.pause();
-            event.currentTarget.classList.remove('activeOverlay');
+            if (from && from === 'close' && thumbNailOverlayRef.current) {
+                thumbNailOverlayRef.current.classList.remove('activeOverlay');
+            } else {
+                event.currentTarget.classList.remove('activeOverlay');
+            }
             overlayItem.classList.remove('activeOverlay');
         } else {
+            toggleLessonsCrossBtn(true);
             videoFront.play();
             event.currentTarget.classList.add('activeOverlay');
             overlayItem.classList.add('activeOverlay');
@@ -190,7 +199,12 @@ function LessonsVideoContainer({ title, desc, uploadedOn, activeVideosList, vide
 
     return (
         <div className="video-component-wrap">
-            <div className="videoThumbnailOverlay" onClick={(e) => enableOverlay(e, `js-${videoId}`)}></div>
+            <div className="videoThumbnailOverlay" ref={thumbNailOverlayRef} onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}></div>
+            {
+                lessonsCrossBtn ?
+                <a title="close lesson" className="closeLessonBox" onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`, 'close')}><span></span></a>
+                : ''
+            }
             <div className={`innerLessonVideoWrap js-${videoId}`}>
                 <h4>{title}</h4>
                 <p className="desc">{desc}</p>

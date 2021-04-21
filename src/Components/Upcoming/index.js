@@ -37,19 +37,23 @@ function Upcoming() {
 
     return (
         <div className="lessons lessons-wrap" id="upcomingLessons">
-            <div className="inner-page">
+            <div className={`inner-page ${!(lessonsData && lessonsData.length) ? 'noLessonBox' : ''}`}>
                 <h1>Learn from the Experts</h1>
                 <p>
                     Lessons for all users from our expert faculty members.
                     From Hip-Hop to Bharatnatyam. You'll get all learning videos
                     at one place.
-                </p>
-                <p className="launching-soon">More lessons launching soon! Stay connected!</p>
-                {/* <p className="from-our-expert-title">Few sample lessons</p> */}
+                </p> 
+                {
+                    lessonsData && lessonsData.length ?
+                    <p className="launching-soon">Our recent lessons!</p>
+                    : <p className="launching-soon">Lessons launching soon! Stay connected!</p>
+                }
             </div>
+            
             <div className="lesson-wrap">
                 <div className="lessons-vdo-wrap">
-                    {lessonsData && lessonsData.length && lessonsData.map((videoData, index) => {
+                    {lessonsData && lessonsData.length ? lessonsData.map((videoData, index) => {
                         return <LessonsVideoContainer
                         title={videoData.name}
                         desc={videoData.desc} 
@@ -57,7 +61,9 @@ function Upcoming() {
                         activeVideosList={videoData.videoList}
                         videoId={`lessonVideo-${index + 1}`}
                         key={'lesson-'+index} />
-                    })}
+                    }) : 
+                        ''
+                    }
                 </div>
             </div>
         </div>

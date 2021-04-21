@@ -1,6 +1,7 @@
 #upcomingLessons {
     min-height: calc(100vh - 73px);
     padding: 20px;
+    box-sizing: border-box;
     background: var(--black) url('../../Images/lessons-bg.png') no-repeat right bottom/cover;
     color: var(--primary-white);
 }
@@ -16,6 +17,19 @@
 
 #upcomingLessons .inner-page {
     width: 60%;
+    &.noLessonBox {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        box-sizing: border-box;
+        text-align: center;
+        transform: translate(-50%, -50%);
+        box-sizing: border-box;
+        padding: 0 10px;
+        h1 {
+            text-align: center;
+        }
+    }
 }
 
 #upcomingLessons p {
@@ -71,7 +85,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 0;
         }
         .inner-page {
