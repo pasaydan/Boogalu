@@ -21,7 +21,7 @@ import { uploadVideo } from "../../Services/Upload.service";
 const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
 
 export default function UploadLessons() {
-    const   uploaderRef = useRef(),
+    const   uploaderRefThumbnailImage = useRef(),
             uploaderRefFrontView = useRef(),
             uploaderRefFrontMirrorView = useRef(),
             uploaderRefRearView = useRef(),
@@ -47,8 +47,15 @@ export default function UploadLessons() {
     
     const createTabRef = useRef(null);
     const listTabRef = useRef(null);
-
+    const requiredUploadFieldsForLesson = [
+        "thumbnailImage",
+        "frontView",
+        "frontMirrorView",
+        "rearView",
+        "rearMirrorView",
+    ];
     const initialVideosToUploadData = {
+        thumbnailImage: null,
         frontView: null,
         frontMirrorView: null,
         rearView: null,
@@ -57,6 +64,7 @@ export default function UploadLessons() {
     }
     const [videosToUpload, setVideosToUpload] = useState(initialVideosToUploadData);
     const initialVideoUploadProgress = {
+        thumbnailImage: 0,
         frontView: 0,
         frontMirrorView: 0,
         rearView: 0,
@@ -65,6 +73,7 @@ export default function UploadLessons() {
     }
     const [videoUploadProgess, setVideoUploadProgess] = useState(initialVideoUploadProgress);
     const initialVideoProgressBarState = {
+        thumbnailImage: false,
         frontView: false,
         frontMirrorView: false,
         rearView: false,
@@ -72,7 +81,7 @@ export default function UploadLessons() {
         vrView: false        
     }
     const [showVideoProgressBar, setShowVideoProgressBar] = useState(initialVideoProgressBarState);
-    const [fileUploadValue, setFileUploadValue] = useState(null);
+    const [fileUploadValue, setFileUploadValue] = useState("");
 
     const [disableUploadButton, setUploadButtonState] = useState(true);
     const [SelectedVideoData, setSelectedVideoData] = useState(lessonFormDetails);
@@ -87,17 +96,21 @@ export default function UploadLessons() {
     }, []);
 
     useEffect(() => {
-        const filteredSelectedVideos = Object.values(videosToUpload).filter((item) => item !== null);
-        if (filteredSelectedVideos && filteredSelectedVideos.length === 5) {
+        const validateRequiredFieldsData = [];
+        if (videosToUpload) {
+            requiredUploadFieldsForLesson.map(field => {
+                const itemValue = videosToUpload[field];
+                if (itemValue) {
+                    validateRequiredFieldsData.push(videosToUpload[field]);
+                }
+            })
+        }
+        if (requiredUploadFieldsForLesson && validateRequiredFieldsData && validateRequiredFieldsData.length === requiredUploadFieldsForLesson.length) {
             setUploadButtonState(false);
             setSelectedVideoData({...SelectedVideoData, files: videosToUpload});
         }
     }, [videosToUpload]);
 
-    useEffect(() => {
-        // console.log(" lessonData to save to DB", lessonData);
-        console.log("  videoUploadProgess >>>>>>>>>> ", videoUploadProgess)
-    }, [lessonData, videoUploadProgess]);
 
     function handleAdminLogin(value, type) {
         if (type === 'email') {
@@ -242,23 +255,31 @@ export default function UploadLessons() {
         }
         let videoListObj = {};
         let videoProgess = {};
+        let filesToUpload = {};
         if (Object.values(files) && Object.values(files).length > 0) {
             toggleUploadingMessage(true);
             for (const [key, value] of Object.entries(files)) {
-                uploadVideo(value, 'lessons', name, key).subscribe((response) => {
-                    dispatch(enableLoading());
-                    if (response.donePercentage) {
-                        videoProgess[key] = response.donePercentage;
-                        setVideoUploadProgess(videoProgess);
-                    }
-                    if (response.downloadURL) {
-                        videoListObj = {...videoListObj, [key]: response.downloadURL};
-                        lessonDetails.videoList = videoListObj;
-                        if (Object.values(files).length  === Object.values(lessonDetails.videoList).length) {
-                            saveLessonToDB(lessonDetails);
+                if (key && value) {
+                    filesToUpload = {...filesToUpload, [key]: value};
+                    uploadVideo(value, 'lessons', name, key).subscribe((response) => {
+                        dispatch(enableLoading());
+                        if (response.donePercentage) {
+                            videoProgess[key] = response.donePercentage;
+                            setVideoUploadProgess(videoProgess);
                         }
-                    }
-                })
+                        if (response.downloadURL) {
+                            videoListObj = {...videoListObj, [key]: response.downloadURL};
+                            lessonDetails.videoList = videoListObj;
+                            if (key === 'thumbnailImage') {
+                                lessonDetails = {...lessonDetails, [key]: lessonDetails.videoList[key]};
+                            }
+                            if (Object.values(filesToUpload).length  === Object.values(lessonDetails.videoList).length) {
+                                delete lessonDetails.videoList['thumbnailImage'];
+                                saveLessonToDB(lessonDetails);
+                            }
+                        }
+                    })
+                }
             }
         }
     }
@@ -266,8 +287,6 @@ export default function UploadLessons() {
     const saveLessonToDB = (lessonObj) => {
         saveLesson(lessonObj).subscribe((response) => {
             console.log("vedio data saved to db", response);
-            setFormMessageClass('success');
-            // setFormMessage(`Lesson ${lessonObj.name} created!`);
             setSelectedVideoData(lessonFormDetails);
             setVideosToUpload(initialVideosToUploadData);
             setVideoUploadProgess(initialVideoUploadProgress);
@@ -276,7 +295,7 @@ export default function UploadLessons() {
             setFileUploadValue("");
             toggleUploadingMessage(false);
             setFormMessageClass('');
-            // setFormMessage('');
+            setFormMessage('');
             dispatch(displayNotification({
                 msg: "Lesson uploaded successfully!",
                 type: NOTIFICATION_SUCCCESS,
@@ -408,6 +427,25 @@ export default function UploadLessons() {
                                     </div>
 
                                     <div className="input-wrap input-wrap-full">
+                                        <label className="controlLabel">Thumbnail for Lesson &nbsp;*</label>
+                                        <div className="uploadContainer">
+                                            <div className={videosToUpload.thumbnailImage !== null ? 'upload-input-wrap selected' : 'upload-input-wrap'}>
+                                                <h6 className="heading">Thumbnail</h6>
+                                                {/* <h6 className="sub-heading">Default View</h6> */}
+                                                <i className="upload-icon"><FaCloudUploadAlt /></i>
+                                                <input id="thumbnailImage"
+                                                    type="file"
+                                                    accept="image/*"
+                                                    value={fileUploadValue}
+                                                    ref={uploaderRefThumbnailImage}
+                                                    onChange={(e) => onChangeFile(e, uploaderRefThumbnailImage, 'thumbnailImage')}
+                                                />
+                                                {showVideoProgressBar?.thumbnailImage && <LinearProgress className="uploadProgessBar" variant="determinate" value={videoUploadProgess.thumbnailImage} />}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="input-wrap input-wrap-full">
                                         <label className="controlLabel">Lesson Videos&nbsp;*</label>
                                         <div className="uploadContainer">
                                             <div className={videosToUpload.frontView !== null ? 'upload-input-wrap selected' : 'upload-input-wrap'}>
@@ -488,7 +526,7 @@ export default function UploadLessons() {
                                 {
                                     lessonsData && lessonsData.length ?
                                     lessonsData.map( item => {
-                                        return (<div className="boxItem compBox">
+                                        return (<div className="boxItem compBox" key={item.id}>
                                             <p className="title">Name: <span>{ item.name }</span></p>
                                             <p className="statusBlock">
                                                 Teacher: <span>{ item.teacher }</span></p>
