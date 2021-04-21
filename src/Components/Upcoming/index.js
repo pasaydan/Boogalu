@@ -2,9 +2,38 @@ import React, { useState, useRef, useEffect } from 'react'
 import Video from "../Vedio/Video";
 import LessonsVideoContainer from '../LessonVideoComponent';
 import Lessons from "../../Data/Dummy";
+import { useStoreConsumer } from '../../Providers/StateProvider';
+import { saveLesson, getLessonByName, getAllLessons } from "../../Services/Lessons.service";
+import { enableLoading, disableLoading } from "../../Actions/Loader";
+import { NOTIFICATION_ERROR, NOTIFICATION_SUCCCESS } from "../../Constants";
+import { displayNotification } from "../../Actions/Notification";
+
 function Upcoming() {
 
+    const { state, dispatch } = useStoreConsumer();
+    const loggedInUser = state.loggedInUser;
     const [activeCategory, setActiveCategory] = useState(Lessons[0]);
+    const [lessonsData, setLessonsList] = useState(null);
+    
+    useEffect(() => {
+        getAllLessonsData();
+    }, []);
+
+    const getAllLessonsData = () => {
+        try {
+            dispatch(enableLoading());
+            getAllLessons().subscribe(lessons => {
+                console.log('LESSONS LISTS: ', lessons);
+                dispatch(disableLoading());
+                if (lessons.length) {
+                    setLessonsList(lessons);
+                }
+            });
+        } catch (e) {
+            dispatch(disableLoading());
+            console.log('Error: ', e);
+        }
+    }
 
     return (
         <div className="lessons lessons-wrap" id="upcomingLessons">
@@ -20,12 +49,14 @@ function Upcoming() {
             </div>
             <div className="lesson-wrap">
                 <div className="lessons-vdo-wrap">
-                    {activeCategory?.videos.map((activeVideo, index) => {
+                    {lessonsData && lessonsData.length && lessonsData.map((videoData, index) => {
                         return <LessonsVideoContainer
-                        title={activeCategory?.title}
-                        desc={activeCategory?.desc} 
-                        activeVideosList={activeVideo} 
-                        key={index} />
+                        title={videoData.name}
+                        desc={videoData.desc} 
+                        uploadedOn={videoData.uploadedTime}
+                        activeVideosList={videoData.videoList}
+                        videoId={`lessonVideo-${index + 1}`}
+                        key={'lesson-'+index} />
                     })}
                 </div>
             </div>

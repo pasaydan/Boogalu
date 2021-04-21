@@ -6,26 +6,41 @@ import FlipIcon from '@material-ui/icons/Flip';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 
-function LessonsVideoContainer({ title, desc, activeVideosList }) {
+function LessonsVideoContainer({ title, desc, uploadedOn, activeVideosList, videoId }) {
     const [activeVideoState, setActiveVideoState] = useState('front'); // front,back,front-mirror,back-mirror
     const [fullScreenMode, setFullScreenMode] = useState(false);
     const [videoDuration, setVideoDurationValue] = useState('');
+    const [videoFront, setVideoFront] = useState(null);
+    const [videoFrontMirror, setVideoFrontMirror] = useState(null);
+    const [videoBack, setVideoBack] = useState(null);
+    const [videoBackMirror, setVideoBackMirror] = useState(null);
 
     useEffect(() => {
-        const videoFront = document.getElementById(activeVideosList?.fUrl);
-        const videoBack = document.getElementById(activeVideosList?.bUrl);
-        const videoFrontMirror = document.getElementById(activeVideosList?.fMUrl);
-        const videoBackMirror = document.getElementById(activeVideosList?.bMUrl);
-  
-        videoBack.muted = false;
-        videoFrontMirror.muted = true;
-        videoBackMirror.muted = true;
-        console.log(activeVideosList)
+        const videoElements = document.querySelectorAll('video');
+        if (videoElements && videoElements.length) {
+            videoElements.forEach(item => {
+                if (item.getAttribute('data-id') === activeVideosList.frontView) {
+                    setVideoFront(item);
+                }
+
+                if (item.getAttribute('data-id') === activeVideosList.frontMirrorView) {
+                    setVideoFrontMirror(item);
+                }
+                
+                if (item.getAttribute('data-id') === activeVideosList.rearView) {
+                    setVideoBack(item);                
+                }
+                
+                if (item.getAttribute('data-id') === activeVideosList.rearMirrorView) {
+                    setVideoBackMirror(item);                
+                }
+            });
+        }
         // Video Mirror will also come here
     }, []);
 
     function triggerFullScreen(e) {
-        const fullScreenWrapper = document.getElementById('innerVideoWrap');
+        const fullScreenWrapper = document.getElementById(videoId);
         if (!document.fullscreenElement) {
             setFullScreenMode(true);
             if (fullScreenWrapper.requestFullscreen) {
@@ -42,10 +57,6 @@ function LessonsVideoContainer({ title, desc, activeVideosList }) {
     }
 
     function pauseVideo(params) {
-        const videoFront = document.getElementById(activeVideosList?.fUrl);
-        const videoBack = document.getElementById(activeVideosList?.bUrl);
-        const videoFrontMirror = document.getElementById(activeVideosList?.fMUrl);
-        const videoBackMirror = document.getElementById(activeVideosList?.bMUrl);
         const currentVideoState = activeVideoState;
         if (currentVideoState == 'front') {
             videoFrontMirror.pause();
@@ -67,10 +78,6 @@ function LessonsVideoContainer({ title, desc, activeVideosList }) {
     }
 
     function playVideo(params) {
-        const videoFront = document.getElementById(activeVideosList?.fUrl);
-        const videoBack = document.getElementById(activeVideosList?.bUrl);
-        const videoFrontMirror = document.getElementById(activeVideosList?.fMUrl);
-        const videoBackMirror = document.getElementById(activeVideosList?.bMUrl);
         if (activeVideoState == 'front') {
             videoFrontMirror.play();
             videoBack.play();
@@ -91,10 +98,6 @@ function LessonsVideoContainer({ title, desc, activeVideosList }) {
     }
 
     function flipVideos(event) {
-        const videoFront = document.getElementById(activeVideosList?.fUrl);
-        const videoBack = document.getElementById(activeVideosList?.bUrl);
-        const videoFrontMirror = document.getElementById(activeVideosList?.fMUrl);
-        const videoBackMirror = document.getElementById(activeVideosList?.bMUrl);
         if (activeVideoState == 'front' || activeVideoState == 'front-mirror') {
             setActiveVideoState('back');
             videoFront.muted = true;
@@ -111,10 +114,6 @@ function LessonsVideoContainer({ title, desc, activeVideosList }) {
     }
 
     function mirrorVideos(event) {
-        const videoFront = document.getElementById(activeVideosList?.fUrl);
-        const videoBack = document.getElementById(activeVideosList?.bUrl);
-        const videoFrontMirror = document.getElementById(activeVideosList?.fMUrl);
-        const videoBackMirror = document.getElementById(activeVideosList?.bMUrl);
         if (activeVideoState == 'front') {
             setActiveVideoState('front-mirror');
             videoFront.muted = true;
@@ -145,10 +144,6 @@ function LessonsVideoContainer({ title, desc, activeVideosList }) {
     // when user use video slider to go ahead or back
     function onVideoSeek(event, status) {
         if (activeVideoState == status) {
-            const videoFront = document.getElementById(activeVideosList?.fUrl);
-            const videoBack = document.getElementById(activeVideosList?.bUrl);
-            const videoFrontMirror = document.getElementById(activeVideosList?.fMUrl);
-            const videoBackMirror = document.getElementById(activeVideosList?.bMUrl);
             if (activeVideoState == 'front') {
                 videoBack.currentTime = videoFront.currentTime;
                 videoFrontMirror.currentTime = videoFront.currentTime;
@@ -178,41 +173,70 @@ function LessonsVideoContainer({ title, desc, activeVideosList }) {
         setVideoDurationValue(totalDuration);
     }
 
+    function enableOverlay(event, overlayBox) {
+        event.stopPropagation();
+        const overlayItem = document.getElementsByClassName(overlayBox)[0];
+        
+        if (overlayItem.classList.contains('activeOverlay')) {
+            videoFront.pause();
+            event.currentTarget.classList.remove('activeOverlay');
+            overlayItem.classList.remove('activeOverlay');
+        } else {
+            videoFront.play();
+            event.currentTarget.classList.add('activeOverlay');
+            overlayItem.classList.add('activeOverlay');
+        }
+    }
+
     return (
         <div className="video-component-wrap">
-            <h4>{title}</h4>
-            <p className="desc">{desc}</p>
-            <p className="durationBox">Duration: <strong>{videoDuration}</strong> </p>
-            <div className="inner-video-wrap" id="innerVideoWrap">
-                <div className="actions">
-                    <FlipCameraAndroidOutlinedIcon title="Flip video" className="vdo-controlls" variant="contained" type="submit" onClick={(e) => flipVideos(e)} />
-                    <FlipIcon title="Mirror video" className="vdo-controlls" variant="contained" type="submit" onClick={(e) => mirrorVideos(e)} />
-                    {fullScreenMode ?
-                        <FullscreenExitIcon title="Fullscreen mode" className="vdo-controlls" variant="contained" type="submit" onClick={(e) => triggerFullScreen(e)} />
-                        :
-                        <FullscreenIcon  title="Exit fullscreen" className="vdo-controlls" variant="contained" type="submit" onClick={(e) => triggerFullScreen(e)} />
+            <div className="videoThumbnailOverlay" onClick={(e) => enableOverlay(e, `js-${videoId}`)}></div>
+            <div className={`innerLessonVideoWrap js-${videoId}`}>
+                <h4>{title}</h4>
+                <p className="desc">{desc}</p>
+                <p className="durationBox">
+                    <span>
+                        Created on: <strong>{uploadedOn}</strong>
+                    </span>
+                    {
+                        videoDuration ?
+                        <span>
+                            Duration: <strong>{videoDuration}</strong> 
+                        </span> 
+                        : ''
                     }
+                </p>
+                <div className="inner-video-wrap" id={videoId}>
+                    <div className="actions">
+                        <FlipCameraAndroidOutlinedIcon title="Flip video" className="vdo-controlls" variant="contained" type="submit" onClick={(e) => flipVideos(e)} />
+                        <FlipIcon title="Mirror video" className="vdo-controlls" variant="contained" type="submit" onClick={(e) => mirrorVideos(e)} />
+                        {fullScreenMode ?
+                            <FullscreenExitIcon title="Fullscreen mode" className="vdo-controlls" variant="contained" type="submit" onClick={(e) => triggerFullScreen(e)} />
+                            :
+                            <FullscreenIcon  title="Exit fullscreen" className="vdo-controlls" variant="contained" type="submit" onClick={(e) => triggerFullScreen(e)} />
+                        }
+                    </div>
+                    <video 
+                        data-id={activeVideosList?.frontView} 
+                        className={(activeVideoState === 'front') ? 'active' : ''} 
+                        onPause={(e) => pauseVideo(e)} 
+                        onPlay={(e) => playVideo(e)} 
+                        onSeeked={(e) => onVideoSeek(e, 'front')} 
+                        poster={VideoThumbnail} controls
+                        onLoadedMetadata={(e) => setVideoDuration(e.target.duration)}
+                        >
+                        <source src={activeVideosList?.frontView} type="video/mp4" />
+                    </video>
+                    <video muted data-id={activeVideosList?.frontMirrorView} className={(activeVideoState === 'front-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'front-mirror')} poster={VideoThumbnail} controls>
+                        <source src={activeVideosList?.frontMirrorView} type="video/mp4" />
+                    </video>
+                    <video muted data-id={activeVideosList?.rearView} className={(activeVideoState === 'back') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back')} poster={VideoThumbnailBack} controls>
+                        <source src={activeVideosList?.rearView} type="video/mp4" />
+                    </video>
+                    <video muted data-id={activeVideosList?.rearMirrorView} className={(activeVideoState === 'back-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back-mirror')} poster={VideoThumbnailBack} controls>
+                        <source src={activeVideosList?.rearMirrorView} type="video/mp4" />
+                    </video>
                 </div>
-                <video 
-                    id={activeVideosList?.fUrl} 
-                    className={(activeVideoState == 'front') ? 'active' : ''} 
-                    onPause={(e) => pauseVideo(e)} 
-                    onPlay={(e) => playVideo(e)} 
-                    onSeeked={(e) => onVideoSeek(e, 'front')} 
-                    poster={VideoThumbnail} controls
-                    onLoadedMetadata={(e) => setVideoDuration(e.target.duration)}
-                    >
-                    <source src={activeVideosList?.fMUrl} type="video/mp4" />
-                </video>
-                <video id={activeVideosList?.fMUrl} className={(activeVideoState == 'front-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'front-mirror')} poster={VideoThumbnail} controls>
-                    <source src={activeVideosList?.fMUrl} type="video/mp4" />
-                </video>
-                <video id={activeVideosList?.bUrl} className={(activeVideoState == 'back') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back')} poster={VideoThumbnailBack} controls>
-                    <source src={activeVideosList?.bUrl} type="video/mp4" />
-                </video>
-                <video id={activeVideosList?.bMUrl} className={(activeVideoState == 'back-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back-mirror')} poster={VideoThumbnailBack} controls>
-                    <source src={activeVideosList?.bMUrl} type="video/mp4" />
-                </video>
             </div>
         </div>
     )

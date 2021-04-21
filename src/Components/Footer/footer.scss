@@ -1,6 +1,6 @@
 footer {
     background-color: var(--footer-background-grey);
-    height: 350px;
+    min-height: 350px;
     color: var(--footer-text-grey);
     padding: 0 60px;
     font-family: 'Regular';
@@ -28,6 +28,7 @@ footer {
         }
         &.menu-lists-2 {
             li {
+                min-width: 117px;
                 a {
                     transition: all 0.3s ease-in-out;
                     color: var(--footer-list-text-grey);

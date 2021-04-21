@@ -14,7 +14,7 @@ import usersIcon from '../../Images/users-icon.png';
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { saveLesson, getLessonByName, getAllLessons } from "../../Services/Lessons.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
-import { NOTIFICATION_ERROR, NOTIFICATION_SUCCCESS, NOTIFICATION_INFO } from "../../Constants";
+import { NOTIFICATION_ERROR, NOTIFICATION_SUCCCESS } from "../../Constants";
 import { displayNotification } from "../../Actions/Notification";
 import { uploadVideo } from "../../Services/Upload.service";
 

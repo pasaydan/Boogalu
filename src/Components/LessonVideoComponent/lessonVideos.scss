@@ -4,69 +4,110 @@
     margin: 0 20px 20px 0;
     padding: 10px;
     border-radius: 5px;
+    position: relative;
     background: var(--white-opaque-bg);
     color: var(--btn-primary-dark-bg);
-    h4 {
-        font-size: 16px;
-        margin: 0 0 5px 0;
-        line-height: 20px;
-        font-weight: 500;
-    }
-    .desc {
-        font-size: 14px !important;
-        line-height: 20px !important;
-        margin: 0 0 5px 0 !important;
-    }
-    .durationBox {
-        font-size: 12px !important;
-        line-height: 14px !important;
-        margin: 0 0 10px 0 !important;
-        color: var(--copyright-grey) !important;
-    }
-    .inner-video-wrap {
-        padding: 10px;
-        box-sizing: border-box;
-        border-radius: 5px;
-        background: var(--box-dark-bg);
-        position: relative;
+    .videoThumbnailOverlay {
+        cursor: pointer;
+        position: absolute;
         width: 100%;
-        height: 85%;
-        .actions {
-            position: absolute;
-            z-index: 2;
-            right: 10px;
-            top: 5px;
-            .vdo-controlls{
-                color: var(--primary-white);
-                padding: 5px;
-                border-radius: 50%;
-                margin-right: 6px;
-                transition: all 0.3s ease-in-out;
-                &:hover {
-                    background-color: rgba(0, 0, 0, 0.4);
+        height: 100%;
+        z-index: 10;
+        box-sizing: border-box;
+        &.activeOverlay {
+            position: fixed;
+            z-index: 99;
+            &:after {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                z-index: -1;
+                background: rgba(0, 0, 0, 0.95);
+            }
+        }
+    }
+    .innerLessonVideoWrap {
+        // transition: all 0.3s ease-in-out;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        h4 {
+            font-size: 16px;
+            margin: 0 0 5px 0;
+            line-height: 20px;
+            font-weight: 500;
+        }
+        .desc {
+            font-size: 14px !important;
+            line-height: 20px !important;
+            margin: 0 0 5px 0 !important;
+        }
+        .durationBox {
+            display: flex !important;
+            justify-content: space-between !important;
+            font-size: 12px !important;
+            line-height: 14px !important;
+            margin: 0 0 10px 0 !important;
+            color: var(--copyright-grey) !important;
+        }
+        .inner-video-wrap {
+            padding: 10px;
+            box-sizing: border-box;
+            border-radius: 5px;
+            background: var(--box-dark-bg);
+            position: relative;
+            width: 100%;
+            height: 85%;
+            .actions {
+                position: absolute;
+                z-index: 2;
+                right: 10px;
+                top: 5px;
+                .vdo-controlls{
+                    color: var(--primary-white);
+                    padding: 5px;
+                    border-radius: 50%;
+                    margin-right: 6px;
+                    transition: all 0.3s ease-in-out;
+                    &:hover {
+                        background-color: rgba(0, 0, 0, 0.4);
+                    }
+                }
+                .vdo-controlls:hover{
+                    cursor: pointer;
                 }
             }
-            .vdo-controlls:hover{
-                cursor: pointer;
+            video {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                z-index: 0;
+                opacity: 0;
+                top: 0;
+                left: 0;
+                border-radius: 10px;
+                box-sizing: border-box;
+                &.active {
+                    z-index: 1;
+                    opacity: 1;
+                }
+            }
+            video::-webkit-media-controls-fullscreen-button {
+                display: none;
             }
         }
-        video {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            opacity: 0;
-            top: 0;
-            left: 0;
-            border-radius: 10px;
-            box-sizing: border-box;
-            &.active {
-                z-index: 1;
-                opacity: 1;
-            }
-        }
-        video::-webkit-media-controls-fullscreen-button {
-            display: none;
+        &.activeOverlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            height: calc(100vh - 100px);
+            width: 59%;
+            z-index: 100;
+            color: var(--primary-white);
         }
     }
 }
@@ -79,7 +120,14 @@
         background: var(--primary-white);
         .inner-video-wrap {
             height: 82%;
-            max-height: 280px;
+            max-height: 340px;
+        }
+        .innerLessonVideoWrap {
+            &.activeOverlay {
+                height: calc(100vh - 223px);
+                width: 95%;
+                top: 45%;
+            }
         }
     }
 }
