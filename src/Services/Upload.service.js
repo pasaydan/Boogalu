@@ -50,7 +50,11 @@ export function uploadVideo(video, uploadPath, pathId, view) {
     FILE_NAME = 'user' + id + '.mp4';
     FILE_PATH = BASE_PATH + '/video/' + FILE_NAME;
     if (uploadPath && pathId && view) {
-        FILE_NAME = view + '_' + id + '.mp4';
+        if (view === 'thumbnailImage') {
+            FILE_NAME = view + '_' + id + '.jpg';
+        } else {
+            FILE_NAME = view + '_' + id + '.mp4';
+        }
         FILE_PATH = BASE_PATH + '/' + uploadPath + '/' + pathId + '/' + FILE_NAME;
     }
     console.log("FILE_PATH in Upload service is : ", FILE_PATH)
