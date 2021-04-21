@@ -215,7 +215,7 @@ export default function UploadLessons() {
             } else {
                 setFormMessageClass('');
                 setFormMessage('');
-                getLessonByNameCall(name);
+                getLessonByNameCall(name.trim());
             }
         }
     }
