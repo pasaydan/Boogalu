@@ -202,11 +202,7 @@ function LessonsVideoContainer({ title, artist, desc, uploadedOn, thumbNail, act
     return (
         <div className="video-component-wrap">
             <div className="videoThumbnailOverlay" ref={thumbNailOverlayRef} onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}>
-                {
-                    !lessonsCrossBtn ?
-                    <img src={thumbNail} alt="preview" />
-                    : ''
-                }
+                <img src={thumbNail} alt="preview" className={lessonsCrossBtn ? 'hideImage' : ''} />
             </div>
             {
                 lessonsCrossBtn ?

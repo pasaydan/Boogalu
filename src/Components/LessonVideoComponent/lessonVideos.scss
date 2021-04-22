@@ -34,6 +34,9 @@
             border-radius: 5px;
             box-sizing: border-box;
             object-fit: cover;
+            &.hideImage {
+                display: none;
+            }
         }
         &.activeOverlay {
             position: fixed;
@@ -67,7 +70,7 @@
             z-index: 12;
             box-sizing: border-box;
             border-radius: 0 0 5px 5px;
-            background: linear-gradient(to top, var(--box-dark-bg), transparent);
+            background: linear-gradient(to top, var(--box-dark-bg) 70%, transparent);
             .shareIcon {
                 position: absolute;
                 bottom: 10px;
