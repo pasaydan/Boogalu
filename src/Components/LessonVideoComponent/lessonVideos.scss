@@ -1,19 +1,40 @@
 .video-component-wrap {
-    width: calc(100% / 2 - 102px);
-    height: 365px;
+    // width: calc(100% / 2 - 102px);
+    // height: 365px;
+    width: calc(100% / 3 - 40px);
+    height: 230px;
     margin: 0 20px 20px 0;
-    padding: 10px;
+    // padding: 10px;
     border-radius: 5px;
     position: relative;
-    background: var(--white-opaque-bg);
-    color: var(--btn-primary-dark-bg);
+    // background: var(--white-opaque-bg);
+    // color: var(--btn-primary-dark-bg);
     .videoThumbnailOverlay {
         cursor: pointer;
         position: absolute;
         width: 100%;
         height: 100%;
         z-index: 10;
+        border-radius: 5px;
+        overflow: hidden;
         box-sizing: border-box;
+        &:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            height: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        img {
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+            box-sizing: border-box;
+            object-fit: cover;
+        }
         &.activeOverlay {
             position: fixed;
             z-index: 99;
@@ -34,38 +55,64 @@
         width: 100%;
         height: 100%;
         box-sizing: border-box;
-        h4 {
-            font-size: 16px;
-            margin: 0 0 5px 0;
-            line-height: 20px;
-            font-weight: 500;
-        }
-        .desc {
-            font-size: 14px !important;
-            line-height: 20px !important;
-            margin: 0 0 5px 0 !important;
-        }
-        .subTexts {
-            display: flex !important;
-            justify-content: space-between !important;
-            font-size: 12px !important;
-            line-height: 14px !important;
-            margin: 0 0 10px 0 !important;
-            color: var(--copyright-grey) !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+        .videoInfoWrap {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            padding: 10px;
+            width: 100%;
+            z-index: 12;
+            box-sizing: border-box;
+            border-radius: 0 0 5px 5px;
+            background: linear-gradient(to top, var(--box-dark-bg), transparent);
+            .shareIcon {
+                position: absolute;
+                bottom: 10px;
+                right: 10px;
+                color: var(--primary-white);
+                font-size: 18px;
+                cursor: pointer;
+            }
+            h4 {
+                font-size: 14px;
+                margin: 0 0 5px 0;
+                line-height: 20px;
+                font-weight: 500;
+            }
+            .desc {
+                font-size: 12px !important;
+                line-height: 16px !important;
+                margin: 0 0 5px 0 !important;
+            }
+            .subTexts {
+                display: flex !important;
+                justify-content: flex-start !important;
+                font-size: 12px !important;
+                line-height: 14px !important;
+                margin: 0 !important;
+                // color: var(--copyright-grey) !important;
+            }
         }
         .inner-video-wrap {
-            padding: 10px;
+            padding: 0;
             box-sizing: border-box;
             border-radius: 5px;
             background: var(--box-dark-bg);
-            position: relative;
+            position: absolute;
             width: 100%;
-            height: 85%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            border-radius: 5px;
             .actions {
                 position: absolute;
                 z-index: 2;
                 right: 10px;
                 top: 5px;
+                font-size: 20px;
                 .vdo-controlls {
                     color: var(--primary-white);
                     padding: 5px;
@@ -73,11 +120,15 @@
                     margin-right: 6px;
                     transition: all 0.3s ease-in-out;
                     background: rgba(0, 0, 0, 0.4);
+                    &.fullScreenToggleIcon {
+                        width: 20px;
+                        height: 20px;
+                    }
                     &:hover {
                         background-color: rgba(0, 0, 0, 0.4);
                     }
                 }
-                .vdo-controlls:hover{
+                .vdo-controlls:hover {
                     cursor: pointer;
                 }
             }
@@ -109,6 +160,15 @@
             width: 59%;
             z-index: 100;
             color: var(--primary-white);
+            .videoInfoWrap {
+                bottom: auto;
+                top: -25px;
+                background: transparent;
+            }
+            .inner-video-wrap {
+                height: 86%;
+                top: 60px;
+            }
         }
     }
     .closeLessonBox {
@@ -165,9 +225,20 @@
 
 @media screen and (max-width: 767px) {
     .video-component-wrap {
-        width: 90%;
+        width: 100%;
+        height: 230px;
         .inner-video-wrap {
             height: 77%;
+        }
+        .innerLessonVideoWrap.activeOverlay {
+            .videoInfoWrap {
+                top: 20px;
+            }
+            .inner-video-wrap {
+                height: 67%;
+                top: 46%;
+                transform: translateY(-50px);
+            }
         }
     }
 }

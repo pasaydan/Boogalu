@@ -1,8 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import VideoThumbnail from '../../videos/lessons/Lesson-Rupesh-thumbnail.jpg';
-import VideoThumbnailBack from '../../videos/lessons/Lesson-Rupesh-thumbnail-back.jpg';
-import FlipCameraAndroidOutlinedIcon from '@material-ui/icons/FlipCameraAndroidOutlined';
-import FlipIcon from '@material-ui/icons/Flip';
+import { MdSettingsBackupRestore, MdShare, MdFlip } from 'react-icons/md';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 
@@ -170,9 +167,14 @@ function LessonsVideoContainer({ title, artist, desc, uploadedOn, thumbNail, act
     }
 
     function setVideoDuration(videoMetaData) {
+        let totalDuration = '';
         const minutes = parseInt(videoMetaData / 60, 10);
         const seconds = videoMetaData % 60;
-        const totalDuration = `${minutes} ${minutes < 2 ? 'min' : 'mins'} ${Math.floor(seconds)} ${Math.floor(seconds) < 2 ? 'sec' : 'secs'}`
+        if (minutes) {
+            totalDuration = `${minutes} ${minutes < 2 ? 'min' : 'mins'}`
+        } else if (seconds) {
+            totalDuration = `${seconds} ${Math.floor(seconds) < 2 ? 'sec' : 'secs'}`
+        }
         setVideoDurationValue(totalDuration);
     }
 
@@ -199,35 +201,47 @@ function LessonsVideoContainer({ title, artist, desc, uploadedOn, thumbNail, act
 
     return (
         <div className="video-component-wrap">
-            <div className="videoThumbnailOverlay" ref={thumbNailOverlayRef} onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}></div>
+            <div className="videoThumbnailOverlay" ref={thumbNailOverlayRef} onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}>
+                {
+                    !lessonsCrossBtn ?
+                    <img src={thumbNail} alt="preview" />
+                    : ''
+                }
+            </div>
             {
                 lessonsCrossBtn ?
                 <a title="close lesson" className="closeLessonBox" onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`, 'close')}><span></span></a>
                 : ''
             }
             <div className={`innerLessonVideoWrap js-${videoId}`}>
-                <h4>{title}</h4>
-                <p className="desc">{desc}</p>
-                <p className="subTexts">
-                    <span>
-                        Artist: <strong>{artist}</strong>
-                    </span>
-                    {
-                        videoDuration ?
+                <div className="videoInfoWrap">
+                    <h4>{title}</h4>
+                    <p className="desc">{desc}</p>
+                    <p className="subTexts">
                         <span>
-                            Duration: <strong>{videoDuration}</strong> 
-                        </span> 
-                        : ''
-                    }
-                </p>
+                            By: <strong>{artist}</strong>
+                        </span>
+                        &nbsp; | &nbsp;
+                        {
+                            videoDuration ?
+                            <span>
+                                <strong>{videoDuration}</strong> 
+                            </span> 
+                            : ''
+                        }
+                    </p>
+                    <i className="shareIcon" title="share">
+                        <MdShare />
+                    </i>
+                </div>
                 <div className="inner-video-wrap" id={videoId}>
                     <div className="actions">
-                        <FlipCameraAndroidOutlinedIcon title="Flip video" className="vdo-controlls" variant="contained" type="submit" onClick={(e) => flipVideos(e)} />
-                        <FlipIcon title="Mirror video" className="vdo-controlls" variant="contained" type="submit" onClick={(e) => mirrorVideos(e)} />
+                        <MdSettingsBackupRestore title="Flip video" className="vdo-controlls flipVideoIcon" variant="contained" type="submit" onClick={(e) => flipVideos(e)} />
+                        <MdFlip title="Mirror video" className="vdo-controlls mirrorVideoIcon" variant="contained" type="submit" onClick={(e) => mirrorVideos(e)} />
                         {fullScreenMode ?
-                            <FullscreenExitIcon title="Fullscreen mode" className="vdo-controlls" variant="contained" type="submit" onClick={(e) => triggerFullScreen(e)} />
+                            <FullscreenExitIcon title="Fullscreen mode" className="vdo-controlls fullScreenToggleIcon" variant="contained" type="submit" onClick={(e) => triggerFullScreen(e)} />
                             :
-                            <FullscreenIcon  title="Exit fullscreen" className="vdo-controlls" variant="contained" type="submit" onClick={(e) => triggerFullScreen(e)} />
+                            <FullscreenIcon title="Exit fullscreen" className="vdo-controlls fullScreenToggleIcon" variant="contained" type="submit" onClick={(e) => triggerFullScreen(e)} />
                         }
                     </div>
                     <video 

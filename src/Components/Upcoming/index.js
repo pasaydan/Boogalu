@@ -39,11 +39,11 @@ function Upcoming() {
         <div className="lessons lessons-wrap" id="upcomingLessons">
             <div className={`inner-page ${!(lessonsData && lessonsData.length) ? 'noLessonBox' : ''}`}>
                 <h1>Learn from the Experts</h1>
-                <p>
+                {/* <p>
                     Lessons for all users from our expert faculty members.
                     From Hip-Hop to Bharatnatyam. You'll get all learning videos
                     at one place.
-                </p> 
+                </p>  */}
                 {
                     lessonsData && lessonsData.length ?
                     <p className="launching-soon">Our recent lessons!</p>
