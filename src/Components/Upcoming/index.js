@@ -56,8 +56,10 @@ function Upcoming() {
                     {lessonsData && lessonsData.length ? lessonsData.map((videoData, index) => {
                         return <LessonsVideoContainer
                         title={videoData.name}
+                        artist={videoData.teacher}
                         desc={videoData.desc} 
                         uploadedOn={videoData.uploadedTime}
+                        thumbNail={videoData.thumbnailImage}
                         activeVideosList={videoData.videoList}
                         videoId={`lessonVideo-${index + 1}`}
                         key={'lesson-'+index} />

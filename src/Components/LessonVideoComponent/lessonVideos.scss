@@ -45,7 +45,7 @@
             line-height: 20px !important;
             margin: 0 0 5px 0 !important;
         }
-        .durationBox {
+        .subTexts {
             display: flex !important;
             justify-content: space-between !important;
             font-size: 12px !important;
@@ -66,12 +66,13 @@
                 z-index: 2;
                 right: 10px;
                 top: 5px;
-                .vdo-controlls{
+                .vdo-controlls {
                     color: var(--primary-white);
                     padding: 5px;
                     border-radius: 50%;
                     margin-right: 6px;
                     transition: all 0.3s ease-in-out;
+                    background: rgba(0, 0, 0, 0.4);
                     &:hover {
                         background-color: rgba(0, 0, 0, 0.4);
                     }

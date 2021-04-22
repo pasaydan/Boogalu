@@ -6,7 +6,7 @@ import FlipIcon from '@material-ui/icons/Flip';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 
-function LessonsVideoContainer({ title, desc, uploadedOn, activeVideosList, videoId }) {
+function LessonsVideoContainer({ title, artist, desc, uploadedOn, thumbNail, activeVideosList, videoId }) {
     const [activeVideoState, setActiveVideoState] = useState('front'); // front,back,front-mirror,back-mirror
     const [fullScreenMode, setFullScreenMode] = useState(false);
     const [videoDuration, setVideoDurationValue] = useState('');
@@ -208,9 +208,9 @@ function LessonsVideoContainer({ title, desc, uploadedOn, activeVideosList, vide
             <div className={`innerLessonVideoWrap js-${videoId}`}>
                 <h4>{title}</h4>
                 <p className="desc">{desc}</p>
-                <p className="durationBox">
+                <p className="subTexts">
                     <span>
-                        Created on: <strong>{uploadedOn}</strong>
+                        Artist: <strong>{artist}</strong>
                     </span>
                     {
                         videoDuration ?
@@ -236,18 +236,19 @@ function LessonsVideoContainer({ title, desc, uploadedOn, activeVideosList, vide
                         onPause={(e) => pauseVideo(e)} 
                         onPlay={(e) => playVideo(e)} 
                         onSeeked={(e) => onVideoSeek(e, 'front')} 
-                        poster={VideoThumbnail} controls
+                        poster={thumbNail} 
+                        controls
                         onLoadedMetadata={(e) => setVideoDuration(e.target.duration)}
                         >
                         <source src={activeVideosList?.frontView} type="video/mp4" />
                     </video>
-                    <video muted data-id={activeVideosList?.frontMirrorView} className={(activeVideoState === 'front-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'front-mirror')} poster={VideoThumbnail} controls>
+                    <video muted data-id={activeVideosList?.frontMirrorView} className={(activeVideoState === 'front-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'front-mirror')} poster={thumbNail} controls>
                         <source src={activeVideosList?.frontMirrorView} type="video/mp4" />
                     </video>
-                    <video muted data-id={activeVideosList?.rearView} className={(activeVideoState === 'back') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back')} poster={VideoThumbnailBack} controls>
+                    <video muted data-id={activeVideosList?.rearView} className={(activeVideoState === 'back') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back')} poster={thumbNail} controls>
                         <source src={activeVideosList?.rearView} type="video/mp4" />
                     </video>
-                    <video muted data-id={activeVideosList?.rearMirrorView} className={(activeVideoState === 'back-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back-mirror')} poster={VideoThumbnailBack} controls>
+                    <video muted data-id={activeVideosList?.rearMirrorView} className={(activeVideoState === 'back-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back-mirror')} poster={thumbNail} controls>
                         <source src={activeVideosList?.rearMirrorView} type="video/mp4" />
                     </video>
                 </div>

@@ -216,7 +216,7 @@
     }
     &.loggedInAdmin {
         width: 80%;
-    }
+    }flex-basis: 100%;
     &.usersListBox {
         width: 90%;
         margin-left: 80px;
@@ -253,6 +253,12 @@
         .input-wrap {
             color: var(--footer-text-grey);
             flex-basis: 49%;
+            .mandatAsterisk {
+                font-size: 1rem;
+                line-height: 0.5rem;
+                font-weight: normal;
+                color: var(--red-text-color);
+            }
             .MuiSelect-select.MuiSelect-select {
                 padding-bottom: 18px;
             }
@@ -315,6 +321,13 @@
                 margin: 0;
                 box-shadow: 0 -1px 3px 0 rgba(0, 0, 0, 0.5);
             }
+            .MuiFormControl-root {
+                .MuiFormLabel-root {
+                    .MuiFormLabel-asterisk {
+                        color: var(--red-text-color);
+                    }
+                }
+            }
         }
     }
     .errorMessage {
@@ -333,6 +346,34 @@
         .input-wrap {
             width: 100%;
             flex-basis: 100%;
+        }
+    }
+    .controlGroupWrap {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        .input-wrap {
+            &:first-child {
+                width: 30%;
+                flex-basis: 30%;
+                margin-right: 20px;
+                .uploadContainer {
+                    .upload-input-wrap {
+                        flex-basis: 100%;
+                        margin-right: 0;
+                    }
+                }
+            }
+            &.lessonsDescriptionBox {
+                .textarea {
+                    .MuiInputBase-root {
+                        height: 105px;
+                        textarea {
+                            height: 80px !important;
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -514,7 +555,7 @@
             .upload-icon {
                 position: absolute;
                 z-index: 0;
-                top: 50%;
+                top: 55%;
                 left: 50%;
                 font-size: 40px;
                 transform: translate(-50%, -50%);
@@ -610,6 +651,8 @@
     line-height: 20px;
     color: var(--secondary-bg-blue);
     transform: translate(-50%, -50%);
+    width: 100%;
+    box-sizing: border-box;
     max-width: 300px;
     text-align: center;
     box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.3);
@@ -839,6 +882,29 @@
                         display: block;
                         width: 100%;
                         margin-top: 20px;
+                    }
+                }
+                .messageWrap {
+                    text-align: center;
+                }
+                .button-container {
+                    text-align: center;
+                }
+            }
+        }
+        .controlGroupWrap {
+            flex-wrap: wrap;
+            flex-direction: column;
+            .input-wrap {
+                &:first-child {
+                    margin: 0;
+                    flex-basis: 100%;
+                    width: 100%;
+                }
+                &.lessonsDescriptionBox {
+                    width: 100%;
+                    .MuiFormControl-root {
+                        margin-top: 0;
                     }
                 }
             }

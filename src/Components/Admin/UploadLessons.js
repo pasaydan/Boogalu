@@ -44,6 +44,7 @@ export default function UploadLessons() {
     const [messageClass, setFormMessageClass] = useState('');
     const [lessonsData, setLessonsList] = useState(null);
     const [isUploadingInProgress, toggleUploadingMessage] = useState(false);
+    const [btnLoadingClass, toggleBtnLoadingClass] = useState('');
     
     const createTabRef = useRef(null);
     const listTabRef = useRef(null);
@@ -215,6 +216,7 @@ export default function UploadLessons() {
             } else {
                 setFormMessageClass('');
                 setFormMessage('');
+                toggleBtnLoadingClass('loading');
                 getLessonByNameCall(name.trim());
             }
         }
@@ -257,6 +259,7 @@ export default function UploadLessons() {
         let videoProgess = {};
         let filesToUpload = {};
         lessonDetails.name = lessonDetails.name.trim();
+        toggleBtnLoadingClass('');
         if (Object.values(files) && Object.values(files).length > 0) {
             toggleUploadingMessage(true);
             for (const [key, value] of Object.entries(files)) {
@@ -413,44 +416,44 @@ export default function UploadLessons() {
                                             onChange={handleChange('teacher')}
                                         />
                                     </div>
-                                    <div className="input-wrap input-wrap-full">
-                                        <TextField
-                                            required
-                                            className="textarea"
-                                            id="outlined-required-desc"
-                                            variant="outlined"
-                                            label="About lesson"
-                                            multiline
-                                            rowsMax={4}
-                                            value={SelectedVideoData.desc}
-                                            onChange={handleChange('desc')}
-                                        />
-                                    </div>
-
-                                    <div className="input-wrap input-wrap-full">
-                                        <label className="controlLabel">Thumbnail for Lesson &nbsp;*</label>
-                                        <div className="uploadContainer">
-                                            <div className={videosToUpload.thumbnailImage !== null ? 'upload-input-wrap selected' : 'upload-input-wrap'}>
-                                                <h6 className="heading">Thumbnail</h6>
-                                                {/* <h6 className="sub-heading">Default View</h6> */}
-                                                <i className="upload-icon"><FaCloudUploadAlt /></i>
-                                                <input id="thumbnailImage"
-                                                    type="file"
-                                                    accept="image/*"
-                                                    value={fileUploadValue}
-                                                    ref={uploaderRefThumbnailImage}
-                                                    onChange={(e) => onChangeFile(e, uploaderRefThumbnailImage, 'thumbnailImage')}
-                                                />
-                                                {showVideoProgressBar?.thumbnailImage && <LinearProgress className="uploadProgessBar" variant="determinate" value={videoUploadProgess.thumbnailImage} />}
+                                    <div className="controlGroupWrap">
+                                        <div className="input-wrap input-wrap-full">
+                                            <div className="uploadContainer">
+                                                <div className={videosToUpload.thumbnailImage !== null ? 'upload-input-wrap selected' : 'upload-input-wrap'}>
+                                                    <h6 className="heading">Thumbnail <sup className="mandatAsterisk">*</sup></h6>
+                                                    {/* <h6 className="sub-heading">Default View</h6> */}
+                                                    <i className="upload-icon"><FaCloudUploadAlt /></i>
+                                                    <input id="thumbnailImage"
+                                                        type="file"
+                                                        accept="image/*"
+                                                        value={fileUploadValue}
+                                                        ref={uploaderRefThumbnailImage}
+                                                        onChange={(e) => onChangeFile(e, uploaderRefThumbnailImage, 'thumbnailImage')}
+                                                    />
+                                                    {showVideoProgressBar?.thumbnailImage && <LinearProgress className="uploadProgessBar" variant="determinate" value={videoUploadProgess.thumbnailImage} />}
+                                                </div>
                                             </div>
+                                        </div>
+                                        <div className="input-wrap input-wrap-full lessonsDescriptionBox">
+                                            <TextField
+                                                required
+                                                className="textarea"
+                                                id="outlined-required-desc"
+                                                variant="outlined"
+                                                label="About lesson"
+                                                multiline
+                                                rowsMax={4}
+                                                value={SelectedVideoData.desc}
+                                                onChange={handleChange('desc')}
+                                            />
                                         </div>
                                     </div>
 
                                     <div className="input-wrap input-wrap-full">
-                                        <label className="controlLabel">Lesson Videos&nbsp;*</label>
+                                        <label className="controlLabel">Lesson Videos <sup className="mandatAsterisk">*</sup></label>
                                         <div className="uploadContainer">
                                             <div className={videosToUpload.frontView !== null ? 'upload-input-wrap selected' : 'upload-input-wrap'}>
-                                                <h6 className="heading">Front Side</h6>
+                                                <h6 className="heading">Front Side <sup className="mandatAsterisk">*</sup></h6>
                                                 <h6 className="sub-heading">Default View</h6>
                                                 <i className="upload-icon"><FaCloudUploadAlt /></i>
                                                 <input id="frontView"
@@ -463,7 +466,7 @@ export default function UploadLessons() {
                                                 {showVideoProgressBar?.frontView && <LinearProgress className="uploadProgessBar" variant="determinate" value={videoUploadProgess.frontView} />}
                                             </div>
                                             <div className={videosToUpload.frontMirrorView !== null ? 'upload-input-wrap selected' : 'upload-input-wrap'}>
-                                                <h6 className="heading">Front Mirror</h6>
+                                                <h6 className="heading">Front Mirror <sup className="mandatAsterisk">*</sup></h6>
                                                 <i className="upload-icon"><FaCloudUploadAlt /></i>
                                                 <input id="frontMirrorView"
                                                     type="file"
@@ -475,7 +478,7 @@ export default function UploadLessons() {
                                                 {showVideoProgressBar?.frontMirrorView && <LinearProgress className="uploadProgessBar" variant="determinate" value={videoUploadProgess.frontMirrorView} />}
                                             </div>
                                             <div className={videosToUpload.rearView !== null ? 'upload-input-wrap selected' : 'upload-input-wrap'}>
-                                                <h6 className="heading">Back Side</h6>
+                                                <h6 className="heading">Back Side <sup className="mandatAsterisk">*</sup></h6>
                                                 <i className="upload-icon"><FaCloudUploadAlt /></i>
                                                 <input id="rearView"
                                                     type="file"
@@ -487,7 +490,7 @@ export default function UploadLessons() {
                                                 {showVideoProgressBar?.rearView && <LinearProgress className="uploadProgessBar" variant="determinate" value={videoUploadProgess.rearView} />}
                                             </div>
                                             <div className={videosToUpload.rearMirrorView !== null ? 'upload-input-wrap selected' : 'upload-input-wrap'}>
-                                                <h6 className="heading">Back Mirror</h6>
+                                                <h6 className="heading">Back Mirror <sup className="mandatAsterisk">*</sup></h6>
                                                 <i className="upload-icon"><FaCloudUploadAlt /></i>
                                                 <input id="rearMirrorView"
                                                     type="file"
@@ -514,6 +517,7 @@ export default function UploadLessons() {
                                         <p className={`messageWrap ${messageClass}`}>{formMessageBox}</p>
                                         <div className="upload-input-wrap button-container">
                                             <Button
+                                                className={btnLoadingClass}
                                                 disabled = {disableUploadButton ? true : false}
                                                 variant="contained" color="primary"
                                                 onClick={() => { sendSelectedVdosToUpload() }}>
