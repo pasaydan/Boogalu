@@ -194,6 +194,7 @@ export default function Login() {
                         }));
                         if (state.currentLoginFlow == 'competition') history.push('/competitions');
                         else if (state.currentLoginFlow == 'subscription') history.push('/subscription');
+                        else if (state.currentLoginFlow == 'lessons') history.push('/lessons');
                         else if (state.currentLoginFlow == 'upload-video') setOpenVdoUploadModal(true);
                         else history.push('/')
                     })
@@ -227,6 +228,7 @@ export default function Login() {
                         }));
                         if (state.currentLoginFlow == 'competition') history.push('/competitions');
                         else if (state.currentLoginFlow == 'subscription') history.push('/subscription');
+                        else if (state.currentLoginFlow == 'lessons') history.push('/lessons');
                         else if (state.currentLoginFlow == 'upload-video') setOpenVdoUploadModal(true);
                         else history.push('/')
                     })

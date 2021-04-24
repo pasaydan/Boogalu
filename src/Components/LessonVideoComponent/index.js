@@ -1,9 +1,25 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MdSettingsBackupRestore, MdShare, MdFlip } from 'react-icons/md';
+import { MdSettingsBackupRestore, MdShare, MdFlip, MdLock } from 'react-icons/md';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
+import { useStoreConsumer } from '../../Providers/StateProvider';
+import { useHistory } from "react-router-dom";
+import { enableLoginFlow } from "../../Actions/LoginFlow";
+import { isObjectEmpty } from '../../helpers';
 
-function LessonsVideoContainer({ title, artist, desc, uploadedOn, thumbNail, activeVideosList, videoId }) {
+function LessonsVideoContainer({ 
+    title, 
+    artist, 
+    desc, 
+    videoUserLevel,
+    artForm, 
+    thumbNail, 
+    activeVideosList, 
+    videoId 
+}) {
+    const { state, dispatch } = useStoreConsumer();
+    const loggedInUser = state.loggedInUser;
+    const history = useHistory();
     const [activeVideoState, setActiveVideoState] = useState('front'); // front,back,front-mirror,back-mirror
     const [fullScreenMode, setFullScreenMode] = useState(false);
     const [videoDuration, setVideoDurationValue] = useState('');
@@ -11,7 +27,8 @@ function LessonsVideoContainer({ title, artist, desc, uploadedOn, thumbNail, act
     const [videoFrontMirror, setVideoFrontMirror] = useState(null);
     const [videoBack, setVideoBack] = useState(null);
     const [videoBackMirror, setVideoBackMirror] = useState(null);
-    const [lessonsCrossBtn, toggleLessonsCrossBtn] = useState(false);
+    const [isVideoOverlayActive, toggleisVideoOverlayActive] = useState(false);
+    const [visibilityClass, toggleVideoVisibilityClass] = useState('');
 
     const thumbNailOverlayRef = useRef(null);
 
@@ -21,6 +38,9 @@ function LessonsVideoContainer({ title, artist, desc, uploadedOn, thumbNail, act
             videoElements.forEach(item => {
                 if (item.getAttribute('data-id') === activeVideosList.frontView) {
                     setVideoFront(item);
+                    item.addEventListener('loadeddata', () => {
+                        toggleVideoVisibilityClass('showVideoBox');
+                    });
                 }
 
                 if (item.getAttribute('data-id') === activeVideosList.frontMirrorView) {
@@ -178,62 +198,131 @@ function LessonsVideoContainer({ title, artist, desc, uploadedOn, thumbNail, act
         setVideoDurationValue(totalDuration);
     }
 
-    function toggleVideoOverlay(event, overlayBox, from) {
+    function toggleVideoOverlay(event, overlayBox) {
         event.stopPropagation();
-        const overlayItem = document.getElementsByClassName(overlayBox)[0];
-        
-        if (overlayItem.classList.contains('activeOverlay')) {
-            toggleLessonsCrossBtn(false);
-            videoFront.pause();
-            if (from && from === 'close' && thumbNailOverlayRef.current) {
-                thumbNailOverlayRef.current.classList.remove('activeOverlay');
+        if (!isObjectEmpty(loggedInUser)) {
+            const overlayItem = document.getElementsByClassName(overlayBox)[0];
+            if (overlayItem.classList.contains('activeOverlay')) {
+                toggleisVideoOverlayActive(false);
+                videoFront.pause();
+                if (thumbNailOverlayRef.current) {
+                    thumbNailOverlayRef.current.classList.remove('activeOverlay');
+                }
+                overlayItem.classList.remove('activeOverlay');
             } else {
-                event.currentTarget.classList.remove('activeOverlay');
+                toggleisVideoOverlayActive(true);
+                videoFront.play();
+                if (thumbNailOverlayRef.current) {
+                    thumbNailOverlayRef.current.classList.add('activeOverlay');
+                }
+                overlayItem.classList.add('activeOverlay');
             }
-            overlayItem.classList.remove('activeOverlay');
         } else {
-            toggleLessonsCrossBtn(true);
-            videoFront.play();
-            event.currentTarget.classList.add('activeOverlay');
-            overlayItem.classList.add('activeOverlay');
+            dispatch(enableLoginFlow('lessons'));
+            history.push({
+                pathname: '/login',
+                state: null
+            });    
+        }
+    }
+
+    function shareLessonDetails(event) {
+        event.stopPropagation();
+        console.log('Function will share the lesson');
+    }
+
+    function redirectToLogin(event) {
+        event.stopPropagation();
+        history.push('/subscription');
+    }
+
+    function playStopPreviewVideo(event, action) {
+        event.stopPropagation();
+        if (!isVideoOverlayActive) {
+            const previewVideoItem = event.currentTarget.querySelectorAll('.js-previewVideo')[0];
+            if (action && action === 'play') {
+                previewVideoItem.currentTime = 15;
+                previewVideoItem.play();
+                setTimeout(() => {
+                    previewVideoItem.pause();
+                }, 10000);
+            } else {
+                previewVideoItem.currentTime = 0;
+                previewVideoItem.pause();
+            }
         }
     }
 
     return (
-        <div className="video-component-wrap">
+        <div className="video-component-wrap" onMouseOver={(e) => playStopPreviewVideo(e, 'play')} onMouseLeave={(e) => playStopPreviewVideo(e, 'stop')}>
             <div className="videoThumbnailOverlay" ref={thumbNailOverlayRef} onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}>
-                <img src={thumbNail} alt="preview" className={lessonsCrossBtn ? 'hideImage' : ''} />
+                <img src={thumbNail} alt="preview" className={isVideoOverlayActive ? 'hideImage' : ''} />
             </div>
             {
-                lessonsCrossBtn ?
-                <a title="close lesson" className="closeLessonBox" onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`, 'close')}><span></span></a>
+                isVideoOverlayActive ?
+                <a title="close lesson" className="closeLessonBox" onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}><span></span></a>
                 : ''
             }
-            <div className={`innerLessonVideoWrap js-${videoId}`}>
-                <div className="videoInfoWrap">
-                    <h4>{title}</h4>
-                    <p className="desc">{desc}</p>
-                    <p className="subTexts">
-                        <span>
-                            By: <strong>{artist}</strong>
-                        </span>
-                        &nbsp; | &nbsp;
-                        {
-                            videoDuration ?
-                            <span>
-                                <strong>{videoDuration}</strong> 
-                            </span> 
-                            : ''
-                        }
-                    </p>
-                    <i className="shareIcon" title="share">
-                        <MdShare />
-                    </i>
+
+            {
+                !isVideoOverlayActive ?
+                <div className="previewVideoWrap">
+                    <video muted className="js-previewVideo" onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}>
+                        <source src={activeVideosList?.frontView} type="video/mp4" />
+                    </video>
                 </div>
+                 : ''
+            }
+
+            {
+                isObjectEmpty(loggedInUser) ?
+                <a className="lockIconWrap" title="Subscribe and unlock this lesson" onClick={(e) => redirectToLogin(e)}>
+                    <MdLock />
+                </a> : ''
+            }
+
+            <div className="videoInfoWrap" onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}>
+                <h4>{title}</h4>
+                <p className="desc">{desc}</p>
+                <p className="subTexts">
+                    <span>
+                        By: <strong>{artist}</strong>
+                    </span>
+                    &nbsp; | &nbsp;
+                    {
+                        videoDuration ?
+                        <span>
+                            <strong>{videoDuration}</strong> 
+                        </span> 
+                        : ''
+                    }
+                </p>
+            </div>
+            
+            <i className="shareIcon" title="Share this lesson" onClick={(e) => shareLessonDetails(e)}>
+                <MdShare />
+            </i>
+
+            <div className="videoTags">
+                {
+                    videoUserLevel ?
+                    <span className={`userLevel ${videoUserLevel.toLowerCase()}`}>{videoUserLevel}</span>
+                    : ''
+                }
+
+                {
+                    artForm ?
+                    <span className="danceStyle">{artForm}</span>
+                    : ''
+                }
+            </div>
+                
+            <div className={`innerLessonVideoWrap ${visibilityClass} js-${videoId}`}>
                 <div className="inner-video-wrap" id={videoId}>
                     <div className="actions">
                         <MdSettingsBackupRestore title="Flip video" className="vdo-controlls flipVideoIcon" variant="contained" type="submit" onClick={(e) => flipVideos(e)} />
                         <MdFlip title="Mirror video" className="vdo-controlls mirrorVideoIcon" variant="contained" type="submit" onClick={(e) => mirrorVideos(e)} />
+                        <MdShare title="Share this lesson" className="vdo-controlls" variant="contained" onClick={(e) => shareLessonDetails(e)} />
                         {fullScreenMode ?
                             <FullscreenExitIcon title="Fullscreen mode" className="vdo-controlls fullScreenToggleIcon" variant="contained" type="submit" onClick={(e) => triggerFullScreen(e)} />
                             :

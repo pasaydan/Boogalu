@@ -57,7 +57,9 @@ function Upcoming() {
                         return <LessonsVideoContainer
                         title={videoData.name}
                         artist={videoData.teacher}
-                        desc={videoData.desc} 
+                        desc={videoData.desc}
+                        videoUserLevel={videoData?.videoLevel}
+                        artForm={videoData?.artForm}
                         uploadedOn={videoData.uploadedTime}
                         thumbNail={videoData.thumbnailImage}
                         activeVideosList={videoData.videoList}
