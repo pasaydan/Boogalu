@@ -58,8 +58,9 @@ function Upcoming() {
                         title={videoData.name}
                         artist={videoData.teacher}
                         desc={videoData.desc}
-                        videoUserLevel={videoData?.videoLevel}
+                        videoUserLevel={videoData?.expertiseLevel}
                         artForm={videoData?.artForm}
+                        isPaid={videoData.accessbility}
                         uploadedOn={videoData.uploadedTime}
                         thumbNail={videoData.thumbnailImage}
                         activeVideosList={videoData.videoList}

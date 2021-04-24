@@ -62,6 +62,14 @@
                         }
                     }
                 }
+                button {
+                    &.alreadySubscribed {
+                        pointer-events: none;
+                        background-color: var(--success-green);
+                        background-image: none;
+                        color: var(--primary-white);
+                    }
+                }
             }
         }
     }

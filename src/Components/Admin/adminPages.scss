@@ -253,6 +253,7 @@
         .input-wrap {
             color: var(--footer-text-grey);
             flex-basis: 49%;
+            text-align: left;
             .mandatAsterisk {
                 font-size: 1rem;
                 line-height: 0.5rem;
@@ -327,6 +328,9 @@
                         color: var(--red-text-color);
                     }
                 }
+            }
+            .radioGroupControls {
+                flex-direction: row;
             }
         }
     }

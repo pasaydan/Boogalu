@@ -6,6 +6,7 @@ import { updateUser } from "../../Services/User.service";
 import { loginUser } from '../../Actions/User/index';
 import { sendEmail } from "../../Services/Email.service";
 import { ADMIN_EMAIL_STAGING } from "../../Constants";
+import { isObjectEmpty } from '../../helpers';
 
 export default function Pricing() {
     const { state, dispatch } = useStoreConsumer();
@@ -13,7 +14,14 @@ export default function Pricing() {
     const loggedInUser = state.loggedInUser;
     const subscriptionDetails = state.activeSubscription;
     const competitionDetails = state.activeCompetition;
+    const [isLoadingTrueClass, toggleLoadingBtnTrueClass] = useState('');
+    const [isUserSubscribed, setUserSubscribeTrue] = useState(false);
 
+    useEffect(() => {
+        if (loggedInUser && loggedInUser.subscribed) {
+            setUserSubscribeTrue(true);
+        }
+    }, []);
 
     const sendEmailToAdmin = () => {
         let emailBody = `<div>
@@ -73,18 +81,27 @@ export default function Pricing() {
     }
 
     const choosePlanClickHandler = () => {
-        if (loggedInUser && loggedInUser.subscribed) {
+        if (isUserSubscribed) {
             history.push('/competitions');
+        } else if (isObjectEmpty(loggedInUser)) {
+            history.push('/login');
         } else {
             const userData = {
-                "amount": subscriptionDetails.amount * 100,
+                "amount": subscriptionDetails?.amount * 100,
                 "currency": "INR",
-                "receipt": loggedInUser.key
+                "receipt": loggedInUser?.key
             };
-            postOrder(userData, loggedInUser, handlerFn)
-                .subscribe((response) => {
-                    console.log('postOrder response >>>>>', response);
-                });
+            toggleLoadingBtnTrueClass('loading');
+            try {
+                postOrder(userData, loggedInUser, handlerFn)
+                    .subscribe((response) => {
+                        toggleLoadingBtnTrueClass('');
+                        console.log('postOrder response >>>>>', response);
+                    });
+            } catch(e) {
+                toggleLoadingBtnTrueClass('');
+                console.log('Error: ', e);
+            }
         }
     }
 
@@ -101,8 +118,12 @@ export default function Pricing() {
                             <p>Enrollment in all the active <strong>Competitions</strong></p>
                             <p>Access to all available online <strong>Lessons</strong></p>
                         </div>
-                        <button className="btn primary-light" onClick={choosePlanClickHandler}>
-                            Choose plan
+                        <button className={`btn primary-light ${isLoadingTrueClass} ${isUserSubscribed ? 'alreadySubscribed' : ''}`} onClick={choosePlanClickHandler}>
+                            {
+                                isUserSubscribed ?
+                                'Already subscribed'
+                                : 'Choose plan'
+                            }
                         </button>
                     </div>
                 </div>

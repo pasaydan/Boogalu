@@ -12,7 +12,8 @@ function LessonsVideoContainer({
     artist, 
     desc, 
     videoUserLevel,
-    artForm, 
+    artForm,
+    isPaid, 
     thumbNail, 
     activeVideosList, 
     videoId 
@@ -29,11 +30,22 @@ function LessonsVideoContainer({
     const [videoBackMirror, setVideoBackMirror] = useState(null);
     const [isVideoOverlayActive, toggleisVideoOverlayActive] = useState(false);
     const [visibilityClass, toggleVideoVisibilityClass] = useState('');
+    const [isLoggedInUser, setLoggedInUserValue] = useState(false);
+    const [isSubscribedUser, setSubscribedUser] = useState(false);
 
     const thumbNailOverlayRef = useRef(null);
 
     useEffect(() => {
         const videoElements = document.querySelectorAll('video');
+
+        if (!isObjectEmpty(loggedInUser)) {
+            setLoggedInUserValue(true);
+        }
+
+        if (!isObjectEmpty(loggedInUser) && state.loggedInUser.subscribed) {
+            setSubscribedUser(true);
+        }
+
         if (videoElements && videoElements.length) {
             videoElements.forEach(item => {
                 if (item.getAttribute('data-id') === activeVideosList.frontView) {
@@ -200,22 +212,48 @@ function LessonsVideoContainer({
 
     function toggleVideoOverlay(event, overlayBox) {
         event.stopPropagation();
-        if (!isObjectEmpty(loggedInUser)) {
+        
+        if (isLoggedInUser) {
             const overlayItem = document.getElementsByClassName(overlayBox)[0];
-            if (overlayItem.classList.contains('activeOverlay')) {
-                toggleisVideoOverlayActive(false);
-                videoFront.pause();
-                if (thumbNailOverlayRef.current) {
-                    thumbNailOverlayRef.current.classList.remove('activeOverlay');
+            if (isPaid === 'free') {
+                if (overlayItem.classList.contains('activeOverlay')) {
+                    toggleisVideoOverlayActive(false);
+                    videoFront.pause();
+                    if (thumbNailOverlayRef.current) {
+                        thumbNailOverlayRef.current.classList.remove('activeOverlay');
+                    }
+                    overlayItem.classList.remove('activeOverlay');
+                } else {
+                    toggleisVideoOverlayActive(true);
+                    videoFront.play();
+                    if (thumbNailOverlayRef.current) {
+                        thumbNailOverlayRef.current.classList.add('activeOverlay');
+                    }
+                    overlayItem.classList.add('activeOverlay');
                 }
-                overlayItem.classList.remove('activeOverlay');
+            }
+            if (isPaid === 'paid' && isSubscribedUser) {
+                if (overlayItem.classList.contains('activeOverlay')) {
+                    toggleisVideoOverlayActive(false);
+                    videoFront.pause();
+                    if (thumbNailOverlayRef.current) {
+                        thumbNailOverlayRef.current.classList.remove('activeOverlay');
+                    }
+                    overlayItem.classList.remove('activeOverlay');
+                } else {
+                    toggleisVideoOverlayActive(true);
+                    videoFront.play();
+                    if (thumbNailOverlayRef.current) {
+                        thumbNailOverlayRef.current.classList.add('activeOverlay');
+                    }
+                    overlayItem.classList.add('activeOverlay');
+                }
             } else {
-                toggleisVideoOverlayActive(true);
-                videoFront.play();
-                if (thumbNailOverlayRef.current) {
-                    thumbNailOverlayRef.current.classList.add('activeOverlay');
-                }
-                overlayItem.classList.add('activeOverlay');
+                dispatch(enableLoginFlow('subscription'));
+                history.push({
+                    pathname: '/subscription',
+                    state: null
+                }); 
             }
         } else {
             dispatch(enableLoginFlow('lessons'));
@@ -275,8 +313,16 @@ function LessonsVideoContainer({
             }
 
             {
-                isObjectEmpty(loggedInUser) ?
-                <a className="lockIconWrap" title="Subscribe and unlock this lesson" onClick={(e) => redirectToLogin(e)}>
+                (!isLoggedInUser && isPaid === 'free') ?
+                    <a className="lockIconWrap" title="Login to unlock this lesson" onClick={(e) => redirectToLogin(e)}>
+                        <MdLock />
+                    </a> : 
+                (isLoggedInUser && (!isSubscribedUser && isPaid === 'paid')) ?
+                <a className="lockIconWrap" title="Subscribe to unlock this lesson" onClick={(e) => redirectToLogin(e)}>
+                    <MdLock />
+                </a> : 
+                (!isLoggedInUser && !isSubscribedUser && isPaid === 'paid') ?
+                <a className="lockIconWrap" title="Login &amp; subscribe to unlock this lesson" onClick={(e) => redirectToLogin(e)}>
                     <MdLock />
                 </a> : ''
             }

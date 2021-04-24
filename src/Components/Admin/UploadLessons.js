@@ -1,7 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { LinearProgress } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
+import FormControl from '@material-ui/core/FormControl';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Select from '@material-ui/core/Select';
 import { FaCloudUploadAlt, FaInfoCircle } from 'react-icons/fa';
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
 import logOutIcon from '../../Images/logout-icon.png';
@@ -31,6 +38,9 @@ export default function UploadLessons() {
         name: "",
         teacher: "",
         desc: "",
+        expertiseLevel: "",
+        artForm: "",
+        accessbility: 'paid',
         files: []
     };
     const { state, dispatch } = useStoreConsumer();
@@ -251,9 +261,9 @@ export default function UploadLessons() {
     }
 
     const uploadLessonVideos = () => {
-        const { name, teacher, desc, files } = SelectedVideoData;
+        const { name, teacher, desc, files, expertiseLevel, artForm, accessbility } = SelectedVideoData;
         let lessonDetails = {
-            name, teacher, desc, videoList: []
+            name, teacher, desc, expertiseLevel, artForm, accessbility, videoList: []
         }
         let videoListObj = {};
         let videoProgess = {};
@@ -416,6 +426,42 @@ export default function UploadLessons() {
                                             onChange={handleChange('teacher')}
                                         />
                                     </div>
+                                    <div className="input-wrap">
+                                        <FormControl variant="outlined" className="input-field">
+                                            <InputLabel id="select-outlined-label-level">Expertise Level</InputLabel>
+                                            <Select
+                                                required
+                                                labelId="select-outlined-label-level"
+                                                id="select-outlined"
+                                                value={SelectedVideoData.expertiseLevel}
+                                                onChange={handleChange('expertiseLevel')}
+                                                label="Expertise Level"
+                                            >
+                                                <MenuItem value="beginners">Beginners</MenuItem>
+                                                <MenuItem value="intermediate">Intermediate</MenuItem>
+                                                <MenuItem value="advance">Advance</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </div>
+                                    <div className="input-wrap">
+                                        <FormControl variant="outlined" className="input-field">
+                                            <InputLabel id="select-outlined-label-artform">Styles</InputLabel>
+                                            <Select
+                                                required
+                                                labelId="select-outlined-label-level"
+                                                id="select-outlined"
+                                                value={SelectedVideoData.artForm}
+                                                onChange={handleChange('artForm')}
+                                                label="Styles"
+                                            >
+                                                <MenuItem value="hip-hop">Hip Hop</MenuItem>
+                                                <MenuItem value="jazz">Jazz</MenuItem>
+                                                <MenuItem value="contemporary">Contemporary</MenuItem>
+                                                <MenuItem value="ballet">Ballet</MenuItem>
+                                                <MenuItem value="bharatnatyam">Bharatnatyam</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </div>
                                     <div className="controlGroupWrap">
                                         <div className="input-wrap input-wrap-full">
                                             <div className="uploadContainer">
@@ -514,16 +560,30 @@ export default function UploadLessons() {
                                                 {showVideoProgressBar?.vrView && <LinearProgress className="uploadProgessBar" variant="determinate" value={videoUploadProgess.vrView} />}
                                             </div>
                                         </div>
-                                        <p className={`messageWrap ${messageClass}`}>{formMessageBox}</p>
-                                        <div className="upload-input-wrap button-container">
-                                            <Button
-                                                className={btnLoadingClass}
-                                                disabled = {disableUploadButton ? true : false}
-                                                variant="contained" color="primary"
-                                                onClick={() => { sendSelectedVdosToUpload() }}>
-                                                Upload Video &amp; Create Lesson
-                                            </Button>
-                                        </div>
+                                    </div>
+
+                                    <div className="input-wrap input-wrap-full">
+                                        <RadioGroup 
+                                            className="radioGroupControls"
+                                            aria-label="accessbility" 
+                                            name="accessbility" 
+                                            value={SelectedVideoData.accessbility}
+                                            defaultValue="paid" 
+                                            onChange={handleChange('accessbility')}>
+                                            <FormControlLabel value="paid" control={<Radio />} label="Paid" />
+                                            <FormControlLabel value="free" control={<Radio />} label="Free" />
+                                        </RadioGroup>
+                                    </div>
+
+                                    <p className={`messageWrap ${messageClass}`}>{formMessageBox}</p>
+                                    <div className="upload-input-wrap button-container">
+                                        <Button
+                                            className={btnLoadingClass}
+                                            disabled = {disableUploadButton ? true : false}
+                                            variant="contained" color="primary"
+                                            onClick={() => { sendSelectedVdosToUpload() }}>
+                                            Upload Video &amp; Create Lesson
+                                        </Button>
                                     </div>
                                 </div>
                             </div>
