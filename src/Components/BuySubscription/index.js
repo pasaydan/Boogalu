@@ -154,11 +154,11 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
                             }
                         </div>}
                         {activeStep == 2 && <div>
-                            <h3>Subscription Payment Recieved Successfully</h3>
+                            <p className="subscriptionMessage success">Subscription Payment Recieved Successfully</p>
                             <Button variant="contained" color="secondary" onClick={(e) => proceedForCompetition()}>Continue to competition</Button>
                         </div>}
                         {activeStep == 3 && <div>
-                            <h3>Subscription Payment Fail</h3>
+                            <p className="subscriptionMessage failed">Subscription Payment Fail</p>
                             <Button variant="contained" color="secondary" onClick={(e) => proceedForPayment(e)}>Retry</Button>
                         </div>}
                     </div>

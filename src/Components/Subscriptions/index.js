@@ -148,18 +148,23 @@ function Subscriptions() {
     return (
         <div className="subscription subscription-outer charcoal-bg">
             <div id="Subscription" className="charcoal-bg">
-                <div className="flex-container-VC subscription-wrap charcoal-bg">
+                <div className="subscription-wrap charcoal-bg">
                     <div className="flex-3 heading-content">
                         <h1>Unlimited Classes For The Price Of One</h1>
                         <div className="line1">Dance to the music that makes YOU want to move at any skill level.</div>
                     </div>
                     <div className="inner-plans-wrap">
                         {AvailableSubscriptions && AvailableSubscriptions.map((subscription) => {
-                            return <div className="flex-2 plan" onClick={() => setSubscription(subscription)} key={subscription.key}>
+                            return <div className={`flex-2 plan ${alreadySubscribed ? 'alreadySubscribed' : ''}`} onClick={() => setSubscription(subscription)} key={subscription.key}>
                                 <div className="plan_tag">{subscription.name}</div>
                                 <div className="plan_price">@{subscription.amount}<span>{subscription.plans}</span></div>
-                                <div className="plan_tag">{subscription.desc}</div>
-                                {alreadySubscribed && <div>Alredy subscribed</div>}
+                                <div className="plan_desc">{subscription.desc}</div>
+                                <div className={`btn primary-light ${alreadySubscribed ? 'subscribed' : ''}`}>
+                                    {alreadySubscribed ? 
+                                        'Already subscribed'
+                                        : 'Buy subscription'
+                                    }
+                                </div>
                             </div>
                         })}
                     </div>

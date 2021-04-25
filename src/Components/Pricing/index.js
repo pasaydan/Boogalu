@@ -111,7 +111,7 @@ export default function Pricing() {
                 <h1>Pricing</h1>
                 <div className="pricingWrap">
                     <div className="pricingBox">
-                        <h3>Startup</h3>
+                        <h3>Start-up</h3>
                         <p className="user">&#8377; <strong>199</strong>/user</p>
                         <div className="featuresBox">
                             <p>Multiple <strong>Videos</strong> upload</p>
