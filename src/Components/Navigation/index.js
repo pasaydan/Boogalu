@@ -103,6 +103,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                     }
                 });
             }
+            topRightNavigation();
         }, 1000);
 
         window.addEventListener("resize", windowResize, { passive: true });
@@ -244,6 +245,34 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
         }
     }
 
+    function topRightNavigation(event, url) {
+        const getLinkMenu = document.querySelectorAll('.linkMenu');
+        if (event && url) {
+            getLinkMenu.forEach(item => {
+                if (item.classList.contains('active')) {
+                    item.classList.remove('active');
+                }
+            });
+            event.currentTarget.classList.add('active');
+            history.push(`/${url}`);
+            setShowProfileTab(false);
+        } else {
+            const pathName = history?.location?.pathname.split('/')[1];
+            if (getLinkMenu.length) {
+                getLinkMenu.forEach(item => {
+                    if (item.getAttribute('data-url') === pathName) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+        }
+    }
+
+    function headerMenusClicked(event) {
+        event.stopPropagation();
+        setShowProfileTab(false);
+    }
+
     return (
         <>
             <nav className={`navigation-wrap ${animateNavClass} ${isHomeRoute && !isUserLoggedIn ? 'home-nav-style': ''} ${goingUpClass} ${isNavHidden ? 'hide-nav' : ''} ${goingDownClass} ${!loggedInUser.username ? 'user-logged-out' : ''}`}>
@@ -278,10 +307,18 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                                 <img src={loggedInUser.profileImage} onClick={() => setShowProfileTab(true)} style={{ fontSize: '35px' }} />
                             </div> : <AccountCircleOutlinedIcon onClick={() => setShowProfileTab(true)} style={{ fontSize: '35px' }} />}
 
-                            {showProfileTab && <div className="profile-tab-wrap">
-                                <div className="profile" onClick={() => { history.push('/subscription'); setShowProfileTab(false) }}>Subscription</div>
-                                <div className="logout" onClick={() => logout()}>Logout</div>
-                            </div>}
+                            <div className={`profile-tab-wrap ${showProfileTab ? 'showMenu' : ''}`} onClick={(e) => headerMenusClicked(e)}>
+                                <a className="crossMenuIcon"></a>
+                                <div className="innerMenuWrap">
+                                    <div className="linkMenu" data-url="subscription" onClick={(e) => topRightNavigation(e, 'subscription')}>Subscription</div>
+                                    <div className="linkMenu" data-url="aboutus" onClick={(e) => topRightNavigation(e, 'aboutus')}>About us</div>
+                                    <div className="linkMenu" data-url="contactus" onClick={(e) => topRightNavigation(e, 'contactus')}>Contact us</div>
+                                    <div className="linkMenu" data-url="privacypolicy" onClick={(e) => topRightNavigation(e, 'privacypolicy')}>Privacy policies</div>
+                                    <div className="linkMenu" data-url="termsandconditions" onClick={(e) => topRightNavigation(e, 'termsandconditions')}>Terms &amp; conditions</div>
+                                    <div className="linkMenu" data-url="refundpolicy" onClick={(e) => topRightNavigation(e, 'refundpolicy')}>Cancellation/refund policy</div>
+                                    <div className="linkMenu" onClick={() => logout()}>Logout</div>
+                                </div>
+                            </div>
                         </div>
                         {/* <button className="signup" onClick={() => logout()}>Logout</button> */}
                     </div>}

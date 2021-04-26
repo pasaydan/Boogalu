@@ -231,8 +231,7 @@ function LessonsVideoContainer({
                     }
                     overlayItem.classList.add('activeOverlay');
                 }
-            }
-            if (isPaid === 'paid' && isSubscribedUser) {
+            } else if (isPaid === 'paid' && isSubscribedUser) {
                 if (overlayItem.classList.contains('activeOverlay')) {
                     toggleisVideoOverlayActive(false);
                     videoFront.pause();
