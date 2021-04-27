@@ -19,6 +19,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
     const [didMount, setDidMount] = useState(false);
     const [isMobile, toggleMobile] = useState(false);
     const [goingDownClass, setGoingDownClass] = useState('');
+    const [profileTabMenu, enableProfileTabMenu] = useState(false);
     const [showProfileTab, setShowProfileTab] = useState(false);
     const [isHomeRoute, togglHomeRouteValue] = useState(true);
     const ref = useRef();
@@ -32,7 +33,10 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
     const [animateNavClass, toggleNavAnimation] = useState('animate');
     
     const isAppAlreadyLoaded = JSON.parse(localStorage.getItem('isAppLoaded'));
-    useOnClickOutside(ref, () => setShowProfileTab(false));
+    useOnClickOutside(ref, () => {
+        setShowProfileTab(false)
+        enableProfileTabMenu(false);
+    });
 
     useEffect(() => {
         setDidMount(true);
@@ -144,6 +148,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
         console.log('logout success');
         dispatch(logoutUser());
         setShowProfileTab(false)
+        enableProfileTabMenu(false);
         history.push(`/login`);
     }
 
@@ -256,6 +261,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
             event.currentTarget.classList.add('active');
             history.push(`/${url}`);
             setShowProfileTab(false);
+            enableProfileTabMenu(false);
         } else {
             const pathName = history?.location?.pathname.split('/')[1];
             if (getLinkMenu.length) {
@@ -268,9 +274,21 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
         }
     }
 
+    function activateLeftMenuBar(event, action) {
+        if (action) {
+            enableProfileTabMenu(true);
+            setTimeout(() => {
+                setShowProfileTab(action);
+            }, 100)    
+        }
+    }
+
     function headerMenusClicked(event) {
         event.stopPropagation();
         setShowProfileTab(false);
+        setTimeout(() => {
+            enableProfileTabMenu(false);
+        }, 500);
     }
 
     return (
@@ -304,21 +322,24 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                     {loggedInUser && loggedInUser.phone && <div className="flex-2 signup-wrap" >
                         <div className="profile" ref={ref}>
                             {loggedInUser.profileImage ? <div className="profile-img-wrap">
-                                <img src={loggedInUser.profileImage} onClick={() => setShowProfileTab(true)} style={{ fontSize: '35px' }} />
-                            </div> : <AccountCircleOutlinedIcon onClick={() => setShowProfileTab(true)} style={{ fontSize: '35px' }} />}
+                                <img src={loggedInUser.profileImage} onClick={(e) => activateLeftMenuBar(e, true)} style={{ fontSize: '35px' }} />
+                            </div> : <AccountCircleOutlinedIcon onClick={(e) => activateLeftMenuBar(e, true)} style={{ fontSize: '35px' }} />}
 
-                            <div className={`profile-tab-wrap ${showProfileTab ? 'showMenu' : ''}`} onClick={(e) => headerMenusClicked(e)}>
-                                <a className="crossMenuIcon"></a>
-                                <div className="innerMenuWrap">
-                                    <div className="linkMenu" data-url="subscription" onClick={(e) => topRightNavigation(e, 'subscription')}>Subscription</div>
-                                    <div className="linkMenu" data-url="aboutus" onClick={(e) => topRightNavigation(e, 'aboutus')}>About us</div>
-                                    <div className="linkMenu" data-url="contactus" onClick={(e) => topRightNavigation(e, 'contactus')}>Contact us</div>
-                                    <div className="linkMenu" data-url="privacypolicy" onClick={(e) => topRightNavigation(e, 'privacypolicy')}>Privacy policies</div>
-                                    <div className="linkMenu" data-url="termsandconditions" onClick={(e) => topRightNavigation(e, 'termsandconditions')}>Terms &amp; conditions</div>
-                                    <div className="linkMenu" data-url="refundpolicy" onClick={(e) => topRightNavigation(e, 'refundpolicy')}>Cancellation/refund policy</div>
-                                    <div className="linkMenu" onClick={() => logout()}>Logout</div>
-                                </div>
-                            </div>
+                            {
+                                profileTabMenu ?
+                                <div className={`profile-tab-wrap ${showProfileTab ? 'showMenu' : ''}`} onClick={(e) => headerMenusClicked(e)}>
+                                    <a className="crossMenuIcon"></a>
+                                    <div className="innerMenuWrap">
+                                        <div className="linkMenu" data-url="subscription" onClick={(e) => topRightNavigation(e, 'subscription')}>Subscription</div>
+                                        <div className="linkMenu" data-url="aboutus" onClick={(e) => topRightNavigation(e, 'aboutus')}>About us</div>
+                                        <div className="linkMenu" data-url="contactus" onClick={(e) => topRightNavigation(e, 'contactus')}>Contact us</div>
+                                        <div className="linkMenu" data-url="privacypolicy" onClick={(e) => topRightNavigation(e, 'privacypolicy')}>Privacy policies</div>
+                                        <div className="linkMenu" data-url="termsandconditions" onClick={(e) => topRightNavigation(e, 'termsandconditions')}>Terms &amp; conditions</div>
+                                        <div className="linkMenu" data-url="refundpolicy" onClick={(e) => topRightNavigation(e, 'refundpolicy')}>Cancellation/refund policy</div>
+                                        <div className="linkMenu" onClick={() => logout()}>Logout</div>
+                                    </div>
+                                </div> : ''
+                            }
                         </div>
                         {/* <button className="signup" onClick={() => logout()}>Logout</button> */}
                     </div>}
