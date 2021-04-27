@@ -117,6 +117,13 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                     if (pathName?.length && getHref.includes(pathName)) {
                         ele.classList.add('active');
                     }
+                    if (pathName === '') {
+                        if (loggedInUser.username) {
+                            if (ele.getAttribute('href') === '#Dashboard') {
+                                ele.classList.add('active');
+                            } 
+                        }
+                    }
                 });
             }
             topRightNavigation();
@@ -196,10 +203,19 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                     ele.classList.remove('active');
                 }
             });
+            if (loggedInUser.username && route === '') {
+                navLinks.forEach((ele) => {
+                    if (ele.getAttribute('href') === '#Dashboard') {
+                        ele.classList.add('active');
+                        setActiveRoute('');
+                    }
+                }); 
+            }
         }
         if (route) {
             history.push(`/${route}`);
             e.target.classList.add('active');
+            setActiveRoute(route);
             setTimeout(() => {
                 let target = $(`.${route}`);
                 if (target && target.offset()) {
@@ -210,6 +226,14 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
             }, 100);
         } else {
             history.push(`/`);
+            setActiveRoute('');
+            if (loggedInUser.username) {
+                navLinks.forEach((ele) => {
+                    if (ele.getAttribute('href') === '#Dashboard') {
+                        ele.classList.add('active');
+                    }
+                }); 
+            }
             setTimeout(() => {
                 let target = $(`.homepage`);
                 if (target.length) {
@@ -280,6 +304,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
             });
             event.currentTarget.classList.add('active');
             history.push(`/${url}`);
+            setActiveRoute(url);
             setShowProfileTab(false);
             enableProfileTabMenu(false);
             setShowUserIconProfileMenu(false);
@@ -409,9 +434,9 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                     {
                         !isMobile ?
                             <ul className="flex-1 nav-ul">
-                                {loggedInUser.username && <li><a href="#profile" onClick={(e) => onClickNav(e, 'profile')}>Profile</a></li>}
-                                <li><a href="#Competitions" onClick={(e) => onClickNav(e, 'competitions')}>Competitions</a></li>
-                                <li><a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')}>Lessons</a></li>
+                                {loggedInUser.username && <li><a href="#Dashboard" title="Dashboard" onClick={(e) => onClickNav(e, '')}>Dashboard</a></li>}
+                                <li><a href="#Competitions" title="Competitions" onClick={(e) => onClickNav(e, 'competitions')}>Competitions</a></li>
+                                <li><a href="#Lessons" title="Lessons" onClick={(e) => onClickNav(e, 'lessons')}>Lessons</a></li>
                                 {
                                     !hideVdoUploadBtn ?
                                         <li>
@@ -458,7 +483,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                         <div className={`profile-tab-wrap ${showUserIconProfileMenu ? 'showMenu' : ''}`} onClick={(e) => headerMenusClicked(e)}>
                             <a className="crossMenuIcon"></a>
                             <div className="innerMenuWrap">
-                                <div className="linkMenu" data-url="profile" onClick={(e) => topRightNavigation(e, '/profile')}>My account</div>
+                                <div className="linkMenu" data-url="profile" onClick={(e) => topRightNavigation(e, 'profile')}>My account</div>
                                 <div className="linkMenu" data-url="profile/edit" onClick={(e) => topRightNavigation(e, 'profile/edit')}>Edit profile</div>
                                 <div className="linkMenu" onClick={() => logout()}>Logout</div>
                             </div>
@@ -476,7 +501,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                         <div className="sticky-mobile-menu">
                             <ul className="flex-1 nav-ul">
                                 <li>
-                                    <a href="/" ref={mobilHomelinkRef} onClick={(e) => onClickNav(e, '')} className={activeRoute == '' ? 'active' : ''}>
+                                    <a href="/" ref={mobilHomelinkRef} onClick={(e) => onClickNav(e, '')} className={activeRoute === '' ? 'active' : ''}>
                                         <i>
                                             <FaHome />
                                         </i>
@@ -484,19 +509,19 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                                     </a>
                                 </li>
                                 {loggedInUser.username && <li>
-                                    <a href="#profile" onClick={(e) => onClickNav(e, 'profile')} className={activeRoute == '' ? 'active' : ''}>
+                                    <a href="#profile" onClick={(e) => onClickNav(e, 'profile')} className={activeRoute === 'profile' ? 'active' : ''}>
                                         <i><FaUserAlt /></i>
                                         <span>Profile</span>
                                     </a>
                                 </li>}
                                 <li>
-                                    <a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')} className={activeRoute == 'competitions' ? 'active' : ''}>
+                                    <a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')} className={activeRoute === 'lessons' ? 'active' : ''}>
                                         <i><FaBookReader /></i>
                                         <span>Lessons</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#upload" onClick={(e) => onClickNav(e, 'competitions')} className={activeRoute == 'competitions' ? 'active' : ''}>
+                                    <a href="#upload" onClick={(e) => onClickNav(e, 'competitions')} className={activeRoute === 'competitions' ? 'active' : ''}>
                                         <i><FaTrophy /></i>
                                         <span>Competition</span>
                                     </a>
