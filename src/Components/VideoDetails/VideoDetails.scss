@@ -87,6 +87,37 @@
         top: auto;
         bottom: 10%;
         transform: translate(-50%, 0);
+        .vdo-outer {
+            .vdo-wrap {
+                .react-player {
+                    max-height: 220px !important;
+                    height: 220px !important;
+                    video {
+                        max-height: 220px !important;
+                        height: 220px !important;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 1023px) {
+    .feeds-comment-modal {
+        .comment-modal {
+            .vdo-outer {
+                .vdo-wrap {
+                    .react-player {
+                        max-height: 220px !important;
+                        height: 220px !important;
+                        video {
+                            max-height: 220px !important;
+                            height: 220px !important;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
