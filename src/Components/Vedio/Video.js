@@ -10,6 +10,7 @@ const Video = ({ vdoObj }) => {
                     className='react-player' 
                     url={vdoUrl}
                     controls={true}
+                    width='100%'
                     style={{
                         'position': 'relative',
                         'min-width': '100%',
