@@ -1,0 +1,83 @@
+.confirmationModalOuter {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 200;
+    .confirmationInner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        text-align: center;
+        display: flex;
+        width: 300px;
+        padding: 10px;
+        box-sizing: border-box;
+        border-radius: 5px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transform: translate(-50%, -50%);
+        background: var(--primary-white);
+        .messageBox {
+            color: var(--secondary-bg-blue);
+            font-size: 16px;
+            line-height: 20px;
+            margin: 20px auto 10px;
+        }
+        textarea {
+            width: 100%;
+            height: 60px;
+            margin-bottom: 20px;
+            border: 1px solid var(--footer-text-grey);
+            color: var(--secondary-dark-grey);
+            box-shadow: none;
+            border-radius: 5px;
+            resize: none;
+            padding: 10px;
+            box-sizing: border-box;
+            outline: none;
+            &:focus {
+                border: 1px solid var(--secondary-bg-blue);
+            }
+        }
+        .actions {
+            display: flex;
+            justify-content: center;
+            .btn {
+                padding: 8px;
+                font-size: 14px;
+                min-width: 80px;
+                margin: 0 0 0 10px;
+                &:first-child {
+                    margin-left: 0;
+                }
+            }
+        }
+        .closeUserModal {
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            cursor: pointer;
+            top: 5px;
+            right: 5px;
+            &:before, &:after {
+                content: '';
+                position: absolute;
+                width: 100%;
+                height: 2px;
+                background: var(--footer-text-grey);
+                top: 10px;
+                left: 0;
+            }
+            &:before {
+                transform: rotate(45deg);
+            }
+            &:after {
+                transform: rotate(-45deg);
+            }
+        }
+    }
+}

@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import db from '../Database';
-import { formatDate, formatTime } from "./Utils";
+import { formatDate, formatTime, timeStampToNewDate } from "./Utils";
 
 const uploadedVideosRef = db.collection('uploadedVideos');
 
@@ -41,6 +41,7 @@ export function getUploadedVideosByUserId(id) {
             querySnapshot.forEach(function (doc) {
                 let data = doc.data();
                 data.key = doc.id;
+                data.uploadedTime = formatDate(timeStampToNewDate(data.createdOn), 3);
                 videos.push(data);
             })
             observer.next(videos);

@@ -12,6 +12,9 @@ import usersIcon from '../../Images/users-icon.png';
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { getAllUser } from "../../Services/User.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
+import { MdRemoveRedEye, MdModeEdit, MdBlock, MdDeleteForever } from 'react-icons/md';
+import { getUploadedVideosByUserId } from "../../Services/UploadedVideo.service";
+import ConfirmationModal from '../ConfirmationModal';
 
 const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
 
@@ -22,6 +25,15 @@ export default function UsersInfo() {
     const [adminPwd, setAdminPwd] = useState('');
     const [loggedInMessages, setLoginMessage] = useState('');
     const [userListData, setUsersList] = useState(null);
+    const [isUserDataLoading, toggleUserDataLoading] = useState(false);
+    const [userVideoDataList, setUsersVideoList] = useState(null);
+    const [loadingText, setLoadingText] = useState('');
+    const [isFetchUserModalActive, toggleUserFetchModalVisiblity] = useState(false);
+    const [isDeleteVideoClicked, toggleDeletVideModal] = useState(false);
+    const [deleteVideoMessage, setDeleteVideoMessage] = useState('');
+    const [userIdKey, setUserKey] = useState('');
+    const [videoIdKey, setVideoKey] = useState('');
+    const [confirmationAction, setConfirmationAction] = useState('');
 
     useEffect(() => {
         if (checkAdminLogIn) {
@@ -68,11 +80,9 @@ export default function UsersInfo() {
         try {
             dispatch(enableLoading());
             getAllUser().subscribe(users => {
-                console.log('USERS LISTS: ', users);
                 dispatch(disableLoading());
                 if (users.length) {
                     setUsersList(users);
-
                 }
             });
         } catch (e) {
@@ -81,8 +91,108 @@ export default function UsersInfo() {
         }
     }
 
+    function fetchUsersVideoDetails(event, userKey) {
+        event.stopPropagation();
+        setLoadingText('Fetching videos...');
+        toggleUserFetchModalVisiblity(true);
+        toggleUserDataLoading(true);
+        getUploadedVideosByUserId(userKey).subscribe((list) => {
+            console.log('User Video List: ', list);
+            setUsersVideoList(list);
+            toggleUserDataLoading(false);
+        });
+    }
+
+    function closeUserModal(event) {
+        event.stopPropagation();
+        toggleUserFetchModalVisiblity(false);
+    }
+
+    function deleteUserVideo(event, videoId, userId) {
+        event.stopPropagation();
+        toggleDeletVideModal(true);
+        setConfirmationAction('videoDelete');
+        setDeleteVideoMessage('Are you sure you want to delete this video?');
+        setUserKey(userId);
+        setVideoKey(videoId);
+    } 
+    
+    // function editUser(event, userKey) {
+    //     event.stopPropagation();
+    // }
+    
+    function deactivateUser(event, userKey) {
+        event.stopPropagation();
+        toggleDeletVideModal(true);
+        setConfirmationAction('userDeactivate');
+        setDeleteVideoMessage('Are you sure you want to de-activate this user?');
+        setUserKey(userKey);
+    }
+
+    function videoDeleteConfirmationResponse(action, confirmed, userKey, videoKey, adminComment) {
+        if (action === 'videoDelete' && confirmed) {
+            console.log('Video delete call will go here');
+        } else if (action === 'userDeactivate' && confirmed) {
+            console.log('User deactivate call will go here');
+        }
+
+        toggleDeletVideModal(false);
+    }
+
     return (
         <div className="adminPanelSection">
+            {
+                isDeleteVideoClicked ?
+                <ConfirmationModal 
+                    action={confirmationAction}
+                    message={deleteVideoMessage}
+                    userId={userIdKey}
+                    videoId={videoIdKey}
+                    confirmationResponse={videoDeleteConfirmationResponse}
+                /> : ''
+            }
+            {
+                isFetchUserModalActive ?
+                <div className="fetchUserDetailModal">
+                    <div className="fetchUserDetailsInner">
+                        <a className="closeUserModal" title="close modal" onClick={(e) => closeUserModal(e)}></a>
+                        {
+                            isUserDataLoading ?
+                            <div className="spinnerLoader">
+                                <div className="loader"></div>
+                                <span>{loadingText}</span>
+                            </div>
+                            : userVideoDataList && userVideoDataList.length ?
+                            <div className="usersVideoListWrap">
+                                {
+                                    userVideoDataList.map((item, index) => {
+                                        return (
+                                            <div className="videoDetails" key={`userVideo-id-${index}`}>
+                                                <video 
+                                                    controls 
+                                                    muted
+                                                >
+                                                    <source src={item.url} type="video/mp4" />
+                                                </video>
+                                                <p className="title">
+                                                    {item.title}
+                                                </p>
+                                                <p className="subText">
+                                                    {item.uploadedTime}
+                                                </p>
+                                                <a className="deleteVideoIcon" title="delete this video" onClick={(e) => deleteUserVideo(e, item.key, item.userId)}>
+                                                    <MdDeleteForever />
+                                                </a>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
+                            : <p className="noVideoMessage">There is no videos uploaded by this user!</p>
+                        }
+                    </div>
+                </div> : ''
+            }
             <nav className="adminNavigation">
                 <Link to="/adminpanel/competition" title="create championship" className="panelLink">
                     <span className="iconsWrap championIconWrap">
@@ -155,6 +265,7 @@ export default function UsersInfo() {
                             <table>
                                 <thead>
                                     <tr>
+                                        <th>Sr. no.</th>
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Phone</th>
@@ -167,18 +278,33 @@ export default function UsersInfo() {
                                 <tbody>
                                     {
                                         userListData && userListData.length &&
-                                        userListData.map( item => {
-                                            return (
-                                                <tr>
-                                                    <td>{item.name}</td>
-                                                    <td>{item.email || 'N/A'}</td>
-                                                    <td>{item.phone || 'N/A'}</td>
-                                                    <td>{item.gender || 'N/A'}</td>
-                                                    <td>{item.state || 'N/A'}</td>
-                                                    <td>{item.country || 'N/A'}</td>
-                                                    <td></td>
-                                                </tr>
-                                            )
+                                        userListData.map((item, index) => {
+                                            if (item.role !== 'admin') {
+                                                return (
+                                                    <tr key={`user-item-${index}`}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{item.name}</td>
+                                                        <td>{item.email || 'N/A'}</td>
+                                                        <td>{item.phone || 'N/A'}</td>
+                                                        <td>{item.gender || 'N/A'}</td>
+                                                        <td>{item.state || 'N/A'}</td>
+                                                        <td>{item.country || 'N/A'}</td>
+                                                        <td>
+                                                            <div className="actionBlock">
+                                                                <a className="viewUserIcon" title="View users videos" onClick={(e) => fetchUsersVideoDetails(e, item.key)}>
+                                                                    <MdRemoveRedEye />
+                                                                </a>
+                                                                {/* <a className="editUserIcon" title="Edit user" onClick={(e) => editUser(e, item.key)}>
+                                                                    <MdModeEdit />
+                                                                </a> */}
+                                                                <a className="blockUserIcon" title="De-activate user" onClick={(e) => deactivateUser(e, item.key)}>
+                                                                    <MdBlock />
+                                                                </a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            }
                                         })
                                     }
                                 </tbody>

@@ -626,18 +626,40 @@
             padding: 10px;
             text-align: left;
             color: var(--copyright-grey);
-            width: calc(100% / 7);
+            width: calc(100% / 8);
             display: inline-block;
             line-height: 22px;
-            vertical-align: top;
+            vertical-align: middle;
             word-break: break-word;
             box-sizing: border-box;
+            &:first-child {
+                max-width: 82px;
+            }
         }
     
         th {
             text-transform: uppercase;
             letter-spacing: 1px;
             font-weight: 500;
+        }
+        td {
+            .actionBlock {
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                a {
+                    display: block;
+                    padding: 5px;
+                    cursor: pointer;
+                    font-size: 18px;
+                    margin-right: 10px;
+                    color: var(--copyright-grey);
+                    transition: all 0.3s ease-in-out;
+                    &:hover {
+                        color: var(--ternary-dark-grey);
+                    }
+                }
+            }
         }
     }
 
@@ -682,6 +704,133 @@
         font-size: 40px;
         color: var(--secondary-bg-blue);
     }
+}
+
+
+.fetchUserDetailModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 110;
+    background: rgba(255, 255, 255, 0.6);
+    .fetchUserDetailsInner {
+        width: 80%;
+        min-height: 100px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 767px;
+        padding: 30px 10px 10px;
+        background: var(--primary-white);
+        border-radius: 5px;
+        font-size: 16px;
+        line-height: 20px;
+        color: var(--secondary-bg-blue);
+        transform: translate(-50%, -50%);
+        box-sizing: border-box;
+        box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.3);
+        .noVideoMessage {
+            font-size: 18px;
+            text-align: center;
+        }
+        .closeUserModal {
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            cursor: pointer;
+            top: 5px;
+            right: 5px;
+            &:before, &:after {
+                content: '';
+                position: absolute;
+                width: 100%;
+                height: 2px;
+                background: var(--footer-text-grey);
+                top: 10px;
+                left: 0;
+            }
+            &:before {
+                transform: rotate(45deg);
+            }
+            &:after {
+                transform: rotate(-45deg);
+            }
+        }
+        .usersVideoListWrap {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            overflow-y: auto;
+            max-height: 480px;
+            .videoDetails {
+                flex-basis: calc(100% / 2 - 20px);
+                min-height: 120px;
+                font-size: 14px;
+                line-height: 16px;
+                margin: 10px;
+                position: relative;
+                p {
+                    margin: 5px 0 0 0;
+                    color: var(--footer-text-grey);
+                    &.title {
+                        font-weight: 500;
+                        padding-right: 40px;
+                    }
+                    &.subText {
+                        font-size: 12px;
+                    }
+                }
+                .deleteVideoIcon {
+                    font-size: 22px;
+                    color: var(--footer-text-grey);
+                    padding: 5px;
+                    position: absolute;
+                    right: -5px;
+                    top: 160px;
+                    cursor: pointer;
+                    transition: all 0.3s ease-in-out;
+                    &:hover {
+                        color: var(--red-text-color);
+                    }
+                }
+                video {
+                    width: 100%;
+                    height: 160px;
+                    min-width: 230px;
+                    background: var(--footer-background-grey);
+                    border-radius: 5px;
+                }
+            }
+        }
+    }
+}
+
+.spinnerLoader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    .loader {
+        width: 34px;
+        height: 34px;
+        margin: 10px auto;
+        border: 3px solid rgba(0, 0, 0, 0.2);
+        border-radius: 50%;
+        border-top-color: var(--secondary-bg-blue);
+        animation: spinnerLoader 1s ease-in-out infinite;
+        -webkit-animation: spinnerLoader 1s ease-in-out infinite;
+    }
+}
+
+@keyframes spinnerLoader {
+    to { transform: rotate(360deg); }
+}
+
+@-webkit-keyframes spinnerLoader {
+    to { -webkit-transform: rotate(360deg); }
 }
 
 @keyframes spinnerNotificationLoader {
@@ -848,6 +997,12 @@
             }
         }
     }
+
+    .fetchUserDetailModal {
+        .fetchUserDetailsInner {
+            width: 95%;
+        }
+    }
 }
 
 @media screen and (max-width: 650px) {
@@ -855,6 +1010,22 @@
         .uploadContainer {
             .upload-input-wrap {
                 flex-basis: calc(100% / 2 - 24px);
+            }
+        }
+    }
+    .fetchUserDetailModal {
+        .fetchUserDetailsInner {
+            .usersVideoListWrap {
+                .videoDetails {
+                    margin: 10px auto;
+                    flex-basis: 90%;
+                    .deleteVideoIcon {
+                        top: 180px;
+                    }
+                    video {
+                        height: 180px;
+                    }
+                }
             }
         }
     }
