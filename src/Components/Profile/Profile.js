@@ -439,14 +439,14 @@ function Profile() {
                                                 <div className="menu" onClick={() => { setOpenUploadCompModalFor(vdo.key); setShowProfileTab(true) }}>
                                                     <i><FaBars /></i>
                                                 </div>
-                                                {showProfileTab && openUploadCompModalFor == vdo.key && <div className="profile-tab-wrap" ref={ref}>
+                                                {showProfileTab && openUploadCompModalFor == vdo.key && <div className="videoUploadToolTip" ref={ref}>
                                                     <div className="profile" onClick={() => redirectToCompetition()}>Upload for competition</div>
                                                 </div>}
                                                 <div className="vdo-card">
                                                     <div>
                                                         <Vedio vdoObj={vdo} />
                                                     </div>
-                                                    <div className="video-title-like-wrap">
+                                                    <div className="video-title-like-wrap profile-mode">
                                                         <div className="title">{vdo.title}</div>
                                                         <div className="like-comment">
                                                             {vdo.likes && vdo.likes.length > 0 && <div className="likes-count">{vdo.likes.length} Likes</div>}
