@@ -21,9 +21,15 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
     const [goingDownClass, setGoingDownClass] = useState('');
     const [profileTabMenu, enableProfileTabMenu] = useState(false);
     const [showProfileTab, setShowProfileTab] = useState(false);
+    const [userIconProfileMenu, setUserIconProfileMenu] = useState(false);
+    const [showUserIconProfileMenu, setShowUserIconProfileMenu] = useState(false);
     const [isHomeRoute, togglHomeRouteValue] = useState(true);
+    
     const ref = useRef();
+    const hamburgerMenuRef = useRef(null);
+    const mainNavRef = useRef(null);
     const mobilHomelinkRef = useRef();
+
     const history = useHistory();
     const { state, dispatch } = useStoreConsumer();
     const loggedInUser = state.loggedInUser;
@@ -33,10 +39,16 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
     const [animateNavClass, toggleNavAnimation] = useState('animate');
     
     const isAppAlreadyLoaded = JSON.parse(localStorage.getItem('isAppLoaded'));
-    useOnClickOutside(ref, () => {
-        setShowProfileTab(false)
-        enableProfileTabMenu(false);
-    });
+    // useOnClickOutside(ref, () => {
+    //     setShowProfileTab(false)
+    //     enableProfileTabMenu(false);
+    //     if (hamburgerMenuRef.current) {
+    //         hamburgerMenuRef.current.classList.remove('active');
+    //     }
+    //     if (mainNavRef.current) {
+    //         mainNavRef.current.classList.remove('sideMenuVisible');
+    //     }
+    // });
 
     useEffect(() => {
         setDidMount(true);
@@ -105,6 +117,13 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                     if (pathName?.length && getHref.includes(pathName)) {
                         ele.classList.add('active');
                     }
+                    if (pathName === '') {
+                        if (loggedInUser.username) {
+                            if (ele.getAttribute('href') === '#Dashboard') {
+                                ele.classList.add('active');
+                            } 
+                        }
+                    }
                 });
             }
             topRightNavigation();
@@ -149,6 +168,14 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
         dispatch(logoutUser());
         setShowProfileTab(false)
         enableProfileTabMenu(false);
+        setShowUserIconProfileMenu(false);
+        setUserIconProfileMenu(false);
+        if (hamburgerMenuRef.current) {
+            hamburgerMenuRef.current.classList.remove('active');
+        }
+        if (mainNavRef.current) {
+            mainNavRef.current.classList.remove('sideMenuVisible');
+        }
         history.push(`/login`);
     }
 
@@ -176,10 +203,19 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                     ele.classList.remove('active');
                 }
             });
+            if (loggedInUser.username && route === '') {
+                navLinks.forEach((ele) => {
+                    if (ele.getAttribute('href') === '#Dashboard') {
+                        ele.classList.add('active');
+                        setActiveRoute('');
+                    }
+                }); 
+            }
         }
         if (route) {
             history.push(`/${route}`);
             e.target.classList.add('active');
+            setActiveRoute(route);
             setTimeout(() => {
                 let target = $(`.${route}`);
                 if (target && target.offset()) {
@@ -190,6 +226,14 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
             }, 100);
         } else {
             history.push(`/`);
+            setActiveRoute('');
+            if (loggedInUser.username) {
+                navLinks.forEach((ele) => {
+                    if (ele.getAttribute('href') === '#Dashboard') {
+                        ele.classList.add('active');
+                    }
+                }); 
+            }
             setTimeout(() => {
                 let target = $(`.homepage`);
                 if (target.length) {
@@ -201,26 +245,26 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
         }
     }
     // Hook
-    function useOnClickOutside(ref, handler) {
-        useEffect(
-            () => {
-                const listener = event => {
-                    if (!ref.current || ref.current.contains(event.target)) {
-                        return;
-                    }
+    // function useOnClickOutside(ref, handler) {
+    //     useEffect(
+    //         () => {
+    //             const listener = event => {
+    //                 if (!ref.current || ref.current.contains(event.target)) {
+    //                     return;
+    //                 }
 
-                    handler(event);
-                };
-                document.addEventListener('mousedown', listener);
-                document.addEventListener('touchstart', listener);
-                return () => {
-                    document.removeEventListener('mousedown', listener);
-                    document.removeEventListener('touchstart', listener);
-                };
-            },
-            [ref, handler]
-        );
-    }
+    //                 handler(event);
+    //             };
+    //             document.addEventListener('mousedown', listener);
+    //             document.addEventListener('touchstart', listener);
+    //             return () => {
+    //                 document.removeEventListener('mousedown', listener);
+    //                 document.removeEventListener('touchstart', listener);
+    //             };
+    //         },
+    //         [ref, handler]
+    //     );
+    // }
 
     function navigateToUserRegistrationLogin(path) {
         setHideVdoUploadBtn(true);
@@ -260,8 +304,17 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
             });
             event.currentTarget.classList.add('active');
             history.push(`/${url}`);
+            setActiveRoute(url);
             setShowProfileTab(false);
             enableProfileTabMenu(false);
+            setShowUserIconProfileMenu(false);
+            setUserIconProfileMenu(false);
+            if (hamburgerMenuRef.current) {
+                hamburgerMenuRef.current.classList.remove('active');
+            }
+            if (mainNavRef.current) {
+                mainNavRef.current.classList.remove('sideMenuVisible');
+            }
         } else {
             const pathName = history?.location?.pathname.split('/')[1];
             if (getLinkMenu.length) {
@@ -274,26 +327,104 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
         }
     }
 
-    function activateLeftMenuBar(event, action) {
-        if (action) {
-            enableProfileTabMenu(true);
+    function activateLeftMenuBar(event) {
+        event.stopPropagation();
+        setShowUserIconProfileMenu(false);
+        setTimeout(() => {
+            setUserIconProfileMenu(false);
+        }, 200);
+        if (hamburgerMenuRef.current) {
+            if (hamburgerMenuRef.current.classList.contains('active')) {
+                hamburgerMenuRef.current.classList.remove('active');
+                if (mainNavRef.current) {
+                    mainNavRef.current.classList.remove('sideMenuVisible');
+                }
+                setTimeout(() => {
+                    enableProfileTabMenu(false);
+                }, 100);    
+                setShowProfileTab(false);
+            } else {
+                hamburgerMenuRef.current.classList.add('active');
+                if (mainNavRef.current) {
+                    mainNavRef.current.classList.add('sideMenuVisible');
+                }
+                enableProfileTabMenu(true);
+                setTimeout(() => {
+                    setShowProfileTab(true);
+                }, 100);
+            }
+        }
+    }
+
+    function activateProfileIconMenu(event) {
+        event.stopPropagation();
+        if (hamburgerMenuRef.current) {
+            if (hamburgerMenuRef.current.classList.contains('active')) {
+                hamburgerMenuRef.current.classList.remove('active');
+                if (mainNavRef.current) {
+                    mainNavRef.current.classList.remove('sideMenuVisible');
+                }
+                setTimeout(() => {
+                    enableProfileTabMenu(false);
+                }, 100);    
+                setShowProfileTab(false);
+            }
+        }
+
+        if (userIconProfileMenu) {
+            setShowUserIconProfileMenu(false);
             setTimeout(() => {
-                setShowProfileTab(action);
-            }, 100)    
+                setUserIconProfileMenu(false);
+            }, 200);
+        } else {
+            setUserIconProfileMenu(true);
+            setTimeout(() => {
+                setShowUserIconProfileMenu(true);
+            }, 200);
+        }
+    }
+
+    function navBoxClick(event) {
+        event.stopPropagation();
+        if (event.currentTarget.nodeName.toLocaleLowerCase() === 'nav') {
+            if (hamburgerMenuRef.current) {
+                hamburgerMenuRef.current.classList.remove('active');
+                if (mainNavRef.current) {
+                    mainNavRef.current.classList.remove('sideMenuVisible');
+                }
+                setTimeout(() => {
+                    enableProfileTabMenu(false);
+                }, 100);    
+                setShowProfileTab(false);
+            }
+            setShowUserIconProfileMenu(false);
+            setTimeout(() => {
+                setUserIconProfileMenu(false);
+            }, 200);
         }
     }
 
     function headerMenusClicked(event) {
         event.stopPropagation();
         setShowProfileTab(false);
+        setShowUserIconProfileMenu(false);
         setTimeout(() => {
             enableProfileTabMenu(false);
+            setUserIconProfileMenu(false);
         }, 500);
+        if (hamburgerMenuRef.current) {
+            hamburgerMenuRef.current.classList.remove('active');
+        }
+        if (mainNavRef.current) {
+            mainNavRef.current.classList.remove('sideMenuVisible');
+        }
     }
 
     return (
         <>
-            <nav className={`navigation-wrap ${animateNavClass} ${isHomeRoute && !isUserLoggedIn ? 'home-nav-style': ''} ${goingUpClass} ${isNavHidden ? 'hide-nav' : ''} ${goingDownClass} ${!loggedInUser.username ? 'user-logged-out' : ''}`}>
+            <nav ref={mainNavRef}
+                onClick={(e) => navBoxClick(e)} 
+                className={`navigation-wrap ${animateNavClass} ${isHomeRoute && !isUserLoggedIn ? 'home-nav-style': ''} ${goingUpClass} ${isNavHidden ? 'hide-nav' : ''} ${goingDownClass} ${!loggedInUser.username ? 'user-logged-out' : ''}`}>
                 <div className="flex-container desktop-navigation">
                     <h1 title="home" >
                         <a href="/" onClick={(e) => onClickNav(e, '')}>
@@ -303,9 +434,9 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                     {
                         !isMobile ?
                             <ul className="flex-1 nav-ul">
-                                {loggedInUser.username && <li><a href="#profile" onClick={(e) => onClickNav(e, 'profile')}>Profile</a></li>}
-                                <li><a href="#Competitions" onClick={(e) => onClickNav(e, 'competitions')}>Competitions</a></li>
-                                <li><a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')}>Lessons</a></li>
+                                {loggedInUser.username && <li><a href="#Dashboard" title="Dashboard" onClick={(e) => onClickNav(e, '')}>Dashboard</a></li>}
+                                <li><a href="#Competitions" title="Competitions" onClick={(e) => onClickNav(e, 'competitions')}>Competitions</a></li>
+                                <li><a href="#Lessons" title="Lessons" onClick={(e) => onClickNav(e, 'lessons')}>Lessons</a></li>
                                 {
                                     !hideVdoUploadBtn ?
                                         <li>
@@ -317,32 +448,47 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                     {(!loggedInUser || !loggedInUser.phone) && <div className="flex-2 signup-wrap" >
                         <button className="btn primary-light login" onClick={() => navigateToUserRegistrationLogin('login')}>Login</button>
                         <button className="btn primary-dark signup" onClick={() => navigateToUserRegistrationLogin('register')}>Sign Up</button>
+                        <a className="hamburgerMenu" ref={hamburgerMenuRef} title={`${profileTabMenu ? 'Close menu' : 'Open menu'}`} onClick={(e) => activateLeftMenuBar(e)}>
+                            <span></span>
+                        </a>
                     </div>}
 
                     {loggedInUser && loggedInUser.phone && <div className="flex-2 signup-wrap" >
                         <div className="profile" ref={ref}>
                             {loggedInUser.profileImage ? <div className="profile-img-wrap">
-                                <img src={loggedInUser.profileImage} onClick={(e) => activateLeftMenuBar(e, true)} style={{ fontSize: '35px' }} />
-                            </div> : <AccountCircleOutlinedIcon onClick={(e) => activateLeftMenuBar(e, true)} style={{ fontSize: '35px' }} />}
-
-                            {
-                                profileTabMenu ?
-                                <div className={`profile-tab-wrap ${showProfileTab ? 'showMenu' : ''}`} onClick={(e) => headerMenusClicked(e)}>
-                                    <a className="crossMenuIcon"></a>
-                                    <div className="innerMenuWrap">
-                                        <div className="linkMenu" data-url="subscription" onClick={(e) => topRightNavigation(e, 'subscription')}>Subscription</div>
-                                        <div className="linkMenu" data-url="aboutus" onClick={(e) => topRightNavigation(e, 'aboutus')}>About us</div>
-                                        <div className="linkMenu" data-url="contactus" onClick={(e) => topRightNavigation(e, 'contactus')}>Contact us</div>
-                                        <div className="linkMenu" data-url="privacypolicy" onClick={(e) => topRightNavigation(e, 'privacypolicy')}>Privacy policies</div>
-                                        <div className="linkMenu" data-url="termsandconditions" onClick={(e) => topRightNavigation(e, 'termsandconditions')}>Terms &amp; conditions</div>
-                                        <div className="linkMenu" data-url="refundpolicy" onClick={(e) => topRightNavigation(e, 'refundpolicy')}>Cancellation/refund policy</div>
-                                        <div className="linkMenu" onClick={() => logout()}>Logout</div>
-                                    </div>
-                                </div> : ''
-                            }
+                                <img src={loggedInUser.profileImage} onClick={(e) => activateProfileIconMenu(e)} style={{ fontSize: '35px' }} />
+                            </div> : <AccountCircleOutlinedIcon onClick={(e) => activateProfileIconMenu(e)} style={{ fontSize: '35px' }} />}
                         </div>
+                        <a className="hamburgerMenu" ref={hamburgerMenuRef} title={`${profileTabMenu ? 'Close menu' : 'Open menu'}`} onClick={(e) => activateLeftMenuBar(e)}>
+                            <span></span>
+                        </a>
                         {/* <button className="signup" onClick={() => logout()}>Logout</button> */}
                     </div>}
+                    {
+                        profileTabMenu ?
+                        <div className={`profile-tab-wrap ${showProfileTab ? 'showMenu' : ''}`} onClick={(e) => headerMenusClicked(e)}>
+                            <a className="crossMenuIcon"></a>
+                            <div className="innerMenuWrap">
+                                <div className="linkMenu" data-url="subscription" onClick={(e) => topRightNavigation(e, 'subscription')}>Subscription</div>
+                                <div className="linkMenu" data-url="aboutus" onClick={(e) => topRightNavigation(e, 'aboutus')}>About us</div>
+                                <div className="linkMenu" data-url="contactus" onClick={(e) => topRightNavigation(e, 'contactus')}>Contact us</div>
+                                <div className="linkMenu" data-url="privacypolicy" onClick={(e) => topRightNavigation(e, 'privacypolicy')}>Privacy policies</div>
+                                <div className="linkMenu" data-url="termsandconditions" onClick={(e) => topRightNavigation(e, 'termsandconditions')}>Terms &amp; conditions</div>
+                                <div className="linkMenu" data-url="refundpolicy" onClick={(e) => topRightNavigation(e, 'refundpolicy')}>Cancellation/refund policy</div>
+                            </div>
+                        </div> : ''
+                    }
+                    {
+                        userIconProfileMenu ?
+                        <div className={`profile-tab-wrap ${showUserIconProfileMenu ? 'showMenu' : ''}`} onClick={(e) => headerMenusClicked(e)}>
+                            <a className="crossMenuIcon"></a>
+                            <div className="innerMenuWrap">
+                                <div className="linkMenu" data-url="profile" onClick={(e) => topRightNavigation(e, 'profile')}>My account</div>
+                                <div className="linkMenu" data-url="profile/edit" onClick={(e) => topRightNavigation(e, 'profile/edit')}>Edit profile</div>
+                                <div className="linkMenu" onClick={() => logout()}>Logout</div>
+                            </div>
+                        </div> : ''
+                    }
                 </div>
                 {
                     !hideVdoUploadBtn ?
@@ -355,7 +501,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                         <div className="sticky-mobile-menu">
                             <ul className="flex-1 nav-ul">
                                 <li>
-                                    <a href="/" ref={mobilHomelinkRef} onClick={(e) => onClickNav(e, '')} className={activeRoute == '' ? 'active' : ''}>
+                                    <a href="/" ref={mobilHomelinkRef} onClick={(e) => onClickNav(e, '')} className={activeRoute === '' ? 'active' : ''}>
                                         <i>
                                             <FaHome />
                                         </i>
@@ -363,19 +509,19 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                                     </a>
                                 </li>
                                 {loggedInUser.username && <li>
-                                    <a href="#profile" onClick={(e) => onClickNav(e, 'profile')} className={activeRoute == '' ? 'active' : ''}>
+                                    <a href="#profile" onClick={(e) => onClickNav(e, 'profile')} className={activeRoute === 'profile' ? 'active' : ''}>
                                         <i><FaUserAlt /></i>
                                         <span>Profile</span>
                                     </a>
                                 </li>}
                                 <li>
-                                    <a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')} className={activeRoute == 'competitions' ? 'active' : ''}>
+                                    <a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')} className={activeRoute === 'lessons' ? 'active' : ''}>
                                         <i><FaBookReader /></i>
                                         <span>Lessons</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#upload" onClick={(e) => onClickNav(e, 'competitions')} className={activeRoute == 'competitions' ? 'active' : ''}>
+                                    <a href="#upload" onClick={(e) => onClickNav(e, 'competitions')} className={activeRoute === 'competitions' ? 'active' : ''}>
                                         <i><FaTrophy /></i>
                                         <span>Competition</span>
                                     </a>
