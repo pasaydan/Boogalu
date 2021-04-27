@@ -142,6 +142,7 @@ exports.sendEmail = functions.https.onRequest((request, response) => {
 					'status': 200,
 					'data': "Email sent succefully."
 				});
+				console.log("Email Sent", result);
 				return result;
 			})
 			.catch((error) => {
@@ -150,6 +151,7 @@ exports.sendEmail = functions.https.onRequest((request, response) => {
 					'statusText': 'Email sending failed',
 					'error': error
 				});
+				console.log("Email sending failed", error);
 				return error;
 			});
 	})
