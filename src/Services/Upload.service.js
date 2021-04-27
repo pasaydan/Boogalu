@@ -86,5 +86,20 @@ export function uploadVideo(video, uploadPath, pathId, view) {
 }
 
 export function deleteVideo(videoUrl) {
-    storageRef.refFromURL(videoUrl).delete();
+    const splitURL = videoUrl.split('?')[0];
+    const getVideoNameWithPath = /[^/]*$/.exec(splitURL)[0];
+    const decodedURI = decodeURIComponent(getVideoNameWithPath);
+    const deleteVideoRef = storageRef.child(decodedURI);
+    return new Observable((observer) => {
+        deleteVideoRef.delete().then(() => {
+            console.log("Video Deleted!!!");
+            observer.next({deleted: true});
+        }).catch((error) => {
+            // Uh-oh, an error occurred!
+            console.log("error", error);
+            observer.next({deleted: false, error: error});
+        });
+    });
 }
+// https://firebasestorage.googleapis.com/v0/b/boogalusite.appspot.com/o/uploads%2Fthumbnail%2Fthumbnail.jpg?alt=media&token=36fb88fc-0cde-4019-890f-5bb285791575
+// https://firebasestorage.googleapis.com/v0/b/boogalusite.appspot.com/o/uploads%2Fthumbnail%2Fthumbnail.jpg?alt=media&token=36fb88fc-0cde-4019-890f-5bb285791575

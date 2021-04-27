@@ -15,6 +15,7 @@ import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { MdRemoveRedEye, MdModeEdit, MdBlock, MdDeleteForever } from 'react-icons/md';
 import { getUploadedVideosByUserId } from "../../Services/UploadedVideo.service";
 import ConfirmationModal from '../ConfirmationModal';
+import { deleteVideo } from "../../Services/Upload.service";
 
 const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
 
@@ -33,6 +34,7 @@ export default function UsersInfo() {
     const [deleteVideoMessage, setDeleteVideoMessage] = useState('');
     const [userIdKey, setUserKey] = useState('');
     const [videoIdKey, setVideoKey] = useState('');
+    const [videoURL, setVideoURL] = useState('');
     const [confirmationAction, setConfirmationAction] = useState('');
 
     useEffect(() => {
@@ -108,13 +110,14 @@ export default function UsersInfo() {
         toggleUserFetchModalVisiblity(false);
     }
 
-    function deleteUserVideo(event, videoId, userId) {
+    function deleteUserVideo(event, videoId, userId, videoURL) {
         event.stopPropagation();
         toggleDeletVideModal(true);
         setConfirmationAction('videoDelete');
         setDeleteVideoMessage('Are you sure you want to delete this video?');
         setUserKey(userId);
         setVideoKey(videoId);
+        setVideoURL(videoURL);
     } 
     
     // function editUser(event, userKey) {
@@ -129,8 +132,20 @@ export default function UsersInfo() {
         setUserKey(userKey);
     }
 
-    function videoDeleteConfirmationResponse(action, confirmed, userKey, videoKey, adminComment) {
+    function videoDeleteConfirmationResponse(action, confirmed, userKey, videoKey, adminComment, videoURL) {
         if (action === 'videoDelete' && confirmed) {
+            deleteVideo(videoURL).subscribe(deleteResponse => {
+                console.log("deleteResponse", deleteResponse);
+                // CompetitionData.img = downloadableUrl;
+                // // save competition data to db with imag url
+                // saveCompetition(CompetitionData).subscribe((response) => {
+                //     toggleSaveLoading(false);
+                //     setFormMessageClass('success');
+                //     setFormMessage('Competition created successfully!');
+                //     console.log('competition success', response);
+                //     setCompetitionData(initialCompetitionData);
+                // })
+            })
             console.log('Video delete call will go here');
         } else if (action === 'userDeactivate' && confirmed) {
             console.log('User deactivate call will go here');
@@ -148,6 +163,7 @@ export default function UsersInfo() {
                     message={deleteVideoMessage}
                     userId={userIdKey}
                     videoId={videoIdKey}
+                    videoURL={videoURL}
                     confirmationResponse={videoDeleteConfirmationResponse}
                 /> : ''
             }
@@ -180,7 +196,7 @@ export default function UsersInfo() {
                                                 <p className="subText">
                                                     {item.uploadedTime}
                                                 </p>
-                                                <a className="deleteVideoIcon" title="delete this video" onClick={(e) => deleteUserVideo(e, item.key, item.userId)}>
+                                                <a className="deleteVideoIcon" title="delete this video" onClick={(e) => deleteUserVideo(e, item.key, item.userId, item.url)}>
                                                     <MdDeleteForever />
                                                 </a>
                                             </div>
