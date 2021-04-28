@@ -312,6 +312,12 @@ function LessonsVideoContainer({
             }
 
             {
+                isPaid === 'free' ?
+                <span className={`freeVideoTag ${isLoggedInUser ? 'loggedIn' : ''} `}>Free</span>
+                : ''
+            }
+
+            {
                 (!isLoggedInUser && isPaid === 'free') ?
                     <a className="lockIconWrap" title="Login to unlock this lesson" onClick={(e) => redirectToLogin(e)}>
                         <MdLock />
