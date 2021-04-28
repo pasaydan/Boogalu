@@ -192,6 +192,7 @@ nav img {
         left: 0;
         opacity: 0;
         transition: all 0.4s ease-in-out;
+        cursor: pointer;
         &:before, &:after {
             content: '';
             position: absolute;
@@ -250,6 +251,49 @@ nav img {
             z-index: -1;
         }
     }
+    &.user-icon-menu-wrap {
+        height: 120px;
+        right: 60px;
+        width: 220px;
+        opacity: 0;
+        &.showMenu {
+            opacity: 1;
+        }
+        .innerMenuWrap {
+            background-color: var(--primary-white);
+            padding: 0;
+            border-radius: 8px;
+            &:before {
+                content: '';
+                position: absolute;
+                width: 18px;
+                height: 18px;
+                background: var(--primary-white);
+                transform: rotate(45deg);
+                right: 26px;
+                top: -8px;
+                border-radius: 2px;
+            }
+            .linkMenu {
+                color: var(--footer-list-text-grey);
+                padding: 10px 15px;
+                font-size: 16px;
+                box-sizing: border-box;
+                &:hover {
+                    color: var(--secondary-bg-blue);
+                    background: var(--btn-primary-light-bg);
+                }
+                &.profileLink {
+                    border-radius: 8px 8px 0 0;
+                }
+                &.logoutLink {
+                    border-top: 1px solid var(--btn-primary-light-bg);
+                    border-radius: 0 0 8px 8px;
+                    padding: 8px 15px 12px;
+                }
+            }
+        }
+    }
 }
 
 .upload-btn {
@@ -286,6 +330,10 @@ nav img {
         top: 59px;
         &:before {
             top: 60px;
+        }
+        &.user-icon-menu-wrap {
+            right: 49px;
+            top: 62px;
         }
     }
     .navigation-wrap {

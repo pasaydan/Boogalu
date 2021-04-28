@@ -480,12 +480,11 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                     }
                     {
                         userIconProfileMenu ?
-                        <div className={`profile-tab-wrap ${showUserIconProfileMenu ? 'showMenu' : ''}`} onClick={(e) => headerMenusClicked(e)}>
-                            <a className="crossMenuIcon"></a>
+                        <div className={`profile-tab-wrap user-icon-menu-wrap ${showUserIconProfileMenu ? 'showMenu' : ''}`} onClick={(e) => headerMenusClicked(e)}>
                             <div className="innerMenuWrap">
-                                <div className="linkMenu" data-url="profile" onClick={(e) => topRightNavigation(e, 'profile')}>My account</div>
+                                <div className="linkMenu profileLink" data-url="profile" onClick={(e) => topRightNavigation(e, 'profile')}>My account</div>
                                 <div className="linkMenu" data-url="profile/edit" onClick={(e) => topRightNavigation(e, 'profile/edit')}>Edit profile</div>
-                                <div className="linkMenu" onClick={() => logout()}>Logout</div>
+                                <div className="linkMenu logoutLink" onClick={() => logout()}>Logout</div>
                             </div>
                         </div> : ''
                     }
