@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
 
 export default function ConfirmationModal(props) {
-    const {action, message, userId, videoId, videoURL} = props;
+    const {action, message, userId, videoId, videoURL, thumbnailURL, videoName} = props;
     const [commentForUser, setUserComment] = useState('');
 
     useEffect(() => {
         let userCommentValue = '';
         if (action === 'videoDelete') {
-            userCommentValue = 'We are deleting your video as this video containing some indecent clips, which is violating our uploading videos terms and policies!'
+            userCommentValue = `We are deleting your video: <strong>${videoName}</strong> as this video containing some indecent clips, which is violating our uploading videos terms and policies!`;
         } else if (action === 'userDeactivate') {
             userCommentValue = 'We are temporarily De-activating your account as you have violated our Privacy policies and terms of use of our application! For more clarification please reach us on b2b@boxpuppet.com'
         }
@@ -17,7 +17,7 @@ export default function ConfirmationModal(props) {
 
     function confirmYes(event) {
         event.stopPropagation();
-        props.confirmationResponse(action, true, userId, videoId, commentForUser, videoURL);
+        props.confirmationResponse(action, true, userId, videoId, commentForUser, videoURL, thumbnailURL, videoName);
     }
 
     function cancelRequest(event) {
@@ -27,7 +27,7 @@ export default function ConfirmationModal(props) {
 
     function setAdminComment(event) {
         event.stopPropagation();
-        const adminComment = event.currentTarget.value;
+        const adminComment = `We are deleting your video: <strong>${videoName}</strong> ${event.currentTarget.value}`;
         setUserComment(adminComment);
     }
 

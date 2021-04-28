@@ -4,6 +4,18 @@ import { formatDate, formatTime, timeStampToNewDate } from "./Utils";
 
 const uploadedVideosRef = db.collection('uploadedVideos');
 
+export function deleteUploadedVideoByVideoKey(videoKey) {
+    return new Observable((observer) => {
+        uploadedVideosRef.doc(videoKey).delete().then(() => {
+            console.log("Document successfully deleted!");
+            observer.next({deleted: true});
+        }).catch((error) => {
+            console.error("Error removing document: ", error);
+            observer.next({deleted: false, error: error});
+        });
+        
+    });
+}
 
 export function getUploadedVideosList() {
     return new Observable((observer) => {

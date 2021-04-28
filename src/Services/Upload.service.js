@@ -40,7 +40,26 @@ export function uploadImage(image, from, type) {
 }
 
 export function deleteImage(imageUrl) {
-    storageRef.refFromURL(imageUrl).delete();
+    const splitURL = imageUrl.split('?')[0];
+    const getImageNameWithPath = /[^/]*$/.exec(splitURL)[0];
+    const decodedURI = decodeURIComponent(getImageNameWithPath);
+    const deleteImageRef = storageRef.child(decodedURI);
+    const defaultThumbnailURL = 'uploads/thumbnail/thumbnail.jpg';
+    if (decodedURI !== defaultThumbnailURL) {
+        return new Observable((observer) => {
+            deleteImageRef.delete().then(() => {
+                console.log("Video Deleted!!!");
+                observer.next({deleted: true});
+            }).catch((error) => {
+                console.log("error", error);
+                observer.next({deleted: false, error: error});
+            });
+        });
+    } else {
+        return new Observable((observer) => {
+            observer.next({message: 'This video has default thumbnail, which can not be deleted!', success: true});
+        });
+    }
 }
 
 export function uploadVideo(video, uploadPath, pathId, view) {
@@ -85,21 +104,19 @@ export function uploadVideo(video, uploadPath, pathId, view) {
     });
 }
 
-export function deleteVideo(videoUrl) {
+export function deleteVideo(videoUrl, imageUrl) {
     const splitURL = videoUrl.split('?')[0];
     const getVideoNameWithPath = /[^/]*$/.exec(splitURL)[0];
     const decodedURI = decodeURIComponent(getVideoNameWithPath);
     const deleteVideoRef = storageRef.child(decodedURI);
+    const defaultThumbnailURL = 'uploads/thumbnail/thumbnail.jpg';
     return new Observable((observer) => {
         deleteVideoRef.delete().then(() => {
             console.log("Video Deleted!!!");
             observer.next({deleted: true});
         }).catch((error) => {
-            // Uh-oh, an error occurred!
             console.log("error", error);
             observer.next({deleted: false, error: error});
         });
     });
 }
-// https://firebasestorage.googleapis.com/v0/b/boogalusite.appspot.com/o/uploads%2Fthumbnail%2Fthumbnail.jpg?alt=media&token=36fb88fc-0cde-4019-890f-5bb285791575
-// https://firebasestorage.googleapis.com/v0/b/boogalusite.appspot.com/o/uploads%2Fthumbnail%2Fthumbnail.jpg?alt=media&token=36fb88fc-0cde-4019-890f-5bb285791575

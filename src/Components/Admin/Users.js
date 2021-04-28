@@ -13,10 +13,11 @@ import { useStoreConsumer } from '../../Providers/StateProvider';
 import { getAllUser } from "../../Services/User.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { MdRemoveRedEye, MdModeEdit, MdBlock, MdDeleteForever } from 'react-icons/md';
-import { getUploadedVideosByUserId } from "../../Services/UploadedVideo.service";
+import { getUploadedVideosByUserId, deleteUploadedVideoByVideoKey } from "../../Services/UploadedVideo.service";
 import ConfirmationModal from '../ConfirmationModal';
-import { deleteVideo } from "../../Services/Upload.service";
-
+import { deleteImage, deleteVideo } from "../../Services/Upload.service";
+import { sendEmail } from "../../Services/Email.service";
+import { getUserById } from "../../Services/User.service";
 const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
 
 export default function UsersInfo() {
@@ -35,7 +36,10 @@ export default function UsersInfo() {
     const [userIdKey, setUserKey] = useState('');
     const [videoIdKey, setVideoKey] = useState('');
     const [videoURL, setVideoURL] = useState('');
+    const [videoName, setVideoName] = useState('');
+    const [thumbnailURL, setThumbnailURL] = useState('');
     const [confirmationAction, setConfirmationAction] = useState('');
+    const [userDetails, setUserDetails] = useState('');
 
     useEffect(() => {
         if (checkAdminLogIn) {
@@ -94,7 +98,7 @@ export default function UsersInfo() {
     }
 
     function fetchUsersVideoDetails(event, userKey) {
-        event.stopPropagation();
+        if (event) event.stopPropagation();
         setLoadingText('Fetching videos...');
         toggleUserFetchModalVisiblity(true);
         toggleUserDataLoading(true);
@@ -110,7 +114,7 @@ export default function UsersInfo() {
         toggleUserFetchModalVisiblity(false);
     }
 
-    function deleteUserVideo(event, videoId, userId, videoURL) {
+    function deleteUserVideo(event, videoId, userId, videoURL, thumbnailURL, videoTitle) {
         event.stopPropagation();
         toggleDeletVideModal(true);
         setConfirmationAction('videoDelete');
@@ -118,6 +122,14 @@ export default function UsersInfo() {
         setUserKey(userId);
         setVideoKey(videoId);
         setVideoURL(videoURL);
+        setThumbnailURL(thumbnailURL);
+        setVideoName(videoTitle);
+        // get user details
+        getUserById(userId).subscribe(response => {
+            if (response && response.key === userId) {
+                setUserDetails(response);
+            }
+        });
     } 
     
     // function editUser(event, userKey) {
@@ -132,26 +144,56 @@ export default function UsersInfo() {
         setUserKey(userKey);
     }
 
-    function videoDeleteConfirmationResponse(action, confirmed, userKey, videoKey, adminComment, videoURL) {
+    function videoDeleteConfirmationResponse(action, confirmed, userKey, videoKey, adminComment, videoURL, thumbnailURL) {
         if (action === 'videoDelete' && confirmed) {
-            deleteVideo(videoURL).subscribe(deleteResponse => {
-                console.log("deleteResponse", deleteResponse);
-                // CompetitionData.img = downloadableUrl;
-                // // save competition data to db with imag url
-                // saveCompetition(CompetitionData).subscribe((response) => {
-                //     toggleSaveLoading(false);
-                //     setFormMessageClass('success');
-                //     setFormMessage('Competition created successfully!');
-                //     console.log('competition success', response);
-                //     setCompetitionData(initialCompetitionData);
-                // })
-            })
+            dispatch(enableLoading());
+            // Delete Video Thumbnail
+            deleteImage(thumbnailURL).subscribe(response => {
+                console.log("response", response);
+                if (response && (response.deleted || response.success)) {
+                    // Delete Video
+                    deleteVideo(videoURL).subscribe(response => {
+                        console.log("response", response);
+                        if (response && response.deleted) {
+                            // Delete Video record from `uploadedVideos` collection
+                            deleteUploadedVideoByVideoKey(videoKey).subscribe(response => {
+                                console.log("response", response);
+                                if (response && response.deleted) {
+                                    sendEmailToUser(adminComment, userKey);
+                                }
+                            });
+                        }
+                    })
+                }
+            });
             console.log('Video delete call will go here');
         } else if (action === 'userDeactivate' && confirmed) {
             console.log('User deactivate call will go here');
         }
 
         toggleDeletVideModal(false);
+    }
+
+    const sendEmailToUser = (adminComment, userKey) => {
+        const { email, name } = userDetails;
+        let emailBody = `<div>
+        <p>Hi ${name}, ${adminComment}</p>. 
+        </div>`;
+        let payload = {
+            mailTo: email,
+            title: 'Video Deleted by Admin',
+            content: emailBody
+        }
+        sendEmail(payload).subscribe((res) => {
+            if (!('error' in res)) {
+                console.log('User Email Send Successfully.');
+                dispatch(disableLoading());
+            } else {
+                dispatch(disableLoading());
+                console.log('User Email Send Failed.');
+            }
+            fetchUsersVideoDetails(null, userKey);
+        })
     }
 
     return (
@@ -164,6 +206,8 @@ export default function UsersInfo() {
                     userId={userIdKey}
                     videoId={videoIdKey}
                     videoURL={videoURL}
+                    thumbnailURL={thumbnailURL}
+                    videoName={videoName}
                     confirmationResponse={videoDeleteConfirmationResponse}
                 /> : ''
             }
@@ -196,7 +240,7 @@ export default function UsersInfo() {
                                                 <p className="subText">
                                                     {item.uploadedTime}
                                                 </p>
-                                                <a className="deleteVideoIcon" title="delete this video" onClick={(e) => deleteUserVideo(e, item.key, item.userId, item.url)}>
+                                                <a className="deleteVideoIcon" title="delete this video" onClick={(e) => deleteUserVideo(e, item.key, item.userId, item.url, item.thumbnail, item.title)}>
                                                     <MdDeleteForever />
                                                 </a>
                                             </div>
