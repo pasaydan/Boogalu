@@ -1,9 +1,9 @@
 import React from 'react'
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 
-export default function ProfileImage({ src, type }) {
+export default function ProfileImage({ src, size }) {
     return (
-        <div className={type == 'large' ? 'profile-image-wrap large-image' : 'profile-image-wrap small-image'}>
+        <div className={`profile-image-wrap ${size}`}>
             {src ? <img src={src} alt="user profile" /> : <AccountCircleOutlinedIcon />}
         </div>
     )

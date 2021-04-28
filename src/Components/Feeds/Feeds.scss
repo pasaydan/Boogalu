@@ -19,8 +19,12 @@
         margin-right: 10px;
         text-align: center;
         cursor: pointer;
-        > div {
-            font-size: 16px;
+        padding: 5px 0;
+        .profile-image-wrap {
+            margin: 0 auto;
+        }
+        .userName {
+            font-size: 14px;
             color: var(--secondary-dark-grey);
             text-overflow: ellipsis;
             overflow: hidden; 
@@ -28,8 +32,13 @@
             margin: 0 auto;
         }
 
-        >svg{
-            font-size: 62px;
+        > svg {
+            font-size: 60px;
+        }
+        &:hover {
+            .profile-image-wrap {
+                box-shadow: 0 0 5px 4px rgba(255, 188, 0, 0.4);
+            }
         }
     }
 }

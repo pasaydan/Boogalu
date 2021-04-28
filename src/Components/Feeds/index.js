@@ -156,9 +156,10 @@ function Feeds() {
         <div className="user-dashboard-wrap">
             <div className="user-list-wrap">
                 {userList && userList.map((user) => {
-                    return (user.isAnyVideoSubmitted ? <div key={user.key} className="user-icon-wrap" onClick={() => openUserStory(user)}>
-                        <ProfileImage src={user.profileImage} type="large" />
-                        <div>{user.username}</div>
+                    return (user.isAnyVideoSubmitted ? 
+                    <div key={user.key} className="user-icon-wrap" title={`View ${user.username}`} onClick={() => openUserStory(user)}>
+                        <ProfileImage src={user.profileImage} size="medium" />
+                        <div className="userName">{user.username}</div>
                     </div> : null)
                 })}
             </div>
