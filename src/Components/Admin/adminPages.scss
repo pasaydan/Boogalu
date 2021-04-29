@@ -278,10 +278,7 @@
             }
             &.data-time-wrap {
                 .MuiFormControl-root {
-                    width: 45%;
-                    display: inline-block;
-                    vertical-align: top;
-                    margin-left: 10px;
+                    width: 100%;
                     .MuiInputBase-root {
                         width: 100%;
                     }
@@ -322,15 +319,26 @@
                 margin: 0;
                 box-shadow: 0 -1px 3px 0 rgba(0, 0, 0, 0.5);
             }
-            .MuiFormControl-root {
-                .MuiFormLabel-root {
-                    .MuiFormLabel-asterisk {
-                        color: var(--red-text-color);
-                    }
+            .MuiFormLabel-root {
+                .MuiFormLabel-asterisk {
+                    color: var(--red-text-color);
                 }
             }
             .radioGroupControls {
                 flex-direction: row;
+            }
+            &.feature-group-wrap {
+                flex-basis: 100%;
+                .checkBoxControlGroup {
+                    display: flex;
+                    justify-content: flex-start;
+                    flex-wrap: wrap;
+                    flex-direction: row;
+                    align-items: center;
+                    .MuiFormControlLabel-root {
+                        margin-right: 20px;
+                    }
+                }
             }
         }
     }
@@ -377,16 +385,6 @@
                         }
                     }
                 }
-            }
-        }
-    }
-}
-
-.subscription-bo-wrap {
-    .inner-form-wrap {
-        .input-wrap {
-            &.data-time-wrap {
-                flex-basis: 100%;
             }
         }
     }

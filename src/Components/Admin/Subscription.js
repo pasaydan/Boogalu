@@ -11,12 +11,15 @@ import boogaluLogo from '../../Images/Boogalu-logo.svg';
 import logOutIcon from '../../Images/logout-icon.png';
 import { uploadImage } from "../../Services/Upload.service";
 import { Link } from 'react-router-dom';
-import { saveSubscription } from "../../Services/Subscription.service";
+import { saveSubscription, getSubscriptionsList } from "../../Services/Subscription.service";
 import { ADMIN_USER, ADMIN_PWD } from '../../Constants';
 import championIcon from '../../Images/champion-box-icon.png';
 import lessonsIcon from '../../Images/lessons-icon.png';
 import subscribeIcon from '../../Images/subscribe-icon.png';
 import usersIcon from '../../Images/users-icon.png';
+import DateFnsUtils from '@date-io/date-fns';
+import { formatISO } from 'date-fns';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 
 const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
 
@@ -26,17 +29,22 @@ export default function Subscription() {
         desc: "",
         active: true,
         type: "",
-        amount: "",
-        img: "",
-        startAt: "",
-        endAt: "",
-        plans: "",
+        amount: 199,
+        isLessonAccess: true,
+        isCompetitionAccess: false,
+        isHHIAccess: false,
+        startAt: formatISO(new Date(), 'yyyy-MM-dd HH:mm').substr(0, 16),
+        endAt: formatISO(new Date(), 'yyyy-MM-dd HH:mm').substr(0, 16),
+        plans: "monthly",
     }
     const [Subscription, setSubscription] = useState(initialSubscriptionData);
     const [isAdminLoggedIn, toggleAdminLogin] = useState(false);
     const [adminEmail, setAdminEmail] = useState('');
     const [adminPwd, setAdminPwd] = useState('');
     const [loggedInMessages, setLoginMessage] = useState('');
+    const [submitFormMessages, setSubmitFormMessage] = useState('');
+    const [isSubscriptionLoading, toggleLoadingClass] = useState('');
+    const [isSavedSuccessValue, toggleSaveSuccessValue] = useState('');
 
     useEffect(() => {
       if (checkAdminLogIn) {
@@ -77,8 +85,11 @@ export default function Subscription() {
     }
 
     const handleChange = (prop, index) => (event) => {
-        let value = event.target.value;
+        let value = (prop && (prop === 'startAt' || prop === 'endAt')) ? formatISO(event, 'yyyy-MM-dd HH:mm').substr(0, 16) : event.target.value;
         if (prop === 'active') value = event.target.checked;
+        if (prop === 'isLessonAccess') value = event.target.checked;
+        if (prop === 'isCompetitionAccess') value = event.target.checked;
+        if (prop === 'isHHIAccess') value = event.target.checked;
         if (prop === 'prices') {
             Subscription.prices[index] = event.target.value;
             value = Subscription.prices;
@@ -86,29 +97,71 @@ export default function Subscription() {
         setSubscription({ ...Subscription, [prop]: value });
     };
 
+    function validateFormData() {
+        let isFormValid = true;
+        if (Subscription.name === '') {
+            isFormValid = false;
+            setSubmitFormMessage('Please enter subscription name/title!');
+        } else if (Subscription.amount === '') {
+            isFormValid = false;
+            setSubmitFormMessage('Please enter subscription amount!');
+        } else if (Subscription.amount < 199) {
+            isFormValid = false;
+            setSubmitFormMessage('Subscription amount cannot be less than 199!');
+        } else if (!Subscription.isLessonAccess && !Subscription.isCompetitionAccess && !Subscription.isHHIAccess) {
+            isFormValid = false;
+            setSubmitFormMessage('Please at-least select one feature for user!');
+        } else if (Subscription.startAt.split('T')[0] === Subscription.endAt.split('T')[0]) {
+            isFormValid = false;
+            setSubmitFormMessage('Subscription start and end date connot be same day!');
+        } else {
+            isFormValid = true;
+        }
+        
+        if (!isFormValid) {
+            toggleSaveSuccessValue('error');
+        }
+
+        return isFormValid;
+    }
+
     async function saveDetails(e) {
         console.log(Subscription)
         // upload Subscription image to bucket
-        if (Subscription.img[0]) {
-            const reader = new FileReader();
-            reader.readAsDataURL(Subscription.img[0]);
-            reader.onload = () => {
-                uploadImage(reader.result, 'subscription', 'small').subscribe((downloadableUrl) => {
-                    Subscription.img = downloadableUrl;
-                    // save Subscription data to db with imag url
-                    saveSubscription(Subscription).subscribe((response) => {
-                        console.log('Subscription success', response);
-                        setSubscription(initialSubscriptionData);
-                    })
+        setSubmitFormMessage('');
+        try {
+            if (validateFormData()) {
+                toggleLoadingClass('loading');
+                saveSubscription(Subscription).subscribe((response) => {
+                    console.log('Subscription success', response);
+                    toggleLoadingClass('');
+                    toggleSaveSuccessValue('success');
+                    setSubmitFormMessage('Subscription saved successfully!');
+                    setSubscription(initialSubscriptionData);
                 })
             }
-        } else {
-            saveSubscription(Subscription).subscribe((response) => {
-                console.log('Subscription success', response);
-                setSubscription(initialSubscriptionData);
-            })
+        } catch(e) {
+            toggleLoadingClass('');
+            toggleSaveSuccessValue('error');
+            setSubmitFormMessage('Something went wrong, please try in sometime!');
+            console.log('Error: ', e);
         }
     }
+
+    async function getSubscriptionDetails() {
+        getSubscriptionsList(Subscription).subscribe((response) => {
+            console.log('Subscription success', response);
+        });
+    }
+
+    function setMaxDateSelectionYear() {
+        const d = new Date();
+        const year = d.getFullYear();
+        const month = d.getMonth();
+        const day = d.getDate();
+        return (new Date(year + 1, month, day));
+    }
+
     return (
         <div className="adminPanelSection">
             <nav className="adminNavigation">
@@ -190,31 +243,79 @@ export default function Subscription() {
                         </div>
                         <div className="input-wrap">
                             <TextField className="input-field"
+                                required
+                                id="outlined-required-amount"
+                                label="Amount"
+                                type="number"
+                                InputProps={{ inputProps: { min: 199 } }}
+                                onChange={handleChange('amount')}
+                                value={Subscription.amount}
+                                variant="outlined"
+                            />
+                        </div>
+                        <div className="input-wrap feature-group-wrap">
+                            <InputLabel required id="select-outlined-label">Include features</InputLabel>
+                            <FormControl className="checkBoxControlGroup">
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            name="features"
+                                            color="primary"
+                                            className="selected-item-checkbox"
+                                            checked={Subscription.isLessonAccess}
+                                            onChange={handleChange('isLessonAccess')}
+                                            inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                        />
+                                    }
+                                    label="Lessons"
+                                />
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            name="features"
+                                            color="primary"
+                                            checked={Subscription.isCompetitionAccess}
+                                            className="selected-item-checkbox"
+                                            onChange={handleChange('isCompetitionAccess')}
+                                            inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                        />
+                                    }
+                                    label="Competitions"
+                                />
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            name="features"
+                                            color="primary"
+                                            className="selected-item-checkbox"
+                                            checked={Subscription.isHHIAccess}
+                                            onChange={handleChange('isHHIAccess')}
+                                            inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                        />
+                                    }
+                                    label="HHI registration"
+                                />
+
+                            </FormControl>
+                        </div>
+                        <div className="input-wrap">
+                            <TextField className="input-field"
                                 id="outlined-required-desc"
-                                label="Description"
+                                label="Extra features to provide"
                                 onChange={handleChange('desc')}
                                 value={Subscription.desc}
                                 variant="outlined"
                             />
                         </div>
                         <div className="input-wrap">
-                            <TextField className="input-field"
-                                id="outlined-required-amount"
-                                label="Amount"
-                                type="number"
-                                onChange={handleChange('amount')}
-                                value={Subscription.amount}
-                                variant="outlined"
-                            />
-                        </div>
-                        <div className="input-wrap">
                             <FormControl variant="outlined" className="input-field">
-                                <InputLabel id="select-outlined-label">Plans</InputLabel>
+                                <InputLabel id="select-outlined-label">Plan Tenure</InputLabel>
                                 <Select
                                     labelId="select-outlined-label"
                                     id="select-outlined"
                                     value={Subscription.plans}
                                     onChange={handleChange('plans')}
+                                    label="Plan Tenure"
                                 >
                                     <MenuItem value="monthly">Monthly</MenuItem>
                                     <MenuItem value="annual">Annual</MenuItem>
@@ -222,30 +323,47 @@ export default function Subscription() {
                             </FormControl>
                         </div>
                         <div className="input-wrap data-time-wrap">
-                            <TextField
-                                id="datetime-local-start"
-                                label="Start Date & Time"
-                                type="datetime-local"
-                                value={Subscription.startAt}
-                                onChange={handleChange('startAt')}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                            />
-                            <TextField
-                                id="datetime-local-end"
-                                label="End Date & Time"
-                                type="datetime-local"
-                                value={Subscription.endAt}
-                                onChange={handleChange('endAt')}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                            />
+                            <MuiPickersUtilsProvider
+                                utils={DateFnsUtils}
+                            >
+                                <KeyboardDatePicker
+                                    margin="normal"
+                                    minDate={new Date()}
+                                    maxDate={setMaxDateSelectionYear()}
+                                    id="date-picker-start"
+                                    label="Select subscription start date"
+                                    format="MM/dd/yyyy"
+                                    value={Subscription.startAt}
+                                    onChange={handleChange('startAt')}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                />
+                            </MuiPickersUtilsProvider>
+                        </div>
+                        <div className="input-wrap data-time-wrap">
+                            <MuiPickersUtilsProvider
+                                utils={DateFnsUtils}
+                            >
+                                <KeyboardDatePicker
+                                    margin="normal"
+                                    id="date-picker-end"
+                                    minDate={new Date()}
+                                    maxDate={setMaxDateSelectionYear()}
+                                    label="Select subscription expiry date"
+                                    format="MM/dd/yyyy"
+                                    value={Subscription.endAt}
+                                    onChange={handleChange('endAt')}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                />
+                            </MuiPickersUtilsProvider>
                         </div>
                         <div className="input-wrap action-wrap">
+                            <p className={`messageWrap ${isSavedSuccessValue}`}>{submitFormMessages}</p>
                             <Button variant="contained" color="primary">Cancel</Button>
-                            <Button variant="contained" color="secondary" onClick={(e) => saveDetails(e)}>Save</Button>
+                            <Button variant="contained" color="secondary" className={isSubscriptionLoading} onClick={(e) => saveDetails(e)}>Save</Button>
                             <FormControlLabel
                                 control={
                                     <Checkbox

@@ -62,7 +62,7 @@ function Subscriptions() {
         dispatch(enableLoading());
         if (history.location.search && history.location.search.includes('status')) {
             getActiveSubscriptionsList().subscribe((subscriptionsList) => {
-                setAvailableSubscriptions(subscriptionsList);
+                setAvailableSubscriptions(subscriptionsList.reverse());
                 dispatch(disableLoading());
                 console.log(subscriptionsList);
             })
@@ -95,7 +95,7 @@ function Subscriptions() {
             history.push('/subscription');
         } else {
             getActiveSubscriptionsList().subscribe((subscriptionsList) => {
-                setAvailableSubscriptions(subscriptionsList);
+                setAvailableSubscriptions(subscriptionsList.reverse());
                 dispatch(disableLoading());
                 console.log(subscriptionsList);
                 //if user come from competition details 
@@ -158,7 +158,36 @@ function Subscriptions() {
                             return <div className={`flex-2 plan ${alreadySubscribed ? 'alreadySubscribed' : ''}`} onClick={() => setSubscription(subscription)} key={subscription.key}>
                                 <div className="plan_tag">{subscription.name}</div>
                                 <div className="plan_price">@{subscription.amount}<span>{subscription.plans}</span></div>
-                                <div className="plan_desc">{subscription.desc}</div>
+                                <div className="featuresBox">
+                                    {/* <p>Multiple <strong>Videos</strong> upload</p> */}
+                                    {
+                                        subscription.isCompetitionAccess ?
+                                        <p>Enrollment in all the active <strong>Competitions</strong></p>
+                                        : ''
+                                    }
+                                    {
+                                        subscription.isLessonAccess ? 
+                                        <p>Access to all <strong>Lessons</strong> videos</p>
+                                        : ''
+                                    }
+                                    {
+                                        subscription.isHHIAccess ?
+                                        <p>Access to <strong>Hip-hop International Championship</strong> registration</p>
+                                        : ''
+                                    }
+                                    {
+                                        subscription.desc.length ?
+                                        <p>{subscription.desc}</p>
+                                        : ''
+                                    }
+                                </div>
+                                {
+                                    !alreadySubscribed ?
+                                    <p className="expireWrap">
+                                        Hurry, offer valid till <strong>{subscription.endingDate}</strong>
+                                    </p>
+                                    : ''
+                                }
                                 <div className={`btn primary-light ${alreadySubscribed ? 'subscribed' : ''}`}>
                                     {alreadySubscribed ? 
                                         'Already subscribed'
