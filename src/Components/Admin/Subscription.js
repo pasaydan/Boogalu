@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -9,9 +9,10 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Button from '@material-ui/core/Button';
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
 import logOutIcon from '../../Images/logout-icon.png';
-import { uploadImage } from "../../Services/Upload.service";
+import ActionToolTip from '../ActionTooltip';
+import ConfirmationModal from '../ConfirmationModal';
 import { Link } from 'react-router-dom';
-import { saveSubscription, getSubscriptionsList } from "../../Services/Subscription.service";
+import { saveSubscription, getSubscriptionsList, toggleActivateDeactivateSubscription, deleteSubscriptionByKey } from "../../Services/Subscription.service";
 import { ADMIN_USER, ADMIN_PWD } from '../../Constants';
 import championIcon from '../../Images/champion-box-icon.png';
 import lessonsIcon from '../../Images/lessons-icon.png';
@@ -20,6 +21,7 @@ import usersIcon from '../../Images/users-icon.png';
 import DateFnsUtils from '@date-io/date-fns';
 import { formatISO } from 'date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import Loader from '../Loader';
 
 const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
 
@@ -45,12 +47,39 @@ export default function Subscription() {
     const [submitFormMessages, setSubmitFormMessage] = useState('');
     const [isSubscriptionLoading, toggleLoadingClass] = useState('');
     const [isSavedSuccessValue, toggleSaveSuccessValue] = useState('');
+    const [isCreateFormTab, toggleCreateList] = useState(true);
+    const [subscriptionsList, setSubscriptionList] = useState(null);
+    const [isPageLoaderActive, togglePageLoader] = useState(false);
+    const [isSubscriptionDeleteClicked, toggleSubscriptionModal] = useState(false);
+    const [deleteSubscritionMessage, subscriptionActionMessage] = useState('');
+    const [subscriptionDataToModify, setSubscriptionActionData] = useState(null);
+
+    const createTabRef = useRef(null);
+    const listTabRef = useRef(null);
 
     useEffect(() => {
       if (checkAdminLogIn) {
         toggleAdminLogin(checkAdminLogIn);
       }  
     }, []);
+
+    function switchTabs(event, action) {
+        if (action && action === 'create') {
+            if (createTabRef.current && listTabRef.current) {
+                createTabRef.current.classList.add('active');
+                listTabRef.current.classList.remove('active');
+            }
+            toggleCreateList(true);
+        } else {
+            if (createTabRef.current && listTabRef.current) {
+                listTabRef.current.classList.add('active');
+                createTabRef.current.classList.remove('active');
+                togglePageLoader(true);
+                getSubscriptionList();
+            }
+            toggleCreateList(false);
+        }
+    }
 
     function handleAdminLogin(value, type) {
         if (type === 'email') {
@@ -133,7 +162,6 @@ export default function Subscription() {
             if (validateFormData()) {
                 toggleLoadingClass('loading');
                 saveSubscription(Subscription).subscribe((response) => {
-                    console.log('Subscription success', response);
                     toggleLoadingClass('');
                     toggleSaveSuccessValue('success');
                     setSubmitFormMessage('Subscription saved successfully!');
@@ -148,10 +176,16 @@ export default function Subscription() {
         }
     }
 
-    async function getSubscriptionDetails() {
-        getSubscriptionsList(Subscription).subscribe((response) => {
-            console.log('Subscription success', response);
-        });
+    async function getSubscriptionList() {
+        try {
+            getSubscriptionsList(Subscription).subscribe((response) => {
+                togglePageLoader(false);
+                setSubscriptionList(response);
+            });
+        } catch(e) {
+            togglePageLoader(false);
+            console.log('Erro: ', e);
+        }
     }
 
     function setMaxDateSelectionYear() {
@@ -162,8 +196,67 @@ export default function Subscription() {
         return (new Date(year + 1, month, day));
     }
 
+    function onItemActionSelected(event, value) {
+        if (event && event === 'deactivate') {
+            togglePageLoader(true);
+            try {
+                toggleActivateDeactivateSubscription(value, false).subscribe((response) => {
+                    togglePageLoader(false);
+                });
+            }catch (e) {
+                togglePageLoader(false);
+                console.log('Error: ', e);
+            }
+        }
+
+        if (event && event === 'activate') {
+            togglePageLoader(true);
+            try {
+                toggleActivateDeactivateSubscription(value, true).subscribe((response) => {
+                    togglePageLoader(false);
+                });
+            }catch (e) {
+                togglePageLoader(false);
+                console.log('Error: ', e);
+            }
+        }
+
+        if (event && event === 'remove') {
+            toggleSubscriptionModal(true);
+            subscriptionActionMessage('Are you sure, you want to delete this Subscription?');
+            setSubscriptionActionData(value);
+        }
+    }
+
+    function subscriptionDeleteConfirmation(action, data) {
+        if (action) {
+            togglePageLoader(true);
+            toggleSubscriptionModal(false);
+            try {
+                deleteSubscriptionByKey(data).subscribe((response) => {
+                    togglePageLoader(false);
+                });
+            } catch(e) {
+                console.log('error: ', e);
+            }
+        }
+    }
+
     return (
         <div className="adminPanelSection">
+            {
+                isPageLoaderActive ?
+                <Loader /> : ''
+            }
+            {
+                isSubscriptionDeleteClicked ?
+                <ConfirmationModal 
+                    screen="subscription"
+                    message={deleteSubscritionMessage}
+                    subscriptionData={subscriptionDataToModify}
+                    confirmationResponse={subscriptionDeleteConfirmation}
+                /> : ''
+            }
             <nav className="adminNavigation">
                 <Link to="/adminpanel/competition" title="create championship" className="panelLink">
                     <span className="iconsWrap championIconWrap">
@@ -201,6 +294,13 @@ export default function Subscription() {
             <div className="logoWrap">
                 <img src={boogaluLogo} alt="Boogalu" />
             </div>
+            {
+                isAdminLoggedIn || checkAdminLogIn ?
+                <div className="optionsTab">
+                    <a onClick={(e) => switchTabs(e, 'create')} className="active" ref={createTabRef}>Create new</a>
+                    <a onClick={(e) => switchTabs(e, 'list')} ref={listTabRef}>View list</a>
+                </div>: ''
+            }
             <div className={`subscription-bo-wrap clearfix ${(isAdminLoggedIn || checkAdminLogIn) && 'loggedInAdmin'}`}>
                 {
                     isAdminLoggedIn || checkAdminLogIn ?
@@ -216,7 +316,12 @@ export default function Subscription() {
                                     &#8592;
                                 </span>
                             </Link>
-                            Create a new Subscription
+                            {
+                                isCreateFormTab ?
+                                'Create a new Subscription'
+                                : 
+                                'List of Subscriptions'
+                            }
                         </h1>
                     :
                         <h1>
@@ -230,6 +335,7 @@ export default function Subscription() {
                 }
                 {
                     isAdminLoggedIn || checkAdminLogIn ?
+                    isCreateFormTab ?
                     <div className="inner-form-wrap">
                         <div className="input-wrap">
                             <TextField className="input-field"
@@ -378,8 +484,29 @@ export default function Subscription() {
                                 label="Active Subscription"
                             />
                         </div>
-                    </div> : 
-
+                    </div> 
+                    :
+                    <div className="adminItemlistView subscriptionAdminList">
+                    {
+                        subscriptionsList && subscriptionsList.length ?
+                            subscriptionsList.map( item => {
+                                return (<div key={`subscription-${item.key}`} className="boxItem compBox">
+                                    <p className="title">{item.name}</p>
+                                    <p className="amount">Amount: &#8377;&nbsp;{item.amount}</p>
+                                    <ActionToolTip 
+                                        id={item.key}
+                                        name={item.name}
+                                        isActive={item.active}
+                                        onActionClicked={(e) => onItemActionSelected(e, {id: item.key, name: item.name})}
+                                    />
+                                    <p className="statusBlock">Status: <span>{item.active ? 'Active' : 'Inactive'}</span></p>
+                                    <p className="date">Starting Date: <span>{item.startingDate}</span></p>
+                                </div>)
+                            })
+                            : <p className="noDataInListMessage">You haven't created any Subscription!</p>
+                        }
+                    </div>
+                    :
                     <div className="login-admin-form">
                         <p className="errorMessage">{loggedInMessages}</p>
                         <div className="input-wrap">

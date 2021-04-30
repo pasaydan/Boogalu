@@ -46,7 +46,7 @@ export default function Competition() {
     const [adminPwd, setAdminPwd] = useState('');
     const [loggedInMessages, setLoginMessage] = useState('');
     const [isCreateFormTab, toggleCreateList] = useState(true);
-    const [CompletitionList, setCompletitionList] = useState(null);
+    const [CompetitionsList, setCompetitionsList] = useState(null);
     const [formMessageBox, setFormMessage] = useState('');
     const [messageClass, setFormMessageClass] = useState('');
     const [isSaveLoadingTrue, toggleSaveLoading] = useState(false); 
@@ -104,7 +104,7 @@ export default function Competition() {
             if (createTabRef.current && listTabRef.current) {
                 listTabRef.current.classList.add('active');
                 createTabRef.current.classList.remove('active');
-                if (!(CompletitionList && CompletitionList.length)) {
+                if (!(CompetitionsList && CompetitionsList.length)) {
                     getCompetitionsListdata();
                 }
             }
@@ -118,7 +118,7 @@ export default function Competition() {
             getCompetitionsList().subscribe(allCompList => {
                 dispatch(disableLoading());
                 if (allCompList.length) {
-                    setCompletitionList(allCompList);
+                    setCompetitionsList(allCompList);
                 }
             });
         } catch(e) {
@@ -422,8 +422,8 @@ export default function Competition() {
                         </div>
                         : <div className="adminItemlistView">
                             {
-                                CompletitionList && CompletitionList.length ?
-                                CompletitionList.map( item => {
+                                CompetitionsList && CompetitionsList.length ?
+                                CompetitionsList.map( item => {
                                     return (<div className="boxItem compBox">
                                         <p className="title">{item.name}</p>
                                         <div className="compImageWrap">

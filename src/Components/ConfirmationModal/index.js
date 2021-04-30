@@ -1,7 +1,17 @@
 import React, {useEffect, useState} from 'react';
 
 export default function ConfirmationModal(props) {
-    const {action, message, userId, videoId, videoURL, thumbnailURL, videoName} = props;
+    const {
+        screen,
+        action, 
+        message,
+        subscriptionData, 
+        userId, 
+        videoId, 
+        videoURL, 
+        thumbnailURL, 
+        videoName
+    } = props;
     const [commentForUser, setUserComment] = useState('');
 
     useEffect(() => {
@@ -17,7 +27,13 @@ export default function ConfirmationModal(props) {
 
     function confirmYes(event) {
         event.stopPropagation();
-        props.confirmationResponse(action, true, userId, videoId, commentForUser, videoURL, thumbnailURL, videoName);
+        if (screen === 'subscription') {
+            props.confirmationResponse(true,  subscriptionData);
+        }
+
+        if (screen === 'users') {
+            props.confirmationResponse(action, true, userId, videoId, commentForUser, videoURL, thumbnailURL, videoName);
+        }
     }
 
     function cancelRequest(event) {

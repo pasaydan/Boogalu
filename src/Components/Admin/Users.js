@@ -201,6 +201,7 @@ export default function UsersInfo() {
             {
                 isDeleteVideoClicked ?
                 <ConfirmationModal 
+                    screen="users"
                     action={confirmationAction}
                     message={deleteVideoMessage}
                     userId={userIdKey}

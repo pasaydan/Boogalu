@@ -69,3 +69,26 @@ export function saveSubscription(data) {
         });
     });
 };
+
+export function toggleActivateDeactivateSubscription(data, action) {
+    data.createdOn = data.createdOn || new Date();
+    data.modifiedOn = new Date();
+    return new Observable((observer) => {
+        subscriptionRef.doc(data.id).update({ 'active': action }).then(() => {
+            observer.next();
+        });
+    });
+}
+
+export function deleteSubscriptionByKey(data) {
+    return new Observable((observer) => {
+        subscriptionRef.doc(data.id).delete().then(() => {
+            console.log("Subscription successfully deleted!");
+            observer.next({deleted: true});
+        }).catch((error) => {
+            console.error("Error removing Subscription: ", error);
+            observer.next({deleted: false, error: error});
+        });
+        
+    });
+}

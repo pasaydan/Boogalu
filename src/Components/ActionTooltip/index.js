@@ -33,7 +33,7 @@ export default function ActionToolTip(props) {
             {
                 isActionClick ?
                 <div className="menu">
-                    <a onClick={(e) => actionSelected(e, 'inactive')}>Inactive</a>
+                    <a onClick={(e) => actionSelected(e, props.isActive ? 'deactivate' : 'activate')}>{props.isActive ? 'De-activate' : 'Activate'}</a>
                     <a onClick={(e) => actionSelected(e, 'remove')}>Delete</a>
                 </div> : ''
             }
