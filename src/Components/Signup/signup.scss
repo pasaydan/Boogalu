@@ -106,6 +106,9 @@
     filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
     float: left;
     display: inline-block;
+    .static-label {
+        text-align: left;
+    }
 }
 
 .input-field {
