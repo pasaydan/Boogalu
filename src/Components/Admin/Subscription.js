@@ -239,6 +239,8 @@ export default function Subscription() {
             } catch(e) {
                 console.log('error: ', e);
             }
+        } else {
+            toggleSubscriptionModal(false);
         }
     }
 
