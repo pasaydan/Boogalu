@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Emailer</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            min-height: 100%;
+            box-sizing: border-box;
+        }
+        .mainEmailWrap {
+            position: relative;
+            max-width: 600px;
+            height: 95%;
+            margin: 10px auto;
+            display: flex;
+            box-sizing: border-box;
+            flex-direction: column;
+            justify-content: flex-start;
+            border: 1px solid #6b6b6b;
+        }
+        .emailHead {
+            width: 100%;
+            height: 150px;
+            position: relative;
+        }
+        .emailHead img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .emailHead .logoWrap {
+            width: 250px;
+            height: 90px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .emailHead .logoWrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .innerEmailWrap {
+            width: 90%;
+            padding: 0 15px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .innerEmailWrap h1, 
+        .innerEmailWrap h2 {
+            text-align: center;
+            font-size: 30px;
+            line-height: 34px;
+            color: #512da8;
+            font-weight: 500;
+            margin: 20px auto 0;
+        }
+        .innerEmailWrap h2 {
+            font-size: 20px;
+            color: #2d2d2d;
+        }
+        .innerEmailWrap p {
+            margin: 40px auto 20px;
+            font-size: 14px;
+            line-height: 18px;
+            color: #2d2d2d;
+            text-align: center;
+        }
+
+        .footer {
+            background-color: #333333;
+            padding: 10px;
+            color: #ebefef;
+            font-size: 14px;
+            text-align: center;
+            margin-top: auto;
+        }
+        .footer a {
+            color: #039be5;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="mainEmailWrap">
+        <div class="emailHead">
+            <img src="https://i.imgur.com/IBHgHPF.jpeg" alt="dance image" />
+            <div class="logoWrap">
+                <img src="https://boogalusite.web.app/static/media/Boogalu-logo.cb3774a0.svg" alt="Boogalu" />
+            </div>
+        </div>
+        <div class="innerEmailWrap">
+            <!-- 
+                When user register this will be the message
+                and different email title will be the name of the user
+            -->
+            <h1>Hi, Vilas</h1>
+    
+            <!-- 
+                This is sub-heading, we can use when needed
+            -->
+            <h2>Welcome to Boogalu</h2>
+    
+            <!-- 
+                Paragraph for dynamic messages for user
+            -->
+            <p>
+                We are glad to inform you that as a member of your Boogalu family,
+                now you can upload your performance videos to this app. Also, you can 
+                participate in different competitions we organise and get chance to 
+                win exciting prizes.
+            </p>
+        </div>
+
+        <div class="footer">
+            &copy; All right reserved. <a href="https://boogalusite.web.app/" target="_blank">Boogalu Pvt. Ltd.</a>
+        </div>
+    </div>
+</body>
+</html>
