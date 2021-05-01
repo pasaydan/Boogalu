@@ -21,6 +21,7 @@ import { uploadImage } from "../../Services/Upload.service";
 import { FaPlus, FaEdit } from 'react-icons/fa';
 import { NOTIFICATION_SUCCCESS, NOTIFICATION_ERROR, MALE_PROFILE_DEFAULT_IMAGE, FEMALE_PROFILE_DEFAULT_IMAGE } from "../../Constants";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
+import { FormControlLabel, FormGroup, FormLabel, Radio, RadioGroup } from '@material-ui/core';
 import * as $ from 'jquery';
 
 export default function EditProfile() {
@@ -287,6 +288,24 @@ export default function EditProfile() {
                             onChange={handleChange('bio')}
                             variant="outlined"
                         />
+                    </div>
+                    <div className="input-wrap">
+                        <FormControl component="fieldset">
+                            <FormLabel component="legend" className="static-label">Privacy *</FormLabel>
+                            <RadioGroup row aria-label="privacy" name="privacy" defaultValue={state.loggedInUser.privacy || "Public"} onChange={handleChange('privacy')}>
+                                <FormControlLabel
+                                    value={'Public'}
+                                    control={<Radio color="primary" />}
+                                    label="Public"
+                                    defaultChecked={true}
+                                />
+                                <FormControlLabel
+                                    value={'Private'}
+                                    control={<Radio color="primary" />}
+                                    label="Private"
+                                />
+                            </RadioGroup>
+                        </FormControl>
                     </div>
                     <div className="input-wrap bio-wrap edit-profile-page-input">
                         <div className="tnc-wrap">

@@ -26,7 +26,7 @@ import { displayNotification } from "../../Actions/Notification";
 import { NOTIFICATION_SUCCCESS, NOTIFICATION_ERROR, MALE_PROFILE_DEFAULT_IMAGE, FEMALE_PROFILE_DEFAULT_IMAGE } from "../../Constants";
 import { uploadImage } from "../../Services/Upload.service";
 import * as $ from 'jquery';
-
+import { FormControlLabel, FormGroup, FormLabel, Radio, RadioGroup } from '@material-ui/core';
 export default function Signup() {
     const { state, dispatch } = useStoreConsumer();
     const history = useHistory();
@@ -631,6 +631,24 @@ export default function Signup() {
                                 onChange={handleChange('bio')}
                                 variant="outlined"
                             />
+                        </div>
+                        <div className="input-wrap">
+                            <FormControl component="fieldset">
+                                <FormLabel component="legend" className="static-label">Privacy *</FormLabel>
+                                <RadioGroup row aria-label="privacy" name="privacy" defaultValue="Public" onChange={handleChange('privacy')}>
+                                    <FormControlLabel
+                                        value={'Public'}
+                                        control={<Radio color="primary" />}
+                                        label="Public"
+                                        defaultChecked={true}
+                                    />
+                                    <FormControlLabel
+                                        value={'Private'}
+                                        control={<Radio color="primary" />}
+                                        label="Private"
+                                    />
+                                </RadioGroup>
+                            </FormControl>
                         </div>
                         <div className="tnc-wrap">
                             <div className="tnc-content clearfix">
