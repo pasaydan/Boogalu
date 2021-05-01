@@ -6,6 +6,7 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    color: var(--footer-text-grey);
     .profile-img {
         min-width: 80px;
         width: 80px;
@@ -88,6 +89,9 @@
 }
 
 .profile-outer {
+    min-height: calc(100vh - 80px);
+    background: #74ebd5;  /* fallback for old browsers */
+    background: linear-gradient(to top, #ACB6E5, #74ebd5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     &.sticky {
         padding-top: 73px;
     }

@@ -98,16 +98,16 @@
     position: relative;
     z-index: 4;
     color: var(--primary-white);
-    background: url('../../Images/hiphop-CC-image.JPG') center top/500%;
-    &.noFirstImageLoad {
-        background-size: 100%;
-    }
-    &.firstTimeLoaded {
-        transition: all 3s ease-in-out;
-        &.show {
-            background-size: 100%;
-        }
-    }
+    background: linear-gradient(45deg, #23a6d5, #ee7752, #23d5ab, #e73c7e);            
+    // &.noFirstImageLoad {
+    //     background-size: 100%;
+    // }
+    // &.firstTimeLoaded {
+    //     transition: all 3s ease-in-out;
+    //     &.show {
+    //         background-size: 100%;
+    //     }
+    // }
     .main-bg-message {
         position: relative;
         top: 0;
@@ -115,7 +115,7 @@
         width: 100%;
         padding-top: 60px;
         min-height: 100vh;
-        background: rgba(0, 0, 0, 0.5);
+        // background: rgba(0, 0, 0, 0.4);
         display: flex;
         justify-content: flex-start;
         align-items: center;
