@@ -1,7 +1,12 @@
+.userDashBoardAfterLogin {
+    padding: 20px 10px;
+    background: #ECE9E6;  /* fallback for old browsers */
+    background: linear-gradient(to bottom, #FFFFFF, #ECE9E6);    
+}
 .user-dashboard-wrap {
     max-width: 970px;
     min-height: 50vh;
-    margin: 20px auto;
+    margin: 0 auto;
     background: rgba(255, 255, 255, 0.4);
     padding: 10px 20px;
     box-sizing: border-box;
@@ -161,7 +166,7 @@
 
 @media screen and (max-width: 1023px) {
     .user-dashboard-wrap {
-        max-width: 95%;
+        max-width: 100%;
         padding: 10px;
         .feed-wrap {
             margin-right: 0;
@@ -197,7 +202,7 @@
 }
 
 @media screen and (max-width: 767px) {
-    .feed-dashboard-wrap{
+    .feed-dashboard-wrap {
         display: block;
     }
     .feed-wrap{
@@ -225,4 +230,9 @@
         padding: 0 10px;
     }
 
+    .user-list-wrap {
+        .user-icon-wrap {
+            width: 65px;
+        }
+    }
 }
