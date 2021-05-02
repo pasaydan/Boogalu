@@ -572,6 +572,8 @@ export default function UploadLessons() {
                                             onChange={handleChange('accessbility')}>
                                             <FormControlLabel value="paid" control={<Radio />} label="Paid" />
                                             <FormControlLabel value="free" control={<Radio />} label="Free" />
+                                            <FormControlLabel value="pro" control={<Radio />} label="Pro" />
+                                            <FormControlLabel value="premium" control={<Radio />} label="Premium" />
                                         </RadioGroup>
                                     </div>
 
