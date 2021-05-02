@@ -128,6 +128,7 @@ function Feeds() {
                     if (user.key == feed.userId) {
                         feed.username = user.name;
                         feed.profileImage = user.profileImage;
+                        feed.privacy = user.privacy || "Public";
                         user.isAnyVideoSubmitted = true;
                     }
                     if (feed.likes && feed.likes.length) {
@@ -198,7 +199,7 @@ function Feeds() {
                 </div>
             </div>
 
-            {commentModal && <VideoDetails handleClose={() => setCommentModal(false)} handleLikes={handleLikes} handleComments={handleComments} videoObj={activeVideoObj} />}
+            {commentModal && <VideoDetails handleClose={() => setCommentModal(false)} handleLikes={handleLikes} handleComments={handleComments} videoObj={activeVideoObj} loggedInUser={loggedInUser} />}
 
         </div>
     )

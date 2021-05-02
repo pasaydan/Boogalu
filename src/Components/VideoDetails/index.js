@@ -11,9 +11,10 @@ import TextField from '@material-ui/core/TextField';
 import Vedio from "../Vedio/Video";
 import ProfileImage from "../ProfileImage";
 import * as $ from 'jquery';
+import { Button, Link } from '@material-ui/core';
 
 
-function Comments({ handleClose, videoObj, handleLikes, handleComments }) {
+function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedInUser }) {
 
     const [openDetailsModal, setOpenDetailsModal] = useState(true);
     const [commentText, setCommentText] = useState('');
@@ -24,6 +25,9 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments }) {
             handleComments(commentText)
             setCommentText('')
         }
+    }
+    const handleFollowToggle = () => {
+
     }
 
     return (
@@ -50,6 +54,7 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments }) {
                             <div className="username">
                                 <ProfileImage src={videoObj.profileImage} />
                                 <span>{videoObj.username}</span>
+                                {loggedInUser && loggedInUser.key !== videoObj.userId && <Link onClick={handleFollowToggle} className="followBtn">Follow</Link>}
                             </div>
                             <div>
                                 <Vedio vdoObj={videoObj} />

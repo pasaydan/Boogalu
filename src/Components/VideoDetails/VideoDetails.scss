@@ -101,7 +101,10 @@
         }
     }
 }
-
+.followBtn {
+    margin-left: 10px !important;
+    cursor: pointer;
+}
 @media screen and (max-width: 1023px) {
     .feeds-comment-modal {
         .comment-modal {
