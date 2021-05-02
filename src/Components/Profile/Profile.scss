@@ -6,6 +6,8 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    width: 100%;
+    box-sizing: border-box;
     color: var(--footer-text-grey);
     .profile-img {
         min-width: 80px;
@@ -27,65 +29,67 @@
     font-size: 100px;
 }
 
-.profile-details-wrap .profile-details {
-    padding: 0;
-    margin: 0 0 15px;
-}
+.profile-details-wrap {
+    .profile-details {
+        padding: 0;
+        margin: 0 0 15px;
+        flex-basis: 90%;
+        .username-wrap {
+            padding-bottom: 5px;
+            .username {
+                font-size: 30px;
+                font-family: 'Bold';
+                display: inline-block;
+            }
+            .edit-profile {
+                font-size: 14px;
+                font-family: 'Regular';
+                margin-top: 6px;
+                float: right;
+                cursor: pointer;
+                border: 1px solid var(--info-blue-dark);
+                color: var(--info-blue-dark);
+                padding: 7px 10px;
+                border-radius: 7px;
+                transition: all 0.3s ease-in-out;
+                &:hover {
+                    background: var(--info-blue-dark);
+                    color: var(--primary-white);
+                }
+            }
+        }
+        
+        .followers-wrap {
+            padding-bottom: 5px;
+        }
 
-.username-wrap {
-    padding-bottom: 15px;
-}
+        .followers-wrap span {
+            font-family: SemiBold;
+            padding-right: 7px;
+            font-size: 18px;
+        }
 
-.username-wrap .username {
-    font-size: 30px;
-    font-family: 'Bold';
-    display: inline-block;
-    float: left;
-}
+        .followers-wrap div {
+            font-family: Regular;
+            display: inline-block;
+            padding-right: 30px;
+            font-size: 16px;
+        }
 
-.username-wrap .edit-profile {
-    font-size: 12px;
-    font-family: 'Regular';
-    display: inline-block;
-    margin-top: 6px;
-    float: right;
-    cursor: pointer;
-    border: 1px solid;
-    padding: 7px 10px;
-    border-radius: 7px;
-}
-
-.followers-wrap {
-    padding-bottom: 20px;
-}
-
-.followers-wrap span {
-    font-family: SemiBold;
-    padding-right: 7px;
-    font-size: 18px;
-}
-
-.followers-wrap div {
-    font-family: Regular;
-    display: inline-block;
-    float: left;
-    padding-right: 30px;
-    font-size: 16px;
-}
-
-.bio-wrap {
-    padding-bottom: 20px;
-}
-
-.bio-wrap .fullname {
-    font-size: 20px;
-    font-family: SemiBold;
-    padding-bottom: 7px;
-}
-
-.bio-wrap .bio {
-    font-size: 16px;
-    font-family: Regular;
+        .bio-wrap {
+            padding-bottom: 20px;
+            .fullname {
+                font-size: 20px;
+                margin-bottom: 5px;
+                font-weight: 500;
+            }
+            .bio {
+                font-size: 14px;
+                line-height: 20px;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+        }
+    }
 }
 
 .profile-outer {
@@ -170,7 +174,7 @@
 .like-tab,
 .competition-tab,
 .profile-vdo-wrap {
-    flex-basis: 80%;
+    flex-basis: 278px;
     margin: 0 20px 20px 0;
     background: var(--primary-white);
     border-radius: 5px;
@@ -251,9 +255,6 @@
             cursor: pointer;
         }
     }   
-    &:nth-child(3n + 3) {
-        margin-right: 0;
-    }
     .videoUploadToolTip {
         position: absolute;
         right: 0;
@@ -270,6 +271,44 @@
             color: var(--secondary-bg-blue);
         }
     }   
+}
+
+.competition-tab {
+    flex-basis: 300px;
+    .compTitle {
+        padding: 10px;
+        border-radius: 5px 5px 0 0;
+    }
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 0 0 5px 5px;
+    }
+}
+
+.profileTabBoxContent {
+    .flex-container {
+        justify-content: center;
+    }
+    .feed-wrap {
+        width: 100%;
+    }
+}
+
+.profile-vdo-wrap {
+    .vdo-outer {
+        .vdo-wrap {
+            .react-player {
+                max-height: 280px !important;
+                video {
+                    border-radius: 5px 5px 0 0;
+                    max-height: 280px !important;
+                    object-fit: cover;
+                }
+            }
+        }
+    }
 }
 
 @media screen and (max-width: 1023px) {
@@ -298,15 +337,15 @@
       .profile-details-wrap {
         padding: 20px 3% 0;
         .profile-img {
-            min-width: 100px;
+            min-width: 80px;
             display: block;
             margin: 0 20px 0 0;
             float: none;
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             svg {
-                width: 100px;
-                height: 100px;
+                width: 80px;
+                height: 80px;
             }
         }
         .profile-details {
@@ -335,14 +374,6 @@
                     float: none;
                     display: block;
                 }   
-            }
-            .bio-wrap {
-                display: flex;
-                justify-content: flex-start;
-                .fullname {
-                    margin-right: 20px;
-                    line-height: 20px;
-                }
             }
         }
       }
