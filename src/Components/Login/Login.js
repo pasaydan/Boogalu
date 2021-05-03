@@ -25,7 +25,7 @@ import { displayNotification, removeNotification } from "../../Actions/Notificat
 import { NOTIFICATION_SUCCCESS, NOTIFICATION_ERROR } from "../../Constants";
 import * as $ from 'jquery';
 
-export default function Login() {
+export default function Login(props) {
     const { state, dispatch } = useStoreConsumer();
     const history = useHistory();
     const [loginCred, setloginCred] = useState({ username: "", password: "", showPassWord: false })
@@ -248,6 +248,7 @@ export default function Login() {
     }
 
     function goToPrevious(event) {
+        props.backToHome('login');
         history.goBack();
     }
 

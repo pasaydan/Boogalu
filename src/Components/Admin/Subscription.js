@@ -114,7 +114,7 @@ export default function Subscription() {
     }
 
     const handleChange = (prop, index) => (event) => {
-        let value = (prop && (prop === 'startAt' || prop === 'endAt')) ? formatISO(event, 'yyyy-MM-dd HH:mm').substr(0, 16) : event.target.value;
+        let value = event.target.value;
         if (prop === 'active') value = event.target.checked;
         if (prop === 'isLessonAccess') value = event.target.checked;
         if (prop === 'isCompetitionAccess') value = event.target.checked;
@@ -125,6 +125,22 @@ export default function Subscription() {
         }
         setSubscription({ ...Subscription, [prop]: value });
     };
+
+    function setStartDate(date) {
+        try {
+            setSubscription({ ...Subscription, ['startAt']: date });
+        } catch (e) {
+            console.log('Start date error: ', e);
+        }
+    }
+    
+    function setEndDate(date) {
+        try {
+            setSubscription({ ...Subscription, ['endAt']: date });
+        } catch (e) {
+            console.log('End date error: ', e);
+        }
+    }
 
     function validateFormData() {
         let isFormValid = true;
@@ -442,7 +458,7 @@ export default function Subscription() {
                                     label="Select subscription start date"
                                     format="MM/dd/yyyy"
                                     value={Subscription.startAt}
-                                    onChange={handleChange('startAt')}
+                                    onChange={(e) => setStartDate(e)}
                                     KeyboardButtonProps={{
                                         'aria-label': 'change date',
                                     }}
@@ -461,7 +477,7 @@ export default function Subscription() {
                                     label="Select subscription expiry date"
                                     format="MM/dd/yyyy"
                                     value={Subscription.endAt}
-                                    onChange={handleChange('endAt')}
+                                    onChange={(e) => setEndDate(e)}
                                     KeyboardButtonProps={{
                                         'aria-label': 'change date',
                                     }}

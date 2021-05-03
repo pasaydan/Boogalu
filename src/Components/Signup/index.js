@@ -23,11 +23,13 @@ import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
 import { registerUser, getUserByEmail, getUserByPhone } from "../../Services/User.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { displayNotification } from "../../Actions/Notification";
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { NOTIFICATION_SUCCCESS, NOTIFICATION_ERROR, MALE_PROFILE_DEFAULT_IMAGE, FEMALE_PROFILE_DEFAULT_IMAGE } from "../../Constants";
 import { uploadImage } from "../../Services/Upload.service";
 import * as $ from 'jquery';
 import { FormControlLabel, FormGroup, FormLabel, Radio, RadioGroup } from '@material-ui/core';
-export default function Signup() {
+export default function Signup(props) {
     const { state, dispatch } = useStoreConsumer();
     const history = useHistory();
     let loggedInUser = state.loggedInUser;
@@ -57,6 +59,30 @@ export default function Signup() {
         setUserDetails({ ...userDetails, [prop]: event.target.value });
     };
 
+    function setDateOfBirth(date) {
+        try {
+            setUserDetails({ ...userDetails, ['dob']: date });
+        } catch (e) {
+            console.log('DOB Error: ', e);
+        }
+    }
+
+    function setMinDateSelectionYear() {
+        const d = new Date();
+        const year = d.getFullYear();
+        const month = d.getMonth();
+        const day = d.getDate();
+        return (new Date(year - 50, month, day));
+    }
+    
+    function setMaxDateSelectionYear() {
+        const d = new Date();
+        const year = d.getFullYear();
+        const month = d.getMonth();
+        const day = d.getDate();
+        return (new Date(year - 4, month, day));
+    }
+
     const handleClickShowPassword = (prop) => {
         setShowHidePassword({ ...showHidePassword, [prop]: !showHidePassword[prop] });
     };
@@ -70,7 +96,8 @@ export default function Signup() {
             scrollTop: 0
         }, 500);
         if (userDetails && !userDetails.profileImage) {
-            setUserDetails({ ...userDetails, profileImage: MALE_PROFILE_DEFAULT_IMAGE })
+            setUserDetails({ ...userDetails, profileImage: MALE_PROFILE_DEFAULT_IMAGE });
+            setUserDetails({ ...userDetails, ['dob']: setMaxDateSelectionYear() });
         }
     }, [])
 
@@ -271,6 +298,7 @@ export default function Signup() {
     }
 
     function goToPrevious(event) {
+        props.backToHome('signup');
         history.goBack();
     }
 
@@ -595,16 +623,23 @@ export default function Signup() {
                         </div>
                         <div className="input-wrap">
                             <div className="dob-wrap">
-                                <TextField className="input-field"
-                                    id="date"
-                                    label="Birthday"
-                                    type="date"
-                                    onChange={handleChange('dob')}
-                                    value={userDetails.dob}
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                />
+                                <MuiPickersUtilsProvider
+                                    utils={DateFnsUtils}
+                                >
+                                    <KeyboardDatePicker
+                                        margin="normal"
+                                        minDate={setMinDateSelectionYear()}
+                                        maxDate={setMaxDateSelectionYear()}
+                                        id="date"
+                                        label="Your date of birth"
+                                        format="MM/dd/yyyy"
+                                        value={userDetails.dob}
+                                        onChange={(e) => setDateOfBirth(e)}
+                                        KeyboardButtonProps={{
+                                            'aria-label': 'change date',
+                                        }}
+                                    />
+                                </MuiPickersUtilsProvider>
                             </div>
                         </div>
                         <div className="input-wrap">
