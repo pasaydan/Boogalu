@@ -77,14 +77,17 @@ function Profile() {
     const [UserLikedVideoList, setUserLikedVideoList] = useState([]);
     const [openUserEnrolledCompDetailsModal, setOpenUserEnrolledCompDetailsModal] = useState(false);
     const [initialStep, setInitialStep] = useState(1);
-    const profileOuterRef = useRef();
-    const userTabsRef = useRef();
     const [activeVideoObj, setActiveVideoObj] = useState({})
     const [commentModal, setCommentModal] = useState(false)
     const [userList, setUserList] = useState([])
     const [showProfileTab, setShowProfileTab] = useState(false);
     const [openUploadCompModalFor, setOpenUploadCompModalFor] = useState(null)
+    
+    const profileOuterRef = useRef();
+    const userTabsRef = useRef();
     const ref = useRef();
+    const headerWrapRef = useRef();
+    
     useOnClickOutside(ref, () => { setShowProfileTab(false); setOpenUploadCompModalFor(null) });
 
     useEffect(() => {
@@ -183,12 +186,18 @@ function Profile() {
             if (userTabsRef.current) {
                 userTabsRef.current.classList.add('sticky');
             }
+            if (headerWrapRef.current) {
+                headerWrapRef.current.classList.add('sticky');
+            }
             if (profileOuterRef.current) {
                 profileOuterRef.current.classList.add('sticky');
             }
         } else {
             if (userTabsRef.current) {
                 userTabsRef.current.classList.remove('sticky');
+            }
+            if (headerWrapRef.current) {
+                headerWrapRef.current.classList.remove('sticky');
             }
             if (profileOuterRef.current) {
                 profileOuterRef.current.classList.remove('sticky');
@@ -387,7 +396,7 @@ function Profile() {
                 </div>
             </div>
             <div className="profile-content-wrap">
-                <div className="headers-wrap">
+                <div className="headers-wrap" ref={headerWrapRef}>
                     <div className="user-tabs-wrap" ref={userTabsRef}>
                         <Tabs
                             value={value}

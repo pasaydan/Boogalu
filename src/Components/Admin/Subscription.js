@@ -32,9 +32,9 @@ export default function Subscription() {
         active: true,
         type: "",
         amount: 199,
+        planType: 'startup',
         isLessonAccess: true,
         isCompetitionAccess: false,
-        isHHIAccess: false,
         startAt: formatISO(new Date(), 'yyyy-MM-dd HH:mm').substr(0, 16),
         endAt: formatISO(new Date(), 'yyyy-MM-dd HH:mm').substr(0, 16),
         plans: "monthly",
@@ -118,7 +118,6 @@ export default function Subscription() {
         if (prop === 'active') value = event.target.checked;
         if (prop === 'isLessonAccess') value = event.target.checked;
         if (prop === 'isCompetitionAccess') value = event.target.checked;
-        if (prop === 'isHHIAccess') value = event.target.checked;
         if (prop === 'prices') {
             Subscription.prices[index] = event.target.value;
             value = Subscription.prices;
@@ -153,7 +152,7 @@ export default function Subscription() {
         } else if (Subscription.amount < 199) {
             isFormValid = false;
             setSubmitFormMessage('Subscription amount cannot be less than 199!');
-        } else if (!Subscription.isLessonAccess && !Subscription.isCompetitionAccess && !Subscription.isHHIAccess) {
+        } else if (!Subscription.isLessonAccess && !Subscription.isCompetitionAccess) {
             isFormValid = false;
             setSubmitFormMessage('Please at-least select one feature for user!');
         } else if (Subscription.startAt.split('T')[0] === Subscription.endAt.split('T')[0]) {
@@ -406,20 +405,6 @@ export default function Subscription() {
                                     }
                                     label="Competitions"
                                 />
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            name="features"
-                                            color="primary"
-                                            className="selected-item-checkbox"
-                                            checked={Subscription.isHHIAccess}
-                                            onChange={handleChange('isHHIAccess')}
-                                            inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                        />
-                                    }
-                                    label="HHI registration"
-                                />
-
                             </FormControl>
                         </div>
                         <div className="input-wrap">
@@ -430,6 +415,23 @@ export default function Subscription() {
                                 value={Subscription.desc}
                                 variant="outlined"
                             />
+                        </div>
+                        <div className="input-wrap">
+                            <FormControl variant="outlined" className="input-field">
+                                <InputLabel id="select-outlined-label-plantype" required>Plan type</InputLabel>
+                                <Select
+                                    required
+                                    labelId="select-outlined-label-plantype"
+                                    id="select-outlined-plantype"
+                                    value={Subscription.planType}
+                                    onChange={handleChange('planType')}
+                                    label="Plan Type"
+                                >
+                                    <MenuItem value="startup">Start-up</MenuItem>
+                                    <MenuItem value="pro">Pro</MenuItem>
+                                    <MenuItem value="premium">Premium</MenuItem>
+                                </Select>
+                            </FormControl>
                         </div>
                         <div className="input-wrap">
                             <FormControl variant="outlined" className="input-field">
