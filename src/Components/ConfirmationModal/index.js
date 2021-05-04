@@ -5,7 +5,7 @@ export default function ConfirmationModal(props) {
         screen,
         action, 
         message,
-        subscriptionData, 
+        actionData, 
         userId, 
         videoId, 
         videoURL, 
@@ -28,7 +28,7 @@ export default function ConfirmationModal(props) {
     function confirmYes(event) {
         event.stopPropagation();
         if (screen === 'subscription') {
-            props.confirmationResponse(true,  subscriptionData);
+            props.confirmationResponse(true,  actionData);
         }
 
         if (screen === 'users') {

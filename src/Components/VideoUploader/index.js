@@ -252,6 +252,7 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
                             <CloseIcon />
                         </IconButton>
                         <h3>Upload your dance performance video!</h3>
+                        <span className="uploadInfo">( Video size should not exceed 50 MB )</span>
                         <div className={`uploader-wrap ${SelectedVideo.file ? 'selected-file' : ''}`}>
                             {
                                 !SelectedVideo.file ?
@@ -293,7 +294,7 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
                                                 accept="image/*"
                                                 withPreview={true}
                                                 singleImage={true}
-                                                label="Select thumbnail image"
+                                                label="Select thumbnail image ( Max size 5 MB)"
                                             />
                                         </div>
                                         <div className="text-form-wrapper">

@@ -19,7 +19,6 @@ import lessonsIcon from '../../Images/lessons-icon.png';
 import subscribeIcon from '../../Images/subscribe-icon.png';
 import usersIcon from '../../Images/users-icon.png';
 import DateFnsUtils from '@date-io/date-fns';
-import { formatISO } from 'date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import Loader from '../Loader';
 
@@ -32,11 +31,11 @@ export default function Subscription() {
         active: true,
         type: "",
         amount: 199,
+        planType: 'startup',
         isLessonAccess: true,
         isCompetitionAccess: false,
-        isHHIAccess: false,
-        startAt: formatISO(new Date(), 'yyyy-MM-dd HH:mm').substr(0, 16),
-        endAt: formatISO(new Date(), 'yyyy-MM-dd HH:mm').substr(0, 16),
+        startAt: new Date(),
+        endAt: new Date(),
         plans: "monthly",
     }
     const [Subscription, setSubscription] = useState(initialSubscriptionData);
@@ -114,17 +113,32 @@ export default function Subscription() {
     }
 
     const handleChange = (prop, index) => (event) => {
-        let value = (prop && (prop === 'startAt' || prop === 'endAt')) ? formatISO(event, 'yyyy-MM-dd HH:mm').substr(0, 16) : event.target.value;
+        let value = event.target.value;
         if (prop === 'active') value = event.target.checked;
         if (prop === 'isLessonAccess') value = event.target.checked;
         if (prop === 'isCompetitionAccess') value = event.target.checked;
-        if (prop === 'isHHIAccess') value = event.target.checked;
         if (prop === 'prices') {
             Subscription.prices[index] = event.target.value;
             value = Subscription.prices;
         }
         setSubscription({ ...Subscription, [prop]: value });
     };
+
+    function setStartDate(date) {
+        try {
+            setSubscription({ ...Subscription, ['startAt']: date });
+        } catch (e) {
+            console.log('Start date error: ', e);
+        }
+    }
+    
+    function setEndDate(date) {
+        try {
+            setSubscription({ ...Subscription, ['endAt']: date });
+        } catch (e) {
+            console.log('End date error: ', e);
+        }
+    }
 
     function validateFormData() {
         let isFormValid = true;
@@ -137,10 +151,10 @@ export default function Subscription() {
         } else if (Subscription.amount < 199) {
             isFormValid = false;
             setSubmitFormMessage('Subscription amount cannot be less than 199!');
-        } else if (!Subscription.isLessonAccess && !Subscription.isCompetitionAccess && !Subscription.isHHIAccess) {
+        } else if (!Subscription.isLessonAccess && !Subscription.isCompetitionAccess) {
             isFormValid = false;
             setSubmitFormMessage('Please at-least select one feature for user!');
-        } else if (Subscription.startAt.split('T')[0] === Subscription.endAt.split('T')[0]) {
+        } else if (Subscription.startAt.toISOString().split('T')[0] === Subscription.endAt.toISOString().split('T')[0]) {
             isFormValid = false;
             setSubmitFormMessage('Subscription start and end date connot be same day!');
         } else {
@@ -161,6 +175,8 @@ export default function Subscription() {
         try {
             if (validateFormData()) {
                 toggleLoadingClass('loading');
+                Subscription.startAt = Subscription.startAt.toISOString();
+                Subscription.endAt = Subscription.endAt.toISOString();
                 saveSubscription(Subscription).subscribe((response) => {
                     toggleLoadingClass('');
                     toggleSaveSuccessValue('success');
@@ -255,7 +271,7 @@ export default function Subscription() {
                 <ConfirmationModal 
                     screen="subscription"
                     message={deleteSubscritionMessage}
-                    subscriptionData={subscriptionDataToModify}
+                    actionData={subscriptionDataToModify}
                     confirmationResponse={subscriptionDeleteConfirmation}
                 /> : ''
             }
@@ -390,20 +406,6 @@ export default function Subscription() {
                                     }
                                     label="Competitions"
                                 />
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            name="features"
-                                            color="primary"
-                                            className="selected-item-checkbox"
-                                            checked={Subscription.isHHIAccess}
-                                            onChange={handleChange('isHHIAccess')}
-                                            inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                        />
-                                    }
-                                    label="HHI registration"
-                                />
-
                             </FormControl>
                         </div>
                         <div className="input-wrap">
@@ -414,6 +416,23 @@ export default function Subscription() {
                                 value={Subscription.desc}
                                 variant="outlined"
                             />
+                        </div>
+                        <div className="input-wrap">
+                            <FormControl variant="outlined" className="input-field">
+                                <InputLabel id="select-outlined-label-plantype" required>Plan type</InputLabel>
+                                <Select
+                                    required
+                                    labelId="select-outlined-label-plantype"
+                                    id="select-outlined-plantype"
+                                    value={Subscription.planType}
+                                    onChange={handleChange('planType')}
+                                    label="Plan Type"
+                                >
+                                    <MenuItem value="startup">Start-up</MenuItem>
+                                    <MenuItem value="pro">Pro</MenuItem>
+                                    <MenuItem value="premium">Premium</MenuItem>
+                                </Select>
+                            </FormControl>
                         </div>
                         <div className="input-wrap">
                             <FormControl variant="outlined" className="input-field">
@@ -442,7 +461,7 @@ export default function Subscription() {
                                     label="Select subscription start date"
                                     format="MM/dd/yyyy"
                                     value={Subscription.startAt}
-                                    onChange={handleChange('startAt')}
+                                    onChange={(e) => setStartDate(e)}
                                     KeyboardButtonProps={{
                                         'aria-label': 'change date',
                                     }}
@@ -461,7 +480,7 @@ export default function Subscription() {
                                     label="Select subscription expiry date"
                                     format="MM/dd/yyyy"
                                     value={Subscription.endAt}
-                                    onChange={handleChange('endAt')}
+                                    onChange={(e) => setEndDate(e)}
                                     KeyboardButtonProps={{
                                         'aria-label': 'change date',
                                     }}

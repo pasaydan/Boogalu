@@ -1,32 +1,21 @@
 .competition-wrap {
-    padding: 40px 20px;
     color: var(--primary-white);
     min-height: calc(100vh - 80px);
-    // background: var(--dark-blue-bg) url('https://i.imgur.com/B3ZlxGI.jpeg') no-repeat right center/30%;
     background: #3C3B3F;  /* fallback for old browsers */
     background: -webkit-linear-gradient(to top, #605C3C, #3C3B3F);  /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to top, #605C3C, #3C3B3F); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     position: relative;
-    &:after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.35);
-        z-index: 0;
-    }
     .competition-inner {
         position: relative;
         z-index: 1;
+        padding: 20px;
     }
     h1 {
-        margin: 10px 0 30px;
-        text-align: left;
-        font-size: 40px;
+        margin: 10px 0;
+        text-align: center;
+        font-size: 32px;
         font-weight: 600;
-        line-height: 50px;
+        line-height: 40px;
         letter-spacing: 1px;
     }
 }
@@ -34,6 +23,7 @@
 .competition-desc{
     font-size: 20px;
     line-height: 24px;
+    text-align: center;
 }
 
 .competition-list{
@@ -109,7 +99,6 @@
 
 @media screen and (max-width: 1023px) {
     .competition-wrap {
-        padding: 20px 10px;
         background-position: right -39px;
         background-size: 50%;
         h1 {
@@ -118,6 +107,9 @@
             width: auto;
             margin: 0 0 10px 0;
             padding: 0;
+        }
+        .competition-inner {
+            padding: 20px;
         }
         .competition-list {
             li {
@@ -132,16 +124,22 @@
     .competition-wrap {
         .competition-list {
             li {
-                flex-basis: 90%;
+                flex-basis: 70%;
                 margin: 0 auto 20px;
             }
         }
-    } 
+    }
+}
+
+@media screen and (max-width: 480px) {
     .competition-wrap {
         .competition-list {
             li {
+                max-height: 200px;
+                min-height: 200px;
                 flex-basis: 100%;
+                margin: 0 auto 20px;
             }
         }
-    } 
+    }
 }

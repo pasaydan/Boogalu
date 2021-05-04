@@ -291,7 +291,7 @@ function LessonsVideoContainer({
     }
 
     return (
-        <div className="video-component-wrap" onMouseOver={(e) => playStopPreviewVideo(e, 'play')} onMouseLeave={(e) => playStopPreviewVideo(e, 'stop')}>
+        <div className={`video-component-wrap ${isPaid}`} onMouseOver={(e) => playStopPreviewVideo(e, 'play')} onMouseLeave={(e) => playStopPreviewVideo(e, 'stop')}>
             <div className="videoThumbnailOverlay" ref={thumbNailOverlayRef} onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}>
                 <img src={thumbNail} alt="preview" className={isVideoOverlayActive ? 'hideImage' : ''} />
             </div>
@@ -313,7 +313,33 @@ function LessonsVideoContainer({
 
             {
                 isPaid === 'free' ?
-                <span className={`freeVideoTag ${isLoggedInUser ? 'loggedIn' : ''} `}>Free</span>
+                <span className="diagonalStrip free">
+                    <span>Free</span>
+                </span>
+                : ''
+            }
+            
+            {
+                isPaid === 'paid' ?
+                <span className="diagonalStrip paid">
+                    <span>Paid</span>
+                </span>
+                : ''
+            }
+
+            {
+                isPaid === 'pro' ?
+                <span className="diagonalStrip pro">
+                    <span>Pro</span>
+                </span>
+                : ''
+            }
+            
+            {
+                isPaid === 'premium' ?
+                <span className="diagonalStrip premium">
+                    <span>Premium</span>
+                </span>
                 : ''
             }
 
@@ -322,11 +348,11 @@ function LessonsVideoContainer({
                     <a className="lockIconWrap" title="Login to unlock this lesson" onClick={(e) => redirectToLogin(e)}>
                         <MdLock />
                     </a> : 
-                (isLoggedInUser && (!isSubscribedUser && isPaid === 'paid')) ?
+                (isLoggedInUser && (!isSubscribedUser && (isPaid === 'paid' || isPaid === 'pro' || isPaid === 'premium'))) ?
                 <a className="lockIconWrap" title="Subscribe to unlock this lesson" onClick={(e) => redirectToLogin(e)}>
                     <MdLock />
                 </a> : 
-                (!isLoggedInUser && !isSubscribedUser && isPaid === 'paid') ?
+                (!isLoggedInUser && !isSubscribedUser && (isPaid === 'paid' || isPaid === 'pro' || isPaid === 'premium')) ?
                 <a className="lockIconWrap" title="Login &amp; subscribe to unlock this lesson" onClick={(e) => redirectToLogin(e)}>
                     <MdLock />
                 </a> : ''

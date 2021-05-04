@@ -62,7 +62,7 @@ function Subscriptions() {
         dispatch(enableLoading());
         if (history.location.search && history.location.search.includes('status')) {
             getActiveSubscriptionsList().subscribe((subscriptionsList) => {
-                setAvailableSubscriptions(subscriptionsList.reverse());
+                setAvailableSubscriptions(subscriptionsList);
                 dispatch(disableLoading());
                 console.log(subscriptionsList);
             })
@@ -155,7 +155,7 @@ function Subscriptions() {
                     </div>
                     <div className="inner-plans-wrap">
                         {AvailableSubscriptions && AvailableSubscriptions.map((subscription) => {
-                            return <div className={`flex-2 plan ${alreadySubscribed ? 'alreadySubscribed' : ''}`} onClick={() => setSubscription(subscription)} key={subscription.key}>
+                            return <div className={`flex-2 plan ${subscription.planType} ${alreadySubscribed ? 'alreadySubscribed' : ''}`} onClick={() => setSubscription(subscription)} key={subscription.key}>
                                 <div className="plan_tag">{subscription.name}</div>
                                 <div className="plan_price">@{subscription.amount}<span>{subscription.plans}</span></div>
                                 <div className="featuresBox">
@@ -184,7 +184,7 @@ function Subscriptions() {
                                 {
                                     !alreadySubscribed ?
                                     <p className="expireWrap">
-                                        Hurry, offer valid till <strong>{subscription.endingDate}</strong>
+                                        Offer valid till <strong>{subscription.endingDate}</strong>
                                     </p>
                                     : ''
                                 }

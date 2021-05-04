@@ -19,6 +19,8 @@ import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
 import { updateUser } from "../../Services/User.service";
 import { uploadImage } from "../../Services/Upload.service";
 import { FaPlus, FaEdit } from 'react-icons/fa';
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { NOTIFICATION_SUCCCESS, NOTIFICATION_ERROR, MALE_PROFILE_DEFAULT_IMAGE, FEMALE_PROFILE_DEFAULT_IMAGE } from "../../Constants";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { FormControlLabel, FormGroup, FormLabel, Radio, RadioGroup } from '@material-ui/core';
@@ -102,6 +104,30 @@ export default function EditProfile() {
             })
         }
         e.preventDefault();
+    }
+
+    function setDateOfBirth(date) {
+        try {
+            setUserDetails({ ...userDetails, ['dob']: date });
+        } catch (e) {
+            console.log('DOB Error: ', e);
+        }
+    }
+
+    function setMinDateSelectionYear() {
+        const d = new Date();
+        const year = d.getFullYear();
+        const month = d.getMonth();
+        const day = d.getDate();
+        return (new Date(year - 50, month, day));
+    }
+    
+    function setMaxDateSelectionYear() {
+        const d = new Date();
+        const year = d.getFullYear();
+        const month = d.getMonth();
+        const day = d.getDate();
+        return (new Date(year - 4, month, day));
     }
 
     async function onChangeFile(event) {
@@ -262,17 +288,23 @@ export default function EditProfile() {
                     </div>
                     <div className="input-wrap">
                         <div className="dob-wrap">
-                            <TextField className="input-field"
+                        <MuiPickersUtilsProvider
+                            utils={DateFnsUtils}
+                        >
+                            <KeyboardDatePicker
+                                margin="normal"
+                                minDate={setMinDateSelectionYear()}
+                                maxDate={setMaxDateSelectionYear()}
                                 id="date"
-                                label="Birthday"
-                                type="date"
-                                style={{ width: '100%' }}
-                                onChange={handleChange('dob')}
+                                label="Your date of birth"
+                                format="MM/dd/yyyy"
                                 value={userDetails.dob}
-                                InputLabelProps={{
-                                    shrink: true,
+                                onChange={(e) => setDateOfBirth(e)}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change date',
                                 }}
                             />
+                        </MuiPickersUtilsProvider>
                         </div>
                     </div>
                     <div className="input-wrap">

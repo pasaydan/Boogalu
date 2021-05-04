@@ -59,7 +59,8 @@
     .videoTags, .freeVideoTag {
         position: absolute;
         top: 10px;
-        left: 10px;
+        left: 50%;
+        transform: translateX(-50%);
         z-index: 15;
         display: flex;
         justify-content: flex-start;
@@ -80,10 +81,10 @@
             }
             &.userLevel {
                 &.beginners {
-                    background-color: var(--success-green);
+                    background-color: var(--sea-green-light);
                 }
                 &.intermediate {
-                    background-color: var(--mui-button-hover);
+                    background-color: var(--primary-bg-color);
                 }
                 &.expert {
                     background-color: var(--dark-pink-hover-bg);
@@ -95,25 +96,6 @@
         }
     }
 
-    .freeVideoTag {
-        left: auto;
-        top: 15px;
-        right: 48px;
-        padding: 2px 10px;
-        border-radius: 3px;
-        font-size: 10px;
-        color: var(--primary-white);
-        line-height: 16px;
-        text-transform: uppercase;
-        letter-spacing: 1.2px;
-        box-sizing: border-box;
-        background: var(--secondary-bg-blue);
-        &.loggedIn {
-            top: 10px;
-            right: 10px;
-        }
-    }
-    
     .previewVideoWrap {
         position: absolute;
         width: 100%;
@@ -318,6 +300,39 @@
             &:after {
                 transform: rotate(-45deg);
             }
+        }
+    }
+    .diagonalStrip {
+        position: absolute;
+        width: 90px;
+        z-index: 15;
+        box-sizing: border-box;
+        transform: rotate(-45deg);
+        top: 15px;
+        left: -20px;
+        padding: 0;
+        border-bottom: 20px solid;
+        border-left: 20px solid transparent;
+        border-right: 20px solid transparent;
+        font-size: 12px;
+        &.free {
+            border-bottom-color: var(--success-green);
+        } 
+        &.paid {
+            border-bottom-color: var(--secondary-bg-blue);
+        }  
+        &.pro {
+            border-bottom-color: var(--dark-pink-hover-bg);
+        }
+        &.premium {
+            border-bottom-color: var(--red-text-color);
+        }
+        span {
+            position: absolute;
+            top: 1px;
+            left: 52%;
+            letter-spacing: 1.2px;
+            transform: translateX(-50%);
         }
     }
 }

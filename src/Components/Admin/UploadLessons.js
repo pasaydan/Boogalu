@@ -467,7 +467,7 @@ export default function UploadLessons() {
                                             <div className="uploadContainer">
                                                 <div className={videosToUpload.thumbnailImage !== null ? 'upload-input-wrap selected' : 'upload-input-wrap'}>
                                                     <h6 className="heading">Thumbnail <sup className="mandatAsterisk">*</sup></h6>
-                                                    {/* <h6 className="sub-heading">Default View</h6> */}
+                                                    <h6 className="sub-heading">Maximum size 1 MB</h6>
                                                     <i className="upload-icon"><FaCloudUploadAlt /></i>
                                                     <input id="thumbnailImage"
                                                         type="file"
@@ -495,8 +495,11 @@ export default function UploadLessons() {
                                         </div>
                                     </div>
 
-                                    <div className="input-wrap input-wrap-full">
-                                        <label className="controlLabel">Lesson Videos <sup className="mandatAsterisk">*</sup></label>
+                                    <div className="input-wrap input-wrap-full video-control-wrap">
+                                        <label className="controlLabel">Lesson Videos 
+                                            <sup className="mandatAsterisk">*</sup>
+                                            <span className="infoMessage">( Maximum size of each video should be 50 MB )</span>
+                                        </label>
                                         <div className="uploadContainer">
                                             <div className={videosToUpload.frontView !== null ? 'upload-input-wrap selected' : 'upload-input-wrap'}>
                                                 <h6 className="heading">Front Side <sup className="mandatAsterisk">*</sup></h6>
@@ -570,6 +573,8 @@ export default function UploadLessons() {
                                             value={SelectedVideoData.accessbility}
                                             defaultValue="paid" 
                                             onChange={handleChange('accessbility')}>
+                                            <FormControlLabel value="premium" control={<Radio />} label="Premium" />
+                                            <FormControlLabel value="pro" control={<Radio />} label="Pro" />
                                             <FormControlLabel value="paid" control={<Radio />} label="Paid" />
                                             <FormControlLabel value="free" control={<Radio />} label="Free" />
                                         </RadioGroup>

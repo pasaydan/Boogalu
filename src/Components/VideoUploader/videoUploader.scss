@@ -22,7 +22,14 @@
             font-weight: 500;
             color: var(--footer-text-grey);
             text-align: center;
-            margin: 0 0 20px 0;
+            margin: 0 0 10px 0;
+        }
+        .uploadInfo {
+            font-size: 12px;
+            text-align: center;
+            display: block;
+            margin: 5px 0 0;
+            color: var(--footer-text-grey);
         }
         .uploader-wrap {
             position: relative;
@@ -31,12 +38,16 @@
             &.selected-file {
                 height: 75vh;
                 overflow-y: auto;
+                margin-top: 5px;
             }
             .video-information-wrap {
                 padding-right: 10px;
                 video {
                     display: block;
-                    width: 350px;
+                    width: 300px;
+                    max-height: 280px;
+                    object-fit: cover;
+                    border-radius: 5px;
                     margin: 10px auto;
                 }
                 .change-video-btn, .image-uploader-wrap {

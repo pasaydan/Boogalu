@@ -65,7 +65,13 @@ function App() {
   function isObjectEmpty(obj) {
     return (Object.keys(obj).length === 0 && obj.constructor === Object);
   }
-  console.log('process.env >>>>>>> ', process.env)
+
+  function callbackHomeFunction() {
+    if (isObjectEmpty(state.loggedInUser)) {
+      rootPathToggle(true);   
+    }
+  }
+
   return (
     <Router>
       <div className={`App ${adminPathClass} ${isRootPath && isObjectEmpty(state.loggedInUser) ? 'top-padding0': ''}`}>
@@ -103,16 +109,22 @@ function App() {
                   <Login />
                 </Route>
                 <Route exact path="/login">
-                  <Login />
+                  <Login 
+                    backToHome={callbackHomeFunction}
+                  />
                 </Route>
                 <Route exact path="/profile/edit">
                   <EditProfile />
                 </Route>
                 <Route exact path="/register:plan">
-                  <Signup />
+                  <Signup 
+                    backToHome={callbackHomeFunction}
+                  />
                 </Route>
                 <Route exact path="/register">
-                  <Signup />
+                  <Signup 
+                    backToHome={callbackHomeFunction}
+                  />
                 </Route>
                 <Route exact path="/lessons">
                   <Upcoming />

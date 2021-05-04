@@ -44,10 +44,10 @@
         padding-bottom: 10px;
         border-bottom: 1px solid var(--white-opaque-bg);
     }
-    &:nth-child(2) {
+    &.pro {
         background: var(--mui-button-hover);    
     }
-    &:nth-child(3) {
+    &.premium {
         background: var(--dark-pink-bg);    
     }
     .plan_price {

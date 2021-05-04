@@ -19,10 +19,14 @@ import lessonsIcon from '../../Images/lessons-icon.png';
 import subscribeIcon from '../../Images/subscribe-icon.png';
 import usersIcon from '../../Images/users-icon.png';
 import { useStoreConsumer } from '../../Providers/StateProvider';
-import { getCompetitionsList } from "../../Services/Competition.service";
+import { getCompetitionsList, toggleActivateDeactivateCompetition, deleteCompetitionByKey } from "../../Services/Competition.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import ActionToolTip from '../ActionTooltip';
 import AddMoreInputGroup from '../AddMoreInputGroup';
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import Loader from '../Loader';
+import ConfirmationModal from '../ConfirmationModal';
 
 const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
 
@@ -34,8 +38,8 @@ export default function Competition() {
         active: true,
         fee: "",
         img: "",
-        startAt: "",
-        endAt: "",
+        startAt: new Date(),
+        endAt: new Date(),
         prices: [],
     }
 
@@ -49,7 +53,11 @@ export default function Competition() {
     const [CompetitionsList, setCompetitionsList] = useState(null);
     const [formMessageBox, setFormMessage] = useState('');
     const [messageClass, setFormMessageClass] = useState('');
-    const [isSaveLoadingTrue, toggleSaveLoading] = useState(false); 
+    const [isSaveLoadingTrue, toggleSaveLoading] = useState(false);
+    const [isPageLoaderActive, togglePageLoader] = useState(false);
+    const [isCompetitionDeleteClicked, toggleCompetitionModal] = useState(false);
+    const [deleteCompetitionMessage, competitionActionMessage] = useState('');
+    const [competitionDataToModify, setCompetitionActionData] = useState(null); 
 
     const createTabRef = useRef(null);
     const listTabRef = useRef(null);
@@ -60,7 +68,30 @@ export default function Competition() {
         }  
     }, []);
 
+    function setStartDate(date) {
+        try {
+            setCompetitionData({ ...CompetitionData, ['startAt']: date });
+        } catch (e) {
+            console.log('Start date error: ', e);
+        }
+    }
     
+    function setEndDate(date) {
+        try {
+            setCompetitionData({ ...CompetitionData, ['endAt']: date });
+        } catch (e) {
+            console.log('End date error: ', e);
+        }
+    }
+    
+    function setMaxDateSelectionYear() {
+        const d = new Date();
+        const year = d.getFullYear();
+        const month = d.getMonth();
+        const day = d.getDate();
+        return (new Date(year + 1, month, day));
+    }
+
     function handleAdminLogin(value, type) {
         if (type === 'email') {
             setAdminEmail(value?.target?.value);
@@ -195,12 +226,68 @@ export default function Competition() {
     }
 
     function onItemActionSelected(event, value) {
-        console.log('Event: ', event);
-        console.log('Value: ', value);
+        if (event && event === 'deactivate') {
+            togglePageLoader(true);
+            try {
+                toggleActivateDeactivateCompetition(value, false).subscribe((response) => {
+                    togglePageLoader(false);
+                });
+            }catch (e) {
+                togglePageLoader(false);
+                console.log('Error: ', e);
+            }
+        }
+
+        if (event && event === 'activate') {
+            togglePageLoader(true);
+            try {
+                toggleActivateDeactivateCompetition(value, true).subscribe((response) => {
+                    togglePageLoader(false);
+                });
+            }catch (e) {
+                togglePageLoader(false);
+                console.log('Error: ', e);
+            }
+        }
+
+        if (event && event === 'remove') {
+            toggleCompetitionModal(true);
+            competitionActionMessage('Are you sure, you want to delete this Competition?');
+            setCompetitionActionData(value);
+        }
+    }
+
+    function competitionDeleteConfirmation(action, data) {
+        if (action) {
+            togglePageLoader(true);
+            toggleCompetitionModal(false);
+            try {
+                deleteCompetitionByKey(data).subscribe((response) => {
+                    togglePageLoader(false);
+                });
+            } catch(e) {
+                console.log('error: ', e);
+            }
+        } else {
+            toggleCompetitionModal(false);
+        }
     }
 
     return (
         <div className="adminPanelSection">
+            {
+                isPageLoaderActive ?
+                <Loader /> : ''
+            }
+            {
+                isCompetitionDeleteClicked ?
+                <ConfirmationModal 
+                    screen="competition"
+                    message={deleteCompetitionMessage}
+                    actionData={competitionDataToModify}
+                    confirmationResponse={competitionDeleteConfirmation}
+                /> : ''
+            }
             <nav className="adminNavigation">
                 <Link to="/adminpanel/competition" title="create championship" className="panelLink active">
                     <span className="iconsWrap championIconWrap">
@@ -331,28 +418,37 @@ export default function Competition() {
                                 </FormControl>
                             </div>
                             <div className="input-wrap data-time-wrap">
-                                <TextField
-                                    required
-                                    id="datetime-local-start"
-                                    label="Start Date & Time"
-                                    type="datetime-local"
-                                    value={CompetitionData.startAt}
-                                    onChange={handleChange('startAt')}
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                />
-                                <TextField
-                                    required
-                                    id="datetime-local-end"
-                                    label="End Date & Time"
-                                    type="datetime-local"
-                                    value={CompetitionData.endAt}
-                                    onChange={handleChange('endAt')}
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                />
+                                <MuiPickersUtilsProvider
+                                    utils={DateFnsUtils}
+                                >
+                                    <KeyboardDatePicker
+                                        required
+                                        margin="normal"
+                                        minDate={new Date()}
+                                        maxDate={setMaxDateSelectionYear()}
+                                        id="datetime-local-start"
+                                        label="Select start date"
+                                        format="MM/dd/yyyy"
+                                        value={CompetitionData.startAt}
+                                        onChange={(e) => setStartDate(e)}
+                                        KeyboardButtonProps={{
+                                            'aria-label': 'change date',
+                                        }}
+                                    />
+                                    <KeyboardDatePicker
+                                        margin="normal"
+                                        id="datetime-local-end"
+                                        minDate={new Date()}
+                                        maxDate={setMaxDateSelectionYear()}
+                                        label="Select end date"
+                                        format="MM/dd/yyyy"
+                                        value={CompetitionData.endAt}
+                                        onChange={(e) => setEndDate(e)}
+                                        KeyboardButtonProps={{
+                                            'aria-label': 'change date',
+                                        }}
+                                    />
+                                </MuiPickersUtilsProvider>
                                 <ImageUploader
                                     withIcon={true}
                                     buttonText='Upload image'
@@ -362,7 +458,7 @@ export default function Competition() {
                                     accept="image/*"
                                     withPreview={true}
                                     singleImage={true}
-                                    label="Select competition image"
+                                    label="Select competition image ( Max size 5 MB )"
                                 />
                             </div>
                             {/* <div className="input-wrap">
@@ -432,10 +528,12 @@ export default function Competition() {
                                         <ActionToolTip 
                                             id={item.key}
                                             name={item.name}
+                                            isActive={item.active}
                                             onActionClicked={(e) => onItemActionSelected(e, {id: item.key, name: item.name})}
                                         />
                                         <p className="statusBlock">Status: <span>{item.active ? 'Active' : 'Inactive'}</span></p>
                                         <p className="date">Starting Date: <span>{item.startingDate}</span></p>
+                                        <p className="date">Ending on: <span>{item.endingDate}</span></p>
                                     </div>)
                                 })
                                 : <p className="noDataInListMessage">You haven't created any Competition!</p>

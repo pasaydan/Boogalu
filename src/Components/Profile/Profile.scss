@@ -102,6 +102,12 @@
 }
 .profile-content-wrap {
     padding: 0 15%;
+    .headers-wrap {
+        transition: all 0.3s ease-in-out;
+        &.sticky {
+            padding-top: 73px;
+        }
+    }
     .user-tabs-wrap {
         transition: all 0.3s ease-in-out;
         &.sticky {
