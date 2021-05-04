@@ -11,14 +11,19 @@ import TextField from '@material-ui/core/TextField';
 import Vedio from "../Vedio/Video";
 import ProfileImage from "../ProfileImage";
 import * as $ from 'jquery';
+
 import { Button, Link } from '@material-ui/core';
 
 
-function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedInUser }) {
+function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedInUser, followToggle, BtnText }) {
 
+    const [followButtonText, setFollowButtonText] = useState('Follow');
     const [openDetailsModal, setOpenDetailsModal] = useState(true);
     const [commentText, setCommentText] = useState('');
+    const [userDetails, setUserDetails] = useState();
+    const { privacy } = videoObj;
 
+    const privacyToggle = privacy === ('Public' || 'public') && loggedInUser.key !== videoObj.userId;
 
     const handleCommentClick = () => {
         if (commentText != '') {
@@ -26,9 +31,13 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedIn
             setCommentText('')
         }
     }
-    const handleFollowToggle = () => {
 
+    const handleFollowBtnClick = (event, toFollow, followBy) => {
+        event.preventDefault();
+        const action = event.currentTarget.dataset.action.toLowerCase();
+        followToggle(toFollow, followBy, action);
     }
+
 
     return (
         <div className="subscription-modal-wrap">
@@ -43,49 +52,64 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedIn
                 BackdropProps={{
                     timeout: 500,
                 }}
+                style={{display:'flex',alignItems:'center',justifyContent:'center'}}
             >
                 <Fade in={openDetailsModal}>
                     <div className="subscription-inner-modal comment-modal">
                         <IconButton className="close-modal-btn" onClick={() => handleClose(false)}>
                             <CloseIcon />
                         </IconButton>
-
-                        <div key={videoObj.key} className="feed-card">
-                            <div className="username">
-                                <ProfileImage src={videoObj.profileImage} />
-                                <span>{videoObj.username}</span>
-                                {loggedInUser && loggedInUser.key !== videoObj.userId && <Link onClick={handleFollowToggle} className="followBtn">Follow</Link>}
-                            </div>
+                        {privacyToggle ? 
                             <div>
-                                <Vedio vdoObj={videoObj} />
-                            </div>
-                            <div className="video-title-like-wrap">
-                                <div className="title">{videoObj.title}</div>
-                                <div className="like-comment">
-                                    {videoObj.likes && videoObj.likes.length > 0 && <div className="likes-count">{videoObj.likes.length} Likes</div>}
-                                    {!videoObj.isLiked && <FavoriteBorder onClick={() => handleLikes(videoObj, 'liked')} />}
-                                    {videoObj.isLiked && <Favorite onClick={() => handleLikes(videoObj, 'unliked')} />}
+                                <div key={videoObj.key} className="feed-card">
+                                    <div className="username">
+                                        <ProfileImage src={videoObj.profileImage} />
+                                        <span>{videoObj.username}</span>
+                                        {loggedInUser && loggedInUser.key !== videoObj.userId && <Link onClick={(event) => handleFollowBtnClick(event, videoObj.userId, loggedInUser.key)} className="followBtn" data-action={BtnText}>{BtnText}</Link>}
+                                    </div>
+                                    <div>
+                                        <Vedio vdoObj={videoObj} />
+                                    </div>
+                                    <div className="video-title-like-wrap">
+                                        <div className="title">{videoObj.title}</div>
+                                        <div className="like-comment">
+                                            {videoObj.likes && videoObj.likes.length > 0 && <div className="likes-count">{videoObj.likes.length} Likes</div>}
+                                            {!videoObj.isLiked && <FavoriteBorder onClick={() => handleLikes(videoObj, 'liked')} />}
+                                            {videoObj.isLiked && <Favorite onClick={() => handleLikes(videoObj, 'unliked')} />}
+                                        </div>
+
+                                    </div>
                                 </div>
 
-                            </div>
-                        </div>
+                                {videoObj.comments && videoObj.comments.length > 0 && <div className="comments-count">{videoObj.comments.length} Comments</div>}
 
-                        {videoObj.comments && videoObj.comments.length > 0 && <div className="comments-count">{videoObj.comments.length} Comments</div>}
-
-                        <div className="comment-outer-wrap">
-                            {videoObj.comments && videoObj.comments.map((comment, index) => {
-                                return <div className="comment-wrap" key={index}>
-                                    <ProfileImage src={comment.profileImage} />
-                                    <span className="username">{comment.username}</span>
-                                    <span>{comment.value}</span>
+                                <div className="comment-outer-wrap">
+                                    {videoObj.comments && videoObj.comments.map((comment, index) => {
+                                        return <div className="comment-wrap" key={index}>
+                                            <ProfileImage src={comment.profileImage} />
+                                            <span className="username">{comment.username}</span>
+                                            <span>{comment.value}</span>
+                                        </div>
+                                    })}
                                 </div>
-                            })}
-                        </div>
 
-                        <div className="commnet-input-wrap">
-                            <TextField id="standard-basic" label="Add Comments" value={commentText} onChange={(e) => setCommentText(e.target.value)} />
-                            <SendOutlined onClick={() => handleCommentClick(videoObj, 'liked')} />
-                        </div>
+                                <div className="commnet-input-wrap">
+                                    <TextField id="standard-basic" label="Add Comments" value={commentText} onChange={(e) => setCommentText(e.target.value)} />
+                                    <SendOutlined onClick={() => handleCommentClick(videoObj, 'liked')} />
+                                </div>
+                            </div>
+                            :
+                            <div>
+                                <div key={videoObj.key} className="feed-card">
+                                    <div className="username">
+                                        <ProfileImage src={videoObj.profileImage} />
+                                        <span>{videoObj.username}</span>
+                                        {loggedInUser && loggedInUser.key !== videoObj.userId && <Link onClick={(event) => handleFollowBtnClick(event, videoObj.userId, loggedInUser.key)} className="followBtn" data-action={BtnText}>{BtnText}</Link>}
+                                    </div>
+                                    <p>You need to follow the user to view their Profile</p>
+                                </div>
+                            </div>
+                        }
                     </div>
                 </Fade>
             </Modal>

@@ -90,3 +90,39 @@ export function getAllUser() {
         });
     });
 }
+
+export function updateFollowUnfollow(id, followedById, action) {
+    return new Observable((observer) => {
+        let followed = false;
+        let requested = false;
+        userRef.doc(id).get().then((doc) => {
+            let data = doc.data();
+            if (action === 'follow') {
+                if (data.privacy === ('Public' || 'public')) {
+                    followed = true;
+                    if (!data.followedBy) {
+                        data = {...data, followedBy: [followedById]}
+                    } else {
+                        data.followedBy.push(followedById);
+                    }
+                } else {
+                    requested = true;
+                    if (!data.followRequestedBy) {
+                        data = {...data, followRequestedBy: [followedById]}
+                    } else {
+                        data.followRequestedBy.push(followedById);
+                    }
+                }
+                userRef.doc(id).set(data).then(() => {
+                    if (followed) {
+                        observer.next({followed: true, followedUser: id, followedBy: followedById, email: data.email, name: data.name});
+                    } else if (requested) {
+                        observer.next({requested: true, followedUser: id, followedBy: followedById, email: data.email, name: data.name});
+                    } else {
+                        observer.next({error: true});
+                    }
+                });
+            }
+        });
+    });
+}

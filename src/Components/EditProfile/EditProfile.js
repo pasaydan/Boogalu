@@ -22,12 +22,16 @@ import { FaPlus, FaEdit } from 'react-icons/fa';
 import { NOTIFICATION_SUCCCESS, NOTIFICATION_ERROR, MALE_PROFILE_DEFAULT_IMAGE, FEMALE_PROFILE_DEFAULT_IMAGE } from "../../Constants";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { FormControlLabel, FormGroup, FormLabel, Radio, RadioGroup } from '@material-ui/core';
+import { setActiveVideoForCompetition } from "../../Actions/Competition";
+import { getUserByEmail } from "../../Services/User.service";
+import { loginUser } from '../../Actions/User/index';
 import * as $ from 'jquery';
 
 export default function EditProfile() {
     const { state, dispatch } = useStoreConsumer();
     const history = useHistory();
     let loggedInUser = state.loggedInUser;
+    console.log("loggedInUser", loggedInUser)
     // get data from history props if redirected through google or facebook login
     if (history.location.state && (history.location.state.source == 'Facebook' || history.location.state.source == 'Google')) {
         loggedInUser.email = history.location.state.email;
@@ -59,6 +63,13 @@ export default function EditProfile() {
         }, 500);
         if (userDetails && !userDetails.profileImage) {
             setUserDetails({ ...userDetails, profileImage: MALE_PROFILE_DEFAULT_IMAGE })
+        }
+        if (loggedInUser && loggedInUser.email) {
+            getUserByEmail(loggedInUser.email).subscribe(response => {
+                if (response && response.length > 0) {
+                    dispatch(loginUser(response[0]));
+                }
+            });
         }
     }, [])
 

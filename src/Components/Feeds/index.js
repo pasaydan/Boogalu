@@ -10,9 +10,12 @@ import VideoDetails from '../VideoDetails'
 import ProfileImage from "../ProfileImage";
 import Vedio from "../Vedio/Video";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
+import { getUserById, updateUser, updateFollowUnfollow } from "../../Services/User.service";
+import { sendEmail } from "../../Services/Email.service";
 
 function Feeds() {
-
+    const {REACT_APP_URL} = process.env;
+    const [followButtonText, setFollowButtonText] = useState('Follow');
     const [feedList, setFeedList] = useState([])
     const [userList, setUserList] = useState([])
     const [activeVideoObj, setActiveVideoObj] = useState({})
@@ -137,13 +140,14 @@ function Feeds() {
                     } else {
                         feed.isLiked = false
                     }
+                    // if (user.folloe)
                     addUserDetailsToFeed(feed, tempUserList);
                 })
             })
             setFeedList(tempFeedList)
             setUserList(tempUserList);
         })
-    }, [])
+    }, [followButtonText])
 
     const openUserStory = (user) => {
         let userVdos = feedList.filter((feed) => user.key == feed.userId);
@@ -151,6 +155,51 @@ function Feeds() {
             setActiveVideoObj(userVdos[0]);
             setCommentModal(true);
         };
+    }
+
+    const handleFollowToggle = (toFollow, followBy, action) => {
+        dispatch(enableLoading());
+        updateFollowUnfollow(toFollow, followBy, action).subscribe((response) => {
+            if (response) {
+                const { name, email } = response;
+                if (response.followed) {
+                    setFollowButtonText('Following');
+                    const message = `${loggedInUser.name} started following`;
+                    const subject = `${loggedInUser.name} started following`;
+                    sendFollowNotificationEmail(name, email, subject, message);
+                }
+                if (response.requested) {
+                    setFollowButtonText('Requested');
+                    const acceptLink = `${REACT_APP_URL}profile?followrequest=accept&requestBy=${encodeURIComponent(loggedInUser.email)}`
+                    const declineLink = `${REACT_APP_URL}profile?followrequest=decline&requestBy=${encodeURIComponent(loggedInUser.email)}`
+                    const message = `${loggedInUser.name} requested to follow you.<br /><br />You can <a href="${acceptLink}">Accept</a> or <a href="${declineLink}">Decline</a>`;
+                    const subject = `${loggedInUser.name} requested to follow you`;
+                    sendFollowNotificationEmail(name, email, subject, message);
+                }
+                dispatch(disableLoading());
+            }
+        })
+    }
+
+    const sendFollowNotificationEmail = (name, email, subject, message) => {
+        let emailBody = `<div>
+        <p>Hi ${name}, ${message}</p>. 
+        </div>`;
+        let payload = {
+            mailTo: email,
+            title: subject,
+            content: emailBody
+        }
+        sendEmail(payload).subscribe((res) => {
+            if (!('error' in res)) {
+                console.log('Follow request Send Successfully.');
+                dispatch(disableLoading());
+            } else {
+                dispatch(disableLoading());
+                console.log('User Email Send Failed.');
+            }
+            // fetchUsersVideoDetails(null, userKey);
+        })
     }
 
     return (
@@ -200,7 +249,7 @@ function Feeds() {
                     </div>
                 </div>
             </div>
-            {commentModal && <VideoDetails handleClose={() => setCommentModal(false)} handleLikes={handleLikes} handleComments={handleComments} videoObj={activeVideoObj} loggedInUser={loggedInUser} />}
+            {commentModal && <VideoDetails handleClose={() => setCommentModal(false)} handleLikes={handleLikes} handleComments={handleComments} videoObj={activeVideoObj} loggedInUser={loggedInUser} followToggle={handleFollowToggle} BtnText={followButtonText} />}
         </div>
     )
 }

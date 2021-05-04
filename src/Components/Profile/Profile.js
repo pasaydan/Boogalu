@@ -34,6 +34,9 @@ import { getUploadedVideosList } from "../../Services/UploadedVideo.service";
 import { FaBars } from 'react-icons/fa';
 import { disableLoginFlow, enableLoginFlow } from "../../Actions/LoginFlow";
 import { setActiveVideoForCompetition } from "../../Actions/Competition";
+import { getUserByEmail } from "../../Services/User.service";
+import { loginUser } from '../../Actions/User/index';
+
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -86,9 +89,16 @@ function Profile() {
     const [openUploadCompModalFor, setOpenUploadCompModalFor] = useState(null)
     const ref = useRef();
     useOnClickOutside(ref, () => { setShowProfileTab(false); setOpenUploadCompModalFor(null) });
-
+    console.log("loggedInUser", loggedInUser);
     useEffect(() => {
         if (!loggedInUser || !loggedInUser.email) history.push('/login')
+        if (loggedInUser && loggedInUser.email) {
+            getUserByEmail(loggedInUser.email).subscribe(response => {
+                if (response && response.length > 0) {
+                    dispatch(loginUser(response[0]));
+                }
+            });
+        }
         $('html,body').animate({
             scrollTop: 0
         }, 500);
