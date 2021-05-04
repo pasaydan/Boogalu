@@ -6,9 +6,9 @@ function ImageCarousel() {
     return (
         <div className="carouselWrap">
             <Carousel
-                // autoPlay={true}
-                // interval={4000}
-                // infiniteLoop={true}
+                autoPlay={true}
+                interval={3500}
+                infiniteLoop={true}
                 showThumbs={false}
             >
                 <div className="imageContentWrap">
