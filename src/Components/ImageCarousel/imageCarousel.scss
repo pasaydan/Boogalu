@@ -1,0 +1,121 @@
+.carouselWrap {
+    max-height: 380px;
+    padding: 10px;
+    box-sizing: border-box;
+    .carousel {
+        border-radius: 10px;
+        &.carousel-slider {
+            border-radius: 10px;
+            max-height: 380px;
+        }
+        .slide {
+            height: 100%;
+            border-radius: 10px;
+            .imageContentWrap {
+                height: 100%;
+                max-height: 380px;
+                border-radius: 10px;
+                img {
+                    height: 100%;
+                    border-radius: 10px;
+                    width: 100%;
+                    object-fit: cover;
+                    max-height: 380px;
+                }
+            }
+        }
+    }
+}
+
+
+@media screen and (min-width: 960px) {
+    .carousel {
+        .control-dots {
+            bottom: 20px;
+        }
+    }
+}
+
+@media screen and (max-width: 1023px) {
+    .carouselWrap {
+        .carousel {
+            .slide,
+            .slider,
+            .slider-wrapper,
+            &.carousel-slider {
+                max-height: 300px;
+                min-height: 300px;
+                .control-arrow {
+                    opacity: 1;
+                }
+            }
+            .slide {
+                .legend {
+                    opacity: 0.8;
+                }
+                .imageContentWrap {
+                    max-height: 300px;
+                    min-height: 300px;
+                    img {
+                        max-height: 300px;
+                        min-height: 300px;
+                    }    
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .carouselWrap {
+        .carousel {
+            .slide,
+            .slider,
+            .slider-wrapper,
+            &.carousel-slider {
+                max-height: 250px;
+                min-height: 250px;
+            }
+            .slide {
+                .legend {
+                    opacity: 0.8;
+                }
+                .imageContentWrap {
+                    max-height: 250px;
+                    min-height: 250px;
+                    img {
+                        max-height: 250px;
+                        min-height: 250px;
+                    }    
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .carouselWrap {
+        .carousel {
+            .slide,
+            .slider,
+            .slider-wrapper,
+            &.carousel-slider {
+                max-height: 170px;
+                min-height: 170px;
+            }
+            .slide {
+                .legend {
+                    opacity: 0.8;
+                }
+                .imageContentWrap {
+                    max-height: 170px;
+                    min-height: 170px;
+                    img {
+                        max-height: 170px;
+                        min-height: 170px;
+                    }    
+                }
+            }
+        }
+    }
+}

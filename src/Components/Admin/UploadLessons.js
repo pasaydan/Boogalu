@@ -573,10 +573,10 @@ export default function UploadLessons() {
                                             value={SelectedVideoData.accessbility}
                                             defaultValue="paid" 
                                             onChange={handleChange('accessbility')}>
+                                            <FormControlLabel value="premium" control={<Radio />} label="Premium" />
+                                            <FormControlLabel value="pro" control={<Radio />} label="Pro" />
                                             <FormControlLabel value="paid" control={<Radio />} label="Paid" />
                                             <FormControlLabel value="free" control={<Radio />} label="Free" />
-                                            <FormControlLabel value="pro" control={<Radio />} label="Pro" />
-                                            <FormControlLabel value="premium" control={<Radio />} label="Premium" />
                                         </RadioGroup>
                                     </div>
 

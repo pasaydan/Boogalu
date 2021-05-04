@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import CompetitionsDetails from "../CompetitionsDetails";
-import { getCompetitionsList } from "../../Services/Competition.service";
+import { getActiveCompetitionsList } from "../../Services/Competition.service";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { setActiveCompetition } from "../../Actions/Competition";
 import { disableLoginFlow } from "../../Actions/LoginFlow";
 import { getCompetitionByUserId } from "../../Services/EnrollCompetition.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
+import ImageCarousel from '../ImageCarousel';
 
 function Competitions() {
     const { state, dispatch } = useStoreConsumer();
@@ -34,7 +35,7 @@ function Competitions() {
 
     useEffect(() => {
         dispatch(enableLoading());
-        getCompetitionsList().subscribe(allCompList => {
+        getActiveCompetitionsList().subscribe(allCompList => {
             if (allCompList.length && loggedInUser.email && loggedInUser.phone) {
                 // get user submitted competition details
                 prepareUserCompData(allCompList).then((compListWithUserData) => {
@@ -87,9 +88,10 @@ function Competitions() {
 
     return (
         <div className="competition-wrap">
+            <ImageCarousel />
             <div className="competition-inner">
                 <div className="title-wrap">
-                    <h1>Our Active Competition !</h1>
+                    <h1>Our Active Competition</h1>
                     <div className="competition-desc">Participate in different competitions &amp; win exciting prizes.</div>
                 </div>
                 <ul className="competition-list" >
@@ -111,4 +113,4 @@ function Competitions() {
     )
 }
 
-export default Competitions
+export default Competitions;

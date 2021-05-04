@@ -171,6 +171,7 @@
         text-align: center;
         border-radius: 5px 5px 0 0;
         color: var(--btn-primary-light-bg);
+        margin-bottom: -1px;
         &:hover {
             color: var(--success-green);
         }
@@ -398,7 +399,6 @@
 .adminItemlistView {
     display: flex;
     justify-content: center;
-    align-items: center;
     padding: 10px;
     flex-wrap: wrap;
     box-sizing: border-box;
@@ -411,6 +411,7 @@
         flex-basis: 236px;
         color: var(--copyright-grey);
         font-weight: 500;
+        position: relative;
         .actionLink {
             margin: 0;
             position: relative;
@@ -418,16 +419,23 @@
             .actionBtn {
                 position: absolute;
                 right: 0;
-                top: 5px;
+                top: 0;
                 padding: 0 5px;
                 background: none;
                 border: none;
                 box-shadow: none;
                 cursor: pointer;
+                width: 20px;
+                height: 24px;
+                box-sizing: border-box;
                 span {
                     width: 5px;
                     height: 5px;
                     display: block;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
                     border-radius: 50%;
                     background: var(--footer-list-text-grey);
                     &:before, &:after {
@@ -436,20 +444,21 @@
                         background: var(--footer-list-text-grey);
                         width: 5px;
                         height: 5px;
-                        left: 5px;
+                        left: 0;
                         border-radius: 50%;
                     }
                     &:before {
-                        top: -6px;
+                        top: -7px;
                     }
                     &:after {
-                        top: 6px;
+                        top: 7px;
                     }
                 }
             }
             .menu {
-                top: 22px;
-                right: -2px;
+                top: 29px;
+                right: 1px;
+                min-width: 112px;
                 position: absolute;
                 background: var(--primary-white);
                 box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
@@ -518,6 +527,11 @@
             .title {
                 color: var(--secondary-color);
                 font-size: 24px;
+            }
+            .actionLink {
+                position: absolute;
+                top: 5px;
+                right: 5px;
             }
         }
     }

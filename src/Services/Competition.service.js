@@ -12,9 +12,11 @@ export function getCompetitionsList() {
                 let data = doc.data();
                 data.key = doc.id;
                 let startingDate = new Date(data.startAt);
-                data.startingDate = formatDate(startingDate, 3) + " " + formatTime(startingDate);
+                data.startingDate = formatDate(startingDate, 3);
+                data.startingTime = formatTime(startingDate);
                 let endingDate = new Date(data.endAt);
-                data.endingDate = formatDate(endingDate, 3) + " " + formatTime(endingDate);
+                data.endingDate = formatDate(endingDate, 3);
+                data.endingTime = formatTime(endingDate);
                 cat.push(data);
             });
             cat.sort((a, b) => a.index - b.index);
@@ -31,9 +33,11 @@ export function getActiveCompetitionsList() {
                 let data = doc.data();
                 if (data.active) {
                     let startingDate = new Date(data.startAt);
-                    data.startingDate = formatDate(startingDate, 3) + " " + formatTime(startingDate);
+                    data.startingDate = formatDate(startingDate, 3);
+                    data.startingTime = formatTime(startingDate);
                     let endingDate = new Date(data.endAt);
-                    data.endingDate = formatDate(endingDate, 3) + " " + formatTime(endingDate);
+                    data.endingDate = formatDate(endingDate, 3);
+                    data.endingTime = formatTime(endingDate);
                     data.key = doc.id;
                     cat.push(data);
                 }
@@ -50,9 +54,11 @@ export function getCompetition(id) {
             let data = doc.data();
             data.key = doc.id;
             let startingDate = new Date(data.startAt);
-            data.startingDate = formatDate(startingDate, 3) + " " + formatTime(startingDate);
+            data.startingDate = formatDate(startingDate, 3);
+            data.startingTime = formatTime(startingDate);
             let endingDate = new Date(data.endAt);
-            data.endingDate = formatDate(endingDate, 3) + " " + formatTime(endingDate);
+            data.endingDate = formatDate(endingDate, 3);
+            data.endingTime = formatTime(endingDate);
             observer.next(data);
         });
     });
@@ -85,5 +91,28 @@ export function deleteCategory(id) {
         competitionRef.doc(id).delete().then(() => {
             observer.next();
         });
+    });
+}
+
+export function toggleActivateDeactivateCompetition(data, action) {
+    data.createdOn = data.createdOn || new Date();
+    data.modifiedOn = new Date();
+    return new Observable((observer) => {
+        competitionRef.doc(data.id).update({ 'active': action }).then(() => {
+            observer.next();
+        });
+    });
+}
+
+export function deleteCompetitionByKey(data) {
+    return new Observable((observer) => {
+        competitionRef.doc(data.id).delete().then(() => {
+            console.log("Competition successfully deleted!");
+            observer.next({deleted: true});
+        }).catch((error) => {
+            console.error("Error removing Competition: ", error);
+            observer.next({deleted: false, error: error});
+        });
+        
     });
 }

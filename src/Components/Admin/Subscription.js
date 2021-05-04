@@ -19,7 +19,6 @@ import lessonsIcon from '../../Images/lessons-icon.png';
 import subscribeIcon from '../../Images/subscribe-icon.png';
 import usersIcon from '../../Images/users-icon.png';
 import DateFnsUtils from '@date-io/date-fns';
-import { formatISO } from 'date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import Loader from '../Loader';
 
@@ -35,8 +34,8 @@ export default function Subscription() {
         planType: 'startup',
         isLessonAccess: true,
         isCompetitionAccess: false,
-        startAt: formatISO(new Date(), 'yyyy-MM-dd HH:mm').substr(0, 16),
-        endAt: formatISO(new Date(), 'yyyy-MM-dd HH:mm').substr(0, 16),
+        startAt: new Date(),
+        endAt: new Date(),
         plans: "monthly",
     }
     const [Subscription, setSubscription] = useState(initialSubscriptionData);
@@ -155,7 +154,7 @@ export default function Subscription() {
         } else if (!Subscription.isLessonAccess && !Subscription.isCompetitionAccess) {
             isFormValid = false;
             setSubmitFormMessage('Please at-least select one feature for user!');
-        } else if (Subscription.startAt.split('T')[0] === Subscription.endAt.split('T')[0]) {
+        } else if (Subscription.startAt.toISOString().split('T')[0] === Subscription.endAt.toISOString().split('T')[0]) {
             isFormValid = false;
             setSubmitFormMessage('Subscription start and end date connot be same day!');
         } else {
@@ -176,6 +175,8 @@ export default function Subscription() {
         try {
             if (validateFormData()) {
                 toggleLoadingClass('loading');
+                Subscription.startAt = Subscription.startAt.toISOString();
+                Subscription.endAt = Subscription.endAt.toISOString();
                 saveSubscription(Subscription).subscribe((response) => {
                     toggleLoadingClass('');
                     toggleSaveSuccessValue('success');
@@ -270,7 +271,7 @@ export default function Subscription() {
                 <ConfirmationModal 
                     screen="subscription"
                     message={deleteSubscritionMessage}
-                    subscriptionData={subscriptionDataToModify}
+                    actionData={subscriptionDataToModify}
                     confirmationResponse={subscriptionDeleteConfirmation}
                 /> : ''
             }
