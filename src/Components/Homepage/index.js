@@ -124,10 +124,10 @@ export default function Homepage() {
                 {/* <div className={`main-background-image ${firstImageLoaded} ${loadImageClass}`}></div> */}
                 <div className={`main-bg-message ${defaultFirstMessageLoaded} ${firstMessageLoaded} ${loadMessageBox}`}>
                     <h4 className={`${firstHeadingLoaded} ${headingAnimateClass1}`}>
-                        The world’s best <span className="color-text-red">Dance</span> learning tools,
+                        The world’s best <span className="color-text-yellow">Dance</span> learning tools,
                     </h4>
                     <h5 className={`${firstHeadingLoaded} ${headingAnimateClass2}`}>
-                        at your <span className="color-text-purple">Fingertips</span>.
+                        at your <span className="color-text-green">Fingertips</span>.
                     </h5>
                     <button className={`btn primary-light get_started ${firstStartButtonLoaded} ${startButtonAnimateClass}`} onClick={() => {
                         loggedInUser ? history.push('/competitions') : history.push('/login');

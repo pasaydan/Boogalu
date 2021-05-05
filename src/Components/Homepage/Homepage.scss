@@ -139,10 +139,15 @@
             text-align: center;
             position: relative;
             font-family: 'Courgette', cursive;
-            .color-text-red {
+            .color-text-yellow, .color-text-green {
+                font-size: 28px;
+                line-height: 28px;
+                font-family: 'Courgette', cursive;
+            }
+            .color-text-yellow {
                 color: var(--warning-yellow-opaque);
             }
-            .color-text-purple {
+            .color-text-green {
                 color: var(--success-green-opaque);
             }
             &.firstHeadingLoaded {
