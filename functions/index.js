@@ -6,18 +6,11 @@ const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 const EMAIL_CONFIG = require('./credentials.json');
 
-const {
-	CLIENT_SECRET,
-    CLIENT_ID,
-    REDIRECT_URI,
-    REFRESH_TOKEN,
-    SEND_EMAIL_FROM,
-} = EMAIL_CONFIG;
-
 const cors = require('cors')({
 	origin: true,
 });
 let razorpayconfig = require('./test.json');
+let oauthservice = require('./credentials.json');
 razorpayconfig = razorpayconfig.razorpayservice;
 const Razorpay = require('razorpay');
 
@@ -26,7 +19,17 @@ var db = admin.firestore();
 
 if (Object.keys(functions.config()).length) {
 	razorpayconfig = functions.config().razorpayservice;
+	oauthservice = functions.config().oauthservice;
 }
+
+let {
+	clientsecret,
+    clientid,
+    redirecturi,
+    refreshtoken,
+    sendemailfrom,
+} = oauthservice;
+
 // post order to razorpay
 exports.postOrder = functions.https.onRequest((request, response) => {
 	return cors(request, response, () => {
@@ -119,12 +122,12 @@ exports.updatePayment = functions.https.onRequest((request, response) => {
 // new implementation is below :
 exports.sendEmail = functions.https.onRequest((request, response) => {
 	const oAuth2Client = new google.auth.OAuth2(
-		CLIENT_ID,
-		CLIENT_SECRET,
-		REDIRECT_URI
+		clientid,
+		clientsecret,
+		redirecturi
 	);
 	oAuth2Client.setCredentials({
-		refresh_token: REFRESH_TOKEN
+		refreshtoken: refreshtoken
 	});
 	return cors(request, response, () => {
 		var to = request.body.mailTo;
@@ -138,16 +141,16 @@ exports.sendEmail = functions.https.onRequest((request, response) => {
 					service: 'gmail',
 					auth: {
 						type: 'OAuth2',
-						user: SEND_EMAIL_FROM,
-						clientId: CLIENT_ID,
-						clientSecret: CLIENT_SECRET,
-						refreshToken: REFRESH_TOKEN,
+						user: sendemailfrom,
+						clientId: clientid,
+						clientSecret: clientsecret,
+						refreshToken: refreshtoken,
 						accessToken: accessToken,
 					},
 				});
 
 				var mailOptions = {
-					from: '"Boogalu" <' + SEND_EMAIL_FROM + '>',
+					from: '"Boogalu" <' + sendemailfrom + '>',
 					to: to,
 					subject: subject,
 					html: html,

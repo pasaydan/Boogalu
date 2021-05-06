@@ -3,5 +3,12 @@
         "url": "http://localhost:5001/boogalusite/us-central1/postOrder",
         "key": "rzp_test_I6E2xi7pm2VOPG",
         "secret": "120I15dXhVxr68bXaYTzRMDT"
+    },
+    "oauthservice" : {
+        "clientSecret": "s5Ig826BsWQ-rZgKgCJXSvLK",
+        "clientId": "464245437134-1qccb55ud19aia82tdnv6rbi237g6lbc.apps.googleusercontent.com",
+        "redirectUri": "https://developers.google.com/oauthplayground",
+        "refreshToken": "1//04q8665vCQAvACgYIARAAGAQSNwF-L9IrsTJYGSmOdcUxgHi2pXkX-yW26dCcEQy5LWfQ_6fiNT-7ITBfE-6JMS02Yd5vXWZ335E",
+        "sendEmailFrom": "boogalu.email.test@gmail.com"
     }
 }
