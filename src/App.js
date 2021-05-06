@@ -8,6 +8,7 @@ import Footer from "./Components/Footer/index";
 import Signup from "./Components/Signup";
 import Page404 from './Components/Page404';
 import Profile from "./Components/Profile/Profile";
+import UserProfile from "./Components/Profile/UserProfile";
 import Homepage from "./Components/Homepage";
 import Upcoming from "./Components/Upcoming";
 import AboutUs from './Components/Aboutus';
@@ -137,6 +138,9 @@ function App() {
                 </Route>
                 <Route exact path="/profile">
                   <Profile />
+                </Route>
+                <Route exact path="/profile/:id">
+                  <UserProfile />
                 </Route>
                 <Route exact path="/home">
                   {state.loggedInUser && state.loggedInUser.username ? <Feeds /> : <Homepage />}

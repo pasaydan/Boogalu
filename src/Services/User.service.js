@@ -36,7 +36,7 @@ export function updateUser(id, data) {
     data.modifiedOn = new Date();
     return new Observable((observer) => {
         userRef.doc(id).set(data).then(() => {
-            observer.next();
+            observer.next({updated: true});
         });
     });
 }

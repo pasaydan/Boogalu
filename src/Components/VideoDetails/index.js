@@ -11,19 +11,21 @@ import TextField from '@material-ui/core/TextField';
 import Vedio from "../Vedio/Video";
 import ProfileImage from "../ProfileImage";
 import * as $ from 'jquery';
+import { useHistory } from "react-router-dom";
 
 import { Button, Link } from '@material-ui/core';
+import { LinkedCamera } from '@material-ui/icons';
 
 
 function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedInUser, followToggle, BtnText }) {
 
+    const history = useHistory();
     const [followButtonText, setFollowButtonText] = useState('Follow');
     const [openDetailsModal, setOpenDetailsModal] = useState(true);
     const [commentText, setCommentText] = useState('');
     const [userDetails, setUserDetails] = useState();
+    const [privacyToggle, setPrivacyToggle] = useState(false);
     const { privacy } = videoObj;
-
-    const privacyToggle = privacy === ('Public' || 'public') && loggedInUser.key !== videoObj.userId;
 
     const handleCommentClick = () => {
         if (commentText != '') {
@@ -37,6 +39,17 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedIn
         const action = event.currentTarget.dataset.action.toLowerCase();
         followToggle(toFollow, followBy, action);
     }
+
+    const redirectToProfile = (path) => {
+        console.log("path", path);
+        history.push(path);
+    }
+
+    useEffect(() => {
+        if ((privacy === ('Public' || 'public') || videoObj.following) && loggedInUser.key !== videoObj.userId) {
+            setPrivacyToggle(true);
+        }
+    }, [])
 
 
     return (
@@ -64,7 +77,7 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedIn
                                 <div key={videoObj.key} className="feed-card">
                                     <div className="username">
                                         <ProfileImage src={videoObj.profileImage} />
-                                        <span>{videoObj.username}</span>
+                                        <span><Link onClick={(e) => redirectToProfile(`/profile/${videoObj.key}`)}>{videoObj.username}</Link></span>
                                         {loggedInUser && loggedInUser.key !== videoObj.userId && <Link onClick={(event) => handleFollowBtnClick(event, videoObj.userId, loggedInUser.key)} className="followBtn" data-action={BtnText}>{BtnText}</Link>}
                                     </div>
                                     <div>

@@ -133,6 +133,15 @@ function Feeds() {
                         feed.profileImage = user.profileImage;
                         feed.privacy = user.privacy || "Public";
                         user.isAnyVideoSubmitted = true;
+                        if (user.followedBy && user.followedBy.length > 0) {
+                            const checkIfUserFollowingVideoCreator = user.followedBy.filter( (followedByUserId) => followedByUserId === loggedInUser.key);
+                            console.log("checkIfUserFollowingVideoCreator", checkIfUserFollowingVideoCreator);
+                            if (checkIfUserFollowingVideoCreator && checkIfUserFollowingVideoCreator.length > 0) {
+                                feed.following = true;
+                            } else {
+                                feed.following = false;
+                            }
+                        }
                     }
                     if (feed.likes && feed.likes.length) {
                         let isAvail = feed.likes.filter(data => data.userId == loggedInUser.key)
@@ -140,7 +149,6 @@ function Feeds() {
                     } else {
                         feed.isLiked = false
                     }
-                    // if (user.folloe)
                     addUserDetailsToFeed(feed, tempUserList);
                 })
             })
@@ -152,6 +160,7 @@ function Feeds() {
     const openUserStory = (user) => {
         let userVdos = feedList.filter((feed) => user.key == feed.userId);
         if (userVdos.length) {
+            setFollowButtonText(userVdos[0].following ? 'Following' : 'Follow');
             setActiveVideoObj(userVdos[0]);
             setCommentModal(true);
         };
