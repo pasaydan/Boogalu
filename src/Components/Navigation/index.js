@@ -8,6 +8,7 @@ import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined'
 import { enableLoginFlow } from "../../Actions/LoginFlow";
 import { disableLoginFlow } from "../../Actions/LoginFlow";
 import VideoUploader from "../VideoUploader";
+import { MdNotifications, MdNotificationsActive, MdAccountCircle } from "react-icons/md";
 import { NOTIFICATION_SUCCCESS, NOTIFICATION_ERROR } from "../../Constants";
 import { displayNotification } from "../../Actions/Notification";
 import * as $ from 'jquery';
@@ -24,6 +25,10 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
     const [userIconProfileMenu, setUserIconProfileMenu] = useState(false);
     const [showUserIconProfileMenu, setShowUserIconProfileMenu] = useState(false);
     const [isHomeRoute, togglHomeRouteValue] = useState(true);
+    const [isNotificationsPresent, setNotificationValue] = useState(false);
+    const [userNotificationMenu, setUserNotificationMenu] = useState(false);
+    const [showUserNotificationMenu, setShowUserIconNotificationMenu] = useState(false);
+    const [userNotificationList, setUserNotificationList] = useState([]);
     
     const ref = useRef();
     const hamburgerMenuRef = useRef(null);
@@ -170,6 +175,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
         enableProfileTabMenu(false);
         setShowUserIconProfileMenu(false);
         setUserIconProfileMenu(false);
+        setUserNotificationMenu(false);
         if (hamburgerMenuRef.current) {
             hamburgerMenuRef.current.classList.remove('active');
         }
@@ -304,11 +310,17 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
             });
             event.currentTarget.classList.add('active');
             history.push(`/${url}`);
+            setTimeout(() => {
+                $('html,body').animate({
+                    scrollTop: 0
+                }, 700);
+            }, 100);
             setActiveRoute(url);
             setShowProfileTab(false);
             enableProfileTabMenu(false);
             setShowUserIconProfileMenu(false);
             setUserIconProfileMenu(false);
+            setUserNotificationMenu(false);
             if (hamburgerMenuRef.current) {
                 hamburgerMenuRef.current.classList.remove('active');
             }
@@ -333,6 +345,12 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
         setTimeout(() => {
             setUserIconProfileMenu(false);
         }, 200);
+
+        setShowUserIconNotificationMenu(false);
+        setTimeout(() => {
+            setUserNotificationMenu(false);
+        }, 200);
+
         if (hamburgerMenuRef.current) {
             if (hamburgerMenuRef.current.classList.contains('active')) {
                 hamburgerMenuRef.current.classList.remove('active');
@@ -371,6 +389,11 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
             }
         }
 
+        setShowUserIconNotificationMenu(false);
+        setTimeout(() => {
+            setUserNotificationMenu(false);
+        }, 200);
+
         if (userIconProfileMenu) {
             setShowUserIconProfileMenu(false);
             setTimeout(() => {
@@ -380,6 +403,39 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
             setUserIconProfileMenu(true);
             setTimeout(() => {
                 setShowUserIconProfileMenu(true);
+            }, 200);
+        }
+    }
+    
+    function activateNotificationMenu(event) {
+        event.stopPropagation();
+        if (hamburgerMenuRef.current) {
+            if (hamburgerMenuRef.current.classList.contains('active')) {
+                hamburgerMenuRef.current.classList.remove('active');
+                if (mainNavRef.current) {
+                    mainNavRef.current.classList.remove('sideMenuVisible');
+                }
+                setTimeout(() => {
+                    enableProfileTabMenu(false);
+                }, 100);    
+                setShowProfileTab(false);
+            }
+        }
+
+        setShowUserIconProfileMenu(false);
+        setTimeout(() => {
+            setUserIconProfileMenu(false);
+        }, 200);
+        
+        if (userNotificationMenu) {
+            setShowUserIconNotificationMenu(false);
+            setTimeout(() => {
+                setUserNotificationMenu(false);
+            }, 200);
+        } else {
+            setUserNotificationMenu(true);
+            setTimeout(() => {
+                setShowUserIconNotificationMenu(true);
             }, 200);
         }
     }
@@ -401,6 +457,11 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
             setTimeout(() => {
                 setUserIconProfileMenu(false);
             }, 200);
+            
+            setShowUserIconNotificationMenu(false);
+            setTimeout(() => {
+                setUserNotificationMenu(false);
+            }, 200);
         }
     }
 
@@ -408,9 +469,11 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
         event.stopPropagation();
         setShowProfileTab(false);
         setShowUserIconProfileMenu(false);
+        setShowUserIconNotificationMenu(false);
         setTimeout(() => {
             enableProfileTabMenu(false);
             setUserIconProfileMenu(false);
+            setUserNotificationMenu(false);
         }, 500);
         if (hamburgerMenuRef.current) {
             hamburgerMenuRef.current.classList.remove('active');
@@ -455,9 +518,25 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
 
                     {loggedInUser && loggedInUser.phone && <div className="flex-2 signup-wrap" >
                         <div className="profile" ref={ref}>
-                            {loggedInUser.profileImage ? <div className="profile-img-wrap">
+                            <div className="profile-img-wrap userIcon">
+                                <MdAccountCircle onClick={(e) => activateProfileIconMenu(e)} />
+                            </div>
+                            <div className={`profile-img-wrap notificationIcon ${isNotificationsPresent ? 'active' : ''}`}>
+                                {
+                                    isNotificationsPresent ?
+                                    <span className="notificationCount">{userNotificationList.length}</span>
+                                    : ''
+                                }
+                                {
+                                    isNotificationsPresent ?
+                                    <MdNotificationsActive onClick={(e) => activateNotificationMenu(e)} />
+                                    :
+                                    <MdNotifications onClick={(e) => activateNotificationMenu(e)} />
+                                }
+                            </div>
+                            {/* {loggedInUser.profileImage ? <div className="profile-img-wrap">
                                 <img src={loggedInUser.profileImage} onClick={(e) => activateProfileIconMenu(e)} style={{ fontSize: '35px' }} />
-                            </div> : <AccountCircleOutlinedIcon onClick={(e) => activateProfileIconMenu(e)} style={{ fontSize: '35px' }} />}
+                            </div> : <AccountCircleOutlinedIcon onClick={(e) => activateProfileIconMenu(e)} style={{ fontSize: '35px' }} />} */}
                         </div>
                         <a className="hamburgerMenu" ref={hamburgerMenuRef} title={`${profileTabMenu ? 'Close menu' : 'Open menu'}`} onClick={(e) => activateLeftMenuBar(e)}>
                             <span></span>
@@ -478,6 +557,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                             </div>
                         </div> : ''
                     }
+                    
                     {
                         userIconProfileMenu ?
                         <div className={`profile-tab-wrap user-icon-menu-wrap ${showUserIconProfileMenu ? 'showMenu' : ''}`} onClick={(e) => headerMenusClicked(e)}>
@@ -486,6 +566,87 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                                 <div className="linkMenu" data-url="profile/edit" onClick={(e) => topRightNavigation(e, 'profile/edit')}>Edit profile</div>
                                 <div className="linkMenu logoutLink" onClick={() => logout()}>Logout</div>
                             </div>
+                        </div> : ''
+                    }
+
+                    {
+                        userNotificationMenu ?
+                        <div className={`profile-tab-wrap userNotificationOptionWrap user-icon-menu-wrap ${showUserNotificationMenu ? 'showMenu' : ''}`} onClick={(e) => headerMenusClicked(e)}>
+                            <a className="closeNotificationIcon" onClick={(e) => headerMenusClicked(e)}></a>
+                            {
+                                true ?
+                                <div className="innerMenuWrap">
+                                    <ul className="notificationList">
+                                        <li>
+                                            <p>Vilas Kumkar has followed you!</p>
+                                            <div className="notificationAction">
+                                                <button className="btn primary-dark">Unfollow</button>
+                                                <button className="btn primary-light">Block</button>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <p>Bruce has requested to follow you!</p>
+                                            <div className="notificationAction">
+                                                <button className="btn primary-dark">Accept</button>
+                                                <button className="btn primary-light">Reject</button>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <p>Vilas Kumkar has followed you!</p>
+                                            <div className="notificationAction">
+                                                <button className="btn primary-dark">Unfollow</button>
+                                                <button className="btn primary-light">Block</button>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <p>Bruce has requested to follow you!</p>
+                                            <div className="notificationAction">
+                                                <button className="btn primary-dark">Accept</button>
+                                                <button className="btn primary-light">Reject</button>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <p>Vilas Kumkar has followed you!</p>
+                                            <div className="notificationAction">
+                                                <button className="btn primary-dark">Unfollow</button>
+                                                <button className="btn primary-light">Block</button>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <p>Bruce has requested to follow you!</p>
+                                            <div className="notificationAction">
+                                                <button className="btn primary-dark">Accept</button>
+                                                <button className="btn primary-light">Reject</button>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <p>Vilas Kumkar has followed you!</p>
+                                            <div className="notificationAction">
+                                                <button className="btn primary-dark">Unfollow</button>
+                                                <button className="btn primary-light">Block</button>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <p>Bruce has requested to follow you!</p>
+                                            <div className="notificationAction">
+                                                <button className="btn primary-dark">Accept</button>
+                                                <button className="btn primary-light">Reject</button>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <p>Vilas Kumkar has followed you!</p>
+                                            <div className="notificationAction">
+                                                <button className="btn primary-dark">Unfollow</button>
+                                                <button className="btn primary-light">Block</button>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div> 
+                                : 
+                                <div className="innerMenuWrap">
+                                    <p className="message">No pending notifications!</p>
+                                </div>
+                            }
                         </div> : ''
                     }
                 </div>

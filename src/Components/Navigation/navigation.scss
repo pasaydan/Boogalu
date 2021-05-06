@@ -23,16 +23,46 @@ nav img {
 .desktop-navigation {
     .profile {
         margin-right: 20px;
+        display: flex;
         .profile-img-wrap {
-            width: 40px;
-            height: 40px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
-            overflow: hidden;
-            img {
+            border: 1px solid var(--primary-white);
+            padding: 3px;
+            text-align: center;
+            box-sizing: border-box;
+            img, svg {
                 width: 100%;
                 height: 100%;
                 border-radius: 50%;
                 object-fit: cover;
+            }
+            &.notificationIcon {
+                .notificationCount {
+                    display: block;
+                    position: absolute;
+                    width: 16px;
+                    height: 16px;
+                    top: -2px;
+                    right: 0;
+                    border-radius: 50%;
+                    font-size: 8px;
+                    font-weight: 600;
+                    text-align: center;
+                    line-height: 18px;
+                    font-family: Arial, Helvetica, sans-serif;
+                    letter-spacing: 0;
+                    color: var(--primary-white);
+                    background: var(--light-pink-bg);
+                }
+                &.active {
+                    svg {
+                        width: 98%;
+                        height: 98%;
+                        transform: rotate(-20deg);
+                    }
+                }
             }
         }
     }
@@ -253,7 +283,7 @@ nav img {
     }
     &.user-icon-menu-wrap {
         height: 120px;
-        right: 60px;
+        right: 111px;
         width: 220px;
         opacity: 0;
         &.showMenu {
@@ -290,6 +320,76 @@ nav img {
                     border-top: 1px solid var(--btn-primary-light-bg);
                     border-radius: 0 0 8px 8px;
                     padding: 8px 15px 12px;
+                }
+            }
+        }
+        &.userNotificationOptionWrap {
+            right: 60px;
+            width: 300px;
+            height: auto;
+            .closeNotificationIcon {
+                display: none;
+            }
+            .innerMenuWrap {
+                .message {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    color: var(--secondary-bg-blue);
+                    text-align: center;
+                    margin: 0;
+                    font-size: 16px;
+                }
+            }
+            .notificationList {
+                margin: 0;
+                padding: 0;
+                overflow-y: auto;
+                max-height: 480px;
+                li {
+                    display: block;
+                    padding: 15px;
+                    border-top: 1px solid var(--btn-primary-light-bg);
+                    box-sizing: border-box;
+                    &:first-child {
+                        border-top: none;
+                    }
+                    p {
+                        font-size: 14px;
+                        line-height: 18px;
+                        margin: 0 0 10px 0;
+                        color: var(--btn-primary-dark-bg);
+                    }
+                    .notificationAction {
+                        display: flex;
+                        justify-content: flex-end;
+                        button {
+                            padding: 5px;
+                            font-size: 12px;
+                            width: 70px;
+                            height: 24px;
+                            text-transform: capitalize;
+                            font-weight: 400;
+                            letter-spacing: 0;
+                            margin-left: 10px;
+                            box-shadow: none;
+                            filter: none;
+                            line-height: 14px;
+                            &.primary-dark {
+                                background-color: var(--secondary-color);
+                                // border: 1px solid var(--dark-pink-hover-bg);
+                                color: var(--primary-white);
+                            }
+                            
+                            &.primary-light {
+                                background-image: none;
+                                background-color: transparent;
+                                border: 1px solid var(--copyright-grey);
+                                color: var(--copyright-grey);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -332,8 +432,58 @@ nav img {
             top: 60px;
         }
         &.user-icon-menu-wrap {
-            right: 49px;
+            right: 101px;
             top: 62px;
+            &.userNotificationOptionWrap {
+                top: 0;
+                left: 0;
+                z-index: 200;
+                width: 100%;
+                height: 100%;
+                &:before {
+                    display: none;
+                }
+                &:after {
+                    content: 'Notifications';
+                    position: absolute;
+                    top: 15px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    font-size: 20px;
+                    color: var(--footer-text-grey);;
+                }
+                .innerMenuWrap {
+                    border-radius: 0;
+                    padding-top: 50px;
+                    .notificationList {
+                        max-height: calc(100vh - 80px);
+                        padding-bottom: 20px;
+                    }
+                }
+                .closeNotificationIcon {
+                    display: block;
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                    width: 24px;
+                    height: 24px;
+                    &:before, &:after {
+                        content: '';
+                        position: absolute;
+                        height: 2px;
+                        width: 100%;
+                        left: 0;
+                        top: 11px;
+                        background: var(--footer-text-grey);
+                    }
+                    &:before {
+                        transform: rotate(45deg);
+                    }
+                    &:after {
+                        transform: rotate(-45deg);
+                    }
+                }
+            }
         }
     }
     .navigation-wrap {
