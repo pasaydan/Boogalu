@@ -51,8 +51,9 @@
         background: var(--dark-pink-bg);    
     }
     .plan_price {
-        font-size: 45px;
-        font-weight: 600;
+        font-size: 42px;
+        line-height: 44px;
+        font-weight: 500;
     }
     
     .plan_price span {
@@ -62,7 +63,7 @@
     }
     
     .featuresBox {
-        margin: 10px 0;
+        margin: 5px 0 10px;
         padding: 10px 0 0 0;
         width: 100%;
         border-top: 1px solid var(--btn-primary-light-bg);
