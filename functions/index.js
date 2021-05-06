@@ -35,6 +35,8 @@ exports.postOrder = functions.https.onRequest((request, response) => {
 			key_secret: razorpayconfig.secret
 		})
 		var options = request.body;
+		const identifier = Object.keys(options)[0];
+		const data = options[identifier];
 		let paymentDetails = null;
 
 		const getPaymentByUserKey = async (options) => {
@@ -45,30 +47,51 @@ exports.postOrder = functions.https.onRequest((request, response) => {
 			} else {
 				paymentDetails = doc.data();
 				console.log("paymentDetails", paymentDetails);
-				// if (doc.data())
 			}
 		}
 
-		getPaymentByUserKey(options)
+		getPaymentByUserKey(data)
 			.then(() => {
-				if (paymentDetails && paymentDetails.id !== paymentDetails.razorpay_payment_id) {
+				if (paymentDetails && paymentDetails[identifier] === identifier && paymentDetails[identifier].id !== paymentDetails[identifier].razorpay_payment_id) {
 					response.send(paymentDetails)
 					return paymentDetails;
 				} else {
-					instance.orders.create(options, function (err, order) {
-						if (err) {
-							response.send(err)
-							console.error('err >>>>>', err);
-							return err;
-						} else {
-							const paymentRef = db.collection('payments');
-							paymentRef
-								.doc(order.receipt)
-								.set(order);
-							response.send(order)
-							return order;
-						}
-					});
+					if (paymentDetails) {
+						instance.orders.create(data, function (err, order) {
+							if (err) {
+								response.send(err)
+								console.error('err >>>>>', err);
+								return err;
+							} else {							
+								const paymentRef = db.collection('payments');
+								let newOrderdata = {}
+								newOrderdata[identifier] = order;
+								let mergedData = {...paymentDetails, ...newOrderdata};
+								console.log("merged data", mergedData);
+								paymentRef
+									.doc(order.receipt)
+									.set(mergedData);
+								response.send(mergedData)
+								return mergedData;
+							}
+						});
+					} else {
+						console.log("inside then else >>>>> else");
+						instance.orders.create(data, function (err, order) {
+							if (err) {
+								response.send(err)
+								console.error('err >>>>>', err);
+								return err;
+							} else {							
+								const paymentRef = db.collection('payments');
+								paymentRef
+									.doc(order.receipt)
+									.set({[identifier]: order});
+								response.send(order)
+								return order;
+							}
+						});
+					}
 				}
 				return;
 			}).catch((err) => {
