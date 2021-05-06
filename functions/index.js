@@ -19,7 +19,9 @@ var db = admin.firestore();
 
 if (Object.keys(functions.config()).length) {
 	razorpayconfig = functions.config().razorpayservice;
+	console.log("razorpayconfig", razorpayconfig);
 	oauthservice = functions.config().oauthservice;
+	console.log("oauthservice", oauthservice);
 }
 
 let {
@@ -96,7 +98,7 @@ exports.postOrder = functions.https.onRequest((request, response) => {
 						});
 					}
 				}
-				return;
+				return paymentDetails;
 			}).catch((err) => {
 				return err;
 			});
@@ -127,7 +129,7 @@ exports.sendEmail = functions.https.onRequest((request, response) => {
 		redirecturi
 	);
 	oAuth2Client.setCredentials({
-		refreshtoken: refreshtoken
+		refresh_token: refreshtoken
 	});
 	return cors(request, response, () => {
 		var to = request.body.mailTo;
