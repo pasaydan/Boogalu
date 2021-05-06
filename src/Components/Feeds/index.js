@@ -142,6 +142,15 @@ function Feeds() {
                                 feed.following = false;
                             }
                         }
+                        if (user.followRequestedBy && user.followRequestedBy.length > 0) {
+                            const checkIfUserRequestedToFollowVideoCreator = user.followRequestedBy.filter( (followRequestedByUserId) => followRequestedByUserId === loggedInUser.key);
+                            console.log("checkIfUserRequestedToFollowVideoCreator", checkIfUserRequestedToFollowVideoCreator);
+                            if (checkIfUserRequestedToFollowVideoCreator && checkIfUserRequestedToFollowVideoCreator.length > 0) {
+                                feed.followRequested = true;
+                            } else {
+                                feed.followRequested = false;
+                            }
+                        }
                     }
                     if (feed.likes && feed.likes.length) {
                         let isAvail = feed.likes.filter(data => data.userId == loggedInUser.key)

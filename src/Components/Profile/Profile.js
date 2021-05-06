@@ -154,7 +154,7 @@ function Profile() {
             const loggedInUserName = loggedInUser.email.split("@")[0];
             if (history.location && history.location.pathname) {
                 const userNameFromPath = history.location.pathname.split("/profile/")[1];
-                if (loggedInUserName !== userNameFromPath) {
+                if (userNameFromPath && loggedInUserName !== userNameFromPath) {
                     const emailFromPath = window.atob(userNameFromPath);
                     // const createEmailFromUserName
                 }

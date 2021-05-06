@@ -20,7 +20,9 @@ import { LinkedCamera } from '@material-ui/icons';
 function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedInUser, followToggle, BtnText }) {
 
     const history = useHistory();
-    const [followButtonText, setFollowButtonText] = useState('Follow');
+    const followMessage = "You need to follow the user to view their Profile";
+    const [followButtonText, setFollowButtonText] = useState(BtnText);
+    const [messageForUser, setMessageForUser] = useState(followMessage);
     const [openDetailsModal, setOpenDetailsModal] = useState(true);
     const [commentText, setCommentText] = useState('');
     const [userDetails, setUserDetails] = useState();
@@ -46,8 +48,15 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedIn
     }
 
     useEffect(() => {
+        if (loggedInUser.key === videoObj.userId) {
+            setPrivacyToggle(true);
+        }
         if ((privacy === ('Public' || 'public') || videoObj.following) && loggedInUser.key !== videoObj.userId) {
             setPrivacyToggle(true);
+        }
+        if (videoObj.followRequested) {
+            setFollowButtonText('Requested');
+            setMessageForUser(`We have notified ${videoObj.username}, let them accept your Follow Request`);
         }
     }, [])
 
@@ -78,7 +87,7 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedIn
                                     <div className="username">
                                         <ProfileImage src={videoObj.profileImage} />
                                         <span><Link onClick={(e) => redirectToProfile(`/profile/${videoObj.key}`)}>{videoObj.username}</Link></span>
-                                        {loggedInUser && loggedInUser.key !== videoObj.userId && <Link onClick={(event) => handleFollowBtnClick(event, videoObj.userId, loggedInUser.key)} className="followBtn" data-action={BtnText}>{BtnText}</Link>}
+                                        {loggedInUser && loggedInUser.key !== videoObj.userId && <Link onClick={(event) => handleFollowBtnClick(event, videoObj.userId, loggedInUser.key)} className="followBtn" data-action={followButtonText}>{followButtonText}</Link>}
                                     </div>
                                     <div>
                                         <Vedio vdoObj={videoObj} />
@@ -117,9 +126,9 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedIn
                                     <div className="username">
                                         <ProfileImage src={videoObj.profileImage} />
                                         <span>{videoObj.username}</span>
-                                        {loggedInUser && loggedInUser.key !== videoObj.userId && <Link onClick={(event) => handleFollowBtnClick(event, videoObj.userId, loggedInUser.key)} className="followBtn" data-action={BtnText}>{BtnText}</Link>}
+                                        {loggedInUser && loggedInUser.key !== videoObj.userId && <Link onClick={(event) => handleFollowBtnClick(event, videoObj.userId, loggedInUser.key)} className="followBtn" data-action={followButtonText}>{followButtonText}</Link>}
                                     </div>
-                                    <p>You need to follow the user to view their Profile</p>
+                                    <p>{messageForUser}</p>
                                 </div>
                             </div>
                         }
