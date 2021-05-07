@@ -36,6 +36,20 @@
             transform: translateX(-50%);
         }
     }
+    .subs-details-wrap {
+        .planValue {
+            font-weight: 600;
+            &.startup {
+                color: var(--footer-background-grey);
+            }
+            &.pro {
+                color: var(--mui-button-hover);
+            }
+            &.premium {
+                color: var(--dark-pink-bg);
+            }
+        }
+    }
 }
 
 @media screen and (max-width: 767px) {

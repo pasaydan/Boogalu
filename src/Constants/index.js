@@ -43,4 +43,32 @@ export const NOTIFICATION_WARNING = 'NOTIFICATION_WARNING'
 export const ADMIN_USER = 'b2b@boxpuppet.com';
 export const ADMIN_PWD = 'Box-puppet@1001';
 
+// Subscription Plans Mapping
+export const SUBSCIPTION_PLANS_MAP = {
+    startup: {
+        modalMessage: 'get a chance to participate in active compeitions and take paid lessons.',
+        className: 'startup',
+        features: {
+            lessons: ['paid'],
+            competition: true
+        }
+    },
+    pro: {
+        modalMessage: 'will have access to all the features of Start-up plan and additionally you can have access to all Pro lesson videos.',
+        className: 'pro',
+        features: {
+            lessons: ['paid', 'pro'],
+            competition: true
+        }
+    },
+    premium: {
+        modalMessage: 'will have access to all the features of Start-up & pro plans, additionally you can have access to all Premium lesson videos.',
+        className: 'premium',
+        features: {
+            lessons: ['paid', 'pro', 'premium'],
+            competition: true
+        }
+    }
+}
+
 // boogalu.email.test@gmail.com / Box-puppet@1001
