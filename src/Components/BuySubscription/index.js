@@ -77,7 +77,7 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
         }
     }
 
-    const handlerFn = (response) => {
+    const handlerFn = (response, planType) => {
         console.log("response", response);
         try {
             updatePayment(response).subscribe((res) => {
@@ -87,7 +87,8 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
                 const userDetails = {
                     ...loggedInUser,
                     subscribed: true,
-                    subscribedOn: new Date()
+                    subscribedOn: new Date(),
+                    planType: planType[0]
                 };
                 updateUser(userDetails.key, userDetails).subscribe(() => {
     
@@ -98,7 +99,7 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
                 // toggleButtonLoading('');
             });
         } catch (e) {
-            console.log('Payment update error: ', e);
+            console.log('Error: ', e);
         }
     }
 
@@ -109,14 +110,20 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
             "currency": "INR",
             "receipt": loggedInUser.key
         };
-        let subscriptionData = {};
-        postOrder(userData, loggedInUser, handlerFn)
-            .subscribe((response) => {
-                const responseData = response.data;
-                setSubscription(responseData);
-                console.log('postOrder response >>>>>', response);
-                toggleButtonLoading('');
-            });
+
+        let orderObj = {};
+        orderObj[subscriptionDetails.planType] = userData;
+        try {
+            postOrder(orderObj, [subscriptionDetails.planType], loggedInUser, handlerFn)
+                .subscribe((response) => {
+                    const responseData = response.data;
+                    setSubscription(responseData);
+                    console.log('postOrder response >>>>>', response);
+                    toggleButtonLoading('');
+                });
+        } catch (e) {
+            console.log('Error: ', e);
+        }
     }
 
     return (

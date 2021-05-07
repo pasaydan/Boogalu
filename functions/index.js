@@ -62,6 +62,7 @@ exports.postOrder = functions.https.onRequest((request, response) => {
 					return paymentDetails;
 				} else {
 					if (paymentDetails) {
+						console.log("if paymentDetails available ", data);
 						instance.orders.create(data, function (err, order) {
 							if (err) {
 								response.send(err)
@@ -111,10 +112,12 @@ exports.updatePayment = functions.https.onRequest((request, response) => {
 	return cors(request, response, () => {
 		// console.log('inside updatePayment', request)
 		var options = request.body;
+		const identifier = Object.keys(options)[0];
+		const data = options[identifier];
 		console.log('updatePayment options', options)
 		const paymentRef = db.collection('payments');
 		paymentRef
-			.doc(options.receipt)
+			.doc(options[identifier].receipt)
 			.set(options);
 		response.send(options);
 		return
