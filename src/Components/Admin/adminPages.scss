@@ -590,6 +590,9 @@
                 transform: translate(-50%, -50%);
                 color: var(--footer-text-grey);
                 opacity: 0.6;
+                svg {
+                    font-size: 40px;
+                }
             }
             &.button-container {
                 margin-right: 0;
@@ -682,6 +685,9 @@
                     transition: all 0.3s ease-in-out;
                     &:hover {
                         color: var(--ternary-dark-grey);
+                    }
+                    svg {
+                        font-size: 18px;
                     }
                 }
             }
@@ -819,6 +825,9 @@
                     transition: all 0.3s ease-in-out;
                     &:hover {
                         color: var(--red-text-color);
+                    }
+                    svg {
+                        font-size: 22px;
                     }
                 }
                 video {
