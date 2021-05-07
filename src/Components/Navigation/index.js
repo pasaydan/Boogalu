@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FaHome, FaBookReader, FaCloudUploadAlt, FaTrophy, FaStaylinked, FaUserAlt } from 'react-icons/fa';
+import { FaHome, FaBookReader, FaCloudUploadAlt, FaTrophy, FaUserAlt, FaRupeeSign } from 'react-icons/fa';
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
@@ -686,12 +686,12 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                                         <span>Competition</span>
                                     </a>
                                 </li>
-                                {/* <li>
-                                    <a href="#Subscription" onClick={(e) => onClickNav(e, 'subscription')}>
-                                        <i><FaStaylinked /></i>
-                                        <span>Subscription</span>
+                                {!loggedInUser.username && <li>
+                                    <a href="#subscription" onClick={(e) => onClickNav(e, 'subscription')} className={activeRoute === 'subscription' ? 'active' : ''}>
+                                        <i><FaRupeeSign /></i>
+                                        <span>Pricing</span>
                                     </a>
-                                </li> */}
+                                </li>}
                             </ul>
                         </div>
                         : ''
