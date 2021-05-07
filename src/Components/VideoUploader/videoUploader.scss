@@ -116,11 +116,18 @@
                 transform: translate(-50%, -50%);
                 color: var(--footer-text-grey);
                 opacity: 0.6;
+                svg {
+                    font-size: 40px;
+                }
             }
         }
         .upload-btn-file {
             width: 142px;
             margin: 10px auto;
+            font-size: 12px;
+            .MuiButton-label {
+                font-size: 12px;
+            }
         }
     }
 }

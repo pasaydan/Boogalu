@@ -68,24 +68,28 @@
 
 @media screen and (max-width: 700px) {
     .carouselWrap {
+        padding: 0;
         .carousel {
             .slide,
             .slider,
             .slider-wrapper,
             &.carousel-slider {
-                max-height: 250px;
-                min-height: 250px;
+                max-height: 300px;
+                min-height: 300px;
+                border-radius: 0;
             }
             .slide {
                 .legend {
                     opacity: 0.8;
                 }
                 .imageContentWrap {
-                    max-height: 250px;
-                    min-height: 250px;
+                    max-height: 300px;
+                    min-height: 300px;
+                    border-radius: 0;
                     img {
-                        max-height: 250px;
-                        min-height: 250px;
+                        max-height: 300px;
+                        min-height: 300px;
+                        border-radius: 0;
                     }    
                 }
             }
@@ -93,29 +97,29 @@
     }
 }
 
-@media screen and (max-width: 480px) {
-    .carouselWrap {
-        .carousel {
-            .slide,
-            .slider,
-            .slider-wrapper,
-            &.carousel-slider {
-                max-height: 170px;
-                min-height: 170px;
-            }
-            .slide {
-                .legend {
-                    opacity: 0.8;
-                }
-                .imageContentWrap {
-                    max-height: 170px;
-                    min-height: 170px;
-                    img {
-                        max-height: 170px;
-                        min-height: 170px;
-                    }    
-                }
-            }
-        }
-    }
-}
+// @media screen and (max-width: 480px) {
+//     .carouselWrap {
+//         .carousel {
+//             .slide,
+//             .slider,
+//             .slider-wrapper,
+//             &.carousel-slider {
+//                 max-height: 170px;
+//                 min-height: 170px;
+//             }
+//             .slide {
+//                 .legend {
+//                     opacity: 0.8;
+//                 }
+//                 .imageContentWrap {
+//                     max-height: 170px;
+//                     min-height: 170px;
+//                     img {
+//                         max-height: 170px;
+//                         min-height: 170px;
+//                     }    
+//                 }
+//             }
+//         }
+//     }
+// }

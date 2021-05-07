@@ -45,7 +45,7 @@
   font-family: 'Varela Round';
   font-size: 14px;
   line-height: 20px;
-  letter-spacing: 1.2px;
+  letter-spacing: 1.1px;
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -275,6 +275,7 @@ button:focus {
   text-transform: uppercase;
   font-weight: 600;
   position: relative;
+  font-size: 12px;
   filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
   &:before, &:after {
     position: absolute;
