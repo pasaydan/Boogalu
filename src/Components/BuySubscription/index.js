@@ -76,7 +76,7 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
         }
     }
 
-    const handlerFn = (response) => {
+    const handlerFn = (response, planType) => {
         console.log("response", response);
         updatePayment(response).subscribe((res) => {
             const responseData = res.data;
@@ -85,7 +85,8 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
             const userDetails = {
                 ...loggedInUser,
                 subscribed: true,
-                subscribedOn: new Date()
+                subscribedOn: new Date(),
+                planType: planType[0]
             };
             updateUser(userDetails.key, userDetails).subscribe(() => {
 
@@ -105,7 +106,9 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
             "receipt": loggedInUser.key
         };
         let subscriptionData = {};
-        postOrder(userData, loggedInUser, handlerFn)
+        let orderObj = {};
+        orderObj[subscriptionDetails.planType] = userData;
+        postOrder(orderObj, [subscriptionDetails.planType], loggedInUser, handlerFn)
             .subscribe((response) => {
                 const responseData = response.data;
                 setSubscription(responseData);

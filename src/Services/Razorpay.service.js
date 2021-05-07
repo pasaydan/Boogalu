@@ -12,7 +12,7 @@ header.append('Access-Control-Allow-Origin', '*');
 header.append('Content-Type', 'application/json');
 header.append('mode', 'cors');
 
-export function postOrder(data, loggedInUser, handlerFn) {
+export function postOrder(data, planType, loggedInUser, handlerFn) {
     const ORDERS_POST_API_URL = RAZORPAY_ORDERS_API_URL;
     return new Observable((observer) => {
         axios.post
@@ -21,22 +21,24 @@ export function postOrder(data, loggedInUser, handlerFn) {
                 data
             ).then((response) => {
                 const responseData = response.data;
+                const selectedPlanData = responseData[planType];
                 // setSubscription(responseData);
                 console.log('postOrder response >>>>>', response);
                 let subscriptionData = {
                     key: RAZORPAY_TEST_KEY,
-                    amount: responseData.amount,
-                    currency: responseData.currency,
+                    amount: selectedPlanData.amount,
+                    currency: selectedPlanData.currency,
                     name: loggedInUser.name,
                     description: "Monthly Subscription",
                     image: boogaluLogo,
-                    order_id: responseData.id,
+                    order_id: selectedPlanData.id,
                     handler: function (successResponse){
                         const data = {
-                            ...responseData,
+                            ...selectedPlanData,
                             ...successResponse
                         }
-                        handlerFn(data);
+                        responseData[planType] = data;
+                        handlerFn(responseData, planType);
                     },
                     prefill: {
                         name: loggedInUser.name,
