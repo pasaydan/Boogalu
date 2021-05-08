@@ -1,12 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react'
-import Video from "../Vedio/Video";
+import React, { useState, useRef, useEffect } from 'react';
 import LessonsVideoContainer from '../LessonVideoComponent';
 import Lessons from "../../Data/Dummy";
 import { useStoreConsumer } from '../../Providers/StateProvider';
-import { saveLesson, getLessonByName, getAllLessons } from "../../Services/Lessons.service";
+import { getAllLessons, getLessonByPlanType } from "../../Services/Lessons.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
-import { NOTIFICATION_ERROR, NOTIFICATION_SUCCCESS } from "../../Constants";
-import { displayNotification } from "../../Actions/Notification";
+import { getParameterByName } from '../../helpers';
 
 function Upcoming() {
 
@@ -14,9 +12,60 @@ function Upcoming() {
     const loggedInUser = state.loggedInUser;
     const [activeCategory, setActiveCategory] = useState(Lessons[0]);
     const [lessonsData, setLessonsList] = useState(null);
-    
+    const [filterEmptyMessage, setFilterEmptyMessage] = useState('');
+
+    const allFilterBtnRef = useRef();
+    const freeFilterBtnRef = useRef();
+    const paidFilterBtnRef = useRef();
+    const proFilterBtnRef = useRef();
+    const premiumFilterBtnRef = useRef();
+
     useEffect(() => {
-        getAllLessonsData();
+        const filterParam = getParameterByName('filter', window.location.href);
+        const filterBtns = document.querySelectorAll('.js-filterWrap')[0].querySelectorAll('button');
+        if (filterBtns.length) {
+            filterBtns.forEach( item => {
+                if (item.classList.contains('active')) {
+                    item.classList.remove('active');
+                }
+            });
+        }
+        if (filterParam && filterParam.length) {
+            filterLesson(null, filterParam);
+            switch (filterParam) {
+                case 'all':     if (allFilterBtnRef.current) {
+                                    allFilterBtnRef.current.classList.add('active');
+                                }
+                                break;
+
+                case 'paid':    if (paidFilterBtnRef.current) {
+                                    paidFilterBtnRef.current.classList.add('active');
+                                }
+                                break;
+
+                case 'premium': if (premiumFilterBtnRef.current) {
+                                    premiumFilterBtnRef.current.classList.add('active');
+                                }
+                                break;
+                
+                case 'free':    if (freeFilterBtnRef.current) {
+                                    freeFilterBtnRef.current.classList.add('active');
+                                }
+                                break;
+                
+                case 'pro':     if (proFilterBtnRef.current) {
+                                    proFilterBtnRef.current.classList.add('active');
+                                }
+                                break;
+                
+                default: break;
+            }
+        } else {
+            if (allFilterBtnRef.current) {
+                allFilterBtnRef.current.classList.add('active');
+            }
+            getAllLessonsData();
+        }
     }, []);
 
     const getAllLessonsData = () => {
@@ -35,9 +84,61 @@ function Upcoming() {
         }
     }
 
+    function filterLesson(event, filter) {
+        if (event) {
+            event.stopPropagation();
+        }
+        const filterBtns = document.querySelectorAll('.js-filterWrap')[0].querySelectorAll('button');
+        if (filterBtns.length) {
+            filterBtns.forEach( item => {
+                if (item.classList.contains('active')) {
+                    item.classList.remove('active');
+                }
+            });
+        }
+        if (event) {
+            event.currentTarget.classList.add('active');
+            window.history.replaceState(null, null, `?filter=${filter}`);
+        }
+        if (filter === 'all') {
+            getAllLessonsData();
+        } else {
+            try {
+                dispatch(enableLoading());
+                getLessonByPlanType(filter).subscribe(lessons => {
+                    console.log('LESSONS LISTS: ', lessons);
+                    dispatch(disableLoading());
+                    if (lessons.length) {
+                        setLessonsList(lessons);
+                    } else {
+                        setLessonsList([]);
+                        switch (filter) {
+                            case 'paid':    setFilterEmptyMessage("Sorry, there is no Paid lessons currently available. Please try another filters!");
+                                            break;
+
+                            case 'premium': setFilterEmptyMessage("Sorry, there is no Premium lessons currently available. Please try another filters!");
+                                            break;
+                            
+                            case 'free':    setFilterEmptyMessage("Sorry, there is no Free lessons currently available. Please try another filters!");
+                                            break;
+                            
+                            case 'pro':     setFilterEmptyMessage("Sorry, there is no Pro lessons currently available. Please try another filters!");
+                                            break;
+                            
+                            default: break;
+                        }
+                    }
+                });
+            } catch (e) {
+                dispatch(disableLoading());
+                console.log('Error: ', e);
+            }
+        }
+    }
+
     return (
         <div className="lessons lessons-wrap" id="upcomingLessons">
-            <div className={`inner-page ${!(lessonsData && lessonsData.length) ? 'noLessonBox' : ''}`}>
+            <div className="inner-page">
                 <h1>Learn from the Experts</h1>
                 {/* <p>
                     Lessons for all users from our expert faculty members.
@@ -52,6 +153,13 @@ function Upcoming() {
             </div>
             
             <div className="lesson-wrap">
+                <div className="filterWrap js-filterWrap">
+                    <button ref={allFilterBtnRef} className="btn primary-dark active" onClick={(e) => filterLesson(e, 'all')}>All</button>
+                    <button ref={freeFilterBtnRef} className="btn primary-dark" onClick={(e) => filterLesson(e, 'free')}>Free</button>
+                    <button ref={paidFilterBtnRef} className="btn primary-dark" onClick={(e) => filterLesson(e, 'paid')}>Paid</button>
+                    <button ref={proFilterBtnRef} className="btn primary-dark" onClick={(e) => filterLesson(e, 'pro')}>Pro</button>
+                    <button ref={premiumFilterBtnRef} className="btn primary-dark" onClick={(e) => filterLesson(e, 'premium')}>Premium</button>
+                </div>
                 <div className="lessons-vdo-wrap">
                     {lessonsData && lessonsData.length ? lessonsData.map((videoData, index) => {
                         return <LessonsVideoContainer
@@ -67,7 +175,12 @@ function Upcoming() {
                         videoId={`lessonVideo-${index + 1}`}
                         key={'lesson-'+index} />
                     }) : 
-                        ''
+                        filterEmptyMessage && filterEmptyMessage.length ?
+                            <p className="emptyLessonsFilterMessage">
+                                {filterEmptyMessage}
+                            </p>
+                        : 
+                            ''
                     }
                 </div>
             </div>

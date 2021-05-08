@@ -67,11 +67,12 @@
         span {
             display: inline-block;
             vertical-align: top;
-            padding: 2px 10px;
+            padding: 0 10px;
             border-radius: 3px;
             font-size: 10px;
             color: var(--primary-white);
             line-height: 16px;
+            height: 15px;
             text-transform: uppercase;
             letter-spacing: 1.2px;
             box-sizing: border-box;
@@ -93,6 +94,16 @@
             &.danceStyle {
                 background-color: var(--warning-yellow-opaque);
             }
+        }
+    }
+
+    .videoTags {
+        justify-content: center;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0 56px;
+        span {
+            margin-bottom: 5px;
         }
     }
 
@@ -162,7 +173,7 @@
         box-sizing: border-box;
         border-radius: 0 0 5px 5px;
         transition: all 0.8s ease-in-out;
-        background: linear-gradient(to top, var(--box-dark-bg) 30%, transparent);
+        background: linear-gradient(to top, var(--box-dark-bg) 45%, transparent);
         cursor: pointer;
         h4 {
             font-size: 14px;

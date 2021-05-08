@@ -10,6 +10,7 @@ import { loginUser } from "../../Actions/User";
 import { SUBSCRIPTION_ACTIVE_STATUS, ADMIN_EMAIL_STAGING } from "../../Constants";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { sendEmail } from "../../Services/Email.service";
+import { isObjectEmpty } from '../../helpers';
 
 function Subscriptions() {
     const { state, dispatch } = useStoreConsumer();
@@ -121,28 +122,51 @@ function Subscriptions() {
     }, [state.loggedInUser])
 
     const setSubscription = (subscription) => {
-        dispatch(setActiveSubscription(subscription));
-        setActiveStep(activeStepCount);
-        if (loggedInUser.name && loggedInUser.phone && loggedInUser.username) {
-            setShowSubscriptionDetails(true);
+        if (!isObjectEmpty(loggedInUser)) {
+            if (isValidSubscriptionBox(subscription)) {
+                dispatch(setActiveSubscription(subscription));
+                setActiveStep(activeStepCount);
+                setShowSubscriptionDetails(true);
+            } else {
+                setAlreadySubscribed(false);
+                dispatch(setActiveSubscription(subscription));
+                setActiveStep(1);
+                setShowSubscriptionDetails(true);
+            }
         } else {
             dispatch(enableLoginFlow('subscription'));
             history.push({
                 pathname: '/login',
                 state: null
-            })
+            });
         }
     }
 
 
     const fnCallbackFromBuySubscription = (userDetails) => {
-        // console.log("fnCallbackFromBuySubscription", userDetails);
         if (userDetails.subscribed) {
             setActiveStep(2);
             setAlreadySubscribed(true);
             sendEmailToAdmin();
             sendEmailToUser();
         }
+    }
+
+    function isValidSubscriptionBox(value) {
+        let isSubscribed = false;
+        if (!isObjectEmpty(loggedInUser)) {
+            if (loggedInUser.planType === 'premium') {
+                isSubscribed = true;
+            } else if (loggedInUser.planType === 'pro' && (value.planType === 'pro' || value.planType === 'startup')) {
+                isSubscribed = true;
+            } else if (loggedInUser.planType === 'startup' && value.planType === 'startup') {
+                isSubscribed = true;
+            } else {
+                isSubscribed = false;
+            }
+        }
+
+        return isSubscribed;
     }
 
     return (
@@ -155,7 +179,7 @@ function Subscriptions() {
                     </div>
                     <div className="inner-plans-wrap">
                         {AvailableSubscriptions && AvailableSubscriptions.map((subscription) => {
-                            return <div className={`flex-2 plan ${subscription.planType} ${alreadySubscribed ? 'alreadySubscribed' : ''}`} onClick={() => setSubscription(subscription)} key={subscription.key}>
+                            return <div className={`flex-2 plan ${subscription.planType} ${isValidSubscriptionBox(subscription) ? 'alreadySubscribed' : ''}`} onClick={() => setSubscription(subscription)} key={subscription.key}>
                                 <div className="plan_tag">{subscription.name}</div>
                                 <div className="plan_price">@{subscription.amount}<span>{subscription.plans}</span></div>
                                 <div className="featuresBox">
@@ -186,10 +210,13 @@ function Subscriptions() {
                                     <p className="expireWrap">
                                         Offer valid till <strong>{subscription.endingDate}</strong>
                                     </p>
-                                    : ''
+                                    : 
+                                    <p className="expireWrap">
+                                        Subscription valid till <strong>{subscription.endingDate}</strong>
+                                    </p>
                                 }
-                                <div className={`btn primary-light ${alreadySubscribed ? 'subscribed' : ''}`}>
-                                    {alreadySubscribed ? 
+                                <div className={`btn primary-light ${isValidSubscriptionBox(subscription) ? 'subscribed' : ''}`}>
+                                    {isValidSubscriptionBox(subscription) ? 
                                         'Already subscribed'
                                         : 'Buy subscription'
                                     }
@@ -199,7 +226,12 @@ function Subscriptions() {
                     </div>
                 </div>
             </div>
-            {showSubscriptionDetails && <BuySubscription handleClose={() => setShowSubscriptionDetails(false)} activeStep={activeStep} alreadySubscribed={alreadySubscribed} fnCallback={fnCallbackFromBuySubscription}/>}
+            {showSubscriptionDetails && <BuySubscription 
+                handleClose={() => setShowSubscriptionDetails(false)} 
+                activeStep={activeStep} 
+                alreadySubscribed={alreadySubscribed} 
+                fnCallback={fnCallbackFromBuySubscription}/>
+            }
         </div>
     )
 }

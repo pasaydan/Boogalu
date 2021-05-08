@@ -50,6 +50,20 @@ export function getLessonByName(name) {
     })
 }
 
+export function getLessonByPlanType(filter) {
+    return new Observable((observer) => {
+        lessonsVideosRef.where('accessbility', '==', filter.toLowerCase()).get().then((querySnapshot) => {
+            let lessons = [];
+            querySnapshot.forEach(function (doc) {
+                let data = doc.data();
+                data.key = doc.id;
+                lessons.push(data);
+            })
+            observer.next(lessons);
+        })
+    })
+}
+
 export function getAllLessons() {
     return new Observable((observer) => {
         lessonsVideosRef.onSnapshot((querySnapshot) => {
