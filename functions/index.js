@@ -92,12 +92,9 @@ exports.postOrder = functions.https.onRequest((request, response) => {
 								const paymentRef = db.collection('payments');
 								let newOrderdata = {}
 								newOrderdata[identifier] = order;
-								// let mergedData = {...paymentDetails, ...newOrderdata};
-								console.log("newOrderdata[identifier] ", newOrderdata[identifier]);
-								console.log("newOrderdata[identifier] receipt", newOrderdata[identifier].receipt);
 								paymentRef
 									.doc(newOrderdata[identifier].receipt.toString())
-									.set(newOrderdata[identifier]);
+									.set(newOrderdata);
 								response.send(newOrderdata)
 								return newOrderdata;
 							}
