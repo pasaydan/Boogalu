@@ -17,12 +17,12 @@ const Razorpay = require('razorpay');
 admin.initializeApp(functions.config().firebase);
 var db = admin.firestore();
 
-if (Object.keys(functions.config()).length) {
-	razorpayconfig = functions.config().razorpayservice;
-	console.log("razorpayconfig", razorpayconfig);
-	oauthservice = functions.config().oauthservice;
-	console.log("oauthservice", oauthservice);
-}
+// if (Object.keys(functions.config()).length) {
+// 	razorpayconfig = functions.config().razorpayservice;
+// 	console.log("razorpayconfig", razorpayconfig);
+// 	oauthservice = functions.config().oauthservice;
+// 	console.log("oauthservice", oauthservice);
+// }
 
 let {
 	clientsecret,
@@ -90,11 +90,22 @@ exports.postOrder = functions.https.onRequest((request, response) => {
 								return err;
 							} else {							
 								const paymentRef = db.collection('payments');
+								let newOrderdata = {}
+								newOrderdata[identifier] = order;
+								// let mergedData = {...paymentDetails, ...newOrderdata};
+								console.log("newOrderdata ", newOrderdata);
+								console.log("newOrderdata receipt", newOrderdata.receipt);
 								paymentRef
-									.doc(order.receipt)
-									.set({[identifier]: order});
-								response.send(order)
-								return order;
+									.doc(newOrderdata.receipt.toString())
+									.set({[identifier]: newOrderdata});
+								// paymentRef.add(newOrderdata).then((doc) => {
+								// 	const data = doc.data();
+								// 	response.send(data)
+								// 	return data;
+								// }).catch((err) => {
+								// 	response.send(err)
+								// 	return err;
+								// });
 							}
 						});
 					}
