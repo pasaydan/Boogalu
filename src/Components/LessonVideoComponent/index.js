@@ -265,7 +265,14 @@ function LessonsVideoContainer({
 
     function shareLessonDetails(event) {
         event.stopPropagation();
-        console.log('Function will share the lesson');
+        if (navigator.share) { 
+            navigator.share({
+               title: 'Learn from the Experts',
+               url: `${window.location.origin}/lessons`
+            }).then(() => {
+               console.log('Thanks for sharing!');
+            }).catch(console.error);
+        }
     }
 
     function redirectToLogin(event) {
