@@ -6,7 +6,7 @@ nav {
     color: var(--primary-white);
     &.home-nav-style {
         box-shadow: none;
-        background-color: transparent;
+        background-color: var(--default-dark-blue-bg);
         background-image: none;
     }
     transition: all 0.5s ease-in-out;

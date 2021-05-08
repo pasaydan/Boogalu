@@ -29,6 +29,7 @@
   --error-red-opaque: rgba(251, 32, 32, 0.95);
   --white-opaque-bg: rgba(255, 255, 255, 0.8);
   --info-blue-dark: #06465f;
+  --default-dark-blue-bg: #2C5364;
   --info-blue-opaque: rgb(0, 184, 255, 0.8);
   --warning-yellow-dark: #634a05;
   --warning-yellow-opaque: rgba(255, 188, 0, 0.95);
@@ -325,8 +326,8 @@ button:focus {
   }
   &:before {
     display: inline-block;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);

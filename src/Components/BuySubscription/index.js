@@ -9,6 +9,8 @@ import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { postOrder, updatePayment } from "./../../Services/Razorpay.service";
 import { updateUser } from "../../Services/User.service";
 import { loginUser } from '../../Actions/User/index';
+import { SUBSCIPTION_PLANS_MAP } from '../../Constants';
+import { FaRupeeSign } from 'react-icons/fa';
 
 // modal imports
 import Modal from '@material-ui/core/Modal';
@@ -75,27 +77,35 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
             history.push('/competitions');
         }
     }
+    
+    const proceedForLessons = () => {
+        history.push('/lessons');
+    }
 
     const handlerFn = (response, planType) => {
         console.log("response", response);
-        updatePayment(response).subscribe((res) => {
-            const responseData = res.data;
-            // setSubscription(responseData);
-            console.log('postOrder response >>>>>', response);
-            const userDetails = {
-                ...loggedInUser,
-                subscribed: true,
-                subscribedOn: new Date(),
-                planType: planType[0]
-            };
-            updateUser(userDetails.key, userDetails).subscribe(() => {
-
-                dispatch(loginUser(userDetails));
-                console.log('updateUser userDetails>>>>>> ', userDetails);
-                fnCallback(userDetails)
-            })
-            // toggleButtonLoading('');
-        });
+        try {
+            updatePayment(response).subscribe((res) => {
+                const responseData = res.data;
+                // setSubscription(responseData);
+                console.log('postOrder response >>>>>', response);
+                const userDetails = {
+                    ...loggedInUser,
+                    subscribed: true,
+                    subscribedOn: new Date(),
+                    planType: planType[0]
+                };
+                updateUser(userDetails.key, userDetails).subscribe(() => {
+    
+                    dispatch(loginUser(userDetails));
+                    console.log('updateUser userDetails>>>>>> ', userDetails);
+                    fnCallback(userDetails)
+                })
+                // toggleButtonLoading('');
+            });
+        } catch (e) {
+            console.log('Error: ', e);
+        }
     }
 
     const proceedForPayment = () => {
@@ -105,16 +115,20 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
             "currency": "INR",
             "receipt": loggedInUser.key
         };
-        let subscriptionData = {};
+
         let orderObj = {};
         orderObj[subscriptionDetails.planType] = userData;
-        postOrder(orderObj, [subscriptionDetails.planType], loggedInUser, handlerFn)
-            .subscribe((response) => {
-                const responseData = response.data;
-                setSubscription(responseData);
-                console.log('postOrder response >>>>>', response);
-                toggleButtonLoading('');
-            });
+        try {
+            postOrder(orderObj, [subscriptionDetails.planType], loggedInUser, handlerFn)
+                .subscribe((response) => {
+                    const responseData = response.data;
+                    setSubscription(responseData);
+                    console.log('postOrder response >>>>>', response);
+                    toggleButtonLoading('');
+                });
+        } catch (e) {
+            console.log('Error: ', e);
+        }
     }
 
     return (
@@ -142,9 +156,9 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
                             <div className="subs-details-wrap">
                                 <p>
                                     Welcome, we are glad to see you. Now, you can subscribe to our application, and
-                                    get a chance to participate in any competition for one month.
+                                    &npbsp;{SUBSCIPTION_PLANS_MAP[subscriptionDetails.planType].modalMessage}
                                 </p>
-                                <p> Just {subscriptionDetails.amount}/{subscriptionDetails.plans}</p>
+                                <p className={`planValue ${subscriptionDetails.planType}`}> Just <i className="rupeeSign"><FaRupeeSign /></i>{subscriptionDetails.amount} {subscriptionDetails.plans}</p>
                                 {/* <div>{subscriptionDetails.name}</div> */}
                                 {/* <div>{subscriptionDetails.desc}</div> */}
                                 {/* <div>{subscriptionDetails.amount} / {subscriptionDetails.plans}</div> */}
@@ -158,7 +172,10 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
                         </div>}
                         {activeStep == 2 && <div>
                             <p className="subscriptionMessage success">Subscription Payment Recieved Successfully</p>
-                            <Button variant="contained" color="secondary" onClick={(e) => proceedForCompetition()}>Continue to competition</Button>
+                            <div className="actionWrap">
+                                <Button variant="contained" color="secondary" onClick={(e) => proceedForLessons()}>Continue to Lessons</Button>
+                                <Button variant="contained" color="secondary" onClick={(e) => proceedForCompetition()}>Continue to competition</Button>
+                            </div>
                         </div>}
                         {activeStep == 3 && <div>
                             <p className="subscriptionMessage failed">Subscription Payment Fail</p>

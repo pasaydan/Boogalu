@@ -16,9 +16,27 @@
             right: 5px;
         }
         h3 {
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 16px;
             text-align: center;
             margin: 0 0 20px 0;
+        }
+        .actionWrap {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            button {
+                margin-left: 20px;
+                left: auto;
+                transform: unset;
+                span {
+                    font-size: 12px;
+                }
+                &:first-child {
+                    margin-left: 0;
+                }
+            }   
         }
         .subscriptionMessage {
             text-align: center;
@@ -34,6 +52,30 @@
         .MuiButton-containedSecondary {
             left: 50%;
             transform: translateX(-50%);
+        }
+    }
+    .subs-details-wrap {
+        .planValue {
+            font-weight: 600;
+            .rupeeSign {
+                display: inline-block;
+                vertical-align: top;
+                svg {
+                    font-size: 12px;
+                    line-height: 18px;
+                    display: block;
+                    margin-top: 3px;
+                }
+            }
+            &.startup {
+                color: var(--footer-background-grey);
+            }
+            &.pro {
+                color: var(--mui-button-hover);
+            }
+            &.premium {
+                color: var(--dark-pink-bg);
+            }
         }
     }
 }
