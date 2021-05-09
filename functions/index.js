@@ -17,12 +17,12 @@ const Razorpay = require('razorpay');
 admin.initializeApp(functions.config().firebase);
 var db = admin.firestore();
 
-if (Object.keys(functions.config()).length) {
-	razorpayconfig = functions.config().razorpayservice;
-	console.log("razorpayconfig", razorpayconfig);
-	oauthservice = functions.config().oauthservice;
-	console.log("oauthservice", oauthservice);
-}
+// if (Object.keys(functions.config()).length) {
+// 	razorpayconfig = functions.config().razorpayservice;
+// 	console.log("razorpayconfig", razorpayconfig);
+// 	oauthservice = functions.config().oauthservice;
+// 	console.log("oauthservice", oauthservice);
+// }
 
 let {
 	clientsecret,
@@ -90,11 +90,13 @@ exports.postOrder = functions.https.onRequest((request, response) => {
 								return err;
 							} else {							
 								const paymentRef = db.collection('payments');
+								let newOrderdata = {}
+								newOrderdata[identifier] = order;
 								paymentRef
-									.doc(order.receipt)
-									.set({[identifier]: order});
-								response.send(order)
-								return order;
+									.doc(newOrderdata[identifier].receipt.toString())
+									.set(newOrderdata);
+								response.send(newOrderdata)
+								return newOrderdata;
 							}
 						});
 					}
