@@ -285,11 +285,7 @@ function LessonsVideoContainer({
         if (!isVideoOverlayActive) {
             const previewVideoItem = event.currentTarget.querySelectorAll('.js-previewVideo')[0];
             if (action && action === 'play') {
-                previewVideoItem.currentTime = 15;
                 previewVideoItem.play();
-                setTimeout(() => {
-                    previewVideoItem.pause();
-                }, 10000);
             } else {
                 previewVideoItem.currentTime = 0;
                 previewVideoItem.pause();
@@ -312,7 +308,7 @@ function LessonsVideoContainer({
                 !isVideoOverlayActive ?
                 <div className="previewVideoWrap">
                     <video muted className="js-previewVideo" onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}>
-                        <source src={activeVideosList?.frontView} type="video/mp4" />
+                        <source src={activeVideosList?.preview} type="video/mp4" />
                     </video>
                 </div>
                  : ''
