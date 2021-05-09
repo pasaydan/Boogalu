@@ -329,7 +329,7 @@ function LessonsVideoContainer({
             {
                 isPaid === 'paid' ?
                 <span className="diagonalStrip paid">
-                    <span>Paid</span>
+                    <span>Startup</span>
                 </span>
                 : ''
             }

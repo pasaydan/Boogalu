@@ -668,12 +668,6 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                                         <span>Home</span>
                                     </a>
                                 </li>
-                                {loggedInUser.username && <li>
-                                    <a href="#profile" onClick={(e) => onClickNav(e, 'profile')} className={activeRoute === 'profile' ? 'active' : ''}>
-                                        <i><FaUserAlt /></i>
-                                        <span>Profile</span>
-                                    </a>
-                                </li>}
                                 <li>
                                     <a href="#Lessons" onClick={(e) => onClickNav(e, 'lessons')} className={activeRoute === 'lessons' ? 'active' : ''}>
                                         <i><FaBookReader /></i>
@@ -686,6 +680,12 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                                         <span>Competition</span>
                                     </a>
                                 </li>
+                                {loggedInUser.username && <li>
+                                    <a href="#profile" onClick={(e) => onClickNav(e, 'profile')} className={activeRoute === 'profile' ? 'active' : ''}>
+                                        <i><FaUserAlt /></i>
+                                        <span>Profile</span>
+                                    </a>
+                                </li>}
                                 {!loggedInUser.username && <li>
                                     <a href="#subscription" onClick={(e) => onClickNav(e, 'subscription')} className={activeRoute === 'subscription' ? 'active' : ''}>
                                         <i><FaRupeeSign /></i>

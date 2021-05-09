@@ -13,6 +13,8 @@ function Upcoming() {
     const [activeCategory, setActiveCategory] = useState(Lessons[0]);
     const [lessonsData, setLessonsList] = useState(null);
     const [filterEmptyMessage, setFilterEmptyMessage] = useState('');
+    const [lessonsSubHeading, setLessonSubHeading] = useState('');
+    const [isDataPresentAndFilterApplied, toggleFilterOptionVisiblity] = useState(false);
 
     const allFilterBtnRef = useRef();
     const freeFilterBtnRef = useRef();
@@ -21,45 +23,10 @@ function Upcoming() {
     const premiumFilterBtnRef = useRef();
 
     useEffect(() => {
-        const filterParam = getParameterByName('filter', window.location.href);
-        const filterBtns = document.querySelectorAll('.js-filterWrap')[0].querySelectorAll('button');
-        if (filterBtns.length) {
-            filterBtns.forEach( item => {
-                if (item.classList.contains('active')) {
-                    item.classList.remove('active');
-                }
-            });
-        }
+        let filterParam = getParameterByName('filter', window.location.href);
         if (filterParam && filterParam.length) {
+            filterParam = filterParam.toLocaleLowerCase();
             filterLesson(null, filterParam);
-            switch (filterParam) {
-                case 'all':     if (allFilterBtnRef.current) {
-                                    allFilterBtnRef.current.classList.add('active');
-                                }
-                                break;
-
-                case 'paid':    if (paidFilterBtnRef.current) {
-                                    paidFilterBtnRef.current.classList.add('active');
-                                }
-                                break;
-
-                case 'premium': if (premiumFilterBtnRef.current) {
-                                    premiumFilterBtnRef.current.classList.add('active');
-                                }
-                                break;
-                
-                case 'free':    if (freeFilterBtnRef.current) {
-                                    freeFilterBtnRef.current.classList.add('active');
-                                }
-                                break;
-                
-                case 'pro':     if (proFilterBtnRef.current) {
-                                    proFilterBtnRef.current.classList.add('active');
-                                }
-                                break;
-                
-                default: break;
-            }
         } else {
             if (allFilterBtnRef.current) {
                 allFilterBtnRef.current.classList.add('active');
@@ -68,14 +35,34 @@ function Upcoming() {
         }
     }, []);
 
-    const getAllLessonsData = () => {
+    const getAllLessonsData = (from) => {
         try {
             dispatch(enableLoading());
             getAllLessons().subscribe(lessons => {
-                console.log('LESSONS LISTS: ', lessons);
                 dispatch(disableLoading());
+                toggleFilterOptionVisiblity(true);
+                const filterBtns = document.querySelectorAll('.js-filterWrap')[0].querySelectorAll('button');
+                if (filterBtns.length) {
+                    filterBtns.forEach( item => {
+                        if (item.classList.contains('active')) {
+                            item.classList.remove('active');
+                        }
+                    });
+                }
+                if (allFilterBtnRef.current) {
+                    allFilterBtnRef.current.classList.add('active');
+                }
+                
+                if (from && from === 'filters') {
+                    window.history.replaceState(null, null, `?filter=all`);   
+                }
+
                 if (lessons.length) {
+                    toggleFilterOptionVisiblity(true);
                     setLessonsList(lessons);
+                    setLessonSubHeading('Learn from the experts and many dance forms!');
+                } else {
+                    setLessonSubHeading('Lessons video launching soon, stay connected!');
                 }
             });
         } catch (e) {
@@ -88,32 +75,61 @@ function Upcoming() {
         if (event) {
             event.stopPropagation();
         }
-        const filterBtns = document.querySelectorAll('.js-filterWrap')[0].querySelectorAll('button');
-        if (filterBtns.length) {
-            filterBtns.forEach( item => {
-                if (item.classList.contains('active')) {
-                    item.classList.remove('active');
-                }
-            });
-        }
-        if (event) {
-            event.currentTarget.classList.add('active');
-            window.history.replaceState(null, null, `?filter=${filter}`);
-        }
         if (filter === 'all') {
-            getAllLessonsData();
+            getAllLessonsData('filters');
         } else {
             try {
                 dispatch(enableLoading());
-                getLessonByPlanType(filter).subscribe(lessons => {
-                    console.log('LESSONS LISTS: ', lessons);
+                getLessonByPlanType(filter === 'startup' ? 'paid' : filter).subscribe(lessons => {
                     dispatch(disableLoading());
+                    toggleFilterOptionVisiblity(true);
+                    const filterBtns = document.querySelectorAll('.js-filterWrap')[0].querySelectorAll('button');
+                    if (filterBtns.length) {
+                        filterBtns.forEach( item => {
+                            if (item.classList.contains('active')) {
+                                item.classList.remove('active');
+                            }
+                        });
+                    }
+                    if (event) {
+                        event.target.classList.add('active');
+                        window.history.replaceState(null, null, `?filter=${filter}`);
+                    } else {
+                        switch (filter) {
+                            case 'all':     if (allFilterBtnRef.current) {
+                                                allFilterBtnRef.current.classList.add('active');
+                                            }
+                                            break;
+            
+                            case 'startup': if (paidFilterBtnRef.current) {
+                                                paidFilterBtnRef.current.classList.add('active');
+                                            }
+                                            break;
+            
+                            case 'premium': if (premiumFilterBtnRef.current) {
+                                                premiumFilterBtnRef.current.classList.add('active');
+                                            }
+                                            break;
+                            
+                            case 'free':    if (freeFilterBtnRef.current) {
+                                                freeFilterBtnRef.current.classList.add('active');
+                                            }
+                                            break;
+                            
+                            case 'pro':     if (proFilterBtnRef.current) {
+                                                proFilterBtnRef.current.classList.add('active');
+                                            }
+                                            break;
+                            
+                            default: break;
+                        }
+                    }
                     if (lessons.length) {
                         setLessonsList(lessons);
                     } else {
                         setLessonsList([]);
                         switch (filter) {
-                            case 'paid':    setFilterEmptyMessage("Sorry, there is no Paid lessons currently available. Please try another filters!");
+                            case 'startup': setFilterEmptyMessage("Sorry, there is no Startup lessons currently available. Please try another filters!");
                                             break;
 
                             case 'premium': setFilterEmptyMessage("Sorry, there is no Premium lessons currently available. Please try another filters!");
@@ -148,18 +164,23 @@ function Upcoming() {
                 {
                     lessonsData && lessonsData.length ?
                     <p className="launching-soon">Our recent lessons!</p>
-                    : <p className="launching-soon">Lessons launching soon! Stay connected!</p>
+                    : <p className="launching-soon">
+                        {lessonsSubHeading}
+                    </p>
                 }
             </div>
             
             <div className="lesson-wrap">
-                <div className="filterWrap js-filterWrap">
-                    <button ref={allFilterBtnRef} className="btn primary-dark active" onClick={(e) => filterLesson(e, 'all')}>All</button>
-                    <button ref={freeFilterBtnRef} className="btn primary-dark" onClick={(e) => filterLesson(e, 'free')}>Free</button>
-                    <button ref={paidFilterBtnRef} className="btn primary-dark" onClick={(e) => filterLesson(e, 'paid')}>Paid</button>
-                    <button ref={proFilterBtnRef} className="btn primary-dark" onClick={(e) => filterLesson(e, 'pro')}>Pro</button>
-                    <button ref={premiumFilterBtnRef} className="btn primary-dark" onClick={(e) => filterLesson(e, 'premium')}>Premium</button>
-                </div>
+                {
+                    isDataPresentAndFilterApplied ?
+                    <div className="filterWrap js-filterWrap">
+                        <button ref={allFilterBtnRef} className="btn primary-dark active" onClick={(e) => filterLesson(e, 'all')}>All</button>
+                        <button ref={freeFilterBtnRef} className="btn primary-dark" onClick={(e) => filterLesson(e, 'free')}>Free</button>
+                        <button ref={paidFilterBtnRef} className="btn primary-dark" onClick={(e) => filterLesson(e, 'startup')}>Startup</button>
+                        <button ref={proFilterBtnRef} className="btn primary-dark" onClick={(e) => filterLesson(e, 'pro')}>Pro</button>
+                        <button ref={premiumFilterBtnRef} className="btn primary-dark" onClick={(e) => filterLesson(e, 'premium')}>Premium</button>
+                    </div> : ''
+                }
                 <div className="lessons-vdo-wrap">
                     {lessonsData && lessonsData.length ? lessonsData.map((videoData, index) => {
                         return <LessonsVideoContainer

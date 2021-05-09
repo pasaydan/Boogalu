@@ -315,12 +315,12 @@
     }
     .diagonalStrip {
         position: absolute;
-        width: 90px;
+        width: 92px;
         z-index: 15;
         box-sizing: border-box;
         transform: rotate(-45deg);
         top: 15px;
-        left: -20px;
+        left: -21px;
         padding: 0;
         border-bottom: 20px solid;
         border-left: 20px solid transparent;
@@ -340,8 +340,9 @@
         }
         span {
             position: absolute;
-            top: 1px;
+            top: 0;
             left: 52%;
+            font-size: 12px;
             letter-spacing: 1.2px;
             transform: translateX(-50%);
         }

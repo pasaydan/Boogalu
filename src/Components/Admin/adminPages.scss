@@ -256,7 +256,8 @@
             flex-basis: 49%;
             text-align: left;
             .infoMessage {
-                font-size: 12px;
+                font-size: 10px;
+                letter-spacing: 0;
                 color: var(--footer-text-grey);
             }
             .mandatAsterisk {
@@ -561,12 +562,13 @@
                 box-sizing: border-box;
             }
             .heading {
-                font-size: 14px;
+                font-size: 12px;
                 color:  var(--footer-text-grey);
                 margin-top: 8px;
             }
             .sub-heading {
-                font-size: 12px;
+                font-size: 10px;
+                letter-spacing: 0;
                 font-weight: normal;
                 color:  var(--footer-text-grey);
                 margin: 49px 0 0 0;
@@ -734,6 +736,9 @@
         margin: 10px auto;
         font-size: 40px;
         color: var(--secondary-bg-blue);
+        svg {
+            font-size: 40px;
+        }
     }
 }
 
@@ -1065,7 +1070,6 @@
     }
     .competition-bo-wrap .inner-form-wrap .input-wrap .infoMessage, 
     .subscription-bo-wrap .inner-form-wrap .input-wrap .infoMessage {
-        font-size: 14px;
         display: block;
         margin: 3px 0 0;
     }

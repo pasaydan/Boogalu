@@ -29,6 +29,7 @@ const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
 
 export default function UploadLessons() {
     const   uploaderRefThumbnailImage = useRef(),
+            uploaderPreview = useRef(),
             uploaderRefFrontView = useRef(),
             uploaderRefFrontMirrorView = useRef(),
             uploaderRefRearView = useRef(),
@@ -60,6 +61,7 @@ export default function UploadLessons() {
     const listTabRef = useRef(null);
     const requiredUploadFieldsForLesson = [
         "thumbnailImage",
+        "preview",
         "frontView",
         "frontMirrorView",
         "rearView",
@@ -67,6 +69,7 @@ export default function UploadLessons() {
     ];
     const initialVideosToUploadData = {
         thumbnailImage: null,
+        preview: null,
         frontView: null,
         frontMirrorView: null,
         rearView: null,
@@ -76,6 +79,7 @@ export default function UploadLessons() {
     const [videosToUpload, setVideosToUpload] = useState(initialVideosToUploadData);
     const initialVideoUploadProgress = {
         thumbnailImage: 0,
+        preview: 0,
         frontView: 0,
         frontMirrorView: 0,
         rearView: 0,
@@ -85,6 +89,7 @@ export default function UploadLessons() {
     const [videoUploadProgess, setVideoUploadProgess] = useState(initialVideoUploadProgress);
     const initialVideoProgressBarState = {
         thumbnailImage: false,
+        preview: false,
         frontView: false,
         frontMirrorView: false,
         rearView: false,
@@ -501,6 +506,19 @@ export default function UploadLessons() {
                                             <span className="infoMessage">( Maximum size of each video should be 50 MB )</span>
                                         </label>
                                         <div className="uploadContainer">
+                                            <div className={videosToUpload.preview !== null ? 'upload-input-wrap selected' : 'upload-input-wrap'}>
+                                                <h6 className="heading">Preview video(must) <sup className="mandatAsterisk">*</sup></h6>
+                                                <h6 className="sub-heading">30-40 secs only</h6>
+                                                <i className="upload-icon"><FaCloudUploadAlt /></i>
+                                                <input id="frontView"
+                                                    type="file"
+                                                    accept="video/mp4,video/x-m4v,video/*"
+                                                    value={fileUploadValue}
+                                                    ref={uploaderPreview}
+                                                    onChange={(e) => onChangeFile(e, uploaderPreview, 'preview')}
+                                                />
+                                                {showVideoProgressBar?.frontView && <LinearProgress className="uploadProgessBar" variant="determinate" value={videoUploadProgess.frontView} />}
+                                            </div>
                                             <div className={videosToUpload.frontView !== null ? 'upload-input-wrap selected' : 'upload-input-wrap'}>
                                                 <h6 className="heading">Front Side <sup className="mandatAsterisk">*</sup></h6>
                                                 <h6 className="sub-heading">Default View</h6>
@@ -575,7 +593,7 @@ export default function UploadLessons() {
                                             onChange={handleChange('accessbility')}>
                                             <FormControlLabel value="premium" control={<Radio />} label="Premium" />
                                             <FormControlLabel value="pro" control={<Radio />} label="Pro" />
-                                            <FormControlLabel value="paid" control={<Radio />} label="Paid" />
+                                            <FormControlLabel value="paid" control={<Radio />} label="Startup" />
                                             <FormControlLabel value="free" control={<Radio />} label="Free" />
                                         </RadioGroup>
                                     </div>
