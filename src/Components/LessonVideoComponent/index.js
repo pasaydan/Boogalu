@@ -307,9 +307,12 @@ function LessonsVideoContainer({
             {
                 !isVideoOverlayActive ?
                 <div className="previewVideoWrap">
-                    <video muted className="js-previewVideo" onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}>
-                        <source src={activeVideosList?.preview} type="video/mp4" />
-                    </video>
+                    {
+                        activeVideosList?.preview ?
+                        <video muted className="js-previewVideo" onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}>
+                            <source src={activeVideosList?.preview} type="video/mp4" />
+                        </video> : ''
+                    }
                 </div>
                  : ''
             }
@@ -368,10 +371,10 @@ function LessonsVideoContainer({
                     <span>
                         By: <strong>{artist}</strong>
                     </span>
-                    &nbsp; | &nbsp;
                     {
                         videoDuration ?
                         <span>
+                            &nbsp; | &nbsp;
                             <strong>{videoDuration}</strong> 
                         </span> 
                         : ''
@@ -409,27 +412,39 @@ function LessonsVideoContainer({
                             <FullscreenIcon title="Exit fullscreen" className="vdo-controlls fullScreenToggleIcon" variant="contained" type="submit" onClick={(e) => triggerFullScreen(e)} />
                         }
                     </div>
-                    <video 
-                        data-id={activeVideosList?.frontView} 
-                        className={(activeVideoState === 'front') ? 'active' : ''} 
-                        onPause={(e) => pauseVideo(e)} 
-                        onPlay={(e) => playVideo(e)} 
-                        onSeeked={(e) => onVideoSeek(e, 'front')} 
-                        poster={thumbNail} 
-                        controls
-                        onLoadedMetadata={(e) => setVideoDuration(e.target.duration)}
-                        >
-                        <source src={activeVideosList?.frontView} type="video/mp4" />
-                    </video>
-                    <video muted data-id={activeVideosList?.frontMirrorView} className={(activeVideoState === 'front-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'front-mirror')} poster={thumbNail} controls>
-                        <source src={activeVideosList?.frontMirrorView} type="video/mp4" />
-                    </video>
-                    <video muted data-id={activeVideosList?.rearView} className={(activeVideoState === 'back') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back')} poster={thumbNail} controls>
-                        <source src={activeVideosList?.rearView} type="video/mp4" />
-                    </video>
-                    <video muted data-id={activeVideosList?.rearMirrorView} className={(activeVideoState === 'back-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back-mirror')} poster={thumbNail} controls>
-                        <source src={activeVideosList?.rearMirrorView} type="video/mp4" />
-                    </video>
+                    {
+                        activeVideosList?.frontView ?
+                        <video 
+                            data-id={activeVideosList?.frontView} 
+                            className={(activeVideoState === 'front') ? 'active' : ''} 
+                            onPause={(e) => pauseVideo(e)} 
+                            onPlay={(e) => playVideo(e)} 
+                            onSeeked={(e) => onVideoSeek(e, 'front')} 
+                            poster={thumbNail} 
+                            controls
+                            onLoadedMetadata={(e) => setVideoDuration(e.target.duration)}
+                            >
+                            <source src={activeVideosList?.frontView} type="video/mp4" />
+                        </video> : ''
+                    }
+                    {
+                        activeVideosList?.frontMirrorView ?
+                        <video muted data-id={activeVideosList?.frontMirrorView} className={(activeVideoState === 'front-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'front-mirror')} poster={thumbNail} controls>
+                            <source src={activeVideosList?.frontMirrorView} type="video/mp4" />
+                        </video> : ''
+                    }
+                    {
+                        activeVideosList?.rearView ?
+                        <video muted data-id={activeVideosList?.rearView} className={(activeVideoState === 'back') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back')} poster={thumbNail} controls>
+                            <source src={activeVideosList?.rearView} type="video/mp4" />
+                        </video> : ''
+                    }
+                    {
+                        activeVideosList?.rearMirrorView ?
+                        <video muted data-id={activeVideosList?.rearMirrorView} className={(activeVideoState === 'back-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back-mirror')} poster={thumbNail} controls>
+                            <source src={activeVideosList?.rearMirrorView} type="video/mp4" />
+                        </video> : ''
+                    }
                 </div>
             </div>
         </div>

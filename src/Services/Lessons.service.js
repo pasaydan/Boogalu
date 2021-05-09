@@ -64,6 +64,23 @@ export function getLessonByPlanType(filter) {
     })
 }
 
+export function getLessonByPlanTypeOnlyPreview(filter) {
+    return new Observable((observer) => {
+        lessonsVideosRef.where('accessbility', '==', filter.toLowerCase()).get().then((querySnapshot) => {
+            let lessons = [];
+            querySnapshot.forEach(function (doc) {
+                let data = doc.data();
+                let previewKeyOnly = data.videoList.preview;
+                data.videoList = {};
+                data.videoList['preview'] = previewKeyOnly;
+                data.key = doc.id;
+                lessons.push(data);
+            })
+            observer.next(lessons);
+        })
+    })
+}
+
 export function getAllLessons() {
     return new Observable((observer) => {
         lessonsVideosRef.onSnapshot((querySnapshot) => {
@@ -72,6 +89,24 @@ export function getAllLessons() {
                 let data = doc.data();
                 data.key = doc.id;
                 // let startingDate = new Date(data.createdOn.seconds);
+                data.uploadedTime = formatDate(timeStampToNewDate(data.createdOn), 3);
+                lessons.push(data);
+            });
+            observer.next(lessons);
+        });
+    });
+}
+
+export function getLessonsWithOnlyPreview() {
+    return new Observable((observer) => {
+        lessonsVideosRef.onSnapshot((querySnapshot) => {
+            let lessons = [];
+            querySnapshot.forEach((doc) => {
+                let data = doc.data();
+                let previewKeyOnly = data.videoList.preview;
+                data.key = doc.id;
+                data.videoList = {};
+                data.videoList['preview'] = previewKeyOnly;
                 data.uploadedTime = formatDate(timeStampToNewDate(data.createdOn), 3);
                 lessons.push(data);
             });

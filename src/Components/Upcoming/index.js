@@ -2,9 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import LessonsVideoContainer from '../LessonVideoComponent';
 import Lessons from "../../Data/Dummy";
 import { useStoreConsumer } from '../../Providers/StateProvider';
-import { getAllLessons, getLessonByPlanType } from "../../Services/Lessons.service";
+import { getAllLessons, getLessonByPlanType, getLessonsWithOnlyPreview, getLessonByPlanTypeOnlyPreview } from "../../Services/Lessons.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
-import { getParameterByName } from '../../helpers';
+import { getParameterByName, isObjectEmpty } from '../../helpers';
 
 function Upcoming() {
 
@@ -38,36 +38,47 @@ function Upcoming() {
     const getAllLessonsData = (from) => {
         try {
             dispatch(enableLoading());
-            getAllLessons().subscribe(lessons => {
-                dispatch(disableLoading());
-                toggleFilterOptionVisiblity(true);
-                const filterBtns = document.querySelectorAll('.js-filterWrap')[0].querySelectorAll('button');
-                if (filterBtns.length) {
-                    filterBtns.forEach( item => {
-                        if (item.classList.contains('active')) {
-                            item.classList.remove('active');
-                        }
-                    });
-                }
-                if (allFilterBtnRef.current) {
-                    allFilterBtnRef.current.classList.add('active');
-                }
-                
-                if (from && from === 'filters') {
-                    window.history.replaceState(null, null, `?filter=all`);   
-                }
-
-                if (lessons.length) {
-                    toggleFilterOptionVisiblity(true);
-                    setLessonsList(lessons);
-                    setLessonSubHeading('Learn from the experts and many dance forms!');
-                } else {
-                    setLessonSubHeading('Lessons video launching soon, stay connected!');
-                }
-            });
+            if (!isObjectEmpty(loggedInUser)) {
+                getAllLessons().subscribe(lessons => {
+                    dispatch(disableLoading());
+                    setLessonsListData(lessons, from);
+                });
+            } else {
+                getLessonsWithOnlyPreview().subscribe(lessons => {
+                    dispatch(disableLoading());
+                    setLessonsListData(lessons, from);
+                });
+            }
         } catch (e) {
             dispatch(disableLoading());
             console.log('Error: ', e);
+        }
+    }
+
+    function setLessonsListData(lessons, from) {
+        toggleFilterOptionVisiblity(true);
+        const filterBtns = document.querySelectorAll('.js-filterWrap')[0].querySelectorAll('button');
+        if (filterBtns.length) {
+            filterBtns.forEach( item => {
+                if (item.classList.contains('active')) {
+                    item.classList.remove('active');
+                }
+            });
+        }
+        if (allFilterBtnRef.current) {
+            allFilterBtnRef.current.classList.add('active');
+        }
+        
+        if (from && from === 'filters') {
+            window.history.replaceState(null, null, `?filter=all`);   
+        }
+
+        if (lessons.length) {
+            toggleFilterOptionVisiblity(true);
+            setLessonsList(lessons);
+            setLessonSubHeading('Learn from the experts and many dance forms!');
+        } else {
+            setLessonSubHeading('Lessons video launching soon, stay connected!');
         }
     }
 
@@ -80,74 +91,85 @@ function Upcoming() {
         } else {
             try {
                 dispatch(enableLoading());
-                getLessonByPlanType(filter === 'startup' ? 'paid' : filter).subscribe(lessons => {
-                    dispatch(disableLoading());
-                    toggleFilterOptionVisiblity(true);
-                    const filterBtns = document.querySelectorAll('.js-filterWrap')[0].querySelectorAll('button');
-                    if (filterBtns.length) {
-                        filterBtns.forEach( item => {
-                            if (item.classList.contains('active')) {
-                                item.classList.remove('active');
-                            }
-                        });
-                    }
-                    if (event) {
-                        event.target.classList.add('active');
-                        window.history.replaceState(null, null, `?filter=${filter}`);
-                    } else {
-                        switch (filter) {
-                            case 'all':     if (allFilterBtnRef.current) {
-                                                allFilterBtnRef.current.classList.add('active');
-                                            }
-                                            break;
-            
-                            case 'startup': if (paidFilterBtnRef.current) {
-                                                paidFilterBtnRef.current.classList.add('active');
-                                            }
-                                            break;
-            
-                            case 'premium': if (premiumFilterBtnRef.current) {
-                                                premiumFilterBtnRef.current.classList.add('active');
-                                            }
-                                            break;
-                            
-                            case 'free':    if (freeFilterBtnRef.current) {
-                                                freeFilterBtnRef.current.classList.add('active');
-                                            }
-                                            break;
-                            
-                            case 'pro':     if (proFilterBtnRef.current) {
-                                                proFilterBtnRef.current.classList.add('active');
-                                            }
-                                            break;
-                            
-                            default: break;
-                        }
-                    }
-                    if (lessons.length) {
-                        setLessonsList(lessons);
-                    } else {
-                        setLessonsList([]);
-                        switch (filter) {
-                            case 'startup': setFilterEmptyMessage("Sorry, there is no Startup lessons currently available. Please try another filters!");
-                                            break;
-
-                            case 'premium': setFilterEmptyMessage("Sorry, there is no Premium lessons currently available. Please try another filters!");
-                                            break;
-                            
-                            case 'free':    setFilterEmptyMessage("Sorry, there is no Free lessons currently available. Please try another filters!");
-                                            break;
-                            
-                            case 'pro':     setFilterEmptyMessage("Sorry, there is no Pro lessons currently available. Please try another filters!");
-                                            break;
-                            
-                            default: break;
-                        }
-                    }
-                });
+                if (!isObjectEmpty(loggedInUser)) {
+                    getLessonByPlanType(filter === 'startup' ? 'paid' : filter).subscribe(lessons => {
+                        dispatch(disableLoading());
+                        setLessonsDataByFilter(lessons, event, filter);
+                    });
+                } else {
+                    getLessonByPlanTypeOnlyPreview(filter === 'startup' ? 'paid' : filter).subscribe(lessons => {
+                        dispatch(disableLoading());
+                        setLessonsDataByFilter(lessons, event, filter);
+                    });
+                }
             } catch (e) {
                 dispatch(disableLoading());
                 console.log('Error: ', e);
+            }
+        }
+    }
+
+    function setLessonsDataByFilter(lessons, event, filter) {
+        toggleFilterOptionVisiblity(true);
+        const filterBtns = document.querySelectorAll('.js-filterWrap')[0].querySelectorAll('button');
+        if (filterBtns.length) {
+            filterBtns.forEach( item => {
+                if (item.classList.contains('active')) {
+                    item.classList.remove('active');
+                }
+            });
+        }
+        if (event) {
+            event.target.classList.add('active');
+            window.history.replaceState(null, null, `?filter=${filter}`);
+        } else {
+            switch (filter) {
+                case 'all':     if (allFilterBtnRef.current) {
+                                    allFilterBtnRef.current.classList.add('active');
+                                }
+                                break;
+
+                case 'startup': if (paidFilterBtnRef.current) {
+                                    paidFilterBtnRef.current.classList.add('active');
+                                }
+                                break;
+
+                case 'premium': if (premiumFilterBtnRef.current) {
+                                    premiumFilterBtnRef.current.classList.add('active');
+                                }
+                                break;
+                
+                case 'free':    if (freeFilterBtnRef.current) {
+                                    freeFilterBtnRef.current.classList.add('active');
+                                }
+                                break;
+                
+                case 'pro':     if (proFilterBtnRef.current) {
+                                    proFilterBtnRef.current.classList.add('active');
+                                }
+                                break;
+                
+                default: break;
+            }
+        }
+        if (lessons.length) {
+            setLessonsList(lessons);
+        } else {
+            setLessonsList([]);
+            switch (filter) {
+                case 'startup': setFilterEmptyMessage("Sorry, there is no Startup lessons currently available. Please try another filters!");
+                                break;
+
+                case 'premium': setFilterEmptyMessage("Sorry, there is no Premium lessons currently available. Please try another filters!");
+                                break;
+                
+                case 'free':    setFilterEmptyMessage("Sorry, there is no Free lessons currently available. Please try another filters!");
+                                break;
+                
+                case 'pro':     setFilterEmptyMessage("Sorry, there is no Pro lessons currently available. Please try another filters!");
+                                break;
+                
+                default: break;
             }
         }
     }
