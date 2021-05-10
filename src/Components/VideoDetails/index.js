@@ -92,7 +92,7 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedIn
                                                 loggedInUser.key !== videoObj.userId
                                                     ?
                                                         <Link onClick={(e) => redirectToProfile(`/profile/${window.btoa(videoObj.userEmail)}`)}>{videoObj.username}</Link>
-                                                    :   <span>{videoObj.username}</span>
+                                                    :   <Link onClick={(e) => redirectToProfile(`/profile/`)}>{videoObj.username}</Link>
                                             }
                                         </span>
                                         {
