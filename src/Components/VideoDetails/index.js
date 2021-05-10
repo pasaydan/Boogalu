@@ -87,8 +87,25 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedIn
                                 <div key={videoObj.key} className="feed-card">
                                     <div className="username">
                                         <ProfileImage src={videoObj.profileImage} />
-                                        <span><Link onClick={(e) => redirectToProfile(`/profile/${window.btoa(videoObj.userEmail)}`)}>{videoObj.username}</Link></span>
-                                        {loggedInUser && loggedInUser.key !== videoObj.userId && !videoObj.following ? <Link onClick={(event) => handleFollowBtnClick(event, videoObj.userId, loggedInUser.key)} className="followBtn" data-action={followButtonText}>{followButtonText}</Link> : <span className="followBtn">{followButtonText}</span>}
+                                        <span>
+                                            {
+                                                loggedInUser.key !== videoObj.userId
+                                                    ?
+                                                        <Link onClick={(e) => redirectToProfile(`/profile/${window.btoa(videoObj.userEmail)}`)}>{videoObj.username}</Link>
+                                                    :   <span>{videoObj.username}</span>
+                                            }
+                                        </span>
+                                        {
+                                            loggedInUser && loggedInUser.key !== videoObj.userId && !videoObj.following
+                                                ?
+                                                    <Link onClick={(event) => handleFollowBtnClick(event, videoObj.userId, loggedInUser.key)} className="followBtn" data-action={followButtonText}>{followButtonText}</Link>
+                                                :   
+                                                    loggedInUser.key === videoObj.userId
+                                                        ? 
+                                                            ''
+                                                        : 
+                                                            <span className="followBtn">{followButtonText}</span>
+                                            }
                                     </div>
                                     <div>
                                         <Vedio vdoObj={videoObj} />
