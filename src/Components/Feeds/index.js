@@ -129,6 +129,7 @@ function Feeds() {
             tempUserList.map((user) => {
                 tempFeedList.map((feed) => {
                     if (user.key == feed.userId) {
+                        feed.userEmail = user.email;
                         feed.username = user.name;
                         feed.profileImage = user.profileImage;
                         feed.privacy = user.privacy || "Public";
