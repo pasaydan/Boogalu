@@ -158,15 +158,23 @@ function Profile() {
             const loggedInUserName = loggedInUser.email.split("@")[0];
             if (history.location && history.location.pathname) {
                 const userNameFromPath = history.location.pathname.split("/profile/")[1];
-                if (userNameFromPath && loggedInUserName !== userNameFromPath) {
-                    const emailFromPath = window.atob(userNameFromPath);
+                const emailFromPath = userNameFromPath && userNameFromPath.length > 0 ? window.atob(userNameFromPath) : null;
+                if (userNameFromPath && loggedInUserName !== userNameFromPath.split("@")[0]) {
                     if (emailFromPath && emailFromPath.length && emailFromPath.includes('@')) {
                         getUserPublicProfile(emailFromPath).subscribe((response) => {
-                            const tempProfileData = response[0];
-                            setUserProfileData(tempProfileData);
-                            console.log("userProfileData", tempProfileData);
-                            setUserData(tempProfileData);
+                            if (response && response.length > 0) {
+                                const tempProfileData = response[0];
+                                setUserProfileData(tempProfileData);
+                                console.log("userProfileData", tempProfileData);
+                                setUserData(tempProfileData);
+                            } else {
+                                setUserData(loggedInUser);
+                                history.push('/profile');
+                            }
                         })
+                    } else {
+                        setUserData(loggedInUser);
+                        history.push('/profile');
                     }
                 } else {
                     setUserData(loggedInUser);
