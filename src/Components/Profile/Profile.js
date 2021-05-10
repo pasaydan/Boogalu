@@ -548,6 +548,14 @@ function Profile() {
                         </div> : <div className="bio">
                                 Older dancers (especially from the SoCal dance community) – even if you can appreciate and welcome the ways dance has evolved, you’ll still feel pangs of nostalgia when going through this list.
                         </div>}
+                        <div className="followInfo">
+                            {
+                                userData.followedBy && userData.followedBy.length && <h5>Followers : {userData.followedBy.length}</h5>
+                            }
+                            {
+                                userData.following && userData.following.length && <h5>Following : {userData.following.length}</h5>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
