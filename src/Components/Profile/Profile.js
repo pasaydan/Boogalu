@@ -29,13 +29,13 @@ import Favorite from '@material-ui/icons/Favorite';
 import CommentOutlined from '@material-ui/icons/CommentOutlined';
 import { updateVideoLikes, updateVideoComments } from "../../Services/UploadedVideo.service";
 import VideoDetails from '../VideoDetails'
-import { getAllUser } from "../../Services/User.service";
+import { getAllUser, getUserByEmail, updateUser, getUserPublicProfile, updateFollowUnfollow } from "../../Services/User.service";
+import { sendEmail } from "../../Services/Email.service";
 import { getUploadedVideosList } from "../../Services/UploadedVideo.service";
 import { FaBars } from 'react-icons/fa';
 import { disableLoginFlow, enableLoginFlow } from "../../Actions/LoginFlow";
 import { setActiveVideoForCompetition } from "../../Actions/Competition";
-import { getUserByEmail, updateUser } from "../../Services/User.service";
-import { loginUser } from '../../Actions/User/index';
+import { loginUser } from '../../Actions/User';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -70,6 +70,7 @@ function a11yProps(index) {
     };
 }
 function Profile() {
+    const {REACT_APP_URL} = process.env;
     const history = useHistory();
     const theme = useTheme();
     const { state, dispatch } = useStoreConsumer();
@@ -86,6 +87,9 @@ function Profile() {
     const [showProfileTab, setShowProfileTab] = useState(false);
     const [openUploadCompModalFor, setOpenUploadCompModalFor] = useState(null)
     const [followRequestUser, setFollowRequestUser] = useState({});
+    const [userProfileData, setUserProfileData] = useState({});
+    const [userData, setUserData] = useState({});
+    const [followButtonText, setFollowButtonText] = useState('Follow');
     const profileOuterRef = useRef();
     const userTabsRef = useRef();
     const ref = useRef();
@@ -154,9 +158,26 @@ function Profile() {
             const loggedInUserName = loggedInUser.email.split("@")[0];
             if (history.location && history.location.pathname) {
                 const userNameFromPath = history.location.pathname.split("/profile/")[1];
-                if (userNameFromPath && loggedInUserName !== userNameFromPath) {
-                    const emailFromPath = window.atob(userNameFromPath);
-                    // const createEmailFromUserName
+                const emailFromPath = userNameFromPath && userNameFromPath.length > 0 ? window.atob(userNameFromPath) : null;
+                if (userNameFromPath && loggedInUserName !== userNameFromPath.split("@")[0]) {
+                    if (emailFromPath && emailFromPath.length && emailFromPath.includes('@')) {
+                        getUserPublicProfile(emailFromPath).subscribe((response) => {
+                            if (response && response.length > 0) {
+                                const tempProfileData = response[0];
+                                setUserProfileData(tempProfileData);
+                                console.log("userProfileData", tempProfileData);
+                                setUserData(tempProfileData);
+                            } else {
+                                setUserData(loggedInUser);
+                                history.push('/profile');
+                            }
+                        })
+                    } else {
+                        setUserData(loggedInUser);
+                        history.push('/profile');
+                    }
+                } else {
+                    setUserData(loggedInUser);
                 }
             }
         }
@@ -172,7 +193,6 @@ function Profile() {
 
         document.addEventListener('scroll', onWindowScroll);
         dispatch(enableLoading());
-        getCompetitionByUserId(loggedInUser.key).subscribe((list) => { dispatch(disableLoading()); setUserCompetitionsList(list) });
         if (history.location && history.location.search) {
             const searchObj = Object.fromEntries(new URLSearchParams(history.location.search));
             if (searchObj) {
@@ -199,7 +219,8 @@ function Profile() {
     }
 
     useEffect(() => {
-        getUploadedVideosByUserId(loggedInUser.key).subscribe((list) => {
+        const profileUser = userData && Object.keys(userData).length > 0 ? userData : loggedInUser;
+        getUploadedVideosByUserId(profileUser.key).subscribe((list) => {
             setUserUploadedVideoList(list);
             if (list.length != 0) {
                 getAllUserList().then((data) => {
@@ -207,6 +228,7 @@ function Profile() {
                     let userList = data;
                     let userVdoCopy = [...list];
                     userVdoCopy.map((vdoObj) => {
+                        let userData = userList.filter(userObj => userObj.key == profileUser.key);
                         if (vdoObj.likes && vdoObj.likes.length) {
                             vdoObj.likes.map((likeObj) => {
                                 let userData = userList.filter(userObj => userObj.key == likeObj.userId);
@@ -225,6 +247,20 @@ function Profile() {
                                 }
                             })
                         }
+                        vdoObj.username = userData[0].name;
+                        vdoObj.userEmail = userData[0].email;
+                        vdoObj.privacy = userData[0].privacy || "Public";
+                        let user = userData[0];
+                        if (user.followedBy && user.followedBy.length > 0) {
+                            const checkIfUserFollowingVideoCreator = user.followedBy.filter( (followedByUserId) => followedByUserId === loggedInUser.key);
+                            console.log("checkIfUserFollowingVideoCreator", checkIfUserFollowingVideoCreator);
+                            if (checkIfUserFollowingVideoCreator && checkIfUserFollowingVideoCreator.length > 0) {
+                                vdoObj.following = true;
+                            } else {
+                                vdoObj.following = false;
+                            }
+                        }
+
                     })
                     dispatch(disableLoading());
                     console.log('userVdoCopy', userVdoCopy)
@@ -232,11 +268,13 @@ function Profile() {
                 })
             } else dispatch(disableLoading());
         });
-    }, [])
+        getCompetitionByUserId(profileUser.key).subscribe((list) => { dispatch(disableLoading()); setUserCompetitionsList(list) });
+    }, [userData])
 
     useEffect(() => {
+        const profileUser = userData && Object.keys(userData).length > 0 ? userData : loggedInUser;
         if (state.refetchDataModule == 'user-uploaded-video') {
-            getUploadedVideosByUserId(loggedInUser.key).subscribe((list) => { dispatch(removeDataRefetchModuleName()); setUserUploadedVideoList(list) });
+            getUploadedVideosByUserId(profileUser.key).subscribe((list) => { dispatch(removeDataRefetchModuleName()); setUserUploadedVideoList(list) });
         }
     }, [state])
 
@@ -305,16 +343,19 @@ function Profile() {
     };
 
     const openCompetitionDetailsModal = (competition) => {
-        getCompetitionsList().subscribe(allCompList => {
-            let isUserEnrolled = allCompList.filter((data) => data.key == competition.compId);
-            if (isUserEnrolled.length) {
-                isUserEnrolled[0].isUserEnrolled = true;
-                isUserEnrolled[0].userSubmitedDetails = competition;
-                setInitialStep(2);
-                dispatch(setActiveCompetition(isUserEnrolled[0]));
-                setOpenUserEnrolledCompDetailsModal(true);
-            }
-        });
+        const profileUser = userData && Object.keys(userData).length > 0 ? userData : loggedInUser;
+        if (profileUser.key === loggedInUser.key) {
+            getCompetitionsList().subscribe(allCompList => {
+                let isUserEnrolled = allCompList.filter((data) => data.key == competition.compId);
+                if (isUserEnrolled.length) {
+                    isUserEnrolled[0].isUserEnrolled = true;
+                    isUserEnrolled[0].userSubmitedDetails = competition;
+                    setInitialStep(2);
+                    dispatch(setActiveCompetition(isUserEnrolled[0]));
+                    setOpenUserEnrolledCompDetailsModal(true);
+                }
+            });
+        }
     }
 
 
@@ -393,6 +434,7 @@ function Profile() {
     }
 
     const handleCommentClick = (video) => {
+        setFollowButtonText(video.following ? 'Following' : 'Follow');
         setCommentModal(true);
         setActiveVideoObj(video)
     }
@@ -427,13 +469,60 @@ function Profile() {
     }
 
 
+
+    const handleFollowToggle = (toFollow, followBy, action) => {
+        dispatch(enableLoading());
+        updateFollowUnfollow(toFollow, followBy, action).subscribe((response) => {
+            if (response) {
+                const { name, email } = response;
+                if (response.followed) {
+                    setFollowButtonText('Following');
+                    const message = `${loggedInUser.name} started following`;
+                    const subject = `${loggedInUser.name} started following`;
+                    sendFollowNotificationEmail(name, email, subject, message);
+                }
+                if (response.requested) {
+                    setFollowButtonText('Requested');
+                    const acceptLink = `${REACT_APP_URL}profile?followrequest=accept&requestBy=${encodeURIComponent(loggedInUser.email)}`
+                    const declineLink = `${REACT_APP_URL}profile?followrequest=decline&requestBy=${encodeURIComponent(loggedInUser.email)}`
+                    const message = `${loggedInUser.name} requested to follow you.<br /><br />You can <a href="${acceptLink}">Accept</a> or <a href="${declineLink}">Decline</a>`;
+                    const subject = `${loggedInUser.name} requested to follow you`;
+                    sendFollowNotificationEmail(name, email, subject, message);
+                }
+                dispatch(disableLoading());
+            }
+        })
+    }
+
+
+
+    const sendFollowNotificationEmail = (name, email, subject, message) => {
+        let emailBody = `<div>
+        <p>Hi ${name}, ${message}</p>. 
+        </div>`;
+        let payload = {
+            mailTo: email,
+            title: subject,
+            content: emailBody
+        }
+        sendEmail(payload).subscribe((res) => {
+            if (!('error' in res)) {
+                console.log('Follow request Send Successfully.');
+                dispatch(disableLoading());
+            } else {
+                dispatch(disableLoading());
+                console.log('User Email Send Failed.');
+            }
+            // fetchUsersVideoDetails(null, userKey);
+        })
+    }
     return (
         <div className="profile-outer" ref={profileOuterRef}>
             <div className="profile-details-wrap clearfix">
                 <div className="profile-img">
                     {
-                        loggedInUser.profileImage ?
-                            <img src={loggedInUser.profileImage} />
+                        userData.profileImage ?
+                            <img src={userData.profileImage} />
                             :
                             <AccountCircleOutlinedIcon />
                     }
@@ -441,11 +530,11 @@ function Profile() {
                 <div className="profile-details clearfix">
                     <div className="username-wrap clearfix">
                         <div className="username">
-                            {loggedInUser.username}
+                            {userData.username}
                         </div>
-                        <div className="edit-profile" onClick={() => history.push('/profile/edit')}>
+                        {userData && loggedInUser && userData.key === loggedInUser.key && <div className="edit-profile" onClick={() => history.push('/profile/edit')}>
                             Edit Profile
-                        </div>
+                        </div>}
                     </div>
                     <div className="followers-wrap clearfix">
                         <div className="posts">
@@ -460,13 +549,21 @@ function Profile() {
                     </div>
                     <div className="bio-wrap">
                         <div className="fullname">
-                            {loggedInUser.name}
+                            {userData.name}
                         </div>
-                        {loggedInUser.bio ? <div className="bio">
-                            {loggedInUser.bio}
+                        {userData.bio ? <div className="bio">
+                            {userData.bio}
                         </div> : <div className="bio">
                                 Older dancers (especially from the SoCal dance community) – even if you can appreciate and welcome the ways dance has evolved, you’ll still feel pangs of nostalgia when going through this list.
                         </div>}
+                        <div className="followInfo">
+                            {
+                                userData.followedBy && userData.followedBy.length && <h5>Followers : {userData.followedBy.length}</h5>
+                            }
+                            {
+                                userData.following && userData.following.length && <h5>Following : {userData.following.length}</h5>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
@@ -517,9 +614,9 @@ function Profile() {
                                                             <img src={thirdPrizeBadge} alt="Third prize" />
                                                         </div>: ''
                                                     } */}
-                                                    <div className="menu" onClick={() => { setOpenUploadCompModalFor(vdo.key); setShowProfileTab(true) }}>
+                                                    {userData && loggedInUser && userData.key === loggedInUser.key && <div className="menu" onClick={() => { setOpenUploadCompModalFor(vdo.key); setShowProfileTab(true) }}>
                                                         <i><FaBars /></i>
-                                                    </div>
+                                                    </div>}
                                                     {showProfileTab && openUploadCompModalFor == vdo.key && <div className="videoUploadToolTip" ref={ref}>
                                                         <div className="profile" onClick={() => redirectToCompetition()}>Upload for competition</div>
                                                     </div>}
@@ -583,7 +680,7 @@ function Profile() {
                     </SwipeableViews> */}
                 </div>
             </div>
-            {commentModal && <VideoDetails handleClose={() => setCommentModal(false)} handleLikes={handleLikes} handleComments={handleComments} videoObj={activeVideoObj} />}
+            {commentModal && <VideoDetails handleClose={() => setCommentModal(false)}  videoObj={activeVideoObj} handleLikes={handleLikes} handleComments={handleComments} loggedInUser={loggedInUser} followToggle={handleFollowToggle} BtnText={followButtonText}/>}
             {openUserEnrolledCompDetailsModal && <CompetitionsDetails open={openUserEnrolledCompDetailsModal} handleClose={() => setOpenUserEnrolledCompDetailsModal(false)} initialStep={initialStep} />}
         </div>
     )

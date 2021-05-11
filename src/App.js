@@ -140,7 +140,7 @@ function App() {
                   <Profile />
                 </Route>
                 <Route exact path="/profile/:id">
-                  <UserProfile />
+                  <Profile />
                 </Route>
                 <Route exact path="/home">
                   {state.loggedInUser && state.loggedInUser.username ? <Feeds /> : <Homepage />}

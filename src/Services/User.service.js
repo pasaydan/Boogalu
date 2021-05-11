@@ -126,3 +126,26 @@ export function updateFollowUnfollow(id, followedById, action) {
         });
     });
 }
+
+export function getUserPublicProfile(email){
+    return new Observable((observer) => {
+        userRef.where('email', '==', email).get().then((querySnapshot) => {
+            let user = []
+            querySnapshot.forEach(function (doc) {
+                let data = doc.data();
+                const privateData = [
+                    'username', 'password', 'confirmPassword', 'createdOn', 'followRequestedBy', 'modifiedOn', 'subscribed'
+                ]
+                privateData.map((item) => {
+                    if (data[item]) {
+                        delete data[item];
+                    }
+                });
+                console.log("getUserPublicProfile", data);
+                data.key = doc.id;
+                user.push(data);
+            })
+            observer.next(user);
+        })
+    })  
+}
