@@ -5,21 +5,28 @@
     height: 100vh;
     .error-board {
         position: absolute;
-        top: 50%;
+        top: 40%;
         left: 50%;
         height: 150px;
         width: 300px;
         transform: translate(-50%, -50%);
         padding: 20px;
-        font: 75px/75px Monoton, cursive;
+        font-family: Monoton, cursive !important;
+        font-size: 75px !important;
         text-align: center;
         text-transform: uppercase;
         text-shadow: 0 0 80px red,0 0 30px FireBrick,0 0 6px DarkRed;
         color: red;
         p {
             margin: 0;
+            font-family: Monoton, cursive !important;
+            font-size: 75px !important;
+            line-height: 75px;    
         }
         .error-text {
+            font-family: Monoton, cursive !important;
+            font-size: 75px !important;
+            line-height: 75px;    
             color: var(--primary-white);
             text-shadow: 0 0 80px var(--primary-white),0 0 30px #008000,0 0 6px #0000ff;
         }

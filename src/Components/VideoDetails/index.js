@@ -17,7 +17,7 @@ import { Button, Link } from '@material-ui/core';
 import { LinkedCamera } from '@material-ui/icons';
 
 
-function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedInUser, followToggle, BtnText }) {
+function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedInUser, followToggle, BtnText, clickedUser }) {
 
     const history = useHistory();
     const followMessage = "You need to follow the user to view their Profile";
@@ -98,13 +98,16 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedIn
                                         {
                                             loggedInUser && loggedInUser.key !== videoObj.userId && !videoObj.following
                                                 ?
-                                                    <Link onClick={(event) => handleFollowBtnClick(event, videoObj.userId, loggedInUser.key)} className="followBtn" data-action={followButtonText}>{followButtonText}</Link>
+                                                    <Link 
+                                                        onClick={(event) => handleFollowBtnClick(event, videoObj.userId, loggedInUser.key)} 
+                                                        className="btn primary-light followBtn" 
+                                                        data-action={followButtonText}>{followButtonText}</Link>
                                                 :   
                                                     loggedInUser.key === videoObj.userId
                                                         ? 
                                                             ''
                                                         : 
-                                                            <span className="followBtn">{followButtonText}</span>
+                                                            <span className="btn primary-light followBtn">{followButtonText}</span>
                                             }
                                     </div>
                                     <div>
@@ -142,9 +145,17 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedIn
                             <div>
                                 <div key={videoObj.key} className="feed-card">
                                     <div className="username">
-                                        <ProfileImage src={videoObj.profileImage} />
-                                        <span>{videoObj.username}</span>
-                                        {loggedInUser && loggedInUser.key !== videoObj.userId && <Link onClick={(event) => handleFollowBtnClick(event, videoObj.userId, loggedInUser.key)} className="followBtn" data-action={followButtonText}>{followButtonText}</Link>}
+                                        <ProfileImage src={videoObj.profileImage || clickedUser.profileImage} />
+                                        <span>{videoObj.username || clickedUser.username}</span>
+                                        {
+                                            loggedInUser && loggedInUser.key !== (videoObj.userId || clickedUser.key) && 
+                                            <Link 
+                                                onClick={(event) => handleFollowBtnClick(event, (videoObj.userId || clickedUser.key), loggedInUser.key)} 
+                                                className="btn primary-light followBtn" 
+                                                data-action={followButtonText}>
+                                                    {followButtonText}
+                                            </Link>
+                                        }
                                     </div>
                                     <p>{messageForUser}</p>
                                 </div>

@@ -104,10 +104,25 @@
         }
     }
 }
-.followBtn {
-    margin-left: 10px !important;
-    cursor: pointer;
+.btn {
+    &.followBtn {
+        margin-left: auto;
+        cursor: pointer;
+        filter: none;
+        padding: 3px 8px;
+        font-size: 10px;
+        color: var(--primary-white);
+        text-decoration: none;
+        transition: all 0.3s ease-in-out;
+        background: var(--secondary-bg-blue);
+        opacity: 0.8;
+        &:hover {
+            opacity: 1;
+            text-decoration: none;
+        }
+    }
 }
+
 @media screen and (max-width: 1023px) {
     .feeds-comment-modal {
         .comment-modal {

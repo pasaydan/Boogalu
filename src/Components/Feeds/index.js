@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { getUploadedVideosList } from "../../Services/UploadedVideo.service";
 import { updateVideoLikes, updateVideoComments } from "../../Services/UploadedVideo.service";
-import { getAllUser } from "../../Services/User.service";
+import { getLimitedUser } from "../../Services/User.service";
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import Favorite from '@material-ui/icons/Favorite';
 import CommentOutlined from '@material-ui/icons/CommentOutlined';
@@ -12,20 +12,24 @@ import Vedio from "../Vedio/Video";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { getUserById, updateUser, updateFollowUnfollow } from "../../Services/User.service";
 import { sendEmail } from "../../Services/Email.service";
+import { Link } from '@material-ui/core';
+import { useHistory } from "react-router-dom";
 
 function Feeds() {
+    const history = useHistory();
     const {REACT_APP_URL} = process.env;
     const [followButtonText, setFollowButtonText] = useState('Follow');
-    const [feedList, setFeedList] = useState([])
-    const [userList, setUserList] = useState([])
-    const [activeVideoObj, setActiveVideoObj] = useState({})
-    const [commentModal, setCommentModal] = useState(false)
+    const [feedList, setFeedList] = useState([]);
+    const [userList, setUserList] = useState([]);
+    const [activeVideoObj, setActiveVideoObj] = useState({});
+    const [clickedUserDetails, setClickedUserDetails] = useState(null);
+    const [commentModal, setCommentModal] = useState(false);
     const { state, dispatch } = useStoreConsumer();
     const loggedInUser = state.loggedInUser;
 
     const getAllUserList = () => {
         return new Promise((res, rej) => {
-            getAllUser().subscribe((users) => {
+            getLimitedUser().subscribe((users) => {
                 setUserList(users);
                 res(users);
             });
@@ -165,15 +169,22 @@ function Feeds() {
             setFeedList(tempFeedList)
             setUserList(tempUserList);
         })
-    }, [followButtonText])
+    }, [followButtonText]);
 
-    const openUserStory = (user) => {
+    function redirectViewAllUsers() {
+        history.push('/members');
+    }
+
+    function openUserStory(user) {
         let userVdos = feedList.filter((feed) => user.key == feed.userId);
+        setActiveVideoObj({});
+        setFollowButtonText('Follow');
+        setClickedUserDetails(user);
         if (userVdos.length) {
-            setFollowButtonText(userVdos[0].following ? 'Following' : 'Follow');
             setActiveVideoObj(userVdos[0]);
-            setCommentModal(true);
+            setFollowButtonText(userVdos[0].following ? 'Following' : 'Follow');
         };
+        setCommentModal(true);
     }
 
     const handleFollowToggle = (toFollow, followBy, action) => {
@@ -224,13 +235,24 @@ function Feeds() {
     return (
         <div className="userDashBoardAfterLogin">
             <div className="user-dashboard-wrap">
+                {
+                    userList && userList.length ?
+                    <div className="suggestViewAllWrap">
+                        <span>Members of Boogalu family</span>&nbsp;
+                        <Link
+                            onClick={() => redirectViewAllUsers()} 
+                            className="viewAllLink"
+                        >
+                            View all
+                        </Link>
+                    </div> : ''
+                }
                 <div className="user-list-wrap">
                     {userList && userList.map((user) => {
-                        return (user.isAnyVideoSubmitted ? 
-                        <div key={user.key} className="user-icon-wrap" title={`View ${user.username}`} onClick={() => openUserStory(user)}>
+                        return (<div key={user.key} className="user-icon-wrap" title={`View ${user.username}`} onClick={() => openUserStory(user)}>
                             <ProfileImage src={user.profileImage} size="medium" />
                             <div className="userName">{user.username}</div>
-                        </div> : null)
+                        </div>)
                     })}
                 </div>
                 <div className="feed-dashboard-wrap">
@@ -244,31 +266,41 @@ function Feeds() {
                         </div>
                     </div> */}
                     <div className="feed-wrap">
-                        {feedList && feedList.map((feed) => {
-                            return <div key={feed.key} className="feed-card">
-                                <div>
-                                    <Vedio vdoObj={feed} />
-                                </div>
-                                <div className="username">
-                                    <ProfileImage src={feed.profileImage} />
-                                    <span className="name">{feed.username}</span>
-                                </div>
-                                <div className="video-title-like-wrap">
-                                    <div className="title">{feed.title}</div>
-                                    <div className="like-comment">
-                                        {feed.likes && feed.likes.length > 0 && <div className="likes-count">{feed.likes.length} Likes</div>}
-                                        {!feed.isLiked && <FavoriteBorder title="Unlike" onClick={() => handleLikes(feed, 'liked')} />}
-                                        {feed.isLiked && <Favorite title="Like" onClick={() => handleLikes(feed, 'unliked')} />}
-                                        <CommentOutlined title="comment" onClick={() => handleCommentClick(feed)} />
+                        {feedList && feedList.length ? 
+                            feedList.map((feed) => {
+                                return <div key={feed.key} className="feed-card">
+                                    <div>
+                                        <Vedio vdoObj={feed} />
                                     </div>
+                                    <div className="username">
+                                        <ProfileImage src={feed.profileImage} />
+                                        <span className="name">{feed.username}</span>
+                                    </div>
+                                    <div className="video-title-like-wrap">
+                                        <div className="title">{feed.title}</div>
+                                        <div className="like-comment">
+                                            {feed.likes && feed.likes.length > 0 && <div className="likes-count">{feed.likes.length} Likes</div>}
+                                            {!feed.isLiked && <FavoriteBorder title="Unlike" onClick={() => handleLikes(feed, 'liked')} />}
+                                            {feed.isLiked && <Favorite title="Like" onClick={() => handleLikes(feed, 'unliked')} />}
+                                            <CommentOutlined title="comment" onClick={() => handleCommentClick(feed)} />
+                                        </div>
 
+                                    </div>
                                 </div>
-                            </div>
-                        })}
+                        }) : ''}
                     </div>
                 </div>
             </div>
-            {commentModal && <VideoDetails handleClose={() => setCommentModal(false)} handleLikes={handleLikes} handleComments={handleComments} videoObj={activeVideoObj} loggedInUser={loggedInUser} followToggle={handleFollowToggle} BtnText={followButtonText} />}
+            {commentModal && <VideoDetails 
+                handleClose={() => setCommentModal(false)} 
+                handleLikes={handleLikes} 
+                handleComments={handleComments} 
+                videoObj={activeVideoObj} 
+                loggedInUser={loggedInUser} 
+                followToggle={handleFollowToggle} 
+                BtnText={followButtonText}
+                clickedUser={clickedUserDetails} 
+            />}
         </div>
     )
 }

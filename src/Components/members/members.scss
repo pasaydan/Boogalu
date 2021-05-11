@@ -1,0 +1,64 @@
+.viewAllMemberDashBoard {
+    .user-list-wrap {
+        flex-direction: column;
+        border: none;
+        .userMemberListing {
+            width: 100%;
+            display: flex;
+            margin-right: 0;
+            justify-content: flex-start;
+            align-items: center;
+            text-align: left;
+            padding: 10px;
+            transition: all 0.3s ease-in-out;
+            border-top: 1px solid var(--btn-primary-light-bg);
+            box-sizing: border-box;
+            &:hover {
+                background: var(--btn-primary-light-bg);
+            }
+            &:first-child {
+                border-top: none;
+            }
+            .profile-image-wrap {
+                margin: 0 20px 0 0;
+                min-width: 60px;
+            }
+            .userNameWrap {
+                display: flex;
+                align-items: flex-start;
+                flex-direction: column;
+                .userName {
+                    margin: 0;
+                }
+                .userFullName, .followsInfo {
+                    font-size: 12px;
+                    line-height: 14px;
+                    margin-top: 3px;
+                    color: var(--footer-list-text-grey);
+                }
+                .followsInfo {
+                    font-size: 10px;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .viewAllMemberDashBoard {
+        .user-dashboard-wrap {
+            padding: 0;
+            .user-list-wrap {
+                .userMemberListing {
+                    padding: 8px 5px;
+                    .profile-image-wrap {
+                        margin-right: 10px;
+                    }
+                    .userNameWrap {
+                        padding-right: 5px;
+                    }
+                }
+            }
+        }
+    }
+}

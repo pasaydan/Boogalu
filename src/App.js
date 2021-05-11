@@ -30,6 +30,7 @@ import VideoUploader from "./Components/VideoUploader";
 import { useStoreConsumer } from './Providers/StateProvider';
 import TermsConditions from './Components/TermsConditions';
 import RefundPolicy from './Components/RefundPolicy';
+import ViewAllMembers from './Components/members';
 
 function App() {
   const { state } = useStoreConsumer();
@@ -150,6 +151,9 @@ function App() {
                 </Route>
                 <Route exact path="/feeds">
                   <Feeds />
+                </Route>
+                <Route exact path="/members">
+                  <ViewAllMembers />
                 </Route>
                 <Route exact path="/">
                   {state.loggedInUser && state.loggedInUser.username ? <Feeds /> : <Homepage />}

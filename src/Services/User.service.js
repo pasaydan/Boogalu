@@ -77,9 +77,23 @@ export function saveUserSubscription(id, data) {
     });
 }
 
+export function getLimitedUser() {
+    return new Observable((observer) => {
+        userRef.orderBy('name').limit(10).onSnapshot((querySnapshot) => {
+            let users = [];
+            querySnapshot.forEach((doc) => {
+                let data = doc.data();
+                data.key = doc.id;
+                users.push(data);
+            });
+            observer.next(users);
+        });
+    });
+}
+
 export function getAllUser() {
     return new Observable((observer) => {
-        userRef.onSnapshot((querySnapshot) => {
+        userRef.orderBy('username').onSnapshot((querySnapshot) => {
             let users = [];
             querySnapshot.forEach((doc) => {
                 let data = doc.data();

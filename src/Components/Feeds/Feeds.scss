@@ -11,6 +11,21 @@
     padding: 10px 20px;
     box-sizing: border-box;
     border-radius: 5px;
+    .suggestViewAllWrap {
+        font-size: 12px;
+        color: var(--footer-list-text-grey);
+        margin-bottom: 5px;
+        .viewAllLink {
+            text-decoration: none;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: all 0.3s ease-in-out;
+            color: var(--info-blue-opaque);
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
 }
 .user-list-wrap {
     display: flex;
