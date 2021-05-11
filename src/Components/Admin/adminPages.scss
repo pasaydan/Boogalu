@@ -547,7 +547,7 @@
         .upload-input-wrap {
             position: relative;
             width: inherit;
-            flex-basis: calc(100% / 5 - 24px);
+            flex-basis: calc(100% / 3 - 24px);
             height: 100px;
             border: 2px dashed var(--footer-text-grey);
             border-radius: 5px;
@@ -1068,11 +1068,18 @@
             }
         }
     }
-    .competition-bo-wrap .inner-form-wrap .input-wrap .infoMessage, 
-    .subscription-bo-wrap .inner-form-wrap .input-wrap .infoMessage {
-        display: block;
-        margin: 3px 0 0;
-    }
+    .competition-bo-wrap .inner-form-wrap .input-wrap, 
+    .subscription-bo-wrap .inner-form-wrap .input-wrap {
+        .infoMessage {
+            display: block;
+            margin: 3px 0 0;
+        }
+        &.lessons-radio-group {
+            .MuiFormControlLabel-root {
+                margin-right: 10px;
+            }
+        }
+    } 
 }
 
 @media screen and (max-width: 500px) {
@@ -1125,6 +1132,15 @@
                     .MuiFormControl-root {
                         margin-top: 0;
                     }
+                }
+            }
+        }
+    }
+    .usersListWrap {
+        .uploadContainer {
+            .upload-input-wrap {
+                .heading {
+                    font-size: 10px;
                 }
             }
         }

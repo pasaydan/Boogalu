@@ -73,12 +73,13 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
         console.log(file);
         // 1MB in Bytes is 1,048,576 so you can multiply it by the limit you need.
         if (file) {
-            if (file.size > 52428800) {
+            // TODO: currently upload limit is 200 MB will need to increase to 1 GB for user
+            if (file.size > 220000000) {
                 alert("File is too big!");
                 dispatch(displayNotification({
-                    msg: "File is too big!",
+                    msg: "Video size is too big, should not exceed 200 MB!",
                     type: NOTIFICATION_ERROR,
-                    time: 3000
+                    time: 5000
                 }))
                 setSelectedVideo({ ...SelectedVideo, file: null });
                 uploaderRef.current.click();
@@ -252,7 +253,7 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
                             <CloseIcon />
                         </IconButton>
                         <h3>Upload your dance performance video!</h3>
-                        <span className="uploadInfo">( Video size should not exceed 50 MB )</span>
+                        <span className="uploadInfo">( Video size should not exceed 200 MB )</span>
                         <div className={`uploader-wrap ${SelectedVideo.file ? 'selected-file' : ''}`}>
                             {
                                 !SelectedVideo.file ?
@@ -290,11 +291,11 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
                                                 buttonText='Select image'
                                                 onChange={onThumbnailImgSelect}
                                                 imgExtension={['.jpg', '.gif', '.png', '.gif', '.svg']}
-                                                maxFileSize={5242880}
+                                                maxFileSize={2200000}
                                                 accept="image/*"
                                                 withPreview={true}
                                                 singleImage={true}
-                                                label="Select thumbnail image ( Max size 5 MB)"
+                                                label="Select thumbnail image ( Max size 2 MB)"
                                             />
                                         </div>
                                         <div className="text-form-wrapper">

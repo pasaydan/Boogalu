@@ -192,11 +192,18 @@ export default function UploadLessons() {
         }
         // 1MB in Bytes is 1,048,576 so you can multiply it by the limit you need.
         if (file) {
-            if (file.size > 52428800) {
+            if (view === 'thumbnailImage' && file.size > 2200000) {
                 dispatch(displayNotification({
-                    msg: "File is too big!",
+                    msg: "Thumbnail file size is too big, should not exceed 2 MB!",
                     type: NOTIFICATION_ERROR,
-                    time: 3000
+                    time: 5000
+                })); 
+            } else if ((view === 'preview' || view === 'frontView' || view === 'frontMirrorView' || view === 'rearView' || view === 'rearMirrorView' || view === 'vrView') && file.size > 220000000) {
+                // TODO: currently upload limit is 200 MB will need to increase to 500 MB for admin
+                dispatch(displayNotification({
+                    msg: "Video file size is too big, should not exceed 200 MB!",
+                    type: NOTIFICATION_ERROR,
+                    time: 5000
                 }));
                 setVideosToUpload({...videosToUpload});
             } else {
@@ -472,7 +479,7 @@ export default function UploadLessons() {
                                             <div className="uploadContainer">
                                                 <div className={videosToUpload.thumbnailImage !== null ? 'upload-input-wrap selected' : 'upload-input-wrap'}>
                                                     <h6 className="heading">Thumbnail <sup className="mandatAsterisk">*</sup></h6>
-                                                    <h6 className="sub-heading">Maximum size 1 MB</h6>
+                                                    <h6 className="sub-heading">Maximum size 2 MB</h6>
                                                     <i className="upload-icon"><FaCloudUploadAlt /></i>
                                                     <input id="thumbnailImage"
                                                         type="file"
@@ -503,7 +510,7 @@ export default function UploadLessons() {
                                     <div className="input-wrap input-wrap-full video-control-wrap">
                                         <label className="controlLabel">Lesson Videos 
                                             <sup className="mandatAsterisk">*</sup>
-                                            <span className="infoMessage">( Maximum size of each video should be 50 MB )</span>
+                                            <span className="infoMessage">( Maximum size of each video should be 200 MB )</span>
                                         </label>
                                         <div className="uploadContainer">
                                             <div className={videosToUpload.preview !== null ? 'upload-input-wrap selected' : 'upload-input-wrap'}>
@@ -583,7 +590,7 @@ export default function UploadLessons() {
                                         </div>
                                     </div>
 
-                                    <div className="input-wrap input-wrap-full">
+                                    <div className="input-wrap input-wrap-full lessons-radio-group">
                                         <RadioGroup 
                                             className="radioGroupControls"
                                             aria-label="accessbility" 
