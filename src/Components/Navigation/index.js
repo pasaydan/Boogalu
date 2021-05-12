@@ -12,6 +12,9 @@ import { MdNotifications, MdNotificationsActive, MdAccountCircle } from "react-i
 import { NOTIFICATION_SUCCCESS, NOTIFICATION_ERROR } from "../../Constants";
 import { displayNotification } from "../../Actions/Notification";
 import * as $ from 'jquery';
+import { getUserByEmail, getUserById, getLoggedInUserNotifications } from '../../Services/User.service';
+import { bindCallback } from 'rxjs';
+
 const SCROLL_TOP_LIMIT = 200;
 
 function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
@@ -29,6 +32,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
     const [userNotificationMenu, setUserNotificationMenu] = useState(false);
     const [showUserNotificationMenu, setShowUserIconNotificationMenu] = useState(false);
     const [userNotificationList, setUserNotificationList] = useState([]);
+    const [notificationArray, setNotificationArray] = useState([])
     
     const ref = useRef();
     const hamburgerMenuRef = useRef(null);
@@ -44,6 +48,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
     const [animateNavClass, toggleNavAnimation] = useState('animate');
     
     const isAppAlreadyLoaded = JSON.parse(localStorage.getItem('isAppLoaded'));
+    // const followNotificationArray = [];
     // useOnClickOutside(ref, () => {
     //     setShowProfileTab(false)
     //     enableProfileTabMenu(false);
@@ -162,6 +167,78 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
 
         });
     })
+
+    useEffect(() => {
+        let followNotificationArray = [];
+        // setInterval(() => {
+        //     getLoggedInUserNotifications(loggedInUser.key).subscribe((response) => {
+        //         const notification = response && response.notification && response.notification ? response.notification : [];
+        //         if (notification && Object.keys(notification).length > 0) {
+        //             const notificationKeys = Object.keys(notification);
+        //             notificationKeys.map((key, index) => {
+        //                 const valuesByKey = notification[key];
+        //                 console.log("key", key);
+        //                 console.log("valuesByKey", valuesByKey);
+        //                 valuesByKey.map((value) => {
+        //                     console.log("valuesByKey's value is ", value);
+        //                     getUserById(value).subscribe((response) => {
+        //                         let responseData = response
+        //                         if (responseData.requested) {
+        //                             responseData = {...responseData, 'requested': true}
+        //                         }
+        //                         if (responseData.followed) {
+        //                             responseData = {...responseData, 'followed': true}
+        //                         }
+        //                         if (responseData && responseData.key === value) {
+        //                             followNotificationArray.push(responseData);
+        //                             setNotificationValue(true);
+        //                             setUserNotificationList(followNotificationArray);
+        //                         }
+        //                     })
+        //                 });
+        //             });
+        //         }
+        //     })
+        // }, 5000);
+        if (loggedInUser) {
+            getLoggedInUserNotifications(loggedInUser.key).subscribe((response) => {
+                const notification = response && response.notification && response.notification ? response.notification : [];
+                if (notification && Object.keys(notification).length > 0) {
+                    const notificationKeys = Object.keys(notification);
+                    const flatValues = Object.values(notification).flat()
+                    let valueCount = 0;
+                    notificationKeys.map((key, index) => {
+                        const valuesByKey = notification[key];
+                        valuesByKey.map((value) => {
+                            getUserById(value).subscribe((response) => {
+                                valueCount++;
+                                let responseData = response
+                                responseData = {...responseData, [key]: true}
+
+                                // if (responseData.requested) {
+                                //     responseData = {...responseData, 'requested': true}
+                                // }
+                                // if (responseData.followed) {
+                                //     responseData = {...responseData, 'followed': true}
+                                // }
+                                followNotificationArray.push(responseData);
+                                if (followNotificationArray && followNotificationArray.length === flatValues.length) {
+                                    setUserNotificationList(followNotificationArray);
+                                }
+                            });
+                        });
+                    });
+                }
+            })
+        }
+    }, []);
+
+    useEffect(() => {
+        if (userNotificationList && userNotificationList.length > 0) {
+            setNotificationValue(true);
+        }
+        console.log("notificationArray", userNotificationList)
+    }, [userNotificationList])
 
     const logout = () => {
         dispatch(displayNotification({
@@ -483,6 +560,20 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
         }
     }
 
+    const acceptFollowRequest = (event) => {
+        event.stopPropagation();
+        console.log("Accept follow request code goes here");
+    }
+
+    const rejectFollowRequest = (event) => {
+        event.stopPropagation();
+        console.log("Reject follow request code goes here");
+    }
+
+    const blockUser = (event) => {
+        event.stopPropagation();
+        console.log("Block user request code goes here");
+    }
     return (
         <>
             <nav ref={mainNavRef}
@@ -574,9 +665,31 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                         <div className={`profile-tab-wrap userNotificationOptionWrap user-icon-menu-wrap ${showUserNotificationMenu ? 'showMenu' : ''}`} onClick={(e) => headerMenusClicked(e)}>
                             <a className="closeNotificationIcon" onClick={(e) => headerMenusClicked(e)}></a>
                             {
-                                true ?
+                                true && isNotificationsPresent &&  userNotificationList && userNotificationList.length ?
                                 <div className="innerMenuWrap">
                                     <ul className="notificationList">
+                                        {
+                                            userNotificationList.map((user, index) => {
+                                                console.log("user", user);
+                                                return (
+                                                    <li key={index}>
+                                                        <p>{user.name} has {user.followRequestedBy ? 'requested to folllow' : ' started following'} you!</p>
+                                                            {user.followRequestedBy &&
+                                                                <div className="notificationAction">
+                                                                    <button className="btn primary-dark" onClick={(event) => acceptFollowRequest(event, user)}>Accept</button>
+                                                                    <button className="btn primary-light" onClick={(event) => rejectFollowRequest(event, user)}>Reject</button>
+                                                                </div>
+                                                            }
+                                                            {user.followedBy &&
+                                                                <div className="notificationAction">
+                                                                    <button className="btn primary-light" onClick={(event) => blockUser(event, user)}>Block</button>
+                                                                </div>
+                                                            }
+                                                    </li>
+                                                )
+                                            })
+                                        }
+{/*                                         
                                         <li>
                                             <p>Vilas Kumkar has followed you!</p>
                                             <div className="notificationAction">
@@ -639,7 +752,8 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                                                 <button className="btn primary-dark">Unfollow</button>
                                                 <button className="btn primary-light">Block</button>
                                             </div>
-                                        </li>
+                                        </li> 
+*/}
                                     </ul>
                                 </div> 
                                 : 

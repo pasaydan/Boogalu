@@ -341,11 +341,15 @@ export default function EditProfile() {
                                     control={<Radio color="primary" />}
                                     label="Public"
                                     defaultChecked={true}
+                                    checked={userDetails.privacy === 'Public' || userDetails.privacy === 'public'}
+
                                 />
                                 <FormControlLabel
                                     value={'Private'}
                                     control={<Radio color="primary" />}
                                     label="Private"
+                                    checked={userDetails.privacy === 'Private' || userDetails.privacy === 'private'}
+
                                 />
                             </RadioGroup>
                         </FormControl>

@@ -479,7 +479,7 @@ function Profile() {
                     setFollowButtonText('Following');
                     const message = `${loggedInUser.name} started following`;
                     const subject = `${loggedInUser.name} started following`;
-                    sendFollowNotificationEmail(name, email, subject, message);
+                    // sendFollowNotificationEmail(name, email, subject, message);
                 }
                 if (response.requested) {
                     setFollowButtonText('Requested');
@@ -487,7 +487,7 @@ function Profile() {
                     const declineLink = `${REACT_APP_URL}profile?followrequest=decline&requestBy=${encodeURIComponent(loggedInUser.email)}`
                     const message = `${loggedInUser.name} requested to follow you.<br /><br />You can <a href="${acceptLink}">Accept</a> or <a href="${declineLink}">Decline</a>`;
                     const subject = `${loggedInUser.name} requested to follow you`;
-                    sendFollowNotificationEmail(name, email, subject, message);
+                    // sendFollowNotificationEmail(name, email, subject, message);
                 }
                 dispatch(disableLoading());
             }

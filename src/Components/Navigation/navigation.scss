@@ -55,6 +55,7 @@ nav img {
                     letter-spacing: 0;
                     color: var(--primary-white);
                     background: var(--light-pink-bg);
+                    z-index: 100;
                 }
                 &.active {
                     svg {

@@ -112,22 +112,45 @@ export function updateFollowUnfollow(id, followedById, action) {
         userRef.doc(id).get().then((doc) => {
             let data = doc.data();
             if (action === 'follow') {
-                if (data.privacy === ('Public' || 'public')) {
+                if (data && !data.privacy) {
+                    data = {...data, 'privacy': 'public'}
+                }
+                if (data.privacy && (data.privacy === 'Public' || data.privacy === 'public')) {
                     followed = true;
-                    if (!data.followedBy) {
-                        data = {...data, followedBy: [followedById]}
+                    if (!data.notification) {
+                        data = {...data, 'notification': {'followedBy' : [followedById]}};
+                    } else if (!data.notification.followedBy) {
+                        data = {...data, 'notification': {'followedBy' : [followedById]}};
                     } else {
-                        data.followedBy.push(followedById);
+                        data.notification.followedBy.push(followedById);
+                    }
+                    if (!data.following) {
+                        data = {...data, 'following' : [followedById]};
+                    } else {
+                        data.following.push(followedById);
                     }
                 } else {
                     requested = true;
-                    if (!data.followRequestedBy) {
-                        data = {...data, followRequestedBy: [followedById]}
+                    if (!data.notification) {
+                        data = {...data, 'notification': {'followRequestedBy' : [followedById]}};
+                    } else if (!data.notification.followRequestedBy) {
+                        data = {...data, 'notification': {'followRequestedBy' : [followedById]}};
                     } else {
-                        data.followRequestedBy.push(followedById);
+                        data.notification.followRequestedBy.push(followedById);
                     }
                 }
                 userRef.doc(id).set(data).then(() => {
+                    userRef.doc(followedById).get().then((doc) => {
+                        let followedByUserData = doc.data();
+                        if (!followedByUserData.following) {
+                            followedByUserData = {...followedByUserData, 'following' : [id]};
+                        } else {
+                            followedByUserData.following.push(id);
+                        }
+                        userRef.doc(followedById).set(followedByUserData).then(() => {
+                            console.log(`Follow requested by user ${followedById} has been notified`);
+                        });
+                    });
                     if (followed) {
                         observer.next({followed: true, followedUser: id, followedBy: followedById, email: data.email, name: data.name});
                     } else if (requested) {
@@ -148,7 +171,7 @@ export function getUserPublicProfile(email){
             querySnapshot.forEach(function (doc) {
                 let data = doc.data();
                 const privateData = [
-                    'username', 'password', 'confirmPassword', 'createdOn', 'followRequestedBy', 'modifiedOn', 'subscribed'
+                    'password', 'confirmPassword', 'createdOn', 'modifiedOn', 'subscribed'
                 ]
                 privateData.map((item) => {
                     if (data[item]) {
@@ -162,4 +185,19 @@ export function getUserPublicProfile(email){
             observer.next(user);
         })
     })  
+}
+
+export function getLoggedInUserNotifications(id) {
+    return new Observable((observer) => {
+        userRef.doc(id).get().then((doc) => {
+            let data = doc.data();
+            observer.next({
+                key: doc.id,
+                name: data.name,
+                email: data.email,
+                phone: data.phone,
+                notification: data.notification
+            });
+        });
+    });
 }
