@@ -85,7 +85,7 @@ export default function UsersInfo() {
     const getUsersList = () => {
         try {
             dispatch(enableLoading());
-            getAllUser().subscribe(users => {
+            getAllUser('admin').subscribe(users => {
                 dispatch(disableLoading());
                 if (users.length) {
                     setUsersList(users);

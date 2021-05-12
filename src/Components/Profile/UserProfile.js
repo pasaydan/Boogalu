@@ -183,9 +183,9 @@ function Profile() {
         // getCompetitionByUserId(loggedInUser.key).subscribe((list) => UserLikedVideoList(list));
     }, []);
 
-    const getAllUserList = () => {
+    const getAllUserList = (userKey) => {
         return new Promise((res, rej) => {
-            getAllUser().subscribe((users) => {
+            getAllUser(userKey).subscribe((users) => {
                 res(users);
             });
         })
@@ -202,7 +202,7 @@ function Profile() {
         getUploadedVideosByUserId(loggedInUser.key).subscribe((list) => {
             setUserUploadedVideoList(list);
             if (list.length != 0) {
-                getAllUserList().then((data) => {
+                getAllUserList(loggedInUser.key).then((data) => {
                     setUserList(data);
                     let userList = data;
                     let userVdoCopy = [...list];

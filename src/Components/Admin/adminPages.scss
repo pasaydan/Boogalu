@@ -880,6 +880,92 @@
     to { -webkit-transform: translateX(-50%) rotate(360deg); }
 }
 
+.previewLessonBox {
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    .innerPreviewBox {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 90%;
+        height: 90%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        box-sizing: border-box;
+        background: var(--primary-white);
+        border-radius: 8px;
+        h3 {
+            font-size: 18px;
+            text-align: center;
+            margin: 0 0 20px 0;
+            color: var(--btn-primary-dark-bg);
+        }
+        .closeModalBtn {
+            width: 26px;
+            height: 26px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            &:before, &:after {
+                content: '';
+                position: absolute;
+                top: 11px;
+                left: 0;
+                width: 100%;
+                height: 2px;
+                background: var(--copyright-grey);
+            }
+            &:before {
+                transform: rotate(45deg);
+            }
+            &:after {
+                transform: rotate(-45deg);
+            }
+        }
+        .videosWrap {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            overflow-y: auto;
+            .videoItem {
+                flex-basis: calc(100% / 4 - 10px);
+                border-radius: 5px;
+                margin: 0 10px 20px;
+                .videoLabel {
+                    font-size: 12px;
+                    margin: 0 0 10px 0;
+                    text-align: center;
+                    color: var(--footer-list-text-grey);
+                }
+                .videoTag {
+                    width: 100%;
+                    min-height: 170px;
+                    max-height: 170px;
+                    border-radius: 5px;
+                    object-fit: cover;
+                }
+            }
+        }
+        .actionWrap {
+            display: flex;
+            justify-content: center;
+            .actionBtns {
+                flex-basis: 30%;
+                margin: 0 0 0 10px;
+                &:first-child {
+                    margin-left: 0;
+                }
+            }
+        }
+    }
+}
+
 @media screen and (max-width: 1023px) {
     .adminPanelSection {
         padding: 20px 10px 100px;
@@ -929,6 +1015,54 @@
     .optionsTab {
         width: 100%;
         margin: 0 auto;
+    }
+    .previewLessonBox {
+        .innerPreviewBox {
+            h3 {
+                margin: 10px 0;
+                font-size: 16px;
+            }
+            .closeModalBtn {
+                width: 24px;
+                height: 24px;
+                top: 5px;
+                right: 5px;
+            }
+            width: 95%;
+            height: 95%;
+            padding: 20px 10px;
+            .videosWrap {
+                padding-bottom: 50px;
+                height: 86%;
+                box-sizing: border-box;
+                .videoItem {
+                    flex-basis: calc(100% / 3 - 20px);
+                    margin: 0 5px 20px;
+                    .videoTag {
+                        width: 100%;
+                        min-height: 150px;
+                        max-height: 150px;
+                    }
+                }
+            }
+            .actionWrap {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                left: 0;
+                background: var(--primary-white);
+                padding: 10px 0;
+                box-shadow: 0 0 6px 1px rgba(0, 0, 0, 0.3);
+                border-radius: 0 0 8px 8px;
+                .actionBtns {
+                    flex-basis: 45%;
+                    padding: 5px;
+                    span {
+                        font-size: 10px;
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -1042,6 +1176,16 @@
             width: 95%;
         }
     }
+
+    .previewLessonBox {
+        .innerPreviewBox {
+            .videosWrap {
+                .videoItem {
+                    flex-basis: calc(100% / 2 - 20px);
+                }
+            }
+        }
+    }
 }
 
 @media screen and (max-width: 650px) {
@@ -1141,6 +1285,20 @@
             .upload-input-wrap {
                 .heading {
                     font-size: 10px;
+                }
+            }
+        }
+    }
+
+    .previewLessonBox {
+        .innerPreviewBox {
+            .videosWrap {
+                .videoItem {
+                    flex-basis: 100%;
+                    .videoTag {
+                        min-height: 150px;
+                        max-height: 150px;
+                    }
                 }
             }
         }

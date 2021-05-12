@@ -88,7 +88,14 @@
                         line-height: 20px;
                         color: var(--primary-white);
                         bottom: 40px;
-                        font-size: 13px;
+                        font-size: 12px;
+                        line-height: 18px;
+                        letter-spacing: 0;
+                        div {
+                            font-size: 12px;
+                            line-height: 18px;
+                            letter-spacing: 0;
+                        }
                         &:after {
                             content: '';
                             position: absolute;
@@ -250,8 +257,9 @@
         .outer-modal-wrap {
             .inner-modal-wrap {
                 width: 90%;
-                height: 95%;
+                height: 98%;
                 padding: 10px;
+                overflow-y: auto;
                 .image-contentWrap {
                     .about-competition-wrap {
                         max-height: 290px;
@@ -259,14 +267,31 @@
                 }
                 .action-wrap {
                     justify-content: space-between;
+                    flex-wrap: wrap;
                     .terms-button {
-                        font-size: 14px;
+                        font-size: 12px;
+                        input {
+                            margin: 11px 5px 0 0;
+                            display: inline-block;
+                            vertical-align: top;
+                        }
                         .tool-tip-wrap {
                             width: 285px;
                         }
                     }
                     button {
                         font-size: 12px;
+                    }
+                    .change-video-wrap {
+                        div {
+                            font-size: 12px;
+                            button {
+                                margin-left: 10px;
+                                span {
+                                    font-size: 12px;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -296,6 +321,20 @@
                     }
                 }
             }
+            .inner-modal-wrap {
+                .action-wrap {
+                    justify-content: center;
+                    .terms-button {
+                        .tool-tip-wrap {
+                            left: -106px;
+                            &:after {
+                                left: 50%;
+                                margin-left: -12px;
+                            }
+                        }
+                    } 
+                }
+            } 
         }
     }
 }

@@ -19,7 +19,7 @@ function ViewAllMembers() {
 
     useEffect(() => {
         if (loggedInUser && loggedInUser.key) {
-            getAllUserList();
+            getAllUserList(loggedInUser.key);
         } else {
             redirectToLogin();
         }
@@ -29,10 +29,10 @@ function ViewAllMembers() {
         history.push('/login');
     }
 
-    function getAllUserList() {
+    function getAllUserList(userKey) {
         dispatch(enableLoading());
         try {
-            getAllUser().subscribe((users) => {
+            getAllUser(userKey).subscribe((users) => {
                 dispatch(disableLoading());
                 if (users && users.length) {
                     let userList = users;
@@ -96,6 +96,7 @@ function ViewAllMembers() {
     return (
         <div className="userDashBoardAfterLogin viewAllMemberDashBoard">
             <div className="user-dashboard-wrap">
+                <h2>Our members</h2>
                 <div className="user-list-wrap">
                     {userList && userList.map((user) => {
                         return (

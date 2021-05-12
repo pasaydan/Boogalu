@@ -33,10 +33,10 @@ const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
 export default function Competition() {
     const initialCompetitionData = {
         name: "",
-        type: "",
+        type: "running",
         desc: "",
         active: true,
-        fee: "",
+        fee: "199",
         img: "",
         startAt: new Date(),
         endAt: new Date(),
@@ -196,6 +196,9 @@ export default function Competition() {
         } else if (CompetitionData.prices.length >= 3 && !validatePriceData(CompetitionData.prices)) {
             setFormMessageClass('error');
             setFormMessage('Please enter both name and value for Prices!');
+        }  else if (CompetitionData.startAt.toISOString().split('T')[0] === CompetitionData.endAt.toISOString().split('T')[0]) {
+            setFormMessageClass('error');
+            setFormMessage('Competition start and end date connot be same day!');
         } else {
             setFormMessageClass('');
             setFormMessage('');
@@ -206,6 +209,8 @@ export default function Competition() {
                 reader.onload = () => {
                     uploadImage(reader.result, 'competition', 'small').subscribe((downloadableUrl) => {
                         CompetitionData.img = downloadableUrl;
+                        CompetitionData.startAt = CompetitionData.startAt.toISOString();
+                        CompetitionData.endAt = CompetitionData.endAt.toISOString();
                         // save competition data to db with imag url
                         saveCompetition(CompetitionData).subscribe((response) => {
                             toggleSaveLoading(false);
@@ -391,26 +396,32 @@ export default function Competition() {
                                 />
                             </div>
                             <div className="input-wrap">
-                                <TextField className="input-field"
-                                    required
-                                    id="outlined-required-fee"
-                                    label="Fee"
-                                    type="number"
-                                    onChange={handleChange('fee')}
-                                    value={CompetitionData.fee}
-                                    variant="outlined"
-                                />
+                                <FormControl variant="outlined" className="input-field">
+                                    <InputLabel id="outlined-required-fee-label" required>Plan type</InputLabel>
+                                    <Select
+                                        required
+                                        labelId="select-outlined-label"
+                                        id="outlined-required-fee"
+                                        value={CompetitionData.fee}
+                                        onChange={handleChange('fee')}
+                                        label="Plan type"
+                                    >
+                                        <MenuItem value="199">Start-up</MenuItem>
+                                        <MenuItem value="399">Pro</MenuItem>
+                                        <MenuItem value="599">Premium</MenuItem>
+                                    </Select>
+                                </FormControl>
                             </div>
                             <div className="input-wrap">
                                 <FormControl variant="outlined" className="input-field">
-                                    <InputLabel id="select-outlined-label">Type</InputLabel>
+                                    <InputLabel id="select-outlined-label" required>Running status</InputLabel>
                                     <Select
                                         required
                                         labelId="select-outlined-label"
                                         id="select-outlined"
                                         value={CompetitionData.type}
                                         onChange={handleChange('type')}
-                                        label="Type"
+                                        label="Running status"
                                     >
                                         <MenuItem value="running">Currently Running</MenuItem>
                                         <MenuItem value="upcomming">Up-Comming</MenuItem>
