@@ -77,29 +77,44 @@ export function saveUserSubscription(id, data) {
     });
 }
 
-export function getLimitedUser() {
+export function getLimitedUser(userKey) {
     return new Observable((observer) => {
         userRef.orderBy('name').limit(10).onSnapshot((querySnapshot) => {
             let users = [];
+            console.log('User key: ', userKey);
             querySnapshot.forEach((doc) => {
                 let data = doc.data();
                 data.key = doc.id;
-                users.push(data);
+                if (data.key !== userKey) {
+                    users.push(data);
+                }
             });
             observer.next(users);
         });
     });
 }
 
-export function getAllUser() {
+export function getAllUser(from, userKey) {
     return new Observable((observer) => {
         userRef.orderBy('username').onSnapshot((querySnapshot) => {
             let users = [];
-            querySnapshot.forEach((doc) => {
-                let data = doc.data();
-                data.key = doc.id;
-                users.push(data);
-            });
+            if (from && from === 'admin') {
+                querySnapshot.forEach((doc) => {
+                    let data = doc.data();
+                    data.key = doc.id;
+                    users.push(data);
+                });
+            } else {
+                if (userKey) {
+                    querySnapshot.forEach((doc) => {
+                        let data = doc.data();
+                        data.key = doc.id;
+                        if (data.key !== userKey) {
+                            users.push(data);
+                        }
+                    });     
+                }
+            }
             observer.next(users);
         });
     });

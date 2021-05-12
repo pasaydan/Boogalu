@@ -29,7 +29,7 @@ function Feeds() {
 
     const getAllUserList = () => {
         return new Promise((res, rej) => {
-            getLimitedUser().subscribe((users) => {
+            getLimitedUser(loggedInUser.key).subscribe((users) => {
                 setUserList(users);
                 res(users);
             });
