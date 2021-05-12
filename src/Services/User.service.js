@@ -94,11 +94,11 @@ export function getLimitedUser(userKey) {
     });
 }
 
-export function getAllUser(from, userKey) {
+export function getAllUser(userKey) {
     return new Observable((observer) => {
         userRef.orderBy('username').onSnapshot((querySnapshot) => {
             let users = [];
-            if (from && from === 'admin') {
+            if (userKey && userKey === 'admin') {
                 querySnapshot.forEach((doc) => {
                     let data = doc.data();
                     data.key = doc.id;
@@ -113,6 +113,12 @@ export function getAllUser(from, userKey) {
                             users.push(data);
                         }
                     });     
+                } else {
+                    querySnapshot.forEach((doc) => {
+                        let data = doc.data();
+                        data.key = doc.id;
+                        users.push(data);
+                    });
                 }
             }
             observer.next(users);

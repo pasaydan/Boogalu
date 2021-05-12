@@ -1,4 +1,9 @@
 .viewAllMemberDashBoard {
+    h2 {
+        color: var(--footer-list-text-grey);
+        font-weight: 500;
+        font-size: 16px;
+    }
     .user-list-wrap {
         flex-direction: column;
         border: none;
