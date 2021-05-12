@@ -26,6 +26,8 @@ import { displayNotification } from "../../Actions/Notification";
 import { uploadVideo } from "../../Services/Upload.service";
 
 const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
+let previewVideoArray = [];
+let previewThumbnail = '';
 
 export default function UploadLessons() {
     const   uploaderRefThumbnailImage = useRef(),
@@ -44,6 +46,7 @@ export default function UploadLessons() {
         accessbility: 'paid',
         files: []
     };
+    
     const { state, dispatch } = useStoreConsumer();
     const loggedInUser = state.loggedInUser;
     const [isAdminLoggedIn, toggleAdminLogin] = useState(false);
@@ -56,9 +59,17 @@ export default function UploadLessons() {
     const [lessonsData, setLessonsList] = useState(null);
     const [isUploadingInProgress, toggleUploadingMessage] = useState(false);
     const [btnLoadingClass, toggleBtnLoadingClass] = useState('');
+    const [previewModeOn, togglePreviewMode] = useState(false);
     
     const createTabRef = useRef(null);
     const listTabRef = useRef(null);
+    const previewVideoPreviewRef = useRef(null);
+    const previewVideoFrontRef = useRef(null);
+    const previewVideoFrontMirrorRef = useRef(null);
+    const previewVideoBackRef = useRef(null);
+    const previewVideoBackMirrorRef = useRef(null);
+    const previewVideoVRModeRef = useRef(null);
+
     const requiredUploadFieldsForLesson = [
         "thumbnailImage",
         "preview",
@@ -184,8 +195,27 @@ export default function UploadLessons() {
     async function onChangeFile(event, ref, view) {
         event.stopPropagation();
         event.preventDefault();
-        var file = event.target.files[0];
+        const file = event.target.files[0];
         const selectedElement = event.currentTarget.parentNode;
+        const blobURL = URL.createObjectURL(file);
+        if (view === 'thumbnailImage') {
+            previewThumbnail = blobURL;
+        }
+        if (view === 'preview' || view === 'frontView' || view === 'frontMirrorView' || view === 'rearView' || view === 'rearMirrorView' || view === 'vrView') {
+            const previewVideoObject = {};
+            previewVideoObject['panel'] = view;
+            previewVideoObject['url'] = blobURL;
+            if (previewVideoArray.length) {
+                const objIndex = previewVideoArray.findIndex(previewVideoObject => previewVideoObject.panel === view);
+                if (objIndex > -1) {
+                    previewVideoArray[objIndex]['url'] = blobURL;
+                } else {
+                    previewVideoArray.push(previewVideoObject);
+                }
+            } else {
+                previewVideoArray.push(previewVideoObject);
+            }
+        }
         if (!file) {
             selectedElement.classList.remove('selected');
             setShowVideoProgressBar({...showVideoProgressBar, [view]: false});
@@ -213,26 +243,95 @@ export default function UploadLessons() {
                 reader.onload = () => {
                     setVideosToUpload({...videosToUpload, [view] : reader.result});
                     setShowVideoProgressBar({...showVideoProgressBar, [view] : true});
-                    selectedElement.classList.add('selected')
+                    selectedElement.classList.add('selected');
                 }
                 reader.onerror = error => console.error(error);
             }
         }
     }
 
+    function openPreviewMode() {
+        togglePreviewMode(true);
+        setTimeout(() => {
+            if (previewVideoArray && previewVideoArray.length) {
+                previewVideoArray.forEach(item => {
+                    if (item.panel === 'preview') {
+                        if (previewVideoPreviewRef.current) {
+                            previewVideoPreviewRef.current.src = item.url;
+                            previewVideoPreviewRef.current.controls = true;
+                            previewVideoPreviewRef.current.pause();
+                            if (previewThumbnail) {
+                                previewVideoPreviewRef.current.poster = previewThumbnail;
+                            }
+                        }
+                    }
+                    
+                    if (item.panel === 'frontView') {
+                        if (previewVideoFrontRef.current) {
+                            previewVideoFrontRef.current.src = item.url;
+                            previewVideoFrontRef.current.controls = true;
+                            previewVideoFrontRef.current.pause();
+                        }
+                    }
+                    
+                    if (item.panel === 'frontMirrorView') {
+                        if (previewVideoFrontMirrorRef.current) {
+                            previewVideoFrontMirrorRef.current.src = item.url;
+                            previewVideoFrontMirrorRef.current.controls = true;
+                            previewVideoFrontMirrorRef.current.pause();
+                        }
+                    }
+                    
+                    if (item.panel === 'rearView') {
+                        if (previewVideoBackRef.current) {
+                            previewVideoBackRef.current.src = item.url;
+                            previewVideoBackRef.current.controls = true;
+                            previewVideoBackRef.current.pause();
+                        }
+                    }
+                    
+                    if (item.panel === 'rearMirrorView') {
+                        if (previewVideoBackMirrorRef.current) {
+                            previewVideoBackMirrorRef.current.src = item.url;
+                            previewVideoBackMirrorRef.current.controls = true;
+                            previewVideoBackMirrorRef.current.pause();
+                        }
+                    }
+                    
+                    if (item.panel === 'vrView') {
+                        if (previewVideoVRModeRef.current) {
+                            previewVideoVRModeRef.current.src = item.url;
+                            previewVideoVRModeRef.current.controls = true;
+                            previewVideoVRModeRef.current.pause();
+                        }
+                    }
+                });
+            }
+        }, 100);
+    }
+
+    function closePreviewModal(event) {
+        event.stopPropagation();
+        togglePreviewMode(false);
+    }
+
     const sendSelectedVdosToUpload = () => {
         const { name, teacher, desc } = SelectedVideoData;
         if (name === "" && teacher === "" && desc === "") {
+            togglePreviewMode(false);
             setFormMessageClass('error');
             setFormMessage('Please fill all fields!');
         } else {
             if (name === "" ) {
+                togglePreviewMode(false);
                 setFormMessageClass('error');
                 setFormMessage('Please fill Name!');
             } else if (teacher === "") {
+                togglePreviewMode(false);
                 setFormMessageClass('error');
                 setFormMessage('Please fill Teacher\'s Name!');
             } else if (desc === "") {
+                togglePreviewMode(false);
                 setFormMessageClass('error');
                 setFormMessage('Please add Description!');
             } else {
@@ -283,6 +382,7 @@ export default function UploadLessons() {
         lessonDetails.name = lessonDetails.name.trim();
         toggleBtnLoadingClass('');
         if (Object.values(files) && Object.values(files).length > 0) {
+            togglePreviewMode(false);
             toggleUploadingMessage(true);
             for (const [key, value] of Object.entries(files)) {
                 if (key && value) {
@@ -611,8 +711,9 @@ export default function UploadLessons() {
                                             className={btnLoadingClass}
                                             disabled = {disableUploadButton ? true : false}
                                             variant="contained" color="primary"
-                                            onClick={() => { sendSelectedVdosToUpload() }}>
-                                            Upload Video &amp; Create Lesson
+                                            // onClick={() => { sendSelectedVdosToUpload() }}>
+                                            onClick={() => { openPreviewMode() }}>
+                                            Preview &amp; Create Lesson
                                         </Button>
                                     </div>
                                 </div>
@@ -665,6 +766,59 @@ export default function UploadLessons() {
                     <i className="infoIcon"><FaInfoCircle /></i>
                     Uploading is in progress, please do not redirect, refresh or close the browser!
                 </div> : ''
+            }
+
+            {
+                previewModeOn ?
+                    <div className="previewLessonBox">
+                        <div className="innerPreviewBox">
+                            <h3>Preview your Lesson videos</h3>
+                            <a className="closeModalBtn" onClick={(e) => closePreviewModal(e)}></a>
+                            <div className="videosWrap">
+                                <div className="videoItem">
+                                    <p className="videoLabel">Preview Video</p>
+                                    <video className="videoTag" ref={previewVideoPreviewRef}></video>
+                                </div>
+                                <div className="videoItem">
+                                    <p className="videoLabel">Front View</p>
+                                    <video className="videoTag" ref={previewVideoFrontRef}></video>
+                                </div>
+                                <div className="videoItem">
+                                    <p className="videoLabel">Front Mirror View</p>
+                                    <video className="videoTag" ref={previewVideoFrontMirrorRef}></video>
+                                </div>
+                                <div className="videoItem">
+                                    <p className="videoLabel">Back View</p>
+                                    <video className="videoTag" ref={previewVideoBackRef}></video>
+                                </div>
+                                <div className="videoItem">
+                                    <p className="videoLabel">Back Mirror View</p>
+                                    <video className="videoTag" ref={previewVideoBackMirrorRef}></video>
+                                </div>
+                                <div className="videoItem">
+                                    <p className="videoLabel">VR-Mode View</p>
+                                    <video className="videoTag" ref={previewVideoVRModeRef}></video>
+                                </div>
+                            </div>
+                            <div className="actionWrap">
+                                <Button
+                                    className={`actionBtns ${btnLoadingClass}`}
+                                    disabled = {disableUploadButton ? true : false}
+                                    variant="contained" color="primary"
+                                    onClick={() => sendSelectedVdosToUpload() }>
+                                    Create Lesson
+                                </Button>
+                                <Button
+                                    className='actionBtns'
+                                    disabled = {disableUploadButton ? true : false}
+                                    variant="outlined" color="secondary"
+                                    onClick={(e) => closePreviewModal(e) }>
+                                    Cancel &amp; modify
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                : ''
             }
             <div className="footerBox">
                 &copy; 2021 Box Puppet Ent. Pvt. Ltd., All rights reserved.
