@@ -3,10 +3,8 @@ import { useStoreConsumer } from '../../Providers/StateProvider';
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import ProfileImage from "../ProfileImage";
 import { getAllUser, updateFollowUnfollow } from "../../Services/User.service";
-// eslint-disable-next-line no-unused-vars
-import { sendEmail } from "../../Services/Email.service";
 import { useHistory } from "react-router-dom";
-import { Link } from '@material-ui/core';
+import { getUniqueArrayOfObject } from '../../helpers';
 
 // import { getUserById, updateUser, updateFollowUnfollow } from "../../Services/User.service";
 
@@ -21,6 +19,7 @@ function ViewAllMembers() {
 
     useEffect(() => {
         if (loggedInUser && loggedInUser.key) {
+            setUserList([]);
             getAllUserList(loggedInUser.key);
         } else {
             redirectToLogin();
@@ -37,12 +36,10 @@ function ViewAllMembers() {
         try {
             getAllUser(userKey).subscribe((users) => {
                 dispatch(disableLoading());
+                let updatedUserList = [];
                 if (users && users.length) {
-                    // eslint-disable-next-line no-unused-vars
-                    let userList = users;
-                    let updatedUserList = []
-                    users.forEach((user, index) => {
-                        let currentuser = user
+                    users.forEach(user => {
+                        let currentuser = user;
                         if (currentuser.notification) {
                             if (currentuser.notification.followRequestedBy && currentuser.notification.followRequestedBy.length > 0) {
                                 currentuser.notification.followRequestedBy.forEach((requestId) => {
@@ -66,8 +63,8 @@ function ViewAllMembers() {
                         }
                         updatedUserList.push(currentuser);
                     });
-                    console.log("updatedUserList" ,updatedUserList);
-                    setUserList(updatedUserList);
+                    const updatedUniqueList = getUniqueArrayOfObject(updatedUserList, 'key');
+                    setUserList(updatedUniqueList);
                 }
             });
         } catch(e) {
@@ -79,7 +76,7 @@ function ViewAllMembers() {
     function handleFollowBtnClick(event, toFollow, followBy) {
         event.preventDefault();
         // eslint-disable-next-line no-unused-vars
-        const action = event.currentTarget.dataset.action.toLowerCase();
+        const action = event?.currentTarget?.dataset?.action?.toLowerCase();
         console.log("action ", action);
 
         dispatch(enableLoading());
@@ -88,12 +85,14 @@ function ViewAllMembers() {
                 const { name, email } = response;
                 console.log('Name: ', name);
                 console.log('Email: ', email);
-                if (response.followed) {
-                    setFollowButtonText('Following')
-                }
-                if (response.requested) {
-                    setFollowButtonText('Requested')
-                }
+                setUserList([]);
+                getAllUserList(loggedInUser.key);
+                // if (response.followed) {
+                //     setFollowButtonText('Following')
+                // }
+                // if (response.requested) {
+                //     setFollowButtonText('Requested')
+                // }
             }
 
             dispatch(disableLoading());
@@ -122,11 +121,12 @@ function ViewAllMembers() {
                                 {/* This will be dynamic data */}
                                 <span className="followsInfo">Follows you / followed by text</span>
                             </div>
-                            <Link 
+                            <button 
                                 onClick={(event) => handleFollowBtnClick(event, user.key, loggedInUser.key)} 
                                 className="btn primary-light followBtn" 
-                                data-action={user.actionBtnText}>{user.actionBtnText || followButtonText}
-                            </Link>
+                                data-action={user.actionBtnText || followButtonText}>
+                                    {user.actionBtnText || followButtonText}
+                            </button>
                         </div>
                         )
                     })}
