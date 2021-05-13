@@ -481,10 +481,13 @@ function Profile() {
         dispatch(enableLoading());
         updateFollowUnfollow(toFollow, followBy, action).subscribe((response) => {
             if (response) {
+                // eslint-disable-next-line no-unused-vars
                 const { name, email } = response;
                 if (response.followed) {
                     setFollowButtonText('Following');
+                    // eslint-disable-next-line no-unused-vars
                     const message = `${loggedInUser.name} started following`;
+                    // eslint-disable-next-line no-unused-vars
                     const subject = `${loggedInUser.name} started following`;
                     // sendFollowNotificationEmail(name, email, subject, message);
                 }
@@ -492,7 +495,9 @@ function Profile() {
                     setFollowButtonText('Requested');
                     const acceptLink = `${REACT_APP_URL}profile?followrequest=accept&requestBy=${encodeURIComponent(loggedInUser.email)}`
                     const declineLink = `${REACT_APP_URL}profile?followrequest=decline&requestBy=${encodeURIComponent(loggedInUser.email)}`
+                    // eslint-disable-next-line no-unused-vars
                     const message = `${loggedInUser.name} requested to follow you.<br /><br />You can <a href="${acceptLink}">Accept</a> or <a href="${declineLink}">Decline</a>`;
+                    // eslint-disable-next-line no-unused-vars
                     const subject = `${loggedInUser.name} requested to follow you`;
                     // sendFollowNotificationEmail(name, email, subject, message);
                 }
@@ -501,8 +506,7 @@ function Profile() {
         })
     }
 
-
-
+    // eslint-disable-next-line no-unused-vars
     const sendFollowNotificationEmail = (name, email, subject, message) => {
         let emailBody = `<div>
         <p>Hi ${name}, ${message}</p>. 

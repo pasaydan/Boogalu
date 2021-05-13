@@ -11,8 +11,7 @@ import { MdNotifications, MdNotificationsActive, MdAccountCircle } from "react-i
 import { NOTIFICATION_SUCCCESS } from "../../Constants";
 import { displayNotification } from "../../Actions/Notification";
 import * as $ from 'jquery';
-import { getUserByEmail, getUserById, getLoggedInUserNotifications } from '../../Services/User.service';
-import { bindCallback } from 'rxjs';
+import {  getUserById, getLoggedInUserNotifications } from '../../Services/User.service';
 
 const SCROLL_TOP_LIMIT = 200;
 
@@ -33,6 +32,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
     const [showUserNotificationMenu, setShowUserIconNotificationMenu] = useState(false);
     // eslint-disable-next-line no-unused-vars
     const [userNotificationList, setUserNotificationList] = useState([]);
+    // eslint-disable-next-line no-unused-vars
     const [notificationArray, setNotificationArray] = useState([])
     
     const ref = useRef();
@@ -204,17 +204,18 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
         //         }
         //     })
         // }, 5000);
-        if (loggedInUser) {
+        if (loggedInUser.key) {
             getLoggedInUserNotifications(loggedInUser.key).subscribe((response) => {
                 const notification = response && response.notification && response.notification ? response.notification : [];
                 if (notification && Object.keys(notification).length > 0) {
                     const notificationKeys = Object.keys(notification);
                     const flatValues = Object.values(notification).flat()
                     let valueCount = 0;
-                    notificationKeys.map((key, index) => {
+                    notificationKeys.forEach((key, index) => {
                         const valuesByKey = notification[key];
-                        valuesByKey.map((value) => {
+                        valuesByKey.forEach((value) => {
                             getUserById(value).subscribe((response) => {
+                                // eslint-disable-next-line no-unused-vars
                                 valueCount++;
                                 let responseData = response
                                 responseData = {...responseData, [key]: true}
@@ -235,6 +236,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                 }
             })
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -669,7 +671,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                         <div className={`profile-tab-wrap userNotificationOptionWrap user-icon-menu-wrap ${showUserNotificationMenu ? 'showMenu' : ''}`} onClick={(e) => headerMenusClicked(e)}>
                             <i title="close notification" className="closeNotificationIcon" onClick={(e) => headerMenusClicked(e)}></i>
                             {
-                                true && isNotificationsPresent &&  userNotificationList && userNotificationList.length ?
+                                isNotificationsPresent &&  userNotificationList && userNotificationList.length ?
                                 <div className="innerMenuWrap">
                                     <ul className="notificationList">
                                         {
