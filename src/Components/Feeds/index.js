@@ -138,24 +138,47 @@ function Feeds() {
                         feed.profileImage = user.profileImage;
                         feed.privacy = user.privacy || "Public";
                         user.isAnyVideoSubmitted = true;
-                        if (user.followedBy && user.followedBy.length > 0) {
-                            const checkIfUserFollowingVideoCreator = user.followedBy.filter( (followedByUserId) => followedByUserId === loggedInUser.key);
-                            console.log("checkIfUserFollowingVideoCreator", checkIfUserFollowingVideoCreator);
-                            if (checkIfUserFollowingVideoCreator && checkIfUserFollowingVideoCreator.length > 0) {
-                                feed.following = true;
-                            } else {
-                                feed.following = false;
+
+
+                        if (user.notification) {
+                            if (user.notification.followRequestedBy && user.notification.followRequestedBy.length > 0) {
+                                user.notification.followRequestedBy.map((requestId) => {
+                                    if (requestId === loggedInUser.key) {
+                                        user = {...user, 'iRequestedFollow': true, actionBtnText: 'Requested'}
+                                        // updatedUserList.push(user);
+                                        // userList = {...userList, user};
+                                    }
+                                });
+                            }
+                            if (user.notification.followedBy && user.notification.followedBy.length > 0) {
+                                user.notification.followedBy.map((requestId) => {
+                                    if (requestId === loggedInUser.key) {
+                                        user = {...user, 'imFollowing': true, actionBtnText: 'Following'}
+                                        // updatedUserList.push(user);
+                                    }
+                                });
                             }
                         }
-                        if (user.followRequestedBy && user.followRequestedBy.length > 0) {
-                            const checkIfUserRequestedToFollowVideoCreator = user.followRequestedBy.filter( (followRequestedByUserId) => followRequestedByUserId === loggedInUser.key);
-                            console.log("checkIfUserRequestedToFollowVideoCreator", checkIfUserRequestedToFollowVideoCreator);
-                            if (checkIfUserRequestedToFollowVideoCreator && checkIfUserRequestedToFollowVideoCreator.length > 0) {
-                                feed.followRequested = true;
-                            } else {
-                                feed.followRequested = false;
-                            }
-                        }
+                        // if (user.notification.followedBy && user.notification.followedBy.length > 0) {
+                        //     const checkIfUserFollowingVideoCreator = user.notification.followedBy.filter( (followedByUserId) => followedByUserId === loggedInUser.key);
+                        //     console.log("checkIfUserFollowingVideoCreator", checkIfUserFollowingVideoCreator);
+                        //     if (checkIfUserFollowingVideoCreator && checkIfUserFollowingVideoCreator.length > 0) {
+                        //         user.following = true;
+                        //         // setFollowButtonText('Following');
+                        //     } else {
+                        //         user.following = false;
+                        //     }
+                        // }
+                        // if (user.notification.followRequestedBy && user.notification.followRequestedBy.length > 0) {
+                        //     const checkIfUserRequestedToFollowVideoCreator = user.notification.followRequestedBy.filter( (followRequestedByUserId) => followRequestedByUserId === loggedInUser.key);
+                        //     console.log("checkIfUserRequestedToFollowVideoCreator", checkIfUserRequestedToFollowVideoCreator);
+                        //     if (checkIfUserRequestedToFollowVideoCreator && checkIfUserRequestedToFollowVideoCreator.length > 0) {
+                        //         user.followRequested = true;
+                        //         // setFollowButtonText('Requested');
+                        //     } else {
+                        //         user.followRequested = false;
+                        //     }
+                        // }
                     }
                     if (feed.likes && feed.likes.length) {
                         let isAvail = feed.likes.filter(data => data.userId == loggedInUser.key)
@@ -176,13 +199,60 @@ function Feeds() {
     }
 
     function openUserStory(user) {
-        let userVdos = feedList.filter((feed) => user.key == feed.userId);
+        let userVdos = feedList.map((feed) => {
+            if (user.key == feed.userId) {
+
+
+
+
+                if (user.notification) {
+                    if (user.notification.followRequestedBy && user.notification.followRequestedBy.length > 0) {
+                        user.notification.followRequestedBy.map((requestId) => {
+                            if (requestId === loggedInUser.key) {
+                                user = {...user, 'iRequestedFollow': true, actionBtnText: 'Requested'}
+                                // updatedUserList.push(user);
+                                // userList = {...userList, user};
+                            }
+                        });
+                    }
+                    if (user.notification.followedBy && user.notification.followedBy.length > 0) {
+                        user.notification.followedBy.map((requestId) => {
+                            if (requestId === loggedInUser.key) {
+                                user = {...user, 'imFollowing': true, actionBtnText: 'Following'}
+                                // updatedUserList.push(user);
+                            }
+                        });
+                    }
+                }
+
+                // if (user.notification.followedBy && user.notification.followedBy.length > 0) {
+                //     const checkIfUserFollowingVideoCreator = user.notification.followedBy.filter( (followedByUserId) => followedByUserId === loggedInUser.key);
+                //     console.log("checkIfUserFollowingVideoCreator", checkIfUserFollowingVideoCreator);
+                //     if (checkIfUserFollowingVideoCreator && checkIfUserFollowingVideoCreator.length > 0) {
+                //         user.following = true;
+                //         setFollowButtonText('Following');
+                //     } else {
+                //         user.following = false;
+                //     }
+                // }
+                // if (user.notification.followRequestedBy && user.notification.followRequestedBy.length > 0) {
+                //     const checkIfUserRequestedToFollowVideoCreator = user.notification.followRequestedBy.filter( (followRequestedByUserId) => followRequestedByUserId === loggedInUser.key);
+                //     console.log("checkIfUserRequestedToFollowVideoCreator", checkIfUserRequestedToFollowVideoCreator);
+                //     if (checkIfUserRequestedToFollowVideoCreator && checkIfUserRequestedToFollowVideoCreator.length > 0) {
+                //         user.followRequested = true;
+                //         setFollowButtonText('Requested');
+                //     } else {
+                //         user.followRequested = false;
+                //     }
+                // }
+            }
+        });
         setActiveVideoObj({});
-        setFollowButtonText('Follow');
+        // setFollowButtonText('Follow');
         setClickedUserDetails(user);
         if (userVdos.length) {
             setActiveVideoObj(userVdos[0]);
-            setFollowButtonText(userVdos[0].following ? 'Following' : 'Follow');
+            // setFollowButtonText(userVdos[0].following ? 'Following' : 'Follow');
         };
         setCommentModal(true);
     }

@@ -54,13 +54,12 @@ function ViewAllMembers() {
                                     if (requestId === loggedInUser.key) {
                                         currentuser = {...currentuser, 'imFollowing': true, actionBtnText: 'Following'}
                                         updatedUserList.push(currentuser);
-                                        // userList = {...userList, currentuser};
-
                                     }
                                 });
                             }
+                        } else {
+                            updatedUserList.push(currentuser);
                         }
-                        updatedUserList.push(currentuser);
                     });
                     console.log("updatedUserList" ,updatedUserList);
                     setUserList(updatedUserList);
