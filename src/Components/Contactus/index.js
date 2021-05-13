@@ -21,13 +21,14 @@ function ContactUs() {
         subject: '',
         message: ''
     }
-    const { state, dispatch } = useStoreConsumer();
+    const { state } = useStoreConsumer();
     let loggedInUser = state.loggedInUser;
     const history = useHistory();
     const [formFields, setFormFields] = useState(initialFields);
     const [enquirySubmitted, setEnquirySubmitted] = useState(false)
     useEffect(() => {
         if (state.loggedInUser?.username) {
+            // eslint-disable-next-line react-hooks/exhaustive-deps
             initialFields = {
                 name: loggedInUser.name,
                 email: loggedInUser.email,

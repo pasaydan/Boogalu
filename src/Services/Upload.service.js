@@ -25,9 +25,12 @@ export function uploadImage(image, from, type) {
                     case firebase.storage.TaskState.PAUSED: // or 'paused'
                         console.log('Upload is paused');
                         break;
+                    
                     case firebase.storage.TaskState.RUNNING: // or 'running'
                         console.log('Upload is running');
                         break;
+
+                    default: break;
                 }
             }, (error) => {
                 console.log(error);
@@ -90,9 +93,12 @@ export function uploadVideo(video, uploadPath, pathId, view) {
                     case firebase.storage.TaskState.PAUSED: // or 'paused'
                         console.log('Upload is paused');
                         break;
+
                     case firebase.storage.TaskState.RUNNING: // or 'running'
                         console.log('Upload is running');
                         break;
+                    
+                    default: break;
                 }
             }, (error) => {
                 console.log(error);
@@ -109,7 +115,6 @@ export function deleteVideo(videoUrl, imageUrl) {
     const getVideoNameWithPath = /[^/]*$/.exec(splitURL)[0];
     const decodedURI = decodeURIComponent(getVideoNameWithPath);
     const deleteVideoRef = storageRef.child(decodedURI);
-    const defaultThumbnailURL = 'uploads/thumbnail/thumbnail.jpg';
     return new Observable((observer) => {
         deleteVideoRef.delete().then(() => {
             console.log("Video Deleted!!!");

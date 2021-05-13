@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
@@ -12,7 +12,7 @@ import usersIcon from '../../Images/users-icon.png';
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { getAllUser } from "../../Services/User.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
-import { MdRemoveRedEye, MdModeEdit, MdBlock, MdDeleteForever } from 'react-icons/md';
+import { MdRemoveRedEye, MdBlock, MdDeleteForever } from 'react-icons/md';
 import { getUploadedVideosByUserId, deleteUploadedVideoByVideoKey } from "../../Services/UploadedVideo.service";
 import ConfirmationModal from '../ConfirmationModal';
 import { deleteImage, deleteVideo } from "../../Services/Upload.service";
@@ -21,7 +21,7 @@ import { getUserById } from "../../Services/User.service";
 const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
 
 export default function UsersInfo() {
-    const { state, dispatch } = useStoreConsumer();
+    const { dispatch } = useStoreConsumer();
     const [isAdminLoggedIn, toggleAdminLogin] = useState(false);
     const [adminEmail, setAdminEmail] = useState('');
     const [adminPwd, setAdminPwd] = useState('');
@@ -46,6 +46,7 @@ export default function UsersInfo() {
             toggleAdminLogin(checkAdminLogIn);
             getUsersList();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 
@@ -216,7 +217,7 @@ export default function UsersInfo() {
                 isFetchUserModalActive ?
                 <div className="fetchUserDetailModal">
                     <div className="fetchUserDetailsInner">
-                        <a className="closeUserModal" title="close modal" onClick={(e) => closeUserModal(e)}></a>
+                        <p className="closeUserModal" title="close modal" onClick={(e) => closeUserModal(e)}></p>
                         {
                             isUserDataLoading ?
                             <div className="spinnerLoader">
@@ -241,9 +242,9 @@ export default function UsersInfo() {
                                                 <p className="subText">
                                                     {item.uploadedTime}
                                                 </p>
-                                                <a className="deleteVideoIcon" title="delete this video" onClick={(e) => deleteUserVideo(e, item.key, item.userId, item.url, item.thumbnail, item.title)}>
+                                                <p className="deleteVideoIcon" title="delete this video" onClick={(e) => deleteUserVideo(e, item.key, item.userId, item.url, item.thumbnail, item.title)}>
                                                     <MdDeleteForever />
-                                                </a>
+                                                </p>
                                             </div>
                                         )
                                     })
@@ -296,9 +297,9 @@ export default function UsersInfo() {
             <div className={`competition-bo-wrap clearfix ${(isAdminLoggedIn || checkAdminLogIn) && 'loggedInAdmin usersListBox'}`}>
                 {
                     isAdminLoggedIn || checkAdminLogIn ?
-                        <a className="logOutIconWrap" title="logout" onClick={(e) => tiggerAdminLogout(e, false)}>
+                        <p className="logOutIconWrap" title="logout" onClick={(e) => tiggerAdminLogout(e, false)}>
                             <img src={logOutIcon} alt="logout" />
-                        </a> : ''
+                        </p> : ''
                 }
                 {
                     isAdminLoggedIn || checkAdminLogIn ?
@@ -339,7 +340,7 @@ export default function UsersInfo() {
                                 <tbody>
                                     {
                                         userListData && userListData.length &&
-                                        userListData.map((item, index) => {
+                                        userListData.forEach((item, index) => {
                                             if (item.role !== 'admin') {
                                                 return (
                                                     <tr key={`user-item-${index}`}>
@@ -352,15 +353,12 @@ export default function UsersInfo() {
                                                         <td>{item.country || 'N/A'}</td>
                                                         <td>
                                                             <div className="actionBlock">
-                                                                <a className="viewUserIcon" title="View users videos" onClick={(e) => fetchUsersVideoDetails(e, item.key)}>
+                                                                <p className="viewUserIcon" title="View users videos" onClick={(e) => fetchUsersVideoDetails(e, item.key)}>
                                                                     <MdRemoveRedEye />
-                                                                </a>
-                                                                {/* <a className="editUserIcon" title="Edit user" onClick={(e) => editUser(e, item.key)}>
-                                                                    <MdModeEdit />
-                                                                </a> */}
-                                                                <a className="blockUserIcon" title="De-activate user" onClick={(e) => deactivateUser(e, item.key)}>
+                                                                </p>
+                                                                <p className="blockUserIcon" title="De-activate user" onClick={(e) => deactivateUser(e, item.key)}>
                                                                     <MdBlock />
-                                                                </a>
+                                                                </p>
                                                             </div>
                                                         </td>
                                                     </tr>

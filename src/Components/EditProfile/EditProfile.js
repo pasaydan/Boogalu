@@ -21,10 +21,9 @@ import { uploadImage } from "../../Services/Upload.service";
 import { FaPlus, FaEdit } from 'react-icons/fa';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import { NOTIFICATION_SUCCCESS, NOTIFICATION_ERROR, MALE_PROFILE_DEFAULT_IMAGE, FEMALE_PROFILE_DEFAULT_IMAGE } from "../../Constants";
+import { MALE_PROFILE_DEFAULT_IMAGE } from "../../Constants";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
-import { FormControlLabel, FormGroup, FormLabel, Radio, RadioGroup } from '@material-ui/core';
-import { setActiveVideoForCompetition } from "../../Actions/Competition";
+import { FormControlLabel, FormLabel, Radio, RadioGroup } from '@material-ui/core';
 import { getUserByEmail } from "../../Services/User.service";
 import { loginUser } from '../../Actions/User/index';
 import * as $ from 'jquery';
@@ -35,7 +34,7 @@ export default function EditProfile() {
     let loggedInUser = state.loggedInUser;
     console.log("loggedInUser", loggedInUser)
     // get data from history props if redirected through google or facebook login
-    if (history.location.state && (history.location.state.source == 'Facebook' || history.location.state.source == 'Google')) {
+    if (history.location.state && (history.location.state.source === 'Facebook' || history.location.state.source === 'Google')) {
         loggedInUser.email = history.location.state.email;
         loggedInUser.name = history.location.state.name;
         // setNeedToRegisterError('You are not registered yet, Please register with Choreoculture.')
@@ -73,10 +72,11 @@ export default function EditProfile() {
                 }
             });
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const setSignupUserCred = (e) => {
-        if (userDetails.password != userDetails.confirmPassword) {
+        if (userDetails.password !== userDetails.confirmPassword) {
             setSignUpError('Password dose not match.');
             return;
         }
@@ -108,7 +108,7 @@ export default function EditProfile() {
 
     function setDateOfBirth(date) {
         try {
-            setUserDetails({ ...userDetails, ['dob']: date });
+            setUserDetails({ ...userDetails, 'dob': date });
         } catch (e) {
             console.log('DOB Error: ', e);
         }
@@ -156,7 +156,7 @@ export default function EditProfile() {
                 </div>
                 <div className="profile-img-wrap">
                     <div className="uploaded-img" >
-                        <img src={userDetails.profileImage} onClick={() => { uploaderRef.current.click() }} />
+                        <img src={userDetails.profileImage} onClick={() => { uploaderRef.current.click() }} alt="profile" />
                     </div>
                     {
                         isUserPhotoUploaded ?

@@ -135,6 +135,7 @@
         color: var(--primary-white);
         font-size: 18px;
         cursor: pointer;
+        margin: 0;
     }
     
     &:hover {
@@ -291,6 +292,7 @@
         height: 34px;
         z-index: 101;
         cursor: pointer;
+        margin: 0;
         span {
             position: absolute;
             width: 100%;

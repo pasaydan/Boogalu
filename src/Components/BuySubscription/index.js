@@ -25,10 +25,13 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
     const loggedInUser = state.loggedInUser;
     const [openDetailsModal, setOpenDetailsModal] = useState(true);
     const subscriptionDetails = state.activeSubscription;
+    // eslint-disable-next-line no-unused-vars
     const [subsciptionValidity, setsubsciptionValidity] = useState(null);
+    // eslint-disable-next-line no-unused-vars
     const [subscription, setSubscription] = useState(null);
     const [buttonLoadingClass, toggleButtonLoading] = useState('');
     const competitionDetails = state.activeCompetition;
+    // eslint-disable-next-line no-unused-vars
     const RAZORPAY_TEST_KEY = process.env.REACT_APP_RAZORPAY_KEY;
     useEffect(() => {
         let validUpto = new Date();
@@ -71,7 +74,7 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
 
     const proceedForCompetition = () => {
         // if (state.loggedInUser && state.loggedInUser.subscribed) {
-        if (state.currentLoginFlow == 'competition-subscription') {
+        if (state.currentLoginFlow === 'competition-subscription') {
             submitForCompetition();
         } else {
             history.push('/competitions');
@@ -86,7 +89,7 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
         console.log("response", response);
         try {
             updatePayment(response).subscribe((res) => {
-                const responseData = res.data;
+                // const responseData = res.data;
                 // setSubscription(responseData);
                 console.log('postOrder response >>>>>', response);
                 const userDetails = {
@@ -152,7 +155,7 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
                             <CloseIcon />
                         </IconButton>
                         <h3>Boogalu Subscription</h3>
-                        {activeStep == 1 && <div>
+                        {activeStep === 1 && <div>
                             <div className="subs-details-wrap">
                                 <p>
                                     Welcome, we are glad to see you. Now, you can subscribe to our application, and
@@ -170,14 +173,14 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
                                 // <a href="#" onClick={(e) => proceedForPayment(e)}> Subscribe </a>
                             }
                         </div>}
-                        {activeStep == 2 && <div>
+                        {activeStep === 2 && <div>
                             <p className="subscriptionMessage success">Subscription Payment Recieved Successfully</p>
                             <div className="actionWrap">
                                 <Button variant="contained" color="secondary" onClick={(e) => proceedForLessons()}>Continue to Lessons</Button>
                                 <Button variant="contained" color="secondary" onClick={(e) => proceedForCompetition()}>Continue to competition</Button>
                             </div>
                         </div>}
-                        {activeStep == 3 && <div>
+                        {activeStep === 3 && <div>
                             <p className="subscriptionMessage failed">Subscription Payment Fail</p>
                             <Button variant="contained" color="secondary" onClick={(e) => proceedForPayment(e)}>Retry</Button>
                         </div>}

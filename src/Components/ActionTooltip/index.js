@@ -5,6 +5,7 @@ export default function ActionToolTip(props) {
 
     useEffect(() => {
         document.addEventListener('click', toggleMenuAction);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     function toggleMenuAction(event) {
@@ -33,8 +34,8 @@ export default function ActionToolTip(props) {
             {
                 isActionClick ?
                 <div className="menu">
-                    <a onClick={(e) => actionSelected(e, props.isActive ? 'deactivate' : 'activate')}>{props.isActive ? 'De-activate' : 'Activate'}</a>
-                    <a onClick={(e) => actionSelected(e, 'remove')}>Delete</a>
+                    <p className="menuChild" onClick={(e) => actionSelected(e, props.isActive ? 'deactivate' : 'activate')}>{props.isActive ? 'De-activate' : 'Activate'}</p>
+                    <p className="menuChild" onClick={(e) => actionSelected(e, 'remove')}>Delete</p>
                 </div> : ''
             }
         </p>

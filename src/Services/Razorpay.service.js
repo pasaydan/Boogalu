@@ -5,6 +5,7 @@ const
     APP_API_URL = process.env.REACT_APP_API_URL,
     RAZORPAY_ORDERS_API_URL = process.env.REACT_APP_RAZORPAY_ORDERS_API_URL,
     RAZORPAY_TEST_KEY = process.env.REACT_APP_RAZORPAY_KEY,
+    // eslint-disable-next-line no-unused-vars
     RAZORPAY_TEST_SECRET = process.env.REACT_APP_RAZORPAY_SECRET;
 
 const header = new Headers();

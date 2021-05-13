@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import UseWindowDimensions from '../WindowDimensionHook';
 import "../../../node_modules/react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
 
 const ImageCarousel = () => {
-    const { viewportWidth, viewportHeight } = UseWindowDimensions();
+    const { viewportWidth } = UseWindowDimensions();
 
     return (
         <div className="carouselWrap">
@@ -17,18 +17,18 @@ const ImageCarousel = () => {
                 <div className="imageContentWrap">
                     {
                         viewportWidth <= 640  ? 
-                            <img src="https://i.imgur.com/Mf66SeA.jpeg" alt="image-1" />
+                            <img src="https://i.imgur.com/Mf66SeA.jpeg" alt="banner-1" />
                         :
-                            <img src="https://i.imgur.com/7dzYFKS.jpg" alt="image-1" />
+                            <img src="https://i.imgur.com/7dzYFKS.jpg" alt="banner-1-dekstop" />
                     }
                     {/* <p className="legend">Solo Dance Competition</p> */}
                 </div>
                 <div className="imageContentWrap">
                     {
                         viewportWidth <= 640  ? 
-                            <img src="https://i.imgur.com/nFQgzwS.jpeg" alt="image-2" />
+                            <img src="https://i.imgur.com/nFQgzwS.jpeg" alt="banner-2" />
                         :
-                         <img src="https://i.imgur.com/zOHB88w.jpeg" alt="image-2" />
+                         <img src="https://i.imgur.com/zOHB88w.jpeg" alt="banner-2-dekstop" />
                     }
                     {/* <p className="legend">Dance Contest</p> */}
                 </div>

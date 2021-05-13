@@ -162,7 +162,7 @@
     justify-content: flex-start;
     border-bottom: 1px solid var(--primary-white);
     padding: 0 10px;
-    a {
+    .tabItem {
         display: block;
         cursor: pointer;
         min-width: 100px;
@@ -171,7 +171,7 @@
         text-align: center;
         border-radius: 5px 5px 0 0;
         color: var(--btn-primary-light-bg);
-        margin-bottom: -1px;
+        margin: 0 0 -1px 0;
         &:hover {
             color: var(--success-green);
         }
@@ -211,6 +211,7 @@
         right: 10px;
         cursor: pointer;
         z-index: 1;
+        margin: 0;
         img {
             width: 100%;
         }
@@ -476,7 +477,7 @@
                     border-top: 1px solid rgba(0, 0, 0, 0.2);
                     border-left: 1px solid rgba(0, 0, 0, 0.2);
                 }
-                a {
+                .menuChild {
                     cursor: pointer;
                     font-size: 14px;
                     display: block;
@@ -486,6 +487,7 @@
                     font-weight: normal;
                     transition: all 0.3s ease-out;
                     color: var(--footer-list-text-grey);
+                    margin: 0;
                     &:hover {
                         color: var(--primary-link-color-blue);
                     }
@@ -682,7 +684,7 @@
                     padding: 5px;
                     cursor: pointer;
                     font-size: 18px;
-                    margin-right: 10px;
+                    margin: 0 10px 0 0;
                     color: var(--copyright-grey);
                     transition: all 0.3s ease-in-out;
                     &:hover {
@@ -779,6 +781,7 @@
             cursor: pointer;
             top: 5px;
             right: 5px;
+            margin: 0;
             &:before, &:after {
                 content: '';
                 position: absolute;
@@ -826,6 +829,7 @@
                     position: absolute;
                     right: -5px;
                     top: 160px;
+                    margin: 0;
                     cursor: pointer;
                     transition: all 0.3s ease-in-out;
                     &:hover {
@@ -912,6 +916,7 @@
             top: 10px;
             right: 10px;
             cursor: pointer;
+            margin: 0;
             &:before, &:after {
                 content: '';
                 position: absolute;
@@ -1116,6 +1121,11 @@
         }
         &.loggedInAdmin {
             width: 100%;
+        }
+        .fileContainer {
+            p {
+                letter-spacing: 0;
+            }
         }
     }
 

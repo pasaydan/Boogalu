@@ -61,18 +61,18 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
     }, [competitionDetails]);
 
     useEffect(() => {
-        (loggedInUser.email && loggedInUser.phone && ActiveStep === 3 && userUploadedVdos.length == 0) && getUploadedVideosByUserId(loggedInUser.key).subscribe((vdoList) => {
+        (loggedInUser.email && loggedInUser.phone && ActiveStep === 3 && userUploadedVdos.length === 0) && getUploadedVideosByUserId(loggedInUser.key).subscribe((vdoList) => {
             if (vdoList && vdoList.length) {
-                vdoList.map((uploadedVdo) => {
+                vdoList.forEach((uploadedVdo) => {
                     if (competitionDetails.isUserEnrolled) {
-                        if (uploadedVdo.key == competitionDetails.userSubmitedDetails.vdo.key) {
+                        if (uploadedVdo.key === competitionDetails.userSubmitedDetails.vdo.key) {
                             uploadedVdo.isSelected = true;
                             let updatedCompetition = competitionDetails;
                             updatedCompetition.selectedVideo = uploadedVdo;
                             dispatch(setActiveCompetition(updatedCompetition));
                             setDisableSubmitVdoButton(true);
                         }
-                    } else if (state.currentLoginFlow === 'profile-competition' && state.activeVideoForCompetition == uploadedVdo.key) {
+                    } else if (state.currentLoginFlow === 'profile-competition' && state.activeVideoForCompetition === uploadedVdo.key) {
                         // if user come from profile page by clicking upload for competition
                         uploadedVdo.isSelected = true;
                         let updatedCompetition = competitionDetails;
@@ -88,13 +88,13 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                 setActiveTabInVdoSelection(2);
             }
         });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ActiveStep]);
 
     const setActiveTabInVdoSelection = (tab) => {
-        const getCurrentData = 'tab-2';
         const tabsLinks = Array.from(document.querySelectorAll('.tab-links'));
         const tabsBoxes = Array.from(document.querySelectorAll('.js-inner-tab-box'));
-        let currentTab = tab == 1 ? 'tab-1' : 'tab-2'
+        let currentTab = tab === 1 ? 'tab-1' : 'tab-2'
         tabsBoxes.forEach(item => {
             if (item.getAttribute('id') === currentTab) {
                 item.classList.add('active');
@@ -124,7 +124,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
             toggleVideoSelect(false);
             setVideoData(vdo);
         }
-        if (competitionDetails.isUserEnrolled && competitionDetails.userSubmitedDetails.vdo.key == vdo.key) {
+        if (competitionDetails.isUserEnrolled && competitionDetails.userSubmitedDetails.vdo.key === vdo.key) {
             setDisableSubmitVdoButton(true);
             let updatedCompetition = competitionDetails;
             delete updatedCompetition.selectedVideo;
@@ -132,8 +132,8 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
         }
         else setDisableSubmitVdoButton(false);
         let updatedVdos = userUploadedVdos;
-        updatedVdos.map((item) => {
-            if (item.key == vdo.key) {
+        updatedVdos.forEach((item) => {
+            if (item.key === vdo.key) {
                 item.isSelected = true;
                 let updatedCompetition = competitionDetails;
                 updatedCompetition.selectedVideo = item;
@@ -209,9 +209,9 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
             getUploadedVideosByUserId(loggedInUser.key).subscribe((vdoList) => {
                 if (vdoList) {
                     setActiveTabInVdoSelection(1);
-                    vdoList.map((uploadedVdo) => {
+                    vdoList.forEach((uploadedVdo) => {
                         if (competitionDetails.isUserEnrolled) {
-                            if (uploadedVdo.key == competitionDetails.userSubmitedDetails.vdo.key) {
+                            if (uploadedVdo.key === competitionDetails.userSubmitedDetails.vdo.key) {
                                 uploadedVdo.isSelected = true;
                                 let updatedCompetition = competitionDetails;
                                 updatedCompetition.selectedVideo = uploadedVdo;
@@ -258,14 +258,14 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                 <Fade in={open}>
                     <div className="outer-modal-wrap">
                         {<div className="inner-modal-wrap">
-                            {(ActiveStep == 1 || ActiveStep === 2) && <IconButton className="close-modal-btn" onClick={() => { handleClose(); (state.activeCompetition && !state.currentLoginFlow) && dispatch(setActiveCompetition(null)) }}>
+                            {(ActiveStep === 1 || ActiveStep === 2) && <IconButton className="close-modal-btn" onClick={() => { handleClose(); (state.activeCompetition && !state.currentLoginFlow) && dispatch(setActiveCompetition(null)) }}>
                                 <CloseIcon />
                             </IconButton>}
-                            {(ActiveStep == 3 || ActiveStep == 4) && <IconButton className="close-modal-btn back-step-btn" onClick={() => setActiveStep(ActiveStep - 1)}>
+                            {(ActiveStep === 3 || ActiveStep === 4) && <IconButton className="close-modal-btn back-step-btn" onClick={() => setActiveStep(ActiveStep - 1)}>
                                 <ArrowBackIcon />
                             </IconButton>}
                             <h2 id="title">{competitionDetails.name}</h2>
-                            {(ActiveStep == 1 || ActiveStep == 2) && <div>
+                            {(ActiveStep === 1 || ActiveStep === 2) && <div>
                                 <div className="image-contentWrap">
                                     <div className="image-wrap">
                                         <img src={competitionDetails.img} alt={competitionDetails.name} />
@@ -387,7 +387,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                         </div>
                                         <div className="tab-content-wrap">
                                             <div id="tab-1" className="inner-box js-inner-tab-box list-box active">
-                                                {userUploadedVdos.length != 0 && userUploadedVdos.map((item, index) => {
+                                                {userUploadedVdos.length !== 0 && userUploadedVdos.map((item, index) => {
                                                     return <div className={item.isSelected ? 'vdo-outer selected-vdo' : 'vdo-outer'} key={index} onClick={(e) => selectVdo(e, item)}>
                                                         <div className="vdo-wrap" >
                                                             <img src={item.thumbnail ? item.thumbnail : THUMBNAIL_URL} alt="video-url" />

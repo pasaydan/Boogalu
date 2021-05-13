@@ -43,7 +43,7 @@ export default function Competition() {
         prices: [],
     }
 
-    const { state, dispatch } = useStoreConsumer();
+    const { dispatch } = useStoreConsumer();
     const [isAdminLoggedIn, toggleAdminLogin] = useState(false);
     const [CompetitionData, setCompetitionData] = useState(initialCompetitionData);
     const [adminEmail, setAdminEmail] = useState('');
@@ -70,7 +70,7 @@ export default function Competition() {
 
     function setStartDate(date) {
         try {
-            setCompetitionData({ ...CompetitionData, ['startAt']: date });
+            setCompetitionData({ ...CompetitionData, 'startAt': date });
         } catch (e) {
             console.log('Start date error: ', e);
         }
@@ -78,7 +78,7 @@ export default function Competition() {
     
     function setEndDate(date) {
         try {
-            setCompetitionData({ ...CompetitionData, ['endAt']: date });
+            setCompetitionData({ ...CompetitionData, 'endAt': date });
         } catch (e) {
             console.log('End date error: ', e);
         }
@@ -335,16 +335,16 @@ export default function Competition() {
             {
                 isAdminLoggedIn || checkAdminLogIn ?
                 <div className="optionsTab">
-                    <a onClick={(e) => switchTabs(e, 'create')} className="active" ref={createTabRef}>Create new</a>
-                    <a onClick={(e) => switchTabs(e, 'list')} ref={listTabRef}>View list</a>
+                    <p onClick={(e) => switchTabs(e, 'create')} className="tabItem active" ref={createTabRef}>Create new</p>
+                    <p onClick={(e) => switchTabs(e, 'list')} className="tabItem" ref={listTabRef}>View list</p>
                 </div>: ''
             }
             <div className={`competition-bo-wrap clearfix ${(isAdminLoggedIn || checkAdminLogIn) && 'loggedInAdmin'}`}>
                 {
                     isAdminLoggedIn || checkAdminLogIn ?
-                    <a className="logOutIconWrap" title="logout" onClick={(e) => tiggerAdminLogout(e, false)}>
+                    <p className="logOutIconWrap" title="logout" onClick={(e) => tiggerAdminLogout(e, false)}>
                         <img src={logOutIcon} alt="logout" />
-                    </a> : ''
+                    </p> : ''
                 }
                 {
                     isAdminLoggedIn || checkAdminLogIn ?
@@ -534,7 +534,7 @@ export default function Competition() {
                                     return (<div className="boxItem compBox">
                                         <p className="title">{item.name}</p>
                                         <div className="compImageWrap">
-                                            <img src={item.img} alt="comp image" />
+                                            <img src={item.img} alt="Competition item" />
                                         </div>
                                         <ActionToolTip 
                                             id={item.key}

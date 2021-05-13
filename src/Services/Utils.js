@@ -23,9 +23,9 @@ export function formatDate(date, status) {
     let day = date.getDate();
     let monthIndex = date.getMonth();
     let year = date.getFullYear();
-    if (status == 3) return day + 'th ' + monthNames[monthIndex] + " " + year;
-    if (status == 2) return day + 'th ' + monthNames[monthIndex];
-    if (status == 1) return day;
+    if (status === 3) return day + 'th ' + monthNames[monthIndex] + " " + year;
+    if (status === 2) return day + 'th ' + monthNames[monthIndex];
+    if (status === 1) return day;
 };
 
 export function timeStampToNewDate(timeStamp) {

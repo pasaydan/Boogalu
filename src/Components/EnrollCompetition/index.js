@@ -32,6 +32,7 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
             if (isSubscribed.length) setIsUserSubscribed(true);
             else setIsUserSubscribed(false);
         } else setIsUserSubscribed(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const onAgeGroupChange = (groupValue) => {
@@ -171,7 +172,7 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
                 <div className="sub-title">Selected video for competition</div>
                 <div className="change-link" onClick={() => changeSelectedVdo()}>Change</div>
                 <div className="vdo-wrap" >
-                    <img src={SelectedVdo.thumbnail ? SelectedVdo.thumbnail : THUMBNAIL_URL} style={{ width: "50%" }} />
+                    <img src={SelectedVdo.thumbnail ? SelectedVdo.thumbnail : THUMBNAIL_URL} style={{ width: "50%" }} alt={SelectedVdo.title} />
                     <div>{SelectedVdo.title}</div>
                 </div>
             </div>}

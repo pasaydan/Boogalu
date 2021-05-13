@@ -23,6 +23,7 @@ export default function ConfirmationModal(props) {
         }
 
         setUserComment(userCommentValue);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     function confirmYes(event) {
@@ -50,7 +51,7 @@ export default function ConfirmationModal(props) {
     return (
         <div className="confirmationModalOuter">
             <div className="confirmationInner">
-                <a className="closeUserModal" title="close modal" onClick={(e) => cancelRequest(e)}></a>
+                <p className="closeUserModal" title="close modal" onClick={(e) => cancelRequest(e)}></p>
                 <p className="messageBox">{ message }</p>
                 {
                     action === 'videoDelete' ?
@@ -60,8 +61,8 @@ export default function ConfirmationModal(props) {
                     : ''
                 }
                 <div className="actions">
-                    <a className="btn primary-light" onClick={(e) => cancelRequest(e)}>No</a>
-                    <a className="btn primary-dark" onClick={(e) => confirmYes(e)}>Yes</a>
+                    <button className="btn primary-light" onClick={(e) => cancelRequest(e)}>No</button>
+                    <button className="btn primary-dark" onClick={(e) => confirmYes(e)}>Yes</button>
                 </div>
             </div>
         </div>

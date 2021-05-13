@@ -17,7 +17,6 @@ import { sendEmail } from "../../Services/Email.service";
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
-import { makeStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 import { enableLoading, disableLoading } from "../../Actions/Loader";
@@ -49,23 +48,9 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
 
     useEffect(() => {
         dispatch(disableLoginFlow());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
-    const useStyles = makeStyles((theme) => ({
-        modal: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-        },
-        paper: {
-            backgroundColor: theme.palette.background.paper,
-            border: '2px solid #000',
-            boxShadow: theme.shadows[5],
-            padding: theme.spacing(2, 4, 3),
-        },
-    }));
-    const classes = useStyles();
-
+    
     async function onChangeFile(event) {
         event.stopPropagation();
         event.preventDefault();
@@ -184,7 +169,7 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
                     const pathName = history?.location?.pathname.split('/')[1];
                     pathName.includes('profile') && dispatch(setDataRefetchModuleName('user-uploaded-video'));
                     closeUploaderModal();
-                    if (state.currentLoginFlow == 'competition-uploadvdo') handleVdoUploadResponse(3);
+                    if (state.currentLoginFlow === 'competition-uploadvdo') handleVdoUploadResponse(3);
                     else history.push('/profile');
                 })
             }

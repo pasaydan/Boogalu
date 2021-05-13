@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
 import { FaInstagramSquare, FaYoutube, FaFacebookSquare } from 'react-icons/fa';
@@ -23,9 +23,12 @@ function Footer() {
 
         }, 1000);
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     function navigatePageLinks(event, path) {
+        event.stopPropagation();
+        event.perventDefault();
         const footerLinks = document.querySelectorAll('.js-page-links li');
         if (footerLinks && footerLinks.length) {
             footerLinks.forEach((ele) => {
@@ -68,39 +71,39 @@ function Footer() {
                             <a href="/adminpanel" title="Admin panel">Admin panel</a>
                         </li> */}
                         <li data-name="aboutus">
-                            <a onClick={(e) => navigatePageLinks(e, 'aboutus')} title="about us">About us</a>
+                            <a href="#aboutus" onClick={(e) => navigatePageLinks(e, 'aboutus')} title="about us">About us</a>
                         </li>
                         <li data-name="contactus">
-                            <a onClick={(e) => navigatePageLinks(e, 'contactus')} title="contact us">Contact us</a>
+                            <a href="#contactus" onClick={(e) => navigatePageLinks(e, 'contactus')} title="contact us">Contact us</a>
                         </li>
                         <li data-name="pricing">
-                            <a onClick={(e) => navigatePageLinks(e, 'pricing')} title="pricing">Pricing</a>
+                            <a href="#pricing" onClick={(e) => navigatePageLinks(e, 'pricing')} title="pricing">Pricing</a>
                         </li>
                         <li data-name="privacypolicy">
-                            <a onClick={(e) => navigatePageLinks(e, 'privacypolicy')} title="privacy policy">Privacy Policy</a>
+                            <a href="#privacypolicy" onClick={(e) => navigatePageLinks(e, 'privacypolicy')} title="privacy policy">Privacy Policy</a>
                         </li>
                         <li data-name="terms">
-                            <a onClick={(e) => navigatePageLinks(e, 'termsandconditions')} title="terms and conditions">Terms &amp; Conditions</a>
+                            <a href="#terms" onClick={(e) => navigatePageLinks(e, 'termsandconditions')} title="terms and conditions">Terms &amp; Conditions</a>
                         </li>
                         <li data-name="refundpolicy">
-                            <a onClick={(e) => navigatePageLinks(e, 'refundpolicy')} title="refund policy">Cancellation/Refund Policy</a>
+                            <a href="#refundpolicy" onClick={(e) => navigatePageLinks(e, 'refundpolicy')} title="refund policy">Cancellation/Refund Policy</a>
                         </li>
                     </ul>
                     <ul className="menu-lists menu-lists-2">
                         <li>
-                            <a href="https://www.instagram.com/choreo_culture/?hl=en" title="Follow us on Insta" target="_blank">
+                            <a href="https://www.instagram.com/choreo_culture/?hl=en" title="Follow us on Insta" target="_blank" rel="noreferrer">
                                 <i><FaInstagramSquare /></i>
                                 <span>Instagram</span>
                             </a>
                         </li>
                         <li>
-                            <a href="https://www.youtube.com/user/anjanevents" title="Subscribe our channel" target="_blank">
+                            <a href="https://www.youtube.com/user/anjanevents" title="Subscribe our channel" target="_blank" rel="noreferrer">
                                 <i><FaYoutube /></i>
                                 <span>Youtube</span>
                             </a>
                         </li>
                         <li>
-                            <a href="https://www.facebook.com/choreocultureindia/" title="Like our FB page" target="_blank">
+                            <a href="https://www.facebook.com/choreocultureindia/" title="Like our FB page" target="_blank" rel="noreferrer">
                                 <i><FaFacebookSquare /></i>
                                 <span>Facebook</span>
                             </a>
@@ -109,7 +112,7 @@ function Footer() {
                 </div>
                 <div className="copyright-wrap">
                     &#169; 2021 &nbsp;  
-                    <a href="https://www.choreoculture.com/" target="_blank">
+                    <a href="https://www.choreoculture.com/" target="_blank" rel="noreferrer">
                         CHOREOCULTURE STUDIO.
                     </a> ALL RIGHTS RESERVED
                 </div>

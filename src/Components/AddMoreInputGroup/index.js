@@ -217,9 +217,9 @@ export default function AddMoreInputGroup(props) {
                                 variant="outlined"
                             />
                         </div>
-                        <a className="deleteInputBox" title="remove this price item" onClick={(e) => removeExtraInputBox(e, 4)}>
+                        <p className="deleteInputBox" title="remove this price item" onClick={(e) => removeExtraInputBox(e, 4)}>
                             <FaTrashAlt />
-                        </a>
+                        </p>
                     </div>
                     : ''
                 }
@@ -245,9 +245,9 @@ export default function AddMoreInputGroup(props) {
                                 variant="outlined"
                             />
                         </div>
-                        <a className="deleteInputBox" title="remove this price item" onClick={(e) => removeExtraInputBox(e, 5)}>
+                        <p className="deleteInputBox" title="remove this price item" onClick={(e) => removeExtraInputBox(e, 5)}>
                             <FaTrashAlt />
-                        </a>
+                        </p>
                     </div>
                     : ''    
                 }
@@ -273,16 +273,16 @@ export default function AddMoreInputGroup(props) {
                                 variant="outlined"
                             />
                         </div>
-                        <a className="deleteInputBox" title="remove this price item" onClick={(e) => removeExtraInputBox(e, 6)}>
+                        <p className="deleteInputBox" title="remove this price item" onClick={(e) => removeExtraInputBox(e, 6)}>
                             <FaTrashAlt />
-                        </a>
+                        </p>
                     </div>
                     : ''                
                 }
             </div>
             {
                 maxFeildCount < MAX_FIELDS ?
-                <a className="addMoreLink" onClick={(e) => addNewFiledBox(e)}>Add more +</a> : ''
+                <p className="addMoreLink" onClick={(e) => addNewFiledBox(e)}>Add more +</p> : ''
             }
         </div>
     )

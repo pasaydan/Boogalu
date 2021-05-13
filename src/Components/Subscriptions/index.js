@@ -12,7 +12,8 @@ import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { sendEmail } from "../../Services/Email.service";
 import { isObjectEmpty } from '../../helpers';
 
-function Subscriptions() {
+function Subscriptions(props) {
+    const { pageTitle } = props;
     const { state, dispatch } = useStoreConsumer();
     const history = useHistory();
     const loggedInUser = state.loggedInUser;
@@ -68,7 +69,7 @@ function Subscriptions() {
                 console.log(subscriptionsList);
             })
             let paymentStatus = history.location.search.split('status=')[1];
-            if (paymentStatus == 'success') {
+            if (paymentStatus === 'success') {
                 const subscriptionSuccessObj = {
                     subId: state.activeSubscription.key,
                     type: state.activeSubscription.type,
@@ -100,7 +101,7 @@ function Subscriptions() {
                 dispatch(disableLoading());
                 console.log(subscriptionsList);
                 //if user come from competition details 
-                if (state.currentLoginFlow == 'competition-subscription') {
+                if (state.currentLoginFlow === 'competition-subscription') {
                     let subscriptionForCompetition = subscriptionsList.filter((data) => data.type === 'competition-enrollment');
                     dispatch(setActiveSubscription(subscriptionForCompetition[0]));
                     setActiveStep(activeStepCount);
@@ -108,11 +109,12 @@ function Subscriptions() {
                 }
             })
             //is user go to login flow from itself(current page)
-            if (state.currentLoginFlow == 'subscription') {
+            if (state.currentLoginFlow === 'subscription') {
                 dispatch(disableLoginFlow());
                 setShowSubscriptionDetails(true);
             }
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
@@ -174,8 +176,19 @@ function Subscriptions() {
             <div id="Subscription" className="charcoal-bg">
                 <div className="subscription-wrap charcoal-bg">
                     <div className="flex-3 heading-content">
-                        <h1>Unlimited Classes For The Price Of One</h1>
-                        <div className="line1">Dance to the music that makes YOU want to move at any skill level.</div>
+                        {
+                            pageTitle ?
+                                <h1>{ pageTitle }</h1>
+                            : 
+                                <h1>Unlimited Classes For The Price Of One</h1>
+                        }
+
+                        {
+                            pageTitle ?
+                                <div className="line1">Multiple Pricing with multiple features.</div>
+                            :
+                                <div className="line1">Subscribe to our features at your ease and choice .</div>
+                        }
                     </div>
                     <div className="inner-plans-wrap">
                         {AvailableSubscriptions && AvailableSubscriptions.map((subscription) => {

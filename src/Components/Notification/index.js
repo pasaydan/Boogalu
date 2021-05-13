@@ -17,6 +17,7 @@ export default function Notification() {
                 dispatch(removeNotification({ msg: '', type: '', time: 3000 }))
             }, state.notification.time);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [state])
     return (
         <>

@@ -3,12 +3,14 @@ import { useStoreConsumer } from '../../Providers/StateProvider';
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import ProfileImage from "../ProfileImage";
 import { getAllUser } from "../../Services/User.service";
+// eslint-disable-next-line no-unused-vars
 import { sendEmail } from "../../Services/Email.service";
 import { useHistory } from "react-router-dom";
 import { Link } from '@material-ui/core';
 
 function ViewAllMembers() {
     const history = useHistory();
+    // eslint-disable-next-line no-unused-vars
     const [followButtonText, setFollowButtonText] = useState('Follow');
     const [userList, setUserList] = useState([]);
     const { state, dispatch } = useStoreConsumer();
@@ -20,6 +22,7 @@ function ViewAllMembers() {
         } else {
             redirectToLogin();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     function redirectToLogin() {
@@ -43,6 +46,7 @@ function ViewAllMembers() {
 
     function handleFollowBtnClick(event, toFollow, followBy) {
         event.preventDefault();
+        // eslint-disable-next-line no-unused-vars
         const action = event.currentTarget.dataset.action.toLowerCase();
     }
 
