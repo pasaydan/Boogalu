@@ -286,7 +286,14 @@ function LessonsVideoContainer({
         if (!isVideoOverlayActive) {
             const previewVideoItem = event.currentTarget.querySelectorAll('.js-previewVideo')[0];
             if (action && action === 'play') {
-                previewVideoItem.play();
+                const previePlay = previewVideoItem.play();
+                if (previePlay !== undefined) {
+                    previePlay.then(_ => {
+                        console.log('Preview played..');
+                    }).catch(e => {
+                        console.log('Video play error: ', e);
+                    });
+                }
             } else {
                 previewVideoItem.currentTime = 0;
                 previewVideoItem.pause();
