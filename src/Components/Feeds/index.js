@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { getUploadedVideosList } from "../../Services/UploadedVideo.service";
 import { updateVideoLikes, updateVideoComments } from "../../Services/UploadedVideo.service";
-import { getLimitedUser } from "../../Services/User.service";
+import { getLimitedUser, updateFollowUnfollow } from "../../Services/User.service";
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import Favorite from '@material-ui/icons/Favorite';
 import CommentOutlined from '@material-ui/icons/CommentOutlined';
@@ -10,14 +10,14 @@ import VideoDetails from '../VideoDetails'
 import ProfileImage from "../ProfileImage";
 import Vedio from "../Vedio/Video";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
-// eslint-disable-next-line no-unused-vars
-import { getUserById, updateUser, updateFollowUnfollow } from "../../Services/User.service";
+// import { getUserById, updateUser, updateFollowUnfollow } from "../../Services/User.service";
 import { sendEmail } from "../../Services/Email.service";
 import { Link } from '@material-ui/core';
 import { useHistory } from "react-router-dom";
 
 function Feeds() {
     const history = useHistory();
+    // eslint-disable-next-line no-unused-vars
     const {REACT_APP_URL} = process.env;
     const [followButtonText, setFollowButtonText] = useState('Follow');
     const [feedList, setFeedList] = useState([]);
@@ -194,25 +194,28 @@ function Feeds() {
         updateFollowUnfollow(toFollow, followBy, action).subscribe((response) => {
             if (response) {
                 const { name, email } = response;
+                console.log('Name: ', name);
+                console.log('Email: ', email);
                 if (response.followed) {
                     setFollowButtonText('Following');
-                    const message = `${loggedInUser.name} started following`;
-                    const subject = `${loggedInUser.name} started following`;
-                    sendFollowNotificationEmail(name, email, subject, message);
+                    // const message = `${loggedInUser.name} started following`;
+                    // const subject = `${loggedInUser.name} started following`;
+                    // sendFollowNotificationEmail(name, email, subject, message);
                 }
                 if (response.requested) {
                     setFollowButtonText('Requested');
-                    const acceptLink = `${REACT_APP_URL}profile?followrequest=accept&requestBy=${encodeURIComponent(loggedInUser.email)}`
-                    const declineLink = `${REACT_APP_URL}profile?followrequest=decline&requestBy=${encodeURIComponent(loggedInUser.email)}`
-                    const message = `${loggedInUser.name} requested to follow you.<br /><br />You can <a href="${acceptLink}">Accept</a> or <a href="${declineLink}">Decline</a>`;
-                    const subject = `${loggedInUser.name} requested to follow you`;
-                    sendFollowNotificationEmail(name, email, subject, message);
+                    // const acceptLink = `${REACT_APP_URL}profile?followrequest=accept&requestBy=${encodeURIComponent(loggedInUser.email)}`
+                    // const declineLink = `${REACT_APP_URL}profile?followrequest=decline&requestBy=${encodeURIComponent(loggedInUser.email)}`
+                    // const message = `${loggedInUser.name} requested to follow you.<br /><br />You can <a href="${acceptLink}">Accept</a> or <a href="${declineLink}">Decline</a>`;
+                    // const subject = `${loggedInUser.name} requested to follow you`;
+                    // sendFollowNotificationEmail(name, email, subject, message);
                 }
                 dispatch(disableLoading());
             }
         })
     }
 
+    // eslint-disable-next-line no-unused-vars
     const sendFollowNotificationEmail = (name, email, subject, message) => {
         let emailBody = `<div>
         <p>Hi ${name}, ${message}</p>. 

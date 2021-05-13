@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import ProfileImage from "../ProfileImage";
-import { getAllUser } from "../../Services/User.service";
+import { getAllUser, updateFollowUnfollow } from "../../Services/User.service";
 // eslint-disable-next-line no-unused-vars
 import { sendEmail } from "../../Services/Email.service";
 import { useHistory } from "react-router-dom";
 import { Link } from '@material-ui/core';
+
+// import { getUserById, updateUser, updateFollowUnfollow } from "../../Services/User.service";
+
 
 function ViewAllMembers() {
     const history = useHistory();
@@ -35,7 +38,36 @@ function ViewAllMembers() {
             getAllUser(userKey).subscribe((users) => {
                 dispatch(disableLoading());
                 if (users && users.length) {
-                    setUserList(users);
+                    // eslint-disable-next-line no-unused-vars
+                    let userList = users;
+                    let updatedUserList = []
+                    users.forEach((user, index) => {
+                        let currentuser = user
+                        if (currentuser.notification) {
+                            if (currentuser.notification.followRequestedBy && currentuser.notification.followRequestedBy.length > 0) {
+                                currentuser.notification.followRequestedBy.forEach((requestId) => {
+                                    if (requestId === loggedInUser.key) {
+                                        currentuser = {...currentuser, 'iRequestedFollow': true, actionBtnText: 'Requested'}
+                                        updatedUserList.push(currentuser);
+                                        // userList = {...userList, currentuser};
+                                    }
+                                });
+                            }
+                            if (currentuser.notification.followedBy && currentuser.notification.followedBy.length > 0) {
+                                currentuser.notification.followedBy.forEach((requestId) => {
+                                    if (requestId === loggedInUser.key) {
+                                        currentuser = {...currentuser, 'imFollowing': true, actionBtnText: 'Following'}
+                                        updatedUserList.push(currentuser);
+                                        // userList = {...userList, currentuser};
+
+                                    }
+                                });
+                            }
+                        }
+                        updatedUserList.push(currentuser);
+                    });
+                    console.log("updatedUserList" ,updatedUserList);
+                    setUserList(updatedUserList);
                 }
             });
         } catch(e) {
@@ -48,6 +80,24 @@ function ViewAllMembers() {
         event.preventDefault();
         // eslint-disable-next-line no-unused-vars
         const action = event.currentTarget.dataset.action.toLowerCase();
+        console.log("action ", action);
+
+        dispatch(enableLoading());
+        updateFollowUnfollow(toFollow, followBy, action).subscribe((response) => {
+            if (response) {
+                const { name, email } = response;
+                console.log('Name: ', name);
+                console.log('Email: ', email);
+                if (response.followed) {
+                    setFollowButtonText('Following')
+                }
+                if (response.requested) {
+                    setFollowButtonText('Requested')
+                }
+            }
+
+            dispatch(disableLoading());
+        });
     }
 
     return (
@@ -73,9 +123,10 @@ function ViewAllMembers() {
                                 <span className="followsInfo">Follows you / followed by text</span>
                             </div>
                             <Link 
-                            onClick={(event) => handleFollowBtnClick(event, user.key, loggedInUser.key)} 
-                            className="btn primary-light followBtn" 
-                            data-action={followButtonText}>{followButtonText}</Link>
+                                onClick={(event) => handleFollowBtnClick(event, user.key, loggedInUser.key)} 
+                                className="btn primary-light followBtn" 
+                                data-action={user.actionBtnText}>{user.actionBtnText || followButtonText}
+                            </Link>
                         </div>
                         )
                     })}
