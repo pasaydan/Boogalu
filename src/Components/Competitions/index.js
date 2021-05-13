@@ -20,8 +20,8 @@ function Competitions() {
             getCompetitionByUserId(loggedInUser.key).subscribe((userCompList) => {
                 dispatch(disableLoading());
                 if (userCompList.length) {
-                    allCompList.map((compDetails) => {
-                        let isUserEnrolled = userCompList.filter((userCompData) => userCompData.compId == compDetails.key);
+                    allCompList.forEach((compDetails) => {
+                        let isUserEnrolled = userCompList.filter((userCompData) => userCompData.compId === compDetails.key);
                         if (isUserEnrolled.length) {
                             compDetails.isUserEnrolled = true;
                             compDetails.userSubmitedDetails = isUserEnrolled[0];
@@ -59,7 +59,7 @@ function Competitions() {
             }
         });
         // if user come from login page
-        if (state.currentLoginFlow == 'competition') {
+        if (state.currentLoginFlow === 'competition') {
             dispatch(disableLoginFlow());
             setIsOpenDetailsModal(true);
             if (loggedInUser.subscriptions) {
@@ -78,6 +78,7 @@ function Competitions() {
             setIsOpenDetailsModal(true);
             setInitialStep(3);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const openDetailsModal = (competition) => {

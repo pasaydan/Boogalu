@@ -25,10 +25,10 @@ import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { displayNotification } from "../../Actions/Notification";
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import { NOTIFICATION_SUCCCESS, NOTIFICATION_ERROR, MALE_PROFILE_DEFAULT_IMAGE, FEMALE_PROFILE_DEFAULT_IMAGE } from "../../Constants";
+import { NOTIFICATION_SUCCCESS, MALE_PROFILE_DEFAULT_IMAGE } from "../../Constants";
 import { uploadImage } from "../../Services/Upload.service";
 import * as $ from 'jquery';
-import { FormControlLabel, FormGroup, FormLabel, Radio, RadioGroup } from '@material-ui/core';
+import { FormControlLabel, FormLabel, Radio, RadioGroup } from '@material-ui/core';
 export default function Signup(props) {
     const { state, dispatch } = useStoreConsumer();
     const history = useHistory();
@@ -61,7 +61,7 @@ export default function Signup(props) {
 
     function setDateOfBirth(date) {
         try {
-            setUserDetails({ ...userDetails, ['dob']: date });
+            setUserDetails({ ...userDetails, 'dob': date });
         } catch (e) {
             console.log('DOB Error: ', e);
         }
@@ -97,25 +97,26 @@ export default function Signup(props) {
         }, 500);
         if (userDetails && !userDetails.profileImage) {
             setUserDetails({ ...userDetails, profileImage: MALE_PROFILE_DEFAULT_IMAGE });
-            setUserDetails({ ...userDetails, ['dob']: setMaxDateSelectionYear() });
+            setUserDetails({ ...userDetails, 'dob': setMaxDateSelectionYear() });
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
         if (stepData[activeStep]) {
             let isAnySelected = stepData[activeStep].filter((data) => data.isSelected);
-            if (isAnySelected.length != 0) setShowNextButton(true);
+            if (isAnySelected.length !== 0) setShowNextButton(true);
             else setShowNextButton(false);
             // set selected options
             let selectedOptions = [];
-            Object.entries(stepData).map(([parentKey, parentValue]) => {
-                parentValue.map((parentValueItem) => {
+            Object.entries(stepData).forEach(([parentKey, parentValue]) => {
+                parentValue.forEach((parentValueItem) => {
                     if (parentValueItem.isSelected) {
                         let selectionObj = { value: [parentValueItem.title], key: parentKey, heading: parentValueItem.heading };
-                        if (selectedOptions.length != 0) {
+                        if (selectedOptions.length !== 0) {
                             let isAvl = selectedOptions.filter((data) => data.key === parentKey);
-                            if (isAvl.length != 0) {
-                                selectedOptions.map((item) => {
+                            if (isAvl.length !== 0) {
+                                selectedOptions.forEach((item) => {
                                     if (item.key === parentKey) item.value.push(parentValueItem.title);
                                 })
                             } else selectedOptions.push(selectionObj);
@@ -125,12 +126,13 @@ export default function Signup(props) {
             })
             setSelectedOptionsList(selectedOptions);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeStep])
 
     const saveUserRegistrationDetails = () => {
         return new Promise((res, rej) => {
             dispatch(enableLoading());
-            if (userDetails.profileImage != MALE_PROFILE_DEFAULT_IMAGE) {
+            if (userDetails.profileImage !== MALE_PROFILE_DEFAULT_IMAGE) {
                 uploadImage(userDetails.profileImage, 'user', 'small').subscribe((downloadableUrl) => {
                     userDetails.profileImage = downloadableUrl;
                     registerUser(userDetails).subscribe((data) => {
@@ -182,9 +184,9 @@ export default function Signup(props) {
             type: NOTIFICATION_SUCCCESS,
             time: 3000
         }));
-        if (state.currentLoginFlow == 'competition') history.push('/competitions');
-        else if (state.currentLoginFlow == 'subscription') history.push('/subscription');
-        if (state.currentLoginFlow == 'upload-video') history.push('/upload-video');
+        if (state.currentLoginFlow === 'competition') history.push('/competitions');
+        else if (state.currentLoginFlow === 'subscription') history.push('/subscription');
+        if (state.currentLoginFlow === 'upload-video') history.push('/upload-video');
         else history.push(({
             pathname: '/',
             state: null
@@ -193,7 +195,7 @@ export default function Signup(props) {
 
     const setSignupUserCred = (e) => {
         dispatch(enableLoading());
-        if (userDetails.password != userDetails.confirmPassword) {
+        if (userDetails.password !== userDetails.confirmPassword) {
             setSignUpError('Password dose not match.');
             return;
         }
@@ -230,6 +232,7 @@ export default function Signup(props) {
             case 'stepThree': setActiveStep('stepFour'); break;
             case 'stepFour': redirection(); break;
             // case 'stepFive': setActiveStep(6); break;
+            default: break;
         }
     }
 
@@ -240,6 +243,7 @@ export default function Signup(props) {
             case 'stepFour': setActiveStep('stepThree'); break;
             // case 'stepFive': setActiveStep('stepFour'); break;
             // case 6: setActiveStep('stepFour'); break;
+            default: break;
         }
     }
 
@@ -247,25 +251,25 @@ export default function Signup(props) {
         e.preventDefault();
         e.stopPropagation();
         const stepDataList = Object.assign({}, stepData);
-        stepDataList[activeStep].map((item) => {
+        stepDataList[activeStep].forEach((item) => {
             if (item.title === activeItem.title) {
                 item.isSelected = item.isSelected ? false : true;
             } else {
-                if (status != 'multi-select') {
+                if (status !== 'multi-select') {
                     item.isSelected = false;
                 }
             }
         })
         // set selected options
         let selectedOptions = [];
-        Object.entries(stepDataList).map(([parentKey, parentValue]) => {
-            parentValue.map((parentValueItem) => {
+        Object.entries(stepDataList).forEach(([parentKey, parentValue]) => {
+            parentValue.forEach((parentValueItem) => {
                 if (parentValueItem.isSelected) {
                     let selectionObj = { value: [parentValueItem.title], key: parentKey, heading: parentValueItem.heading };
-                    if (selectedOptions.length != 0) {
+                    if (selectedOptions.length !== 0) {
                         let isAvl = selectedOptions.filter((data) => data.key === parentKey);
-                        if (isAvl.length != 0) {
-                            selectedOptions.map((item) => {
+                        if (isAvl.length !== 0) {
+                            selectedOptions.forEach((item) => {
                                 if (item.key === parentKey) item.value.push(parentValueItem.title);
                             })
                         } else selectedOptions.push(selectionObj);
@@ -275,7 +279,7 @@ export default function Signup(props) {
         })
         setSelectedOptionsList(selectedOptions);
         let isAnySelected = stepDataList[activeStep].filter((data) => data.isSelected);
-        if (isAnySelected.length != 0) setShowNextButton(true);
+        if (isAnySelected.length !== 0) setShowNextButton(true);
         else setShowNextButton(false);
         setStepListData(stepDataList);
     }
@@ -306,14 +310,14 @@ export default function Signup(props) {
         <div className="logout-wrap new-login-signup-ui signup-wrap gradient-bg-animation clearfix">
             <div className="inner-signup-wrap">
                 <div className="header-outer">
-                    <a onClick={(e) => goToPrevious(e)} className="arrow-back-home" title="Back">
+                    <i onClick={(e) => goToPrevious(e)} className="arrow-back-home" title="Back">
                         <ArrowBackIcon />
-                    </a>
+                    </i>
                     <a href="/" className="logo" title="Back to Home">
                         <img src={boogaluLogo} alt="Boogalu" />
                     </a>
                 </div>
-                {activeStep != 6 && <div className="step-wrap">
+                {activeStep !== 6 && <div className="step-wrap">
                     <div className="heading1">Let's Get Started!</div>
                     {activeStep === 'stepOne' && <>
                         <div className="list-content">
@@ -422,7 +426,7 @@ export default function Signup(props) {
                     {activeStep === 'stepFive' && <>
                         <div className="list-content">
                             <div className="list-heading-wrap">
-                                <div style={{ paddingBottom: 0 }} className="heading2">Your Personal Schedule & Recommendations</div>
+                                <div style={{ paddingBottom: 0 }} className="heading2">Your Personal Schedule &amp; Recommendations</div>
                             </div>
                             <div className="list">
                                 {selectedOptionsList.map((item, i) => {
@@ -435,7 +439,7 @@ export default function Signup(props) {
                                                         return <span key={j}>{listValue} </span>
                                                     })
                                                 }
-                                                {item.value.length != 1 &&
+                                                {item.value.length !== 1 &&
                                                     item.value.map((listValue, j) => {
                                                         return <span key={j}>{listValue}, </span>
                                                     })
@@ -456,7 +460,7 @@ export default function Signup(props) {
                             </div>
                         </div>
                     </>}
-                    {activeStep != 6 && <div className="step-already-login-wrap clearfix">
+                    {activeStep !== 6 && <div className="step-already-login-wrap clearfix">
                         <div className="text-wrap">Already have an account?</div>
                         <Button color="primary" onClick={() => history.push({
                             pathname: '/login',
@@ -469,16 +473,16 @@ export default function Signup(props) {
                                     {showNextButton && <Button color="primary" variant="contained" className="next-btn" onClick={() => setNextStep()}>Next</Button>}
                                 </div> : ''
                         } */}
-                        <div className={`next-prev-actions ${activeStep != 'stepOne' ? 'next-step-active' : ''} `}>
-                            {activeStep != 'stepOne' && <Button color="primary" variant="contained" className="next-btn previous" onClick={() => setPrevStep()}>Prev</Button>}
+                        <div className={`next-prev-actions ${activeStep !== 'stepOne' ? 'next-step-active' : ''} `}>
+                            {activeStep !== 'stepOne' && <Button color="primary" variant="contained" className="next-btn previous" onClick={() => setPrevStep()}>Prev</Button>}
                             {/* <Button color="primary" variant="contained" className="next-btn" onClick={() => setNextStep()}>Next</Button> */}
                             {showNextButton && <Button color="primary" variant="contained" className="next-btn" onClick={() => setNextStep()}>Next</Button>}
                             {!showNextButton && <Button color="primary" variant="contained" className="next-btn skip-btn" onClick={() => setNextStep()}>Skip</Button>}
-                            {activeStep != 'stepFour' && <Button color="primary" variant="contained" className="next-btn skip-all-btn" onClick={() => redirection()}>Skip All</Button>}
+                            {activeStep !== 'stepFour' && <Button color="primary" variant="contained" className="next-btn skip-all-btn" onClick={() => redirection()}>Skip All</Button>}
                         </div>
                     </div>}
                 </div>}
-                {activeStep == 6 && <form className="form-wrap final-registration-block clearfix" onSubmit={setSignupUserCred}>
+                {activeStep === 6 && <form className="form-wrap final-registration-block clearfix" onSubmit={setSignupUserCred}>
                     <div className="heading-outer">
                         <div className="heading1">Let's Get Started!</div>
                         <div className="heading2">Create an account to Choreoculture to get all features.</div>
@@ -488,7 +492,7 @@ export default function Signup(props) {
                     </div>} */}
                     <div className="profile-img-wrap">
                         <div className="uploaded-img" >
-                            <img src={userDetails.profileImage} onClick={() => { uploaderRef.current.click() }} />
+                            <img src={userDetails.profileImage} alt="profile" onClick={() => { uploaderRef.current.click() }} />
                         </div>
                         {
                             isUserPhotoUploaded ?

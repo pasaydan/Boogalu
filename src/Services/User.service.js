@@ -194,7 +194,7 @@ export function getUserPublicProfile(email){
                 const privateData = [
                     'password', 'confirmPassword', 'createdOn', 'modifiedOn', 'subscribed'
                 ]
-                privateData.map((item) => {
+                privateData.forEach((item) => {
                     if (data[item]) {
                         delete data[item];
                     }

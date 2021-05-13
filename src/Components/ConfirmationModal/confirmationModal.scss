@@ -63,6 +63,7 @@
             cursor: pointer;
             top: 5px;
             right: 5px;
+            margin: 0;
             &:before, &:after {
                 content: '';
                 position: absolute;

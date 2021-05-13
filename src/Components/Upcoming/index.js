@@ -10,6 +10,7 @@ function Upcoming() {
 
     const { state, dispatch } = useStoreConsumer();
     const loggedInUser = state.loggedInUser;
+    // eslint-disable-next-line no-unused-vars
     const [activeCategory, setActiveCategory] = useState(Lessons[0]);
     const [lessonsData, setLessonsList] = useState(null);
     const [filterEmptyMessage, setFilterEmptyMessage] = useState('');
@@ -33,6 +34,7 @@ function Upcoming() {
             }
             getAllLessonsData();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const getAllLessonsData = (from) => {

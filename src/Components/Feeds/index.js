@@ -17,6 +17,7 @@ import { useHistory } from "react-router-dom";
 
 function Feeds() {
     const history = useHistory();
+    // eslint-disable-next-line no-unused-vars
     const {REACT_APP_URL} = process.env;
     const [followButtonText, setFollowButtonText] = useState('Follow');
     const [feedList, setFeedList] = useState([]);
@@ -46,26 +47,26 @@ function Feeds() {
 
     const handleLikes = (video, status) => {
         let videoObj = { ...video }
-        if (status == 'liked') {
+        if (status === 'liked') {
             if (videoObj.likes) {
                 videoObj.likes.push({ value: 1, userId: loggedInUser.key })
             } else {
                 videoObj.likes = [{ value: 1, userId: loggedInUser.key }]
             }
         } else {
-            let likes = videoObj.likes.filter(data => data.userId != loggedInUser.key)
+            let likes = videoObj.likes.filter(data => data.userId !== loggedInUser.key)
             videoObj.likes = likes
         }
-        videoObj.likes.map((likeObj) => { delete likeObj.profileImage; delete likeObj.username; })
+        videoObj.likes.forEach((likeObj) => { delete likeObj.profileImage; delete likeObj.username; })
         updateVideoLikes(videoObj.key, videoObj).subscribe(() => {
             let feedListCopy = [...feedList]
-            feedListCopy.map((feed) => {
-                if (feed.key == videoObj.key) {
+            feedListCopy.forEach((feed) => {
+                if (feed.key === videoObj.key) {
                     feed.likes = videoObj.likes
                 }
 
                 if (feed.likes && feed.likes.length) {
-                    let isAvail = feed.likes.filter(data => data.userId == loggedInUser.key)
+                    let isAvail = feed.likes.filter(data => data.userId === loggedInUser.key)
                     isAvail.length > 0 ? feed.isLiked = true : feed.isLiked = false
                 } else {
                     feed.isLiked = false
@@ -84,11 +85,11 @@ function Feeds() {
             videoObj.comments = [{ value: commentString, userId: loggedInUser.key }]
         }
 
-        videoObj.comments.map((commentObj) => { delete commentObj.profileImage; delete commentObj.username; })
+        videoObj.comments.forEach((commentObj) => { delete commentObj.profileImage; delete commentObj.username; })
         updateVideoComments(videoObj.key, videoObj).subscribe(() => {
             let feedListCopy = [...feedList]
-            feedListCopy.map((feed) => {
-                if (feed.key == videoObj.key) {
+            feedListCopy.forEach((feed) => {
+                if (feed.key === videoObj.key) {
                     feed.comments = videoObj.comments
                 }
                 addUserDetailsToFeed(feed, userList);
@@ -104,18 +105,18 @@ function Feeds() {
 
     const addUserDetailsToFeed = (feed, allUser) => {
         if (feed.likes && feed.likes.length) {
-            feed.likes.map((likeObj) => {
-                let userData = allUser.filter(userObj => userObj.key == likeObj.userId);
-                if (userData.length != 0) {
+            feed.likes.forEach((likeObj) => {
+                let userData = allUser.filter(userObj => userObj.key === likeObj.userId);
+                if (userData.length !== 0) {
                     likeObj.username = userData[0].username;
                     likeObj.profileImage = userData[0].profileImage;
                 }
             })
         }
         if (feed.comments && feed.comments.length) {
-            feed.comments.map((commentObj) => {
-                let userData = allUser.filter(userObj => userObj.key == commentObj.userId);
-                if (userData.length != 0) {
+            feed.comments.forEach((commentObj) => {
+                let userData = allUser.filter(userObj => userObj.key === commentObj.userId);
+                if (userData.length !== 0) {
                     commentObj.username = userData[0].username;
                     commentObj.profileImage = userData[0].profileImage;
                 }
@@ -130,9 +131,9 @@ function Feeds() {
             let tempUserList = data[0]
             let tempFeedList = data[1]
 
-            tempUserList.map((user) => {
-                tempFeedList.map((feed) => {
-                    if (user.key == feed.userId) {
+            tempUserList.forEach((user) => {
+                tempFeedList.forEach((feed) => {
+                    if (user.key === feed.userId) {
                         feed.userEmail = user.email;
                         feed.username = user.name;
                         feed.profileImage = user.profileImage;
@@ -181,7 +182,7 @@ function Feeds() {
                         // }
                     }
                     if (feed.likes && feed.likes.length) {
-                        let isAvail = feed.likes.filter(data => data.userId == loggedInUser.key)
+                        let isAvail = feed.likes.filter(data => data.userId === loggedInUser.key)
                         isAvail.length > 0 ? feed.isLiked = true : feed.isLiked = false
                     } else {
                         feed.isLiked = false
@@ -192,6 +193,7 @@ function Feeds() {
             setFeedList(tempFeedList)
             setUserList(tempUserList);
         })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [followButtonText]);
 
     function redirectViewAllUsers() {
@@ -262,6 +264,8 @@ function Feeds() {
         updateFollowUnfollow(toFollow, followBy, action).subscribe((response) => {
             if (response) {
                 const { name, email } = response;
+                console.log('Name: ', name);
+                console.log('Email: ', email);
                 if (response.followed) {
                     setFollowButtonText('Following');
                     // const message = `${loggedInUser.name} started following`;
@@ -281,6 +285,7 @@ function Feeds() {
         })
     }
 
+    // eslint-disable-next-line no-unused-vars
     const sendFollowNotificationEmail = (name, email, subject, message) => {
         let emailBody = `<div>
         <p>Hi ${name}, ${message}</p>. 

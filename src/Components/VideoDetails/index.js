@@ -10,11 +10,8 @@ import Favorite from '@material-ui/icons/Favorite';
 import TextField from '@material-ui/core/TextField';
 import Vedio from "../Vedio/Video";
 import ProfileImage from "../ProfileImage";
-import * as $ from 'jquery';
 import { useHistory } from "react-router-dom";
-
-import { Button, Link } from '@material-ui/core';
-import { LinkedCamera } from '@material-ui/icons';
+import { Link } from '@material-ui/core';
 
 
 function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedInUser, followToggle, BtnText, clickedUser }) {
@@ -23,14 +20,16 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedIn
     const followMessage = "You need to follow the user to view their Profile";
     const [followButtonText, setFollowButtonText] = useState('');
     const [messageForUser, setMessageForUser] = useState(followMessage);
+    // eslint-disable-next-line no-unused-vars
     const [openDetailsModal, setOpenDetailsModal] = useState(true);
     const [commentText, setCommentText] = useState('');
+    // eslint-disable-next-line no-unused-vars
     const [userDetails, setUserDetails] = useState();
     const [privacyToggle, setPrivacyToggle] = useState(false);
     const { privacy } = videoObj || 'public';
 
     const handleCommentClick = () => {
-        if (commentText != '') {
+        if (commentText !== '') {
             handleComments(commentText)
             setCommentText('')
         }

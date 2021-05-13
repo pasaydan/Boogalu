@@ -1,36 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./App.scss"
-import Login from "./Components/Login/Login";
 import Feeds from "./Components/Feeds";
-import Loader from "./Components/Loader";
-import Footer from "./Components/Footer/index";
 import Signup from "./Components/Signup";
+import Loader from "./Components/Loader";
 import Page404 from './Components/Page404';
-import Profile from "./Components/Profile/Profile";
-import UserProfile from "./Components/Profile/UserProfile";
-import Homepage from "./Components/Homepage";
-import Upcoming from "./Components/Upcoming";
 import AboutUs from './Components/Aboutus';
+import Homepage from "./Components/Homepage";
+import Login from "./Components/Login/Login";
+import Upcoming from "./Components/Upcoming";
+import Footer from "./Components/Footer/index";
 import ContactUs from "./Components/Contactus";
-import Pricing from './Components/Pricing';
-import PrivacyPolicy from './Components/PrivacyPolicy';
-import Navigation from "./Components/Navigation/index";
-import EditProfile from "./Components/EditProfile/EditProfile";
-import AdminPanel from './Components/Admin/Admin';
-import Competition from "./Components/Admin/Competition"
-import Subscription from "./Components/Admin/Subscription";
-import UsersInfo from './Components/Admin/Users';
-import UploadLessons from './Components/Admin/UploadLessons';
 import SplashScreen from './Components/Splash';
+import UsersInfo from './Components/Admin/Users';
+import AdminPanel from './Components/Admin/Admin';
+import ViewAllMembers from './Components/members';
+import Profile from "./Components/Profile/Profile";
 import Competitions from "./Components/Competitions";
+import RefundPolicy from './Components/RefundPolicy';
 import Notification from "./Components/Notification";
 import Subscriptions from "./Components/Subscriptions";
+import Navigation from "./Components/Navigation/index";
+import PrivacyPolicy from './Components/PrivacyPolicy';
 import VideoUploader from "./Components/VideoUploader";
-import { useStoreConsumer } from './Providers/StateProvider';
+import Competition from "./Components/Admin/Competition";
 import TermsConditions from './Components/TermsConditions';
-import RefundPolicy from './Components/RefundPolicy';
-import ViewAllMembers from './Components/members';
+import Subscription from "./Components/Admin/Subscription";
+import UploadLessons from './Components/Admin/UploadLessons';
+import { useStoreConsumer } from './Providers/StateProvider';
+import EditProfile from "./Components/EditProfile/EditProfile";
 
 function App() {
   const { state } = useStoreConsumer();
@@ -96,7 +94,7 @@ function App() {
                   <ContactUs />
                 </Route>
                 <Route exact path="/pricing">
-                  <Pricing />
+                  <Subscriptions pageTitle="Pricing" />
                 </Route>
                 <Route exact path="/privacypolicy">
                   <PrivacyPolicy />

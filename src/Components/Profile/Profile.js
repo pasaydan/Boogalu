@@ -3,17 +3,18 @@ import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import LoyaltyOutlinedIcon from '@material-ui/icons/LoyaltyOutlined';
-import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
 import CollectionsOutlinedIcon from '@material-ui/icons/CollectionsOutlined';
 import PropTypes from 'prop-types';
 import { useTheme } from '@material-ui/core/styles';
-import SwipeableViews from 'react-swipeable-views';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+// eslint-disable-next-line no-unused-vars
 import firstPrizeBadge from '../../Images/1st-prize-badge.png';
+// eslint-disable-next-line no-unused-vars
 import secondPrizeBadge from '../../Images/2nd-prize-badge.png';
+// eslint-disable-next-line no-unused-vars
 import thirdPrizeBadge from '../../Images/3rd-prize-badge.png';
 import * as $ from 'jquery';
 import { getUploadedVideosByUserId } from "../../Services/UploadedVideo.service";
@@ -86,7 +87,9 @@ function Profile() {
     const [userList, setUserList] = useState([])
     const [showProfileTab, setShowProfileTab] = useState(false);
     const [openUploadCompModalFor, setOpenUploadCompModalFor] = useState(null)
+    // eslint-disable-next-line no-unused-vars
     const [followRequestUser, setFollowRequestUser] = useState({});
+    // eslint-disable-next-line no-unused-vars
     const [userProfileData, setUserProfileData] = useState({});
     const [userData, setUserData] = useState({});
     const [followButtonText, setFollowButtonText] = useState('Follow');
@@ -185,7 +188,7 @@ function Profile() {
             scrollTop: 0
         }, 500);
 
-        if (state.currentLoginFlow == 'profile-competition') {
+        if (state.currentLoginFlow === 'profile-competition') {
             setValue(1);
             dispatch(disableLoginFlow());
             dispatch(setActiveVideoForCompetition());
@@ -201,6 +204,7 @@ function Profile() {
             }
         }
         // getCompetitionByUserId(loggedInUser.key).subscribe((list) => UserLikedVideoList(list));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const getAllUserList = () => {
@@ -222,26 +226,26 @@ function Profile() {
         const profileUser = userData && Object.keys(userData).length > 0 ? userData : loggedInUser;
         getUploadedVideosByUserId(profileUser.key).subscribe((list) => {
             setUserUploadedVideoList(list);
-            if (list.length != 0) {
+            if (list.length !== 0) {
                 getAllUserList().then((data) => {
                     setUserList(data);
                     let userList = data;
                     let userVdoCopy = [...list];
-                    userVdoCopy.map((vdoObj) => {
-                        let userData = userList.filter(userObj => userObj.key == profileUser.key);
+                    userVdoCopy.forEach((vdoObj) => {
+                        let userData = userList.filter(userObj => userObj.key === profileUser.key);
                         if (vdoObj.likes && vdoObj.likes.length) {
-                            vdoObj.likes.map((likeObj) => {
-                                let userData = userList.filter(userObj => userObj.key == likeObj.userId);
-                                if (userData.length != 0) {
+                            vdoObj.likes.forEach((likeObj) => {
+                                let userData = userList.filter(userObj => userObj.key === likeObj.userId);
+                                if (userData.length !== 0) {
                                     likeObj.username = userData[0].username;
                                     likeObj.profileImage = userData[0].profileImage;
                                 }
                             })
                         }
                         if (vdoObj.comments && vdoObj.comments.length) {
-                            vdoObj.comments.map((commentObj) => {
-                                let userData = userList.filter(userObj => userObj.key == commentObj.userId);
-                                if (userData.length != 0) {
+                            vdoObj.comments.forEach((commentObj) => {
+                                let userData = userList.filter(userObj => userObj.key === commentObj.userId);
+                                if (userData.length !== 0) {
                                     commentObj.username = userData[0].username;
                                     commentObj.profileImage = userData[0].profileImage;
                                 }
@@ -269,13 +273,15 @@ function Profile() {
             } else dispatch(disableLoading());
         });
         getCompetitionByUserId(profileUser.key).subscribe((list) => { dispatch(disableLoading()); setUserCompetitionsList(list) });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userData])
 
     useEffect(() => {
         const profileUser = userData && Object.keys(userData).length > 0 ? userData : loggedInUser;
-        if (state.refetchDataModule == 'user-uploaded-video') {
+        if (state.refetchDataModule === 'user-uploaded-video') {
             getUploadedVideosByUserId(profileUser.key).subscribe((list) => { dispatch(removeDataRefetchModuleName()); setUserUploadedVideoList(list) });
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [state])
 
     function onWindowScroll(event) {
@@ -320,15 +326,15 @@ function Profile() {
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
-        if (newValue == 1 && UserLikedVideoList.length == 0) {
+        if (newValue === 1 && UserLikedVideoList.length === 0) {
             dispatch(enableLoading());
             getAllUploadedVideos().then((feeds) => {
                 if (feeds) {
                     let userLikedVdos = []
-                    feeds.map((feed) => {
+                    feeds.forEach((feed) => {
                         if (feed.likes && feed.likes.length) {
-                            let isAvail = feed.likes.filter(data => data.userId == loggedInUser.key)
-                            if (isAvail.length != 0) userLikedVdos.push(feed)
+                            let isAvail = feed.likes.filter(data => data.userId === loggedInUser.key)
+                            if (isAvail.length !== 0) userLikedVdos.push(feed)
                         }
                     })
                     dispatch(disableLoading());
@@ -338,6 +344,7 @@ function Profile() {
         }
     };
 
+    // eslint-disable-next-line no-unused-vars
     const handleChangeIndex = (index) => {
         setValue(index);
     };
@@ -346,7 +353,7 @@ function Profile() {
         const profileUser = userData && Object.keys(userData).length > 0 ? userData : loggedInUser;
         if (profileUser.key === loggedInUser.key) {
             getCompetitionsList().subscribe(allCompList => {
-                let isUserEnrolled = allCompList.filter((data) => data.key == competition.compId);
+                let isUserEnrolled = allCompList.filter((data) => data.key === competition.compId);
                 if (isUserEnrolled.length) {
                     isUserEnrolled[0].isUserEnrolled = true;
                     isUserEnrolled[0].userSubmitedDetails = competition;
@@ -361,18 +368,18 @@ function Profile() {
 
     const addUserDetailsToFeed = (feed, allUser) => {
         if (feed.likes && feed.likes.length) {
-            feed.likes.map((likeObj) => {
-                let userData = allUser.filter(userObj => userObj.key == likeObj.userId);
-                if (userData.length != 0) {
+            feed.likes.forEach((likeObj) => {
+                let userData = allUser.filter(userObj => userObj.key === likeObj.userId);
+                if (userData.length !== 0) {
                     likeObj.username = userData[0].username;
                     likeObj.profileImage = userData[0].profileImage;
                 }
             })
         }
         if (feed.comments && feed.comments.length) {
-            feed.comments.map((commentObj) => {
-                let userData = allUser.filter(userObj => userObj.key == commentObj.userId);
-                if (userData.length != 0) {
+            feed.comments.forEach((commentObj) => {
+                let userData = allUser.filter(userObj => userObj.key === commentObj.userId);
+                if (userData.length !== 0) {
                     commentObj.username = userData[0].username;
                     commentObj.profileImage = userData[0].profileImage;
                 }
@@ -382,26 +389,26 @@ function Profile() {
 
     const handleLikes = (video, status) => {
         let videoObj = { ...video }
-        if (status == 'liked') {
+        if (status === 'liked') {
             if (videoObj.likes) {
                 videoObj.likes.push({ value: 1, userId: loggedInUser.key })
             } else {
                 videoObj.likes = [{ value: 1, userId: loggedInUser.key }]
             }
         } else {
-            let likes = videoObj.likes.filter(data => data.userId != loggedInUser.key)
+            let likes = videoObj.likes.filter(data => data.userId !== loggedInUser.key)
             videoObj.likes = likes
         }
-        videoObj.likes.map((likeObj) => { delete likeObj.profileImage; delete likeObj.username; })
+        videoObj.likes.forEach((likeObj) => { delete likeObj.profileImage; delete likeObj.username; })
         updateVideoLikes(videoObj.key, videoObj).subscribe(() => {
             let feedListCopy = [...UserUploadedVideoList]
-            feedListCopy.map((feed) => {
-                if (feed.key == videoObj.key) {
+            feedListCopy.forEach((feed) => {
+                if (feed.key === videoObj.key) {
                     feed.likes = videoObj.likes
                 }
 
                 if (feed.likes && feed.likes.length) {
-                    let isAvail = feed.likes.filter(data => data.userId == loggedInUser.key)
+                    let isAvail = feed.likes.filter(data => data.userId === loggedInUser.key)
                     isAvail.length > 0 ? feed.isLiked = true : feed.isLiked = false
                 } else {
                     feed.isLiked = false
@@ -420,11 +427,11 @@ function Profile() {
             videoObj.comments = [{ value: commentString, userId: loggedInUser.key }]
         }
 
-        videoObj.comments.map((commentObj) => { delete commentObj.profileImage; delete commentObj.username; })
+        videoObj.comments.forEach((commentObj) => { delete commentObj.profileImage; delete commentObj.username; })
         updateVideoComments(videoObj.key, videoObj).subscribe(() => {
             let feedListCopy = [...UserUploadedVideoList]
-            feedListCopy.map((feed) => {
-                if (feed.key == videoObj.key) {
+            feedListCopy.forEach((feed) => {
+                if (feed.key === videoObj.key) {
                     feed.comments = videoObj.comments
                 }
                 addUserDetailsToFeed(feed, userList);
@@ -474,10 +481,13 @@ function Profile() {
         dispatch(enableLoading());
         updateFollowUnfollow(toFollow, followBy, action).subscribe((response) => {
             if (response) {
+                // eslint-disable-next-line no-unused-vars
                 const { name, email } = response;
                 if (response.followed) {
                     setFollowButtonText('Following');
+                    // eslint-disable-next-line no-unused-vars
                     const message = `${loggedInUser.name} started following`;
+                    // eslint-disable-next-line no-unused-vars
                     const subject = `${loggedInUser.name} started following`;
                     // sendFollowNotificationEmail(name, email, subject, message);
                 }
@@ -485,7 +495,9 @@ function Profile() {
                     setFollowButtonText('Requested');
                     const acceptLink = `${REACT_APP_URL}profile?followrequest=accept&requestBy=${encodeURIComponent(loggedInUser.email)}`
                     const declineLink = `${REACT_APP_URL}profile?followrequest=decline&requestBy=${encodeURIComponent(loggedInUser.email)}`
+                    // eslint-disable-next-line no-unused-vars
                     const message = `${loggedInUser.name} requested to follow you.<br /><br />You can <a href="${acceptLink}">Accept</a> or <a href="${declineLink}">Decline</a>`;
+                    // eslint-disable-next-line no-unused-vars
                     const subject = `${loggedInUser.name} requested to follow you`;
                     // sendFollowNotificationEmail(name, email, subject, message);
                 }
@@ -494,8 +506,7 @@ function Profile() {
         })
     }
 
-
-
+    // eslint-disable-next-line no-unused-vars
     const sendFollowNotificationEmail = (name, email, subject, message) => {
         let emailBody = `<div>
         <p>Hi ${name}, ${message}</p>. 
@@ -522,7 +533,7 @@ function Profile() {
                 <div className="profile-img">
                     {
                         userData.profileImage ?
-                            <img src={userData.profileImage} />
+                            <img src={userData.profileImage} alt={userData.name} />
                             :
                             <AccountCircleOutlinedIcon />
                     }
@@ -580,7 +591,6 @@ function Profile() {
                         >
                             <Tab label="Posts" icon={<CollectionsOutlinedIcon />} {...a11yProps(0)} />
                             <Tab label="Competitions" icon={<LoyaltyOutlinedIcon />} {...a11yProps(1)} />
-                            {/* <Tab label="Liked" icon={<FavoriteBorderOutlinedIcon />}{...a11yProps(1)} /> */}
                         </Tabs>
                     </div>
                     <div className="profileTabBoxContent">
@@ -617,7 +627,7 @@ function Profile() {
                                                     {userData && loggedInUser && userData.key === loggedInUser.key && <div className="menu" onClick={() => { setOpenUploadCompModalFor(vdo.key); setShowProfileTab(true) }}>
                                                         <i><FaBars /></i>
                                                     </div>}
-                                                    {showProfileTab && openUploadCompModalFor == vdo.key && <div className="videoUploadToolTip" ref={ref}>
+                                                    {showProfileTab && openUploadCompModalFor === vdo.key && <div className="videoUploadToolTip" ref={ref}>
                                                         <div className="profile" onClick={() => redirectToCompetition()}>Upload for competition</div>
                                                     </div>}
                                                     <div className="vdo-card">
@@ -665,19 +675,13 @@ function Profile() {
                                     {UserCompetitionsList.length !== 0 ? UserCompetitionsList.map((competition) => {
                                         return <div className="flex-basis-3 competition-tab" key={competition.key} onClick={() => openCompetitionDetailsModal(competition)}>
                                             <div className="compTitle">{competition.compName}</div>
-                                            <img src={competition.compImg} />
+                                            <img src={competition.compImg} alt={competition.compName} />
                                         </div>
                                     }) :
                                         <div>You haven't enrolled in any competition yet!</div>}
                                 </div>
                             </TabPanel>
                     </div>
-                    {/* <SwipeableViews
-                        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                        index={value}
-                        onChangeIndex={handleChangeIndex}>
-                        <
-                    </SwipeableViews> */}
                 </div>
             </div>
             {commentModal && <VideoDetails handleClose={() => setCommentModal(false)}  videoObj={activeVideoObj} handleLikes={handleLikes} handleComments={handleComments} loggedInUser={loggedInUser} followToggle={handleFollowToggle} BtnText={followButtonText}/>}

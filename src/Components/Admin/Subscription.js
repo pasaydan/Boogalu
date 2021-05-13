@@ -126,7 +126,7 @@ export default function Subscription() {
 
     function setStartDate(date) {
         try {
-            setSubscription({ ...Subscription, ['startAt']: date });
+            setSubscription({ ...Subscription, 'startAt': date });
         } catch (e) {
             console.log('Start date error: ', e);
         }
@@ -134,7 +134,7 @@ export default function Subscription() {
     
     function setEndDate(date) {
         try {
-            setSubscription({ ...Subscription, ['endAt']: date });
+            setSubscription({ ...Subscription, 'endAt': date });
         } catch (e) {
             console.log('End date error: ', e);
         }
@@ -315,16 +315,16 @@ export default function Subscription() {
             {
                 isAdminLoggedIn || checkAdminLogIn ?
                 <div className="optionsTab">
-                    <a onClick={(e) => switchTabs(e, 'create')} className="active" ref={createTabRef}>Create new</a>
-                    <a onClick={(e) => switchTabs(e, 'list')} ref={listTabRef}>View list</a>
+                    <p onClick={(e) => switchTabs(e, 'create')} className="tabItem active" ref={createTabRef}>Create new</p>
+                    <p onClick={(e) => switchTabs(e, 'list')} className="tabItem" ref={listTabRef}>View list</p>
                 </div>: ''
             }
             <div className={`subscription-bo-wrap clearfix ${(isAdminLoggedIn || checkAdminLogIn) && 'loggedInAdmin'}`}>
                 {
                     isAdminLoggedIn || checkAdminLogIn ?
-                    <a className="logOutIconWrap" title="logout" onClick={(e) => tiggerAdminLogout(e, false)}>
+                    <p className="logOutIconWrap" title="logout" onClick={(e) => tiggerAdminLogout(e, false)}>
                         <img src={logOutIcon} alt="logout" />
-                    </a> : ''
+                    </p> : ''
                 }
                 {
                     isAdminLoggedIn || checkAdminLogIn ?

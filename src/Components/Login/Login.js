@@ -17,12 +17,12 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
 import bgImg from '../../Images/bg1.svg';
-import { loginUser, signupUser } from '../../Actions/User/index';
+import { loginUser } from '../../Actions/User/index';
 import { getUserByEmail, getUserByPhone } from "../../Services/User.service";
 import VideoUploader from "../VideoUploader";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { displayNotification, removeNotification } from "../../Actions/Notification";
-import { NOTIFICATION_SUCCCESS, NOTIFICATION_ERROR } from "../../Constants";
+import { NOTIFICATION_SUCCCESS } from "../../Constants";
 import * as $ from 'jquery';
 
 export default function Login(props) {
@@ -37,6 +37,7 @@ export default function Login(props) {
     useEffect(() => {
         if (thirdPartyResponse.source === 'Facebook') signinUser('', 'Facebook');
         if (thirdPartyResponse.source === 'Google') signinUser('', 'Google');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [thirdPartyResponse]);
 
     useEffect(() => {
@@ -53,6 +54,7 @@ export default function Login(props) {
         $('html,body').animate({
             scrollTop: 0
         }, 500);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const setLoginResponseToServer = () => {
@@ -75,7 +77,7 @@ export default function Login(props) {
     }
 
     const failureResponseGoogle = function (response) {
-        if (response.error != "idpiframe_initialization_failed") {
+        if (response.error !== "idpiframe_initialization_failed") {
             setLoginError('Sorry there was a problem with your google login request.')
         }
     }
@@ -192,10 +194,10 @@ export default function Login(props) {
                             type: NOTIFICATION_SUCCCESS,
                             time: 3000
                         }));
-                        if (state.currentLoginFlow == 'competition') history.push('/competitions');
-                        else if (state.currentLoginFlow == 'subscription') history.push('/subscription');
-                        else if (state.currentLoginFlow == 'lessons') history.push('/lessons');
-                        else if (state.currentLoginFlow == 'upload-video') setOpenVdoUploadModal(true);
+                        if (state.currentLoginFlow === 'competition') history.push('/competitions');
+                        else if (state.currentLoginFlow === 'subscription') history.push('/subscription');
+                        else if (state.currentLoginFlow === 'lessons') history.push('/lessons');
+                        else if (state.currentLoginFlow === 'upload-video') setOpenVdoUploadModal(true);
                         else history.push('/')
                     })
                     .catch((data) => {
@@ -226,10 +228,10 @@ export default function Login(props) {
                             type: NOTIFICATION_SUCCCESS,
                             time: 3000
                         }));
-                        if (state.currentLoginFlow == 'competition') history.push('/competitions');
-                        else if (state.currentLoginFlow == 'subscription') history.push('/subscription');
-                        else if (state.currentLoginFlow == 'lessons') history.push('/lessons');
-                        else if (state.currentLoginFlow == 'upload-video') setOpenVdoUploadModal(true);
+                        if (state.currentLoginFlow === 'competition') history.push('/competitions');
+                        else if (state.currentLoginFlow === 'subscription') history.push('/subscription');
+                        else if (state.currentLoginFlow === 'lessons') history.push('/lessons');
+                        else if (state.currentLoginFlow === 'upload-video') setOpenVdoUploadModal(true);
                         else history.push('/')
                     })
                     .catch((data) => {
@@ -244,10 +246,13 @@ export default function Login(props) {
                         }
                     })
                 break;
+            default: break;
         }
     }
 
     function goToPrevious(event) {
+        event.stopPropagation();
+        event.preventDefault();
         props.backToHome('login');
         history.goBack();
     }
@@ -257,7 +262,7 @@ export default function Login(props) {
             <div className={`inner-form-wrap ${componentShowClass}`}>
                 <form className="form-wrap clearfix" onSubmit={(e) => signinUser(e, 'cred')}>
                     <div className="heading-outer">
-                        <a onClick={(e) => goToPrevious(e)} className="arrow-back-home" title="Back">
+                        <a href="#previousLink" onClick={(e) => goToPrevious(e)} className="arrow-back-home" title="Back">
                             <ArrowBackIcon />
                         </a>
                         <a href="/" className="logo" title="Back to Home">
@@ -347,7 +352,7 @@ export default function Login(props) {
                     </div>
                 </form>
                 <div className="image-wrap">
-                    <img src="https://i.imgur.com/KS2W5BM.jpg" alt="signup-image" />
+                    <img src="https://i.imgur.com/KS2W5BM.jpg" alt="signup" />
                     <div className="singup-details">
                         <div className="already-login-wrap">
                             <div className="text-wrap">
@@ -360,7 +365,7 @@ export default function Login(props) {
                 </div>
             </div>
             <div className="img-wrap">
-                <img src={bgImg} />
+                <img src={bgImg} alt="background" />
             </div>
             {openVdoUploadModal && <VideoUploader handleClose={() => setOpenVdoUploadModal(false)} />}
             <ul className="circles">

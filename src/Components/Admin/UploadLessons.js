@@ -47,8 +47,7 @@ export default function UploadLessons() {
         files: []
     };
     
-    const { state, dispatch } = useStoreConsumer();
-    const loggedInUser = state.loggedInUser;
+    const { dispatch } = useStoreConsumer();
     const [isAdminLoggedIn, toggleAdminLogin] = useState(false);
     const [adminEmail, setAdminEmail] = useState('');
     const [adminPwd, setAdminPwd] = useState('');
@@ -112,8 +111,6 @@ export default function UploadLessons() {
 
     const [disableUploadButton, setUploadButtonState] = useState(true);
     const [SelectedVideoData, setSelectedVideoData] = useState(lessonFormDetails);
-    const [validateUploadForm, setValidationUploadForm] = useState(false);
-    const [lessonData, setLessonData] = useState();
 
     useEffect(() => {
         if (checkAdminLogIn) {
@@ -125,7 +122,7 @@ export default function UploadLessons() {
     useEffect(() => {
         const validateRequiredFieldsData = [];
         if (videosToUpload) {
-            requiredUploadFieldsForLesson.map(field => {
+            requiredUploadFieldsForLesson.forEach(field => {
                 const itemValue = videosToUpload[field];
                 if (itemValue) {
                     validateRequiredFieldsData.push(videosToUpload[field]);
@@ -136,6 +133,7 @@ export default function UploadLessons() {
             setUploadButtonState(false);
             setSelectedVideoData({...SelectedVideoData, files: videosToUpload});
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [videosToUpload]);
 
 
@@ -387,6 +385,7 @@ export default function UploadLessons() {
             for (const [key, value] of Object.entries(files)) {
                 if (key && value) {
                     filesToUpload = {...filesToUpload, [key]: value};
+                    // eslint-disable-next-line no-loop-func
                     uploadVideo(value, 'lessons', name, key).subscribe((response) => {
                         dispatch(enableLoading());
                         if (response.donePercentage) {
@@ -475,16 +474,16 @@ export default function UploadLessons() {
             {
                 isAdminLoggedIn || checkAdminLogIn ?
                 <div className="optionsTab">
-                    <a onClick={(e) => setInternalLinkFn(true)} className="active" ref={createTabRef}>Upload new</a>
-                    <a onClick={(e) => setInternalLinkFn(false)} ref={listTabRef}>View lessons</a>
+                    <p className="tabItem active" onClick={(e) => setInternalLinkFn(true)} ref={createTabRef}>Upload new</p>
+                    <p className="tabItem" onClick={(e) => setInternalLinkFn(false)} ref={listTabRef}>View lessons</p>
                 </div>: ''
             }
             <div className={`competition-bo-wrap clearfix ${(isAdminLoggedIn || checkAdminLogIn) && 'loggedInAdmin usersListBox'}`}>
                 {
                     isAdminLoggedIn || checkAdminLogIn ?
-                        <a className="logOutIconWrap" title="logout" onClick={(e) => tiggerAdminLogout(e, false)}>
+                        <p className="logOutIconWrap" title="logout" onClick={(e) => tiggerAdminLogout(e, false)}>
                             <img src={logOutIcon} alt="logout" />
-                        </a> : ''
+                        </p> : ''
                 }
                 {
                     isAdminLoggedIn || checkAdminLogIn ?
@@ -773,7 +772,7 @@ export default function UploadLessons() {
                     <div className="previewLessonBox">
                         <div className="innerPreviewBox">
                             <h3>Preview your Lesson videos</h3>
-                            <a className="closeModalBtn" onClick={(e) => closePreviewModal(e)}></a>
+                            <p className="closeModalBtn" onClick={(e) => closePreviewModal(e)}></p>
                             <div className="videosWrap">
                                 <div className="videoItem">
                                     <p className="videoLabel">Preview Video</p>

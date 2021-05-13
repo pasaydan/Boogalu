@@ -4,16 +4,14 @@ import boogaluLogo from '../../Images/Boogalu-logo.svg';
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { logoutUser } from '../../Actions/User';
-import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import { enableLoginFlow } from "../../Actions/LoginFlow";
 import { disableLoginFlow } from "../../Actions/LoginFlow";
 import VideoUploader from "../VideoUploader";
 import { MdNotifications, MdNotificationsActive, MdAccountCircle } from "react-icons/md";
-import { NOTIFICATION_SUCCCESS, NOTIFICATION_ERROR } from "../../Constants";
+import { NOTIFICATION_SUCCCESS } from "../../Constants";
 import { displayNotification } from "../../Actions/Notification";
 import * as $ from 'jquery';
-import { getUserByEmail, getUserById, getLoggedInUserNotifications } from '../../Services/User.service';
-import { bindCallback } from 'rxjs';
+import {  getUserById, getLoggedInUserNotifications } from '../../Services/User.service';
 
 const SCROLL_TOP_LIMIT = 200;
 
@@ -28,10 +26,13 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
     const [userIconProfileMenu, setUserIconProfileMenu] = useState(false);
     const [showUserIconProfileMenu, setShowUserIconProfileMenu] = useState(false);
     const [isHomeRoute, togglHomeRouteValue] = useState(true);
+    // eslint-disable-next-line no-unused-vars
     const [isNotificationsPresent, setNotificationValue] = useState(false);
     const [userNotificationMenu, setUserNotificationMenu] = useState(false);
     const [showUserNotificationMenu, setShowUserIconNotificationMenu] = useState(false);
+    // eslint-disable-next-line no-unused-vars
     const [userNotificationList, setUserNotificationList] = useState([]);
+    // eslint-disable-next-line no-unused-vars
     const [notificationArray, setNotificationArray] = useState([])
     
     const ref = useRef();
@@ -142,6 +143,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
         window.addEventListener("resize", windowResize, { passive: true });
         window.addEventListener("scroll", handleScroll, { passive: true });
         return () => setDidMount(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isMobile]);
 
     useEffect(() => {
@@ -162,11 +164,13 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
             if ((!pathName || pathName.includes('lessons') || pathName.includes('contactus') || pathName.includes('home')) && state.currentLoginFlow) {
                 dispatch(disableLoginFlow());
             }
-            if (state.currentLoginFlow == 'upload-video' && pathName.includes('competitions') || pathName.includes('lessons')) dispatch(disableLoginFlow());
+            if ((state.currentLoginFlow === 'upload-video' && pathName.includes('competitions')) || pathName.includes('lessons')) dispatch(disableLoginFlow());
             //set active route name
 
         });
-    })
+        console.log('Route change handler: ', listenRouteChange);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         let followNotificationArray = [];
@@ -200,17 +204,18 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
         //         }
         //     })
         // }, 5000);
-        if (loggedInUser) {
+        if (loggedInUser.key) {
             getLoggedInUserNotifications(loggedInUser.key).subscribe((response) => {
                 const notification = response && response.notification && response.notification ? response.notification : [];
                 if (notification && Object.keys(notification).length > 0) {
                     const notificationKeys = Object.keys(notification);
                     const flatValues = Object.values(notification).flat()
                     let valueCount = 0;
-                    notificationKeys.map((key, index) => {
+                    notificationKeys.forEach((key, index) => {
                         const valuesByKey = notification[key];
-                        valuesByKey.map((value) => {
+                        valuesByKey.forEach((value) => {
                             getUserById(value).subscribe((response) => {
+                                // eslint-disable-next-line no-unused-vars
                                 valueCount++;
                                 let responseData = response
                                 responseData = {...responseData, [key]: true}
@@ -231,6 +236,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                 }
             })
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -361,6 +367,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
 
     const uploadVdo = (e) => {
         // setHideVdoUploadBtn(true);
+        e.stopPropagation();
         e.preventDefault();
         if (loggedInUser && loggedInUser.email && loggedInUser.phone) {
             // history.push({
@@ -418,6 +425,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
 
     function activateLeftMenuBar(event) {
         event.stopPropagation();
+        event.preventDefault();
         setShowUserIconProfileMenu(false);
         setTimeout(() => {
             setUserIconProfileMenu(false);
@@ -544,6 +552,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
 
     function headerMenusClicked(event) {
         event.stopPropagation();
+        event.preventDefault();
         setShowProfileTab(false);
         setShowUserIconProfileMenu(false);
         setShowUserIconNotificationMenu(false);
@@ -594,7 +603,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                                 {
                                     !hideVdoUploadBtn ?
                                         <li>
-                                            <a href="" onClick={(e) => uploadVdo(e)}>Upload</a>
+                                            <a href="#uploadVideo" onClick={(e) => uploadVdo(e)} title="upload video">Upload</a>
                                         </li> : ''
                                 }
                             </ul> : ''
@@ -602,7 +611,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                     {(!loggedInUser || !loggedInUser.phone) && <div className="flex-2 signup-wrap" >
                         <button className="btn primary-light login" onClick={() => navigateToUserRegistrationLogin('login')}>Login</button>
                         <button className="btn primary-dark signup" onClick={() => navigateToUserRegistrationLogin('register')}>Sign Up</button>
-                        <a className="hamburgerMenu" ref={hamburgerMenuRef} title={`${profileTabMenu ? 'Close menu' : 'Open menu'}`} onClick={(e) => activateLeftMenuBar(e)}>
+                        <a href="#hamburgerMenuLink" className="hamburgerMenu" ref={hamburgerMenuRef} title={`${profileTabMenu ? 'Close menu' : 'Open menu'}`} onClick={(e) => activateLeftMenuBar(e)}>
                             <span></span>
                         </a>
                     </div>}
@@ -625,11 +634,8 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                                     <MdNotifications onClick={(e) => activateNotificationMenu(e)} />
                                 }
                             </div>
-                            {/* {loggedInUser.profileImage ? <div className="profile-img-wrap">
-                                <img src={loggedInUser.profileImage} onClick={(e) => activateProfileIconMenu(e)} style={{ fontSize: '35px' }} />
-                            </div> : <AccountCircleOutlinedIcon onClick={(e) => activateProfileIconMenu(e)} style={{ fontSize: '35px' }} />} */}
                         </div>
-                        <a className="hamburgerMenu" ref={hamburgerMenuRef} title={`${profileTabMenu ? 'Close menu' : 'Open menu'}`} onClick={(e) => activateLeftMenuBar(e)}>
+                        <a href="#hamburgerMenuLink" className="hamburgerMenu" ref={hamburgerMenuRef} title={`${profileTabMenu ? 'Close menu' : 'Open menu'}`} onClick={(e) => activateLeftMenuBar(e)}>
                             <span></span>
                         </a>
                         {/* <button className="signup" onClick={() => logout()}>Logout</button> */}
@@ -637,7 +643,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                     {
                         profileTabMenu ?
                         <div className={`profile-tab-wrap ${showProfileTab ? 'showMenu' : ''}`} onClick={(e) => headerMenusClicked(e)}>
-                            <a className="crossMenuIcon"></a>
+                            <i className="crossMenuIcon"></i>
                             <div className="innerMenuWrap">
                                 <div className="linkMenu" data-url="subscription" onClick={(e) => topRightNavigation(e, 'subscription')}>Subscription</div>
                                 <div className="linkMenu" data-url="aboutus" onClick={(e) => topRightNavigation(e, 'aboutus')}>About us</div>
@@ -663,9 +669,9 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                     {
                         userNotificationMenu ?
                         <div className={`profile-tab-wrap userNotificationOptionWrap user-icon-menu-wrap ${showUserNotificationMenu ? 'showMenu' : ''}`} onClick={(e) => headerMenusClicked(e)}>
-                            <a className="closeNotificationIcon" onClick={(e) => headerMenusClicked(e)}></a>
+                            <i title="close notification" className="closeNotificationIcon" onClick={(e) => headerMenusClicked(e)}></i>
                             {
-                                true && isNotificationsPresent &&  userNotificationList && userNotificationList.length ?
+                                isNotificationsPresent &&  userNotificationList && userNotificationList.length ?
                                 <div className="innerMenuWrap">
                                     <ul className="notificationList">
                                         {
@@ -766,7 +772,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                 </div>
                 {
                     !hideVdoUploadBtn ?
-                        <a href="" className="upload-btn" onClick={(e) => uploadVdo(e)}>
+                        <a href="#uploadVideoLink" className="upload-btn" onClick={(e) => uploadVdo(e)}>
                             <i><FaCloudUploadAlt /></i>
                         </a> : ''
                 }
@@ -779,7 +785,12 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                                         <i>
                                             <FaHome />
                                         </i>
-                                        <span>Home</span>
+                                        <span>
+                                            {
+                                                loggedInUser.username ?
+                                                'Dashboard' : 'Home'
+                                            }
+                                        </span>
                                     </a>
                                 </li>
                                 <li>

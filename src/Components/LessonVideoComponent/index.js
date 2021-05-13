@@ -69,6 +69,7 @@ function LessonsVideoContainer({
             });
         }
         // Video Mirror will also come here
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     function triggerFullScreen(e) {
@@ -90,15 +91,15 @@ function LessonsVideoContainer({
 
     function pauseVideo(params) {
         const currentVideoState = activeVideoState;
-        if (currentVideoState == 'front') {
+        if (currentVideoState === 'front') {
             videoFrontMirror.pause();
             videoBack.pause();
             videoBackMirror.pause();
-        } else if (currentVideoState == 'front-mirror') {
+        } else if (currentVideoState === 'front-mirror') {
             videoFront.pause();
             videoBack.pause();
             videoBackMirror.pause();
-        } else if (currentVideoState == 'back') {
+        } else if (currentVideoState === 'back') {
             videoFrontMirror.pause();
             videoFront.pause();
             videoBackMirror.pause();
@@ -110,15 +111,15 @@ function LessonsVideoContainer({
     }
 
     function playVideo(params) {
-        if (activeVideoState == 'front') {
+        if (activeVideoState === 'front') {
             videoFrontMirror.play();
             videoBack.play();
             videoBackMirror.play();
-        } else if (activeVideoState == 'front-mirror') {
+        } else if (activeVideoState === 'front-mirror') {
             videoFront.play();
             videoBack.play();
             videoBackMirror.play();
-        } else if (activeVideoState == 'back') {
+        } else if (activeVideoState === 'back') {
             videoFrontMirror.play();
             videoFront.play();
             videoBackMirror.play();
@@ -130,7 +131,7 @@ function LessonsVideoContainer({
     }
 
     function flipVideos(event) {
-        if (activeVideoState == 'front' || activeVideoState == 'front-mirror') {
+        if (activeVideoState === 'front' || activeVideoState === 'front-mirror') {
             setActiveVideoState('back');
             videoFront.muted = true;
             videoBack.muted = false;
@@ -146,19 +147,19 @@ function LessonsVideoContainer({
     }
 
     function mirrorVideos(event) {
-        if (activeVideoState == 'front') {
+        if (activeVideoState === 'front') {
             setActiveVideoState('front-mirror');
             videoFront.muted = true;
             videoBack.muted = true;
             videoFrontMirror.muted = false;
             videoBackMirror.muted = true;
-        } else if (activeVideoState == 'front-mirror') {
+        } else if (activeVideoState === 'front-mirror') {
             setActiveVideoState('front');
             videoFront.muted = false;
             videoBack.muted = true;
             videoFrontMirror.muted = true;
             videoBackMirror.muted = true;
-        } else if (activeVideoState == 'back') {
+        } else if (activeVideoState === 'back') {
             setActiveVideoState('back-mirror');
             videoFront.muted = true;
             videoBack.muted = true;
@@ -175,16 +176,16 @@ function LessonsVideoContainer({
     // This seeking function is to sync all the videos on a specific time
     // when user use video slider to go ahead or back
     function onVideoSeek(event, status) {
-        if (activeVideoState == status) {
-            if (activeVideoState == 'front') {
+        if (activeVideoState === status) {
+            if (activeVideoState === 'front') {
                 videoBack.currentTime = videoFront.currentTime;
                 videoFrontMirror.currentTime = videoFront.currentTime;
                 videoBackMirror.currentTime = videoFront.currentTime;
-            } else if (activeVideoState == 'front-mirror') {
+            } else if (activeVideoState === 'front-mirror') {
                 videoFront.currentTime = videoFrontMirror.currentTime;
                 videoBack.currentTime = videoFrontMirror.currentTime;
                 videoBackMirror.currentTime = videoFrontMirror.currentTime;
-            } else if (activeVideoState == 'back') {
+            } else if (activeVideoState === 'back') {
                 videoFront.currentTime = videoBack.currentTime;
                 videoFrontMirror.currentTime = videoBack.currentTime;
                 videoBackMirror.currentTime = videoBack.currentTime;
@@ -300,7 +301,7 @@ function LessonsVideoContainer({
             </div>
             {
                 isVideoOverlayActive ?
-                <a title="close lesson" className="closeLessonBox" onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}><span></span></a>
+                <p title="close lesson" className="closeLessonBox" onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}><span></span></p>
                 : ''
             }
 
@@ -351,17 +352,17 @@ function LessonsVideoContainer({
 
             {
                 (!isLoggedInUser && isPaid === 'free') ?
-                    <a className="lockIconWrap" title="Login to unlock this lesson" onClick={(e) => redirectToLogin(e)}>
+                    <p className="lockIconWrap" title="Login to unlock this lesson" onClick={(e) => redirectToLogin(e)}>
                         <MdLock />
-                    </a> : 
+                    </p> : 
                 (isLoggedInUser && (!isSubscribedUser && (isPaid === 'paid' || isPaid === 'pro' || isPaid === 'premium'))) ?
-                <a className="lockIconWrap" title="Subscribe to unlock this lesson" onClick={(e) => redirectToLogin(e)}>
+                <p className="lockIconWrap" title="Subscribe to unlock this lesson" onClick={(e) => redirectToLogin(e)}>
                     <MdLock />
-                </a> : 
+                </p> : 
                 (!isLoggedInUser && !isSubscribedUser && (isPaid === 'paid' || isPaid === 'pro' || isPaid === 'premium')) ?
-                <a className="lockIconWrap" title="Login &amp; subscribe to unlock this lesson" onClick={(e) => redirectToLogin(e)}>
+                <p className="lockIconWrap" title="Login &amp; subscribe to unlock this lesson" onClick={(e) => redirectToLogin(e)}>
                     <MdLock />
-                </a> : ''
+                </p> : ''
             }
 
             <div className="videoInfoWrap" onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}>

@@ -28,7 +28,6 @@ export function getSubscriptionsList() {
 export function getActiveSubscriptionsList() {
     return new Observable((observer) => {
         subscriptionRef.onSnapshot((querySnapshot) => {
-            let cat = [];
             querySnapshot.forEach((doc) => {
                 let data = doc.data();
                 inactiveSubscriptionIfDateExpired(data);

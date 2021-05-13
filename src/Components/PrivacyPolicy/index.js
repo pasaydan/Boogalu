@@ -40,7 +40,7 @@ export default function PrivacyPolicy() {
                     PCI-DSS requirements help ensure the secure handling of credit card information by our store and its service providers.
 
                     For more insight, you may also want to read terms and conditions of razorpay on 
-                    <a href="https://razorpay.com" target="_blank">https://razorpay.com</a>
+                    <a href="https://razorpay.com" target="_blank" rel="noreferrer">https://razorpay.com</a>
                 </p>
 
                 SECTION 5 - THIRD-PARTY SERVICES<br/>

@@ -2,23 +2,6 @@ import React, { createContext, useReducer, useContext } from 'react';
 import storeReducer from '../Reducers';
 import LocalstorageCache from '../Services/LocalstorageCache';
 
-const loggedInUserState = {
-  name: '',
-  username: '',
-  email: '',
-  phone: '',
-  dob: '2017-05-24',
-  gender: '',
-  country: '',
-  state: '',
-  password: '',
-  confirmPassword: '',
-  bio: '',
-  tnc: true,
-  profileImage: '',
-  source: ''
-}
-
 const initialState = localStorage.getItem("Choreoculture") ? JSON.parse(localStorage.getItem("Choreoculture"))
   : {
     loggedInUser: {},

@@ -3,6 +3,7 @@ import { useStoreConsumer } from '../../Providers/StateProvider';
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import ProfileImage from "../ProfileImage";
 import { getAllUser, updateFollowUnfollow } from "../../Services/User.service";
+// eslint-disable-next-line no-unused-vars
 import { sendEmail } from "../../Services/Email.service";
 import { useHistory } from "react-router-dom";
 import { Link } from '@material-ui/core';
@@ -12,6 +13,7 @@ import { Link } from '@material-ui/core';
 
 function ViewAllMembers() {
     const history = useHistory();
+    // eslint-disable-next-line no-unused-vars
     const [followButtonText, setFollowButtonText] = useState('Follow');
     const [userList, setUserList] = useState([]);
     const { state, dispatch } = useStoreConsumer();
@@ -23,6 +25,7 @@ function ViewAllMembers() {
         } else {
             redirectToLogin();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     function redirectToLogin() {
@@ -35,13 +38,14 @@ function ViewAllMembers() {
             getAllUser(userKey).subscribe((users) => {
                 dispatch(disableLoading());
                 if (users && users.length) {
+                    // eslint-disable-next-line no-unused-vars
                     let userList = users;
                     let updatedUserList = []
-                    users.map((user, index) => {
+                    users.forEach((user, index) => {
                         let currentuser = user
                         if (currentuser.notification) {
                             if (currentuser.notification.followRequestedBy && currentuser.notification.followRequestedBy.length > 0) {
-                                currentuser.notification.followRequestedBy.map((requestId) => {
+                                currentuser.notification.followRequestedBy.forEach((requestId) => {
                                     if (requestId === loggedInUser.key) {
                                         currentuser = {...currentuser, 'iRequestedFollow': true, actionBtnText: 'Requested'}
                                         updatedUserList.push(currentuser);
@@ -50,7 +54,7 @@ function ViewAllMembers() {
                                 });
                             }
                             if (currentuser.notification.followedBy && currentuser.notification.followedBy.length > 0) {
-                                currentuser.notification.followedBy.map((requestId) => {
+                                currentuser.notification.followedBy.forEach((requestId) => {
                                     if (requestId === loggedInUser.key) {
                                         currentuser = {...currentuser, 'imFollowing': true, actionBtnText: 'Following'}
                                         updatedUserList.push(currentuser);
@@ -73,6 +77,7 @@ function ViewAllMembers() {
 
     function handleFollowBtnClick(event, toFollow, followBy) {
         event.preventDefault();
+        // eslint-disable-next-line no-unused-vars
         const action = event.currentTarget.dataset.action.toLowerCase();
         console.log("action ", action);
 
@@ -80,6 +85,8 @@ function ViewAllMembers() {
         updateFollowUnfollow(toFollow, followBy, action).subscribe((response) => {
             if (response) {
                 const { name, email } = response;
+                console.log('Name: ', name);
+                console.log('Email: ', email);
                 if (response.followed) {
                     setFollowButtonText('Following')
                 }
