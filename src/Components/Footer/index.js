@@ -28,7 +28,7 @@ function Footer() {
 
     function navigatePageLinks(event, path) {
         event.stopPropagation();
-        event.perventDefault();
+        event.preventDefault();
         const footerLinks = document.querySelectorAll('.js-page-links li');
         if (footerLinks && footerLinks.length) {
             footerLinks.forEach((ele) => {
