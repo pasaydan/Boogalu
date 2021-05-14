@@ -11,7 +11,8 @@ import { MdNotifications, MdNotificationsActive, MdAccountCircle } from "react-i
 import { NOTIFICATION_SUCCCESS } from "../../Constants";
 import { displayNotification } from "../../Actions/Notification";
 import * as $ from 'jquery';
-import {  getUserById, getLoggedInUserNotifications } from '../../Services/User.service';
+import {  getUserById } from '../../Services/User.service';
+import {  getNotifications, acceptFollowRequest } from '../../Services/Friendship.service';
 
 const SCROLL_TOP_LIMIT = 200;
 
@@ -33,7 +34,6 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
     // eslint-disable-next-line no-unused-vars
     const [userNotificationList, setUserNotificationList] = useState([]);
     // eslint-disable-next-line no-unused-vars
-    const [notificationArray, setNotificationArray] = useState([])
     
     const ref = useRef();
     const hamburgerMenuRef = useRef(null);
@@ -49,17 +49,6 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
     const [animateNavClass, toggleNavAnimation] = useState('animate');
     
     const isAppAlreadyLoaded = JSON.parse(localStorage.getItem('isAppLoaded'));
-    // const followNotificationArray = [];
-    // useOnClickOutside(ref, () => {
-    //     setShowProfileTab(false)
-    //     enableProfileTabMenu(false);
-    //     if (hamburgerMenuRef.current) {
-    //         hamburgerMenuRef.current.classList.remove('active');
-    //     }
-    //     if (mainNavRef.current) {
-    //         mainNavRef.current.classList.remove('sideMenuVisible');
-    //     }
-    // });
 
     useEffect(() => {
         setDidMount(true);
@@ -173,59 +162,30 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
     }, []);
 
     useEffect(() => {
+        fetchNotifications();
+    }, []);
+
+    useEffect(() => {
+        if (userNotificationList && userNotificationList.length > 0) {
+            setNotificationValue(true);
+        }
+    }, [userNotificationList])
+
+    const fetchNotifications = () => {
         let followNotificationArray = [];
-        // setInterval(() => {
-        //     getLoggedInUserNotifications(loggedInUser.key).subscribe((response) => {
-        //         const notification = response && response.notification && response.notification ? response.notification : [];
-        //         if (notification && Object.keys(notification).length > 0) {
-        //             const notificationKeys = Object.keys(notification);
-        //             notificationKeys.map((key, index) => {
-        //                 const valuesByKey = notification[key];
-        //                 console.log("key", key);
-        //                 console.log("valuesByKey", valuesByKey);
-        //                 valuesByKey.map((value) => {
-        //                     console.log("valuesByKey's value is ", value);
-        //                     getUserById(value).subscribe((response) => {
-        //                         let responseData = response
-        //                         if (responseData.requested) {
-        //                             responseData = {...responseData, 'requested': true}
-        //                         }
-        //                         if (responseData.followed) {
-        //                             responseData = {...responseData, 'followed': true}
-        //                         }
-        //                         if (responseData && responseData.key === value) {
-        //                             followNotificationArray.push(responseData);
-        //                             setNotificationValue(true);
-        //                             setUserNotificationList(followNotificationArray);
-        //                         }
-        //                     })
-        //                 });
-        //             });
-        //         }
-        //     })
-        // }, 5000);
         if (loggedInUser.key) {
-            getLoggedInUserNotifications(loggedInUser.key).subscribe((response) => {
+            getNotifications(loggedInUser.key).subscribe((response) => {
                 const notification = response && response.notification && response.notification ? response.notification : [];
                 if (notification && Object.keys(notification).length > 0) {
                     const notificationKeys = Object.keys(notification);
                     const flatValues = Object.values(notification).flat()
-                    let valueCount = 0;
                     notificationKeys.forEach((key, index) => {
                         const valuesByKey = notification[key];
                         valuesByKey.forEach((value) => {
                             getUserById(value).subscribe((response) => {
                                 // eslint-disable-next-line no-unused-vars
-                                valueCount++;
                                 let responseData = response
                                 responseData = {...responseData, [key]: true}
-
-                                // if (responseData.requested) {
-                                //     responseData = {...responseData, 'requested': true}
-                                // }
-                                // if (responseData.followed) {
-                                //     responseData = {...responseData, 'followed': true}
-                                // }
                                 followNotificationArray.push(responseData);
                                 if (followNotificationArray && followNotificationArray.length === flatValues.length) {
                                     setUserNotificationList(followNotificationArray);
@@ -236,15 +196,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                 }
             })
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    useEffect(() => {
-        if (userNotificationList && userNotificationList.length > 0) {
-            setNotificationValue(true);
-        }
-        console.log("notificationArray", userNotificationList)
-    }, [userNotificationList])
+    }
 
     const logout = () => {
         dispatch(displayNotification({
@@ -569,17 +521,22 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
         }
     }
 
-    const acceptFollowRequest = (event) => {
+    const acceptFollowRequestHandler = (event, user) => {
         event.stopPropagation();
-        console.log("Accept follow request code goes here");
+        acceptFollowRequest(loggedInUser.key, user.key).subscribe((response) => {
+            console.log("response", response);
+            if (response && response.success) {
+                getNotifications();
+            }
+        })
     }
 
-    const rejectFollowRequest = (event) => {
+    const rejectFollowRequestHandler = (event) => {
         event.stopPropagation();
         console.log("Reject follow request code goes here");
     }
 
-    const blockUser = (event) => {
+    const blockUserHandler = (event) => {
         event.stopPropagation();
         console.log("Block user request code goes here");
     }
@@ -682,13 +639,13 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                                                         <p>{user.name} has {user.followRequestedBy ? 'requested to folllow' : ' started following'} you!</p>
                                                             {user.followRequestedBy &&
                                                                 <div className="notificationAction">
-                                                                    <button className="btn primary-dark" onClick={(event) => acceptFollowRequest(event, user)}>Accept</button>
-                                                                    <button className="btn primary-light" onClick={(event) => rejectFollowRequest(event, user)}>Reject</button>
+                                                                    <button className="btn primary-dark" onClick={(event) => acceptFollowRequestHandler(event, user)}>Accept</button>
+                                                                    <button className="btn primary-light" onClick={(event) => rejectFollowRequestHandler(event, user)}>Reject</button>
                                                                 </div>
                                                             }
                                                             {user.followedBy &&
                                                                 <div className="notificationAction">
-                                                                    <button className="btn primary-light" onClick={(event) => blockUser(event, user)}>Block</button>
+                                                                    <button className="btn primary-light" onClick={(event) => blockUserHandler(event, user)}>Block</button>
                                                                 </div>
                                                             }
                                                     </li>
