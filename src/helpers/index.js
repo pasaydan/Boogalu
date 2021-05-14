@@ -10,3 +10,7 @@ export const getParameterByName = (name, url = window.location.href) => {
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
+
+export const getUniqueArrayOfObject = (data, key) => {
+    return [...new Map(data.map(item => [item[key], item])).values()];
+}

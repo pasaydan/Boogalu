@@ -492,7 +492,7 @@ export default function Signup(props) {
                     </div>} */}
                     <div className="profile-img-wrap">
                         <div className="uploaded-img" >
-                            <img src={userDetails.profileImage} alt="profile" onClick={() => { uploaderRef.current.click() }} />
+                            <img src={userDetails?.profileImage || MALE_PROFILE_DEFAULT_IMAGE} alt="profile" onClick={() => { uploaderRef.current.click() }} />
                         </div>
                         {
                             isUserPhotoUploaded ?
