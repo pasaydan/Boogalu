@@ -15,10 +15,9 @@ import { Link } from '@material-ui/core';
 
 
 function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedInUser, followToggle, BtnText, clickedUser }) {
-    console.log("BtnText", BtnText);
     const history = useHistory();
     const followMessage = "You need to follow the user to view their Profile";
-    const [followButtonText, setFollowButtonText] = useState('');
+    const [followButtonText, setFollowButtonText] = useState(clickedUser && clickedUser.actionBtnText ? clickedUser.actionBtnText : 'Follow');
     const [messageForUser, setMessageForUser] = useState(followMessage);
     // eslint-disable-next-line no-unused-vars
     const [openDetailsModal, setOpenDetailsModal] = useState(true);
@@ -38,7 +37,7 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedIn
     const handleFollowBtnClick = (event, toFollow, followBy) => {
         event.preventDefault();
         const action = event.currentTarget.dataset.action.toLowerCase();
-        followToggle(toFollow, followBy, action);
+        followToggle(toFollow, followBy, action, clickedUser);
     }
 
     const redirectToProfile = (path) => {
@@ -47,7 +46,6 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedIn
     }
 
     useEffect(() => {
-        // const isUserFollowing = ;
         if (loggedInUser && loggedInUser.key === videoObj.userId) {
             setPrivacyToggle(true);
         }
@@ -58,10 +56,22 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedIn
             setFollowButtonText('Requested');
             setMessageForUser(`We have notified ${videoObj.username}, let them accept your Follow Request`);
         }
-        setFollowButtonText(BtnText);
-        console.log("useEffect BtnText", BtnText);
-    }, [BtnText])
+        if (clickedUser && clickedUser.iRequestedFollow && clickedUser.actionBtnText) {
+            setFollowButtonText(clickedUser.actionBtnText);
+            setMessageForUser(`We have notified ${videoObj.username}, let them accept your Follow Request`);
+        }
+        if (clickedUser && clickedUser.imFollowing && clickedUser.actionBtnText) {
+            setFollowButtonText(clickedUser.actionBtnText);
+            setPrivacyToggle(true);
+        }
+    }, [])
 
+
+    useEffect(() => {
+        if (clickedUser && (clickedUser.iRequestedFollow || clickedUser.imFollowing) && clickedUser.actionBtnText) {
+            setFollowButtonText(clickedUser.actionBtnText);
+        }
+    }, [clickedUser])
 
     return (
         <div className="subscription-modal-wrap">
@@ -146,8 +156,8 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedIn
                             <div>
                                 <div key={videoObj.key} className="feed-card">
                                     <div className="username">
-                                        <ProfileImage src={videoObj.profileImage || clickedUser.profileImage} />
-                                        <span>{videoObj.username || clickedUser.username}</span>
+                                        <ProfileImage src={videoObj && videoObj.profileImage || clickedUser.profileImage} />
+                                        <span>{videoObj && videoObj.username || clickedUser.username}</span>
                                         {
                                             loggedInUser && loggedInUser.key !== (videoObj.userId || clickedUser.key) && 
                                             <Link 

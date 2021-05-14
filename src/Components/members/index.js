@@ -59,6 +59,7 @@ function ViewAllMembers() {
                                 });
                             }
                         } else {
+                            currentuser = {...currentuser, actionBtnText: 'Follow'}
                             updatedUserList.push(currentuser);
                         }
                     });
@@ -86,14 +87,7 @@ function ViewAllMembers() {
                 console.log('Email: ', email);
                 setUserList([]);
                 getAllUserList(loggedInUser.key);
-                // if (response.followed) {
-                //     setFollowButtonText('Following')
-                // }
-                // if (response.requested) {
-                //     setFollowButtonText('Requested')
-                // }
             }
-
             dispatch(disableLoading());
         });
     }
@@ -123,8 +117,8 @@ function ViewAllMembers() {
                             <button 
                                 onClick={(event) => handleFollowBtnClick(event, user.key, loggedInUser.key)} 
                                 className="btn primary-light followBtn" 
-                                data-action={user.actionBtnText || followButtonText}>
-                                    {user.actionBtnText || followButtonText}
+                                data-action={user.actionBtnText}>
+                                    {user.actionBtnText}
                             </button>
                         </div>
                         )

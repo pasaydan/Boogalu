@@ -139,15 +139,11 @@ function Feeds() {
                         feed.profileImage = user.profileImage;
                         feed.privacy = user.privacy || "Public";
                         user.isAnyVideoSubmitted = true;
-
-
                         if (user.notification) {
                             if (user.notification.followRequestedBy && user.notification.followRequestedBy.length > 0) {
                                 user.notification.followRequestedBy.map((requestId) => {
                                     if (requestId === loggedInUser.key) {
                                         user = {...user, 'iRequestedFollow': true, actionBtnText: 'Requested'}
-                                        // updatedUserList.push(user);
-                                        // userList = {...userList, user};
                                     }
                                 });
                             }
@@ -155,31 +151,10 @@ function Feeds() {
                                 user.notification.followedBy.map((requestId) => {
                                     if (requestId === loggedInUser.key) {
                                         user = {...user, 'imFollowing': true, actionBtnText: 'Following'}
-                                        // updatedUserList.push(user);
                                     }
                                 });
                             }
                         }
-                        // if (user.notification.followedBy && user.notification.followedBy.length > 0) {
-                        //     const checkIfUserFollowingVideoCreator = user.notification.followedBy.filter( (followedByUserId) => followedByUserId === loggedInUser.key);
-                        //     console.log("checkIfUserFollowingVideoCreator", checkIfUserFollowingVideoCreator);
-                        //     if (checkIfUserFollowingVideoCreator && checkIfUserFollowingVideoCreator.length > 0) {
-                        //         user.following = true;
-                        //         // setFollowButtonText('Following');
-                        //     } else {
-                        //         user.following = false;
-                        //     }
-                        // }
-                        // if (user.notification.followRequestedBy && user.notification.followRequestedBy.length > 0) {
-                        //     const checkIfUserRequestedToFollowVideoCreator = user.notification.followRequestedBy.filter( (followRequestedByUserId) => followRequestedByUserId === loggedInUser.key);
-                        //     console.log("checkIfUserRequestedToFollowVideoCreator", checkIfUserRequestedToFollowVideoCreator);
-                        //     if (checkIfUserRequestedToFollowVideoCreator && checkIfUserRequestedToFollowVideoCreator.length > 0) {
-                        //         user.followRequested = true;
-                        //         // setFollowButtonText('Requested');
-                        //     } else {
-                        //         user.followRequested = false;
-                        //     }
-                        // }
                     }
                     if (feed.likes && feed.likes.length) {
                         let isAvail = feed.likes.filter(data => data.userId === loggedInUser.key)
@@ -194,72 +169,42 @@ function Feeds() {
             setUserList(tempUserList);
         })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [followButtonText]);
+    }, []);
 
     function redirectViewAllUsers() {
         history.push('/members');
     }
 
     function openUserStory(user) {
-        let userVdos = feedList.map((feed) => {
-            if (user.key == feed.userId) {
-
-
-
-
-                if (user.notification) {
-                    if (user.notification.followRequestedBy && user.notification.followRequestedBy.length > 0) {
-                        user.notification.followRequestedBy.map((requestId) => {
-                            if (requestId === loggedInUser.key) {
-                                user = {...user, 'iRequestedFollow': true, actionBtnText: 'Requested'}
-                                // updatedUserList.push(user);
-                                // userList = {...userList, user};
-                            }
-                        });
+        let currentuser = user;
+        currentuser = {...currentuser, actionBtnText: 'Follow'};
+        if (currentuser.notification) {
+            if (currentuser.notification.followRequestedBy && currentuser.notification.followRequestedBy.length > 0) {
+                currentuser.notification.followRequestedBy.map((requestId) => {
+                    if (requestId === loggedInUser.key) {
+                        currentuser = {...currentuser, 'iRequestedFollow': true, actionBtnText: 'Requested'}
                     }
-                    if (user.notification.followedBy && user.notification.followedBy.length > 0) {
-                        user.notification.followedBy.map((requestId) => {
-                            if (requestId === loggedInUser.key) {
-                                user = {...user, 'imFollowing': true, actionBtnText: 'Following'}
-                                // updatedUserList.push(user);
-                            }
-                        });
-                    }
-                }
-
-                // if (user.notification.followedBy && user.notification.followedBy.length > 0) {
-                //     const checkIfUserFollowingVideoCreator = user.notification.followedBy.filter( (followedByUserId) => followedByUserId === loggedInUser.key);
-                //     console.log("checkIfUserFollowingVideoCreator", checkIfUserFollowingVideoCreator);
-                //     if (checkIfUserFollowingVideoCreator && checkIfUserFollowingVideoCreator.length > 0) {
-                //         user.following = true;
-                //         setFollowButtonText('Following');
-                //     } else {
-                //         user.following = false;
-                //     }
-                // }
-                // if (user.notification.followRequestedBy && user.notification.followRequestedBy.length > 0) {
-                //     const checkIfUserRequestedToFollowVideoCreator = user.notification.followRequestedBy.filter( (followRequestedByUserId) => followRequestedByUserId === loggedInUser.key);
-                //     console.log("checkIfUserRequestedToFollowVideoCreator", checkIfUserRequestedToFollowVideoCreator);
-                //     if (checkIfUserRequestedToFollowVideoCreator && checkIfUserRequestedToFollowVideoCreator.length > 0) {
-                //         user.followRequested = true;
-                //         setFollowButtonText('Requested');
-                //     } else {
-                //         user.followRequested = false;
-                //     }
-                // }
+                });
             }
-        });
+            if (currentuser.notification.followedBy && currentuser.notification.followedBy.length > 0) {
+                currentuser.notification.followedBy.map((requestId) => {
+                    if (requestId === loggedInUser.key) {
+                        currentuser = {...currentuser, 'imFollowing': true, actionBtnText: 'Following'}
+                    }
+                });
+            }
+        }
+        let userVdos = feedList.filter((feed) => currentuser.key == feed.userId );
         setActiveVideoObj({});
-        // setFollowButtonText('Follow');
-        setClickedUserDetails(user);
         if (userVdos.length) {
             setActiveVideoObj(userVdos[0]);
-            // setFollowButtonText(userVdos[0].following ? 'Following' : 'Follow');
         };
+        setClickedUserDetails(currentuser);
         setCommentModal(true);
     }
 
-    const handleFollowToggle = (toFollow, followBy, action) => {
+    const handleFollowToggle = (toFollow, followBy, action, user) => {
+        let currentuser = user;
         dispatch(enableLoading());
         updateFollowUnfollow(toFollow, followBy, action).subscribe((response) => {
             if (response) {
@@ -267,13 +212,15 @@ function Feeds() {
                 console.log('Name: ', name);
                 console.log('Email: ', email);
                 if (response.followed) {
-                    setFollowButtonText('Following');
+                    currentuser = {...currentuser, 'imFollowing': true, actionBtnText: 'Following'};
+                    setClickedUserDetails(currentuser);
                     // const message = `${loggedInUser.name} started following`;
                     // const subject = `${loggedInUser.name} started following`;
                     // sendFollowNotificationEmail(name, email, subject, message);
                 }
                 if (response.requested) {
-                    setFollowButtonText('Requested');
+                    currentuser = {...currentuser, 'iRequestedFollow': true, actionBtnText: 'Requested'};
+                    setClickedUserDetails(currentuser);
                     // const acceptLink = `${REACT_APP_URL}profile?followrequest=accept&requestBy=${encodeURIComponent(loggedInUser.email)}`
                     // const declineLink = `${REACT_APP_URL}profile?followrequest=decline&requestBy=${encodeURIComponent(loggedInUser.email)}`
                     // const message = `${loggedInUser.name} requested to follow you.<br /><br />You can <a href="${acceptLink}">Accept</a> or <a href="${declineLink}">Decline</a>`;
