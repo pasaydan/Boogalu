@@ -20,13 +20,11 @@ export const getNotifications = (id) => {
 
 export const acceptFollowRequest = (loggedInUserKey, userKey) => {
     return new Observable((observer) => {
-        let followed = false;
-        let requested = false;
         userRef.doc(loggedInUserKey).get().then((doc) => {
             let data = doc.data();
             if (data && data.notification) {
                 if (data.notification.followRequestedBy) {
-                    data.notification.followRequestedBy.map((requestId) => {
+                    data.notification.followRequestedBy.forEach((requestId) => {
                         if (requestId === userKey) {
                             data.notification.followRequestedBy.splice(userKey);
                             if (data.acceptedRequested) {
@@ -59,13 +57,11 @@ export const acceptFollowRequest = (loggedInUserKey, userKey) => {
 
 export const rejectFollowRequest = (loggedInUserKey, userKey) => {
     return new Observable((observer) => {
-        let followed = false;
-        let requested = false;
         userRef.doc(loggedInUserKey).get().then((doc) => {
             let data = doc.data();
             if (data && data.notification) {
                 if (data.notification.followRequestedBy) {
-                    data.notification.followRequestedBy.map((requestId) => {
+                    data.notification.followRequestedBy.forEach((requestId) => {
                         if (requestId === userKey) {
                             data.notification.followRequestedBy.splice(userKey);
                             if (data.rejectRequested) {
@@ -103,13 +99,11 @@ export const rejectFollowRequest = (loggedInUserKey, userKey) => {
 
 export const blockUser = (loggedInUserKey, userKey) => {
     return new Observable((observer) => {
-        let followed = false;
-        let requested = false;
         userRef.doc(loggedInUserKey).get().then((doc) => {
             let data = doc.data();
             if (data && data.notification) {
                 if (data.notification.followedBy) {
-                    data.notification.followedBy.map((requestId) => {
+                    data.notification.followedBy.forEach((requestId) => {
                         if (requestId === userKey) {
                             data.notification.followedBy.splice(userKey);
                             if (data.blockFollowRequest) {

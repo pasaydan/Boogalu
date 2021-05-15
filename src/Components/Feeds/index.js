@@ -19,6 +19,7 @@ function Feeds() {
     const history = useHistory();
     // eslint-disable-next-line no-unused-vars
     const {REACT_APP_URL} = process.env;
+    // eslint-disable-next-line no-unused-vars
     const [followButtonText, setFollowButtonText] = useState('Follow');
     const [feedList, setFeedList] = useState([]);
     const [userList, setUserList] = useState([]);
@@ -141,14 +142,14 @@ function Feeds() {
                         user.isAnyVideoSubmitted = true;
                         if (user.notification) {
                             if (user.notification.followRequestedBy && user.notification.followRequestedBy.length > 0) {
-                                user.notification.followRequestedBy.map((requestId) => {
+                                user.notification.followRequestedBy.forEach((requestId) => {
                                     if (requestId === loggedInUser.key) {
                                         user = {...user, 'iRequestedFollow': true, actionBtnText: 'Requested'}
                                     }
                                 });
                             }
                             if (user.notification.followedBy && user.notification.followedBy.length > 0) {
-                                user.notification.followedBy.map((requestId) => {
+                                user.notification.followedBy.forEach((requestId) => {
                                     if (requestId === loggedInUser.key) {
                                         user = {...user, 'imFollowing': true, actionBtnText: 'Following'}
                                     }
@@ -180,21 +181,21 @@ function Feeds() {
         currentuser = {...currentuser, actionBtnText: 'Follow'};
         if (currentuser.notification) {
             if (currentuser.notification.followRequestedBy && currentuser.notification.followRequestedBy.length > 0) {
-                currentuser.notification.followRequestedBy.map((requestId) => {
+                currentuser.notification.followRequestedBy.forEach((requestId) => {
                     if (requestId === loggedInUser.key) {
                         currentuser = {...currentuser, 'iRequestedFollow': true, actionBtnText: 'Requested'}
                     }
                 });
             }
             if (currentuser.notification.followedBy && currentuser.notification.followedBy.length > 0) {
-                currentuser.notification.followedBy.map((requestId) => {
+                currentuser.notification.followedBy.forEach((requestId) => {
                     if (requestId === loggedInUser.key) {
                         currentuser = {...currentuser, 'imFollowing': true, actionBtnText: 'Following'}
                     }
                 });
             }
         }
-        let userVdos = feedList.filter((feed) => currentuser.key == feed.userId );
+        let userVdos = feedList.filter((feed) => currentuser.key === feed.userId );
         setActiveVideoObj({});
         if (userVdos.length) {
             setActiveVideoObj(userVdos[0]);

@@ -96,3 +96,28 @@ export function getLessonsWithOnlyPreview() {
     });
 }
 
+export function updateLessonPlayTime(id, playedTimeData) {
+    return new Observable((observer) => {
+        lessonsVideosRef.doc(id).get().then((doc) => {
+            let data = doc.data();
+            if (data && !data.lessonPlayedTimes) {
+                data = {...data, 'lessonPlayedTimes': [playedTimeData]}
+            } else {
+                if (data.lessonPlayedTimes.length) {
+                    data.lessonPlayedTimes.forEach( item => {
+                        if (item.userKey === playedTimeData.userKey) {
+                            item.playedTime = playedTimeData.playedTime
+                        } else {
+                            data.lessonPlayedTimes.push(playedTimeData);
+                        }
+                    });
+                }
+            }
+
+            lessonsVideosRef.doc(id).set(data).then(() => {
+                observer.next();
+            });
+        });
+    });
+}
+
