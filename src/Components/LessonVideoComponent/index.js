@@ -6,11 +6,15 @@ import { useStoreConsumer } from '../../Providers/StateProvider';
 import { useHistory } from "react-router-dom";
 import { enableLoginFlow } from "../../Actions/LoginFlow";
 import { isObjectEmpty } from '../../helpers';
+import { updateLessonPlayTime } from '../../Services/Lessons.service';
 
+let videoTimeInterval = null;
 function LessonsVideoContainer({ 
+    lessonKey,
     title, 
     artist, 
     desc, 
+    lessonPlayTime,
     videoUserLevel,
     artForm,
     isPaid, 
@@ -32,39 +36,63 @@ function LessonsVideoContainer({
     const [visibilityClass, toggleVideoVisibilityClass] = useState('');
     const [isLoggedInUser, setLoggedInUserValue] = useState(false);
     const [isSubscribedUser, setSubscribedUser] = useState(false);
-
+    const [videoPlayedData, setUserLessonVideoPlayedTime] = useState({});
+    const [videoCurrentPlayTime, setCurrentVideoPlayTime] = useState(null);
+    
     const thumbNailOverlayRef = useRef(null);
 
     useEffect(() => {
         const videoElements = document.querySelectorAll('video');
 
         if (!isObjectEmpty(loggedInUser)) {
+            if (lessonPlayTime && lessonPlayTime.length) {
+                const matchedUser = lessonPlayTime.filter( user =>  user.userKey === loggedInUser.key );
+                setCurrentVideoPlayTime(matchedUser[0].playedTime);
+            }
             setLoggedInUserValue(true);
         }
-
+        
         if (!isObjectEmpty(loggedInUser) && state.loggedInUser.subscribed) {
             setSubscribedUser(true);
         }
-
+        
         if (videoElements && videoElements.length) {
             videoElements.forEach(item => {
                 if (item.getAttribute('data-id') === activeVideosList.frontView) {
                     setVideoFront(item);
                     item.addEventListener('loadeddata', () => {
                         toggleVideoVisibilityClass('showVideoBox');
+                        if (item !== null) {
+                            item.currentTime = videoCurrentPlayTime;
+                        }
                     });
                 }
 
                 if (item.getAttribute('data-id') === activeVideosList.frontMirrorView) {
                     setVideoFrontMirror(item);
+                    item.addEventListener('loadeddata', () => {
+                        if (item !== null) {
+                            item.currentTime = videoCurrentPlayTime;
+                        }
+                    });
                 }
                 
                 if (item.getAttribute('data-id') === activeVideosList.rearView) {
-                    setVideoBack(item);                
+                    setVideoBack(item);
+                    item.addEventListener('loadeddata', () => {
+                        if (item !== null) {
+                            item.currentTime = videoCurrentPlayTime;
+                        }
+                    });                
                 }
                 
                 if (item.getAttribute('data-id') === activeVideosList.rearMirrorView) {
-                    setVideoBackMirror(item);                
+                    setVideoBackMirror(item);
+                    item.addEventListener('loadeddata', () => {
+                        if (item !== null) {
+                            item.currentTime = videoCurrentPlayTime;
+                        }
+                    });                
                 }
             });
         }
@@ -91,6 +119,10 @@ function LessonsVideoContainer({
 
     function pauseVideo(params) {
         const currentVideoState = activeVideoState;
+        clearInterval(videoTimeInterval);
+        videoTimeInterval = null;
+        setCurrentVideoPlayTime(Math.round(videoFront.currentTime) - 5);
+        console.log('Final Video Played Data: ', videoPlayedData);
         if (currentVideoState === 'front') {
             videoFrontMirror.pause();
             videoBack.pause();
@@ -111,23 +143,99 @@ function LessonsVideoContainer({
     }
 
     function playVideo(params) {
-        if (activeVideoState === 'front') {
-            videoFrontMirror.play();
-            videoBack.play();
-            videoBackMirror.play();
-        } else if (activeVideoState === 'front-mirror') {
-            videoFront.play();
-            videoBack.play();
-            videoBackMirror.play();
-        } else if (activeVideoState === 'back') {
-            videoFrontMirror.play();
-            videoFront.play();
-            videoBackMirror.play();
-        } else {
-            videoFront.play();
-            videoFrontMirror.play();
-            videoBack.play();
+        if (videoCurrentPlayTime) {
+            const videPlayedRoundedTime = Math.round(videoCurrentPlayTime);
+            videoFront.currentTime = videPlayedRoundedTime;
+            videoFrontMirror.currentTime = videPlayedRoundedTime;
+            videoBack.currentTime = videPlayedRoundedTime;
+            videoBackMirror.currentTime = videPlayedRoundedTime;
         }
+        setTimeout(() => {
+            if (activeVideoState === 'front') {
+                videoFrontMirror.play().then(_ => {
+                    console.log("Front mirror played");
+                }).catch(e => {
+                    console.log("Front mirror error");
+                }) ;
+                videoBack.play().then(_ => {
+                    console.log("Back played");
+                }).catch(e => {
+                    console.log("Back played error");
+                });
+                videoBackMirror.play().then(_ => {
+                    console.log("Back Mirror played");
+                }).catch(e => {
+                    console.log("Back Mirror error");
+                });
+            } else if (activeVideoState === 'front-mirror') {
+                videoFront.play().then(_ => {
+                    console.log("Front played");
+                }).catch(e => {
+                    console.log("Front played error");
+                });
+                videoBack.play().then(_ => {
+                    console.log("Back played");
+                }).catch(e => {
+                    console.log("Back played error");
+                });
+                videoBackMirror.play().then(_ => {
+                    console.log("Back Mirror played");
+                }).catch(e => {
+                    console.log("Back Mirror played error");
+                });
+            } else if (activeVideoState === 'back') {
+                videoFrontMirror.play().then(_ => {
+                    console.log("Front Mirror played");
+                }).catch(e => {
+                    console.log("Front Mirror played error");
+                });
+                videoFront.play().then(_ => {
+                    console.log("Front played");
+                }).catch(e => {
+                    console.log("Front error played");
+                });
+                videoBackMirror.play().then(_ => {
+                    console.log("Back mirror played");
+                }).catch(e => {
+                    console.log("Back mirror error");
+                });
+            } else {
+                videoFront.play().then(_ => {
+                    console.log("Front played");
+                }).catch(e => {
+                    console.log("Front played error");
+                });
+                videoFrontMirror.play().then(_ => {
+                    console.log("Front Mirror played");
+                }).catch(e => {
+                    console.log("Front Mirror played error");
+                });
+                videoBack.play().then(_ => {
+                    console.log("Back played");
+                }).catch(e => {
+                    console.log("Back played error");
+                });
+            }
+    
+            if (!videoTimeInterval) {
+                videoTimeInterval = setInterval(() => {
+                    if (videoFront !== null) {
+                        const videoData = {
+                            userKey: loggedInUser.key,
+                            playedTime: videoFront.currentTime
+                        }
+                        setUserLessonVideoPlayedTime(videoData);
+                        try {
+                            updateLessonPlayTime(lessonKey, videoData).subscribe(res => {
+                                console.log('Res: ', res);
+                            });
+                        } catch(e) {
+                            console.log('Update lesson Error: ', e);
+                        }
+                    }
+                }, 10000);
+            }
+        }, 100);
     }
 
     function flipVideos(event) {
@@ -199,10 +307,16 @@ function LessonsVideoContainer({
         }
     }
 
-    function setVideoDuration(videoMetaData) {
+    function setVideoDuration(event) {
+        const videoDuration = event.target.duration;
         let totalDuration = '';
-        const minutes = parseInt(videoMetaData / 60, 10);
-        const seconds = videoMetaData % 60;
+        const videPlayedRoundedTime = Math.round(videoCurrentPlayTime);
+        videoFront.currentTime = videPlayedRoundedTime;
+        videoFrontMirror.currentTime = videPlayedRoundedTime;
+        videoBack.currentTime = videPlayedRoundedTime;
+        videoBackMirror.currentTime = videPlayedRoundedTime;
+        const minutes = parseInt(videoDuration / 60, 10);
+        const seconds = videoDuration % 60;
         if (minutes) {
             totalDuration = `${minutes} ${minutes < 2 ? 'min' : 'mins'}`
         } else if (seconds) {
@@ -430,7 +544,7 @@ function LessonsVideoContainer({
                             onSeeked={(e) => onVideoSeek(e, 'front')} 
                             poster={thumbNail} 
                             controls
-                            onLoadedMetadata={(e) => setVideoDuration(e.target.duration)}
+                            onLoadedMetadata={(e) => setVideoDuration(e)}
                             >
                             <source src={activeVideosList?.frontView} type="video/mp4" />
                         </video> : ''
