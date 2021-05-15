@@ -31,6 +31,14 @@ function ViewAllMembers() {
         history.push('/login');
     }
 
+    const setDefault = (updatedUserList, index) => {
+        updatedUserList[index] = {
+            ...updatedUserList[index],
+            actionBtnText: 'Follow'
+        }
+        return updatedUserList[index];
+    }
+
     function getAllUserList(userKey) {
         dispatch(enableLoading());
         try {
@@ -50,31 +58,20 @@ function ViewAllMembers() {
                         for (let index = 0; index < updatedUserList.length; index++) {
                             let userItem = updatedUserList[index];
                             if (userItem.privacy.toLowerCase() === 'public') {
-                                if(userItem.following && userItem.following.length > 0) {
-                                    userItem.following.forEach((requestId) => {
-                                        if (requestId === loggedInUser.key) {
-                                            updatedUserList[index] = {
-                                                ...updatedUserList[index],
-                                                'imFollowing': true, 
-                                                actionBtnText: 'Following'
-                                            }
+                                if(userItem.followedBy && userItem.followedBy.length > 0) {
+                                    const amIFollowing = userItem.followedBy.filter((requestId) => requestId === loggedInUser.key);
+                                    if (amIFollowing && amIFollowing.length > 0) {
+                                        updatedUserList[index] = {
+                                            ...updatedUserList[index],
+                                            'imFollowing': true, 
+                                            actionBtnText: 'Following'
                                         }
-                                    });
-                                } else if(userItem.followedBy && userItem.followedBy.length > 0) {
-                                    userItem.followedBy.forEach((requestId) => {
-                                        if (requestId === loggedInUser.key) {
-                                            updatedUserList[index] = {
-                                                ...updatedUserList[index],
-                                                'imFollowing': true, 
-                                                actionBtnText: 'Following'
-                                            }
-                                        } else {
-                                            updatedUserList[index] = {
-                                                ...updatedUserList[index],
-                                                actionBtnText: 'Follow'
-                                            }
+                                    } else {
+                                        updatedUserList[index] = {
+                                            ...updatedUserList[index],
+                                            actionBtnText: 'Follow'
                                         }
-                                    });
+                                    }
                                 } else {
                                     updatedUserList[index] = {
                                         ...updatedUserList[index],
@@ -90,11 +87,6 @@ function ViewAllMembers() {
                                                     ...updatedUserList[index],
                                                     'iRequestedFollow': true, 
                                                     actionBtnText: 'Requested'
-                                                }
-                                            } else {
-                                                updatedUserList[index] = {
-                                                    ...updatedUserList[index],
-                                                    actionBtnText: 'Follow'
                                                 }
                                             }
                                         });
