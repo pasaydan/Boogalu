@@ -207,18 +207,3 @@ export function getUserPublicProfile(email){
         })
     })  
 }
-
-export function getLoggedInUserNotifications(id) {
-    return new Observable((observer) => {
-        userRef.doc(id).get().then((doc) => {
-            let data = doc.data();
-            observer.next({
-                key: doc.id,
-                name: data.name,
-                email: data.email,
-                phone: data.phone,
-                notification: data.notification
-            });
-        });
-    });
-}
