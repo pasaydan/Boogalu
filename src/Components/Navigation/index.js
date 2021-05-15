@@ -576,10 +576,10 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
 
                     {loggedInUser && loggedInUser.phone && <div className="flex-2 signup-wrap" >
                         <div className="profile" ref={ref}>
-                            <div className="profile-img-wrap userIcon">
-                                <MdAccountCircle onClick={(e) => activateProfileIconMenu(e)} />
+                            <div onClick={(e) => activateProfileIconMenu(e)} className="profile-img-wrap userIcon">
+                                <MdAccountCircle />
                             </div>
-                            <div className={`profile-img-wrap notificationIcon ${isNotificationsPresent ? 'active' : ''}`}>
+                            <div onClick={(e) => activateNotificationMenu(e)} className={`profile-img-wrap notificationIcon ${isNotificationsPresent ? 'active' : ''}`}>
                                 {
                                     isNotificationsPresent ?
                                     <span className="notificationCount">{userNotificationList.length}</span>
@@ -587,9 +587,9 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                                 }
                                 {
                                     isNotificationsPresent ?
-                                    <MdNotificationsActive onClick={(e) => activateNotificationMenu(e)} />
+                                    <MdNotificationsActive />
                                     :
-                                    <MdNotifications onClick={(e) => activateNotificationMenu(e)} />
+                                    <MdNotifications />
                                 }
                             </div>
                         </div>
