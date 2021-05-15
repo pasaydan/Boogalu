@@ -208,9 +208,12 @@ function Upcoming() {
                 <div className="lessons-vdo-wrap">
                     {lessonsData && lessonsData.length ? lessonsData.map((videoData, index) => {
                         return <LessonsVideoContainer
+                        lessonId={videoData.id}
+                        lessonKey={videoData.key}
                         title={videoData.name}
                         artist={videoData.teacher}
                         desc={videoData.desc}
+                        lessonPlayTime={videoData?.lessonPlayedTimes}
                         videoUserLevel={videoData?.expertiseLevel}
                         artForm={videoData?.artForm}
                         isPaid={videoData.accessbility}
