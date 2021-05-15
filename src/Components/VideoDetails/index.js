@@ -64,6 +64,7 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedIn
             setFollowButtonText(clickedUser.actionBtnText);
             setPrivacyToggle(true);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
 
@@ -156,8 +157,8 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedIn
                             <div>
                                 <div key={videoObj.key} className="feed-card">
                                     <div className="username">
-                                        <ProfileImage src={videoObj && videoObj.profileImage || clickedUser.profileImage} />
-                                        <span>{videoObj && videoObj.username || clickedUser.username}</span>
+                                        <ProfileImage src={(videoObj && videoObj.profileImage) || clickedUser.profileImage} />
+                                        <span>{(videoObj && videoObj.username) || clickedUser.username}</span>
                                         {
                                             loggedInUser && loggedInUser.key !== (videoObj.userId || clickedUser.key) && 
                                             <Link 

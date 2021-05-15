@@ -163,6 +163,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
 
     useEffect(() => {
         fetchNotifications();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
