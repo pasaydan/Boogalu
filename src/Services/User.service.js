@@ -145,10 +145,10 @@ export function updateFollowUnfollow(id, followedById, action) {
                     } else {
                         data.notification.followedBy.push(followedById);
                     }
-                    if (!data.following) {
-                        data = {...data, 'following' : [followedById]};
+                    if (!data.followedBy) {
+                        data = {...data, 'followedBy' : [followedById]};
                     } else {
-                        data.following.push(followedById);
+                        data.followedBy.push(followedById);
                     }
                 } else {
                     requested = true;

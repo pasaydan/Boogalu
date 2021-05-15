@@ -35,36 +35,105 @@ function ViewAllMembers() {
         dispatch(enableLoading());
         try {
             getAllUser(userKey).subscribe((users) => {
-                dispatch(disableLoading());
+                setUserList([]);
                 let updatedUserList = [];
+                dispatch(disableLoading());
                 if (users && users.length) {
-                    users.forEach(user => {
+                    users.forEach((user, userIndex) => {
                         let currentuser = user;
-                        if (currentuser.notification) {
-                            if (currentuser.notification.followRequestedBy && currentuser.notification.followRequestedBy.length > 0) {
-                                currentuser.notification.followRequestedBy.forEach((requestId) => {
-                                    if (requestId === loggedInUser.key) {
-                                        currentuser = {...currentuser, 'iRequestedFollow': true, actionBtnText: 'Requested'}
-                                        updatedUserList.push(currentuser);
-                                        // userList = {...userList, currentuser};
-                                    }
-                                });
-                            }
-                            if (currentuser.notification.followedBy && currentuser.notification.followedBy.length > 0) {
-                                currentuser.notification.followedBy.forEach((requestId) => {
-                                    if (requestId === loggedInUser.key) {
-                                        currentuser = {...currentuser, 'imFollowing': true, actionBtnText: 'Following'}
-                                        updatedUserList.push(currentuser);
-                                    }
-                                });
-                            }
-                        } else {
-                            currentuser = {...currentuser, actionBtnText: 'Follow'}
-                            updatedUserList.push(currentuser);
+                        if (currentuser && !currentuser.privacy) {
+                            currentuser = {...currentuser, 'privacy': 'public'}
                         }
+                        updatedUserList.push(currentuser);
                     });
-                    const updatedUniqueList = getUniqueArrayOfObject(updatedUserList, 'key');
-                    setUserList(updatedUniqueList);
+                    if (updatedUserList.length) {
+                        for (let index = 0; index < updatedUserList.length; index++) {
+                            let userItem = updatedUserList[index];
+                            if (userItem.privacy.toLowerCase() === 'public') {
+                                if(userItem.following && userItem.following.length > 0) {
+                                    userItem.following.forEach((requestId) => {
+                                        if (requestId === loggedInUser.key) {
+                                            updatedUserList[index] = {
+                                                ...updatedUserList[index],
+                                                'imFollowing': true, 
+                                                actionBtnText: 'Following'
+                                            }
+                                        }
+                                    });
+                                } else if(userItem.followedBy && userItem.followedBy.length > 0) {
+                                    userItem.followedBy.forEach((requestId) => {
+                                        if (requestId === loggedInUser.key) {
+                                            updatedUserList[index] = {
+                                                ...updatedUserList[index],
+                                                'imFollowing': true, 
+                                                actionBtnText: 'Following'
+                                            }
+                                        } else {
+                                            updatedUserList[index] = {
+                                                ...updatedUserList[index],
+                                                actionBtnText: 'Follow'
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    updatedUserList[index] = {
+                                        ...updatedUserList[index],
+                                        actionBtnText: 'Follow'
+                                    }
+                                }
+                            } else if (userItem.privacy.toLowerCase() === 'private') {
+                                if (userItem.notification) {
+                                    if (userItem.notification.followRequestedBy && userItem.notification.followRequestedBy.length > 0) {
+                                        userItem.notification.followRequestedBy.forEach((requestId) => {
+                                            if (requestId === loggedInUser.key) {
+                                                updatedUserList[index] = {
+                                                    ...updatedUserList[index],
+                                                    'iRequestedFollow': true, 
+                                                    actionBtnText: 'Requested'
+                                                }
+                                            } else {
+                                                updatedUserList[index] = {
+                                                    ...updatedUserList[index],
+                                                    actionBtnText: 'Follow'
+                                                }
+                                            }
+                                        });
+                                    } else if (userItem.acceptedRequested && userItem.acceptedRequested.length > 0) {
+                                        userItem.acceptedRequested.forEach((requestId) => {
+                                            if (requestId === loggedInUser.key) {
+                                                updatedUserList[index] = {
+                                                    ...updatedUserList[index],
+                                                    'imFollowing': true, 
+                                                    actionBtnText: 'Following'
+                                                }
+                                            } else {
+                                                updatedUserList[index] = {
+                                                    ...updatedUserList[index],
+                                                    actionBtnText: 'Follow'
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        updatedUserList[index] = {
+                                            ...updatedUserList[index],
+                                            actionBtnText: 'Follow'
+                                        }
+                                    }
+                                } else {
+                                    updatedUserList[index] = {
+                                        ...updatedUserList[index],
+                                        actionBtnText: 'Follow'
+                                    }
+                                }
+                            }  else {
+                                updatedUserList[index] = {
+                                    ...updatedUserList[index],
+                                    actionBtnText: 'Follow'
+                                }
+                            }
+                        }
+                    }
+                    setUserList(updatedUserList);
                 }
             });
         } catch(e) {
