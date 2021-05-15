@@ -81,30 +81,33 @@ function ViewAllMembers() {
                             } else if (userItem.privacy.toLowerCase() === 'private') {
                                 if (userItem.notification) {
                                     if (userItem.notification.followRequestedBy && userItem.notification.followRequestedBy.length > 0) {
-                                        userItem.notification.followRequestedBy.forEach((requestId) => {
-                                            if (requestId === loggedInUser.key) {
-                                                updatedUserList[index] = {
-                                                    ...updatedUserList[index],
-                                                    'iRequestedFollow': true, 
-                                                    actionBtnText: 'Requested'
-                                                }
+                                        const amIFollowing = userItem.notification.followRequestedBy.filter((requestId) => requestId === loggedInUser.key);
+                                        if (amIFollowing && amIFollowing.length > 0) {
+                                            updatedUserList[index] = {
+                                                ...updatedUserList[index],
+                                                'iRequestedFollow': true, 
+                                                actionBtnText: 'Requested'
                                             }
-                                        });
+                                        } else {
+                                            updatedUserList[index] = {
+                                                ...updatedUserList[index],
+                                                actionBtnText: 'Follow'
+                                            }
+                                        }
                                     } else if (userItem.acceptedRequested && userItem.acceptedRequested.length > 0) {
-                                        userItem.acceptedRequested.forEach((requestId) => {
-                                            if (requestId === loggedInUser.key) {
-                                                updatedUserList[index] = {
-                                                    ...updatedUserList[index],
-                                                    'imFollowing': true, 
-                                                    actionBtnText: 'Following'
-                                                }
-                                            } else {
-                                                updatedUserList[index] = {
-                                                    ...updatedUserList[index],
-                                                    actionBtnText: 'Follow'
-                                                }
+                                        const amIFollowing = userItem.acceptedRequested.filter((requestId) => requestId === loggedInUser.key);
+                                        if (amIFollowing && amIFollowing.length > 0) {
+                                            updatedUserList[index] = {
+                                                ...updatedUserList[index],
+                                                'imFollowing': true, 
+                                                actionBtnText: 'Following'
                                             }
-                                        });
+                                        } else {
+                                            updatedUserList[index] = {
+                                                ...updatedUserList[index],
+                                                actionBtnText: 'Follow'
+                                            }
+                                        }
                                     } else {
                                         updatedUserList[index] = {
                                             ...updatedUserList[index],
