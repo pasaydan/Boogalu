@@ -48,7 +48,7 @@ function LessonsVideoContainer({
             if (lessonPlayTime && lessonPlayTime.length) {
                 const matchedUser = lessonPlayTime.filter( user =>  user.userKey === loggedInUser.key );
                 if (matchedUser?.length && matchedUser[0]?.playedTime) {
-                    setCurrentVideoPlayTime(matchedUser[0].playedTime);
+                    setCurrentVideoPlayTime(Math.round(matchedUser[0].playedTime) - 5);
                 }
             }
             setLoggedInUserValue(true);
@@ -146,11 +146,10 @@ function LessonsVideoContainer({
 
     function playVideo(params) {
         if (videoCurrentPlayTime) {
-            const videPlayedRoundedTime = Math.round(videoCurrentPlayTime);
-            videoFront.currentTime = videPlayedRoundedTime;
-            videoFrontMirror.currentTime = videPlayedRoundedTime;
-            videoBack.currentTime = videPlayedRoundedTime;
-            videoBackMirror.currentTime = videPlayedRoundedTime;
+            videoFront.currentTime = videoCurrentPlayTime;
+            videoFrontMirror.currentTime = videoCurrentPlayTime;
+            videoBack.currentTime = videoCurrentPlayTime;
+            videoBackMirror.currentTime = videoCurrentPlayTime;
         }
         setTimeout(() => {
             if (activeVideoState === 'front') {
@@ -312,7 +311,7 @@ function LessonsVideoContainer({
     function setVideoDuration(event) {
         const videoDuration = event.target.duration;
         let totalDuration = '';
-        const videPlayedRoundedTime = Math.round(videoCurrentPlayTime);
+        const videPlayedRoundedTime = videoCurrentPlayTime;
         videoFront.currentTime = videPlayedRoundedTime;
         videoFrontMirror.currentTime = videPlayedRoundedTime;
         videoBack.currentTime = videPlayedRoundedTime;
