@@ -47,7 +47,9 @@ function LessonsVideoContainer({
         if (!isObjectEmpty(loggedInUser)) {
             if (lessonPlayTime && lessonPlayTime.length) {
                 const matchedUser = lessonPlayTime.filter( user =>  user.userKey === loggedInUser.key );
-                setCurrentVideoPlayTime(matchedUser[0].playedTime);
+                if (matchedUser?.playedTime) {
+                    setCurrentVideoPlayTime(matchedUser[0].playedTime);
+                }
             }
             setLoggedInUserValue(true);
         }
@@ -363,11 +365,7 @@ function LessonsVideoContainer({
                     overlayItem.classList.add('activeOverlay');
                 }
             } else {
-                dispatch(enableLoginFlow('subscription'));
-                history.push({
-                    pathname: '/subscription',
-                    state: null
-                }); 
+                redirectToSubscription(); 
             }
         } else {
             dispatch(enableLoginFlow('lessons'));
@@ -376,6 +374,15 @@ function LessonsVideoContainer({
                 state: null
             });    
         }
+    }
+
+    function redirectToSubscription() {
+        dispatch(enableLoginFlow('subscription'));
+        history.push({
+            pathname: '/subscription',
+            search: `?from=lesson&planType=${isPaid === 'paid' ? 'startup' : isPaid}`,
+            state: null
+        }); 
     }
 
     function shareLessonDetails(event) {
@@ -392,7 +399,7 @@ function LessonsVideoContainer({
 
     function redirectToLogin(event) {
         event.stopPropagation();
-        history.push('/subscription');
+        history.push('/login');
     }
 
     function playStopPreviewVideo(event, action) {

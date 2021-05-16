@@ -4,10 +4,10 @@ import Video from "../Vedio/Video";
 import FilterListIcon from '@material-ui/icons/FilterList';
 import ArrowDropDownOutlinedIcon from '@material-ui/icons/ArrowDropDownOutlined';
 import Button from '@material-ui/core/Button';
-import SortIcon from '@material-ui/icons/Sort';
 import SortByAlphaIcon from '@material-ui/icons/SortByAlpha';
 function Lessons() {
     const [activeCategory, setActiveCategory] = useState(LessonsCategories[0]);
+    // eslint-disable-next-line no-unused-vars
     const [LessonsCategoriesList, setLessonsCategoriesList] = useState(LessonsCategories)
     const [showCatDropDown, setShowCatDropDown] = useState(false);
     const [showFilterDropDown, setShowFilterDropDown] = useState(false);
@@ -49,8 +49,8 @@ function Lessons() {
                             <ArrowDropDownOutlinedIcon />
                         </div>
                         {showCatDropDown && <div className="dropdown-list-wrap">
-                            {LessonsCategoriesList.map((item, i) => {
-                                if (item.title != activeCategory.title) {
+                            {LessonsCategoriesList.forEach((item, i) => {
+                                if (item.title !== activeCategory.title) {
                                     return <div className="category-item" key={i} onClick={() => { setActiveCategory(item); setShowCatDropDown(false) }}>{item.title}</div>
                                 }
                             })}
