@@ -47,7 +47,7 @@ function LessonsVideoContainer({
         if (!isObjectEmpty(loggedInUser)) {
             if (lessonPlayTime && lessonPlayTime.length) {
                 const matchedUser = lessonPlayTime.filter( user =>  user.userKey === loggedInUser.key );
-                if (matchedUser?.playedTime) {
+                if (matchedUser?.length && matchedUser[0]?.playedTime) {
                     setCurrentVideoPlayTime(matchedUser[0].playedTime);
                 }
             }
