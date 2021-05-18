@@ -649,6 +649,11 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                                                                     <button className="btn primary-light" onClick={(event) => blockUserHandler(event, user)}>Block</button>
                                                                 </div>
                                                             }
+                                                            {user.followRequestAcceptedBy &&
+                                                                <div className="notificationAction">
+                                                                    <button className="btn primary-light" onClick={(event) => blockUserHandler(event, user)}>Block</button>
+                                                                </div>
+                                                            }
                                                     </li>
                                                 )
                                             })
