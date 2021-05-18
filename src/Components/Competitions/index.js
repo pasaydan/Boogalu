@@ -7,6 +7,7 @@ import { disableLoginFlow } from "../../Actions/LoginFlow";
 import { getCompetitionByUserId } from "../../Services/EnrollCompetition.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import ImageCarousel from '../ImageCarousel';
+import { truncateLargeText } from '../../helpers';
 
 function Competitions() {
     const { state, dispatch } = useStoreConsumer();
@@ -103,7 +104,18 @@ function Competitions() {
                                 <span className="upcomingLabel">Upcoming</span> : ''
                             }
                             <img src={competition.img} alt={competition.name} />
-                            <h2>{competition.name}  {competition.isUserEnrolled ? <span className="enrolledMessage">Already Enrolled</span> : ''} </h2>
+                            <h2>
+                                <span className="title">
+                                    {competition.name}
+                                </span>
+                                <span className="otherInfo">
+                                    {truncateLargeText(competition.desc, 60)}<br/>
+                                </span>
+                                <span className="otherInfo">
+                                    Enrollment open: {competition.startingDate} to {competition.endingDate}<br/>
+                                </span>
+                                {competition.isUserEnrolled ? <span className="enrolledMessage">Already Enrolled</span> : ''}
+                            </h2>
                         </li>
                     })}
                 </ul>

@@ -303,6 +303,20 @@ function LessonsVideoContainer({
                 videoBack.currentTime = videoBackMirror.currentTime;
                 videoFrontMirror.currentTime = videoBackMirror.currentTime;
             }
+            if (videoFront !== null) {
+                const videoData = {
+                    userKey: loggedInUser.key,
+                    playedTime: videoFront.currentTime
+                }
+                setUserLessonVideoPlayedTime(videoData);
+                try {
+                    updateLessonPlayTime(lessonKey, videoData).subscribe(res => {
+                        console.log('Res: ', res);
+                    });
+                } catch(e) {
+                    console.log('Update lesson Error: ', e);
+                }
+            }
             event.preventDefault();
             event.stopPropagation();
         }

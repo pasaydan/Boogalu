@@ -61,7 +61,7 @@
         }
         h2 {
             position: absolute;
-            background-color: var(--box-dark-bg);
+            background-color: rgba(0, 0, 0, 0.7);
             padding: 10px;
             color: var(--primary-white);
             font-weight: 400;
@@ -70,8 +70,18 @@
             width: 100%;
             bottom: 0;
             transition: all 0.5s ease-in-out;
-            .enrolledMessage {
+            text-align: left;
+            font-weight: 400;
+            span {
                 display: block;
+                font-size: 12px;
+                &.title {
+                    font-weight: 600;
+                    font-size: 16px;
+                    margin-bottom: 5px;
+                }
+            }
+            .enrolledMessage {
                 font-size: 14px;
                 color: var(--primary-link-color-blue);
             }

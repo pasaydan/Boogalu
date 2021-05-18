@@ -109,12 +109,12 @@ function Subscriptions(props) {
                     history.push('/subscription');
                 } else {
                     //if user come from competition details 
-                    if (state.currentLoginFlow === 'competition-subscription') {
-                        let subscriptionForCompetition = subscriptionsList.filter((data) => data.type === 'competition-enrollment');
-                        dispatch(setActiveSubscription(subscriptionForCompetition[0]));
-                        setActiveStep(activeStepCount);
-                        setShowSubscriptionDetails(true);
-                    }
+                    // if (state.currentLoginFlow === 'competition-subscription') {
+                    //     let subscriptionForCompetition = subscriptionsList.filter((data) => data.type === 'competition-enrollment');
+                    //     dispatch(setActiveSubscription(subscriptionForCompetition[0]));
+                    //     setActiveStep(activeStepCount);
+                    //     setShowSubscriptionDetails(true);
+                    // }
                     //is user go to login flow from itself(current page)
                     if (state.currentLoginFlow === 'subscription') {
                         dispatch(disableLoginFlow());

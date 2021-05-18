@@ -294,12 +294,12 @@ export default function Competition() {
                 /> : ''
             }
             <nav className="adminNavigation">
-                <Link to="/adminpanel/competition" title="create championship" className="panelLink active">
+                <Link to="/adminpanel/competition" title="create competitions" className="panelLink active">
                     <span className="iconsWrap championIconWrap">
                         <img src={championIcon} alt="championship" />
                     </span>
                     <span className="title champion">
-                        Championship
+                        Competitions
                     </span>
                 </Link>
                 <Link to="/adminpanel/lessons" title="upload new lessons" className="panelLink">

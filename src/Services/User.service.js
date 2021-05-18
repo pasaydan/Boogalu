@@ -126,6 +126,24 @@ export function getAllUser(userKey) {
     });
 }
 
+export function getAllUserLazyLoad(userKey) {
+    return new Observable((observer) => {
+        userRef.orderByChild('username')
+                .startAt(0)
+                .endAt(14)
+                .limitToFirst(5)
+                .onSnapshot((querySnapshot) => {
+            let users = [];
+            querySnapshot.forEach((doc) => {
+                let data = doc.data();
+                data.key = doc.id;
+                users.push(data);
+            });
+            observer.next(users);
+        });
+    });
+}
+
 export function updateFollowUnfollow(id, followedById, action) {
     return new Observable((observer) => {
         let followed = false;

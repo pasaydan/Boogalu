@@ -14,3 +14,10 @@ export const getParameterByName = (name, url = window.location.href) => {
 export const getUniqueArrayOfObject = (data, key) => {
     return [...new Map(data.map(item => [item[key], item])).values()];
 }
+
+export const truncateLargeText = (text, limit) => {
+    if (text.length >= limit) {
+        return (text.substring(0, limit) + '...');
+    }
+    return text;
+}

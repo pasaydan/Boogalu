@@ -15,10 +15,10 @@ export function formatTime(time) {
 export function formatDate(date, status) {
     date = new Date(date);
     var monthNames = [
-        "January", "February", "March",
-        "April", "May", "June", "July",
-        "August", "September", "October",
-        "November", "December"
+        "Jan", "Feb", "Mar",
+        "Apr", "May", "Jun", "Jul",
+        "Aug", "Sept", "Oct",
+        "Nov", "Dec"
     ];
     let day = date.getDate();
     let monthIndex = date.getMonth();

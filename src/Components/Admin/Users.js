@@ -256,12 +256,12 @@ export default function UsersInfo() {
                 </div> : ''
             }
             <nav className="adminNavigation">
-                <Link to="/adminpanel/competition" title="create championship" className="panelLink">
+                <Link to="/adminpanel/competition" title="create competitions" className="panelLink">
                     <span className="iconsWrap championIconWrap">
                         <img src={championIcon} alt="championship" />
                     </span>
                     <span className="title champion">
-                        Championship
+                        Competitions
                     </span>
                 </Link>
                 <Link to="/adminpanel/lessons" title="upload new lessons" className="panelLink">
@@ -340,8 +340,9 @@ export default function UsersInfo() {
                                 <tbody>
                                     {
                                         userListData && userListData.length &&
-                                        userListData.forEach((item, index) => {
-                                            if (item.role !== 'admin') {
+                                        // eslint-disable-next-line array-callback-return
+                                        userListData.map((item, index) => {
+                                            if (item?.role !== 'admin') {
                                                 return (
                                                     <tr key={`user-item-${index}`}>
                                                         <td>{index + 1}</td>
