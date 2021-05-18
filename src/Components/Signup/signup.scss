@@ -282,13 +282,23 @@
     cursor: pointer;
     position: relative;
     i.plus-icon {
-        font-size: 24px;
+        line-height: 18px;
+        box-sizing: border-box;
         font-weight: 600;
         position: absolute;
-        bottom: 0;
-        right: 0;
+        bottom: 8px;
+        right: 20px;
         z-index: 0;
-        color: var(--primary-dark-grey);
+        padding: 3px;
+        border-radius: 50%;
+        display: block;
+        width: 20px;
+        height: 20px;
+        background: rgba(0, 0, 0, 0.5);
+        color: var(--primary-white);
+        svg {
+            font-size: 12px;
+        }
     }
     #myInput {
         position: absolute;

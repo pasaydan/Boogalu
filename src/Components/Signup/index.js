@@ -178,55 +178,72 @@ export default function Signup(props) {
   const saveUserRegistrationDetails = () => {
     return new Promise((res, rej) => {
       dispatch(enableLoading());
-      let tempUserDetails = userDetails;
-      if (tempUserDetails.profileImage) {
-        uploadImage(tempUserDetails.profileImage, "user", "small").subscribe(
-          (downloadableUrl) => {
-            tempUserDetails.profileImage = downloadableUrl;
-            registerUser(tempUserDetails).subscribe((data) => {
-              console.log("user registered success", data);
-              res(data.key);
-            });
-          }
-        );
-      } else {
-        tempUserDetails = {
-          ...tempUserDetails,
-          profileImage: MALE_PROFILE_DEFAULT_IMAGE,
-        };
-        registerUser(tempUserDetails).subscribe((data) => {
-          console.log("user registered success", data);
-          res(data.key);
-        });
+      try {
+        let tempUserDetails = userDetails;
+        if (tempUserDetails.profileImage) {
+          uploadImage(tempUserDetails.profileImage, "user", "small").subscribe(
+            (downloadableUrl) => {
+              tempUserDetails.profileImage = downloadableUrl;
+              registerUser(tempUserDetails).subscribe((data) => {
+                dispatch(disableLoading());
+                console.log("user registered success", data);
+                res(data.key);
+              });
+            }
+          );
+        } else {
+          tempUserDetails = {
+            ...tempUserDetails,
+            profileImage: MALE_PROFILE_DEFAULT_IMAGE,
+          };
+          registerUser(tempUserDetails).subscribe((data) => {
+            dispatch(disableLoading());
+            console.log("user registered success", data);
+            res(data.key);
+          });
+        }
+      } catch(e) {
+        dispatch(disableLoading());
+        console.log('save user registration error: ', e);
       }
     });
   };
 
   const checkForUsedPhone = () => {
     return new Promise((res, rej) => {
-      getUserByPhone(userDetails.phone).subscribe((data) => {
+      try {
+        getUserByPhone(userDetails.phone).subscribe((data) => {
+          dispatch(disableLoading());
+          if (data && data.length) {
+            setSignUpError("Phone already registered.");
+            rej(false);
+          } else {
+            res(true);
+          }
+        });
+      } catch(e) {
         dispatch(disableLoading());
-        if (data && data.length) {
-          setSignUpError("Phone already registered.");
-          rej(false);
-        } else {
-          res(true);
-        }
-      });
+        console.log('check for used phone error: ', e);
+      }
     });
   };
 
   const checkForUsedEmail = () => {
     return new Promise((res, rej) => {
-      getUserByEmail(userDetails.email).subscribe((data) => {
+      try {
+        getUserByEmail(userDetails.email).subscribe((data) => {
+          dispatch(disableLoading());
+          if (data && data.length) {
+            setSignUpError("Email already registered.");
+            rej(false);
+          } else {
+            res(true);
+          }
+        });
+      } catch (e) {
         dispatch(disableLoading());
-        if (data && data.length) {
-          setSignUpError("Email already registered.");
-          rej(false);
-        } else {
-          res(true);
-        }
-      });
+        console.log('check for used email error: ', e);
+      }
     });
   };
 
@@ -273,12 +290,14 @@ export default function Signup(props) {
             setActiveStep("stepOne");
           })
           .catch((error) => {
+            dispatch(disableLoading());
             // error in user registration
             if (error) {
             }
           });
       })
       .catch((error) => {
+        dispatch(disableLoading());
         console.error(error);
       });
     e.preventDefault();

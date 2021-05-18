@@ -93,11 +93,11 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
             if (isAppAlreadyLoaded) {
                 setTimeout(() => {
                     toggleNavAnimation('animate');
-                }, 1000);
+                }, 600);
             } else {
                 setTimeout(() => {
                     toggleNavAnimation('animate');
-                }, 7000);
+                }, 800);
             }
         } else {
             togglHomeRouteValue(false);
@@ -524,12 +524,19 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
 
     const acceptFollowRequestHandler = (event, user) => {
         event.stopPropagation();
-        acceptFollowRequest(loggedInUser.key, user.key).subscribe((response) => {
-            console.log("response", response);
-            if (response && response.success) {
-                getNotifications();
-            }
-        })
+        event.target.classList.add('loading');
+        try {
+            acceptFollowRequest(loggedInUser.key, user.key).subscribe((response) => {
+                console.log("response", response);
+                event.target.classList.remove('loading');
+                if (response && response.success) {
+                    getNotifications();
+                }
+            });
+        } catch (e) {
+            event.target.classList.remove('loading');
+            console.log('accept follow error: ', e);
+        }
     }
 
     const rejectFollowRequestHandler = (event) => {

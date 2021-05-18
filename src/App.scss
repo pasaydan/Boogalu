@@ -277,6 +277,7 @@ button:focus {
   font-weight: 600;
   position: relative;
   font-size: 12px;
+  transition: all 0.3s ease-in-out;
   filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, .3));
   &:before, &:after {
     position: absolute;
@@ -384,6 +385,11 @@ button:focus {
     border: 3px solid var(--footer-list-text-grey);
     border-top-color: var(--primary-white);
   }
+  &:hover {
+    background-image: none;
+    background-color: var(--btn-primary-dark-bg);
+    color: var(--primary-white);  
+  }
 }
 
 .btn.primary-dark {
@@ -395,6 +401,10 @@ button:focus {
   &:before {
     border: 3px solid var(--footer-list-text-grey);
     border-top-color: var(--primary-white);
+  }
+  &:hover {
+    background-image: linear-gradient(180deg, var(--btn-primary-light-bg), var(--btn-primary-light-bg));
+    color: var(--btn-primary-dark-bg);
   }
 }
 

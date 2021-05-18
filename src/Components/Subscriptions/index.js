@@ -11,6 +11,7 @@ import { SUBSCRIPTION_ACTIVE_STATUS, ADMIN_EMAIL_STAGING } from "../../Constants
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { sendEmail } from "../../Services/Email.service";
 import { isObjectEmpty, getParameterByName } from '../../helpers';
+import * as $ from 'jquery';
 
 function Subscriptions(props) {
     const { pageTitle } = props;
@@ -62,6 +63,9 @@ function Subscriptions(props) {
     // check for payment status if user is in payment flow
     useEffect(() => {
         dispatch(enableLoading());
+        $('html,body').animate({
+            scrollTop: 0
+        }, 700);
         try {
             getActiveSubscriptionsList().subscribe((subscriptionsList) => {
                 setAvailableSubscriptions(subscriptionsList.reverse());

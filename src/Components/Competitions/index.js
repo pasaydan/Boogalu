@@ -8,6 +8,7 @@ import { getCompetitionByUserId } from "../../Services/EnrollCompetition.service
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import ImageCarousel from '../ImageCarousel';
 import { truncateLargeText } from '../../helpers';
+import * as $ from 'jquery';
 
 function Competitions() {
     const { state, dispatch } = useStoreConsumer();
@@ -35,6 +36,9 @@ function Competitions() {
     }
 
     useEffect(() => {
+        $('html,body').animate({
+            scrollTop: 0
+        }, 700);
         dispatch(enableLoading());
         getActiveCompetitionsList().subscribe(allCompList => {
             if (allCompList.length && loggedInUser.email && loggedInUser.phone) {

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useStoreConsumer } from '../../Providers/StateProvider';
 import { useHistory } from "react-router-dom";
 import { getUploadedVideosList } from "../../Services/UploadedVideo.service";
 import Vedio from "../Vedio/Video";
@@ -9,8 +8,6 @@ const isAppAlreadyLoaded = JSON.parse(localStorage.getItem('isAppLoaded'));
 
 export default function Homepage() {
     const history = useHistory();
-    const { state } = useStoreConsumer();
-    let loggedInUser = state.loggedInUser;
     // const [danceImageVisibleClass, activeDanceImage] = useState('');
     const [UserUploadedVideoList, setUserUploadedVideoList] = useState([]);
     // const [isMobile, toggleMobile] = useState(false);
@@ -47,21 +44,21 @@ export default function Homepage() {
             setTimeout(() => {
                 // activeDanceImage('show');
                 toggleLoadImage('show');
-            }, 1500);
+            }, 100);
             setTimeout(() => {
                 toggleMessageClass('show');
-            }, 3500);
+            }, 200);
             setTimeout(() => {
                 toggleHeadingClass('animate');
                 toggleHeadingClassNew('animate');
-            }, 4500);
+            }, 300);
             setTimeout(() => {
                 animateStartButton('animate');
-            }, 5200);
+            }, 400);
             setTimeout(() => {
                 animateVideoContainer('animate');
                 localStorage.setItem('isAppLoaded', true);
-            }, 6000);
+            }, 500);
         }
         // let windowViewPortWidth = window.innerWidth;
         // if (windowViewPortWidth > 1023) {
@@ -82,7 +79,7 @@ export default function Homepage() {
                         at your <span className="color-text-green">Fingertips</span>.
                     </h5>
                     <button className={`btn primary-light get_started ${firstStartButtonLoaded} ${startButtonAnimateClass}`} onClick={() => {
-                        loggedInUser ? history.push('/competitions') : history.push('/login');
+                        history.push('/login');
                     }}>Get Started</button>
                     <div className={`flex-container video-main-wrap ${firstVideoAnimateLoaded} ${videoAnimateClass}`}>
                         {UserUploadedVideoList.length !== 0 ?

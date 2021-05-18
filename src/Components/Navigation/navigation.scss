@@ -387,6 +387,12 @@ nav img {
                                 border: 1px solid var(--copyright-grey);
                                 color: var(--copyright-grey);
                             }
+                            &.loading {
+                                &:before {
+                                    width: 11px;
+                                    height: 11px;
+                                }
+                            }
                         }
                     }
                 }
