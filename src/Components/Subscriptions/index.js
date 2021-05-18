@@ -10,7 +10,7 @@ import { loginUser } from "../../Actions/User";
 import { SUBSCRIPTION_ACTIVE_STATUS, ADMIN_EMAIL_STAGING } from "../../Constants";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { sendEmail } from "../../Services/Email.service";
-import { isObjectEmpty } from '../../helpers';
+import { isObjectEmpty, getParameterByName } from '../../helpers';
 
 function Subscriptions(props) {
     const { pageTitle } = props;
@@ -62,57 +62,69 @@ function Subscriptions(props) {
     // check for payment status if user is in payment flow
     useEffect(() => {
         dispatch(enableLoading());
-        if (history.location.search && history.location.search.includes('status')) {
-            getActiveSubscriptionsList().subscribe((subscriptionsList) => {
-                setAvailableSubscriptions(subscriptionsList);
-                dispatch(disableLoading());
-                console.log(subscriptionsList);
-            })
-            let paymentStatus = history.location.search.split('status=')[1];
-            if (paymentStatus === 'success') {
-                const subscriptionSuccessObj = {
-                    subId: state.activeSubscription.key,
-                    type: state.activeSubscription.type,
-                    status: SUBSCRIPTION_ACTIVE_STATUS, // current subscription status Active or Ended
-                    subscribedAt: new Date()
-                }
-                let loggedInUserData = { ...loggedInUser };
-                if (loggedInUserData.subscriptions) loggedInUserData.subscriptions.push(subscriptionSuccessObj)
-                else (loggedInUserData.subscriptions = [subscriptionSuccessObj]);
-
-                dispatch(enableLoading());
-                saveUserSubscription(state.activeSubscription.key, loggedInUserData).subscribe((response) => {
-                    sendEmailToAdmin();
-                    sendEmailToUser();
-                    dispatch(loginUser(loggedInUserData));
-                    setShowSubscriptionDetails(true);
-                    dispatch(disableLoading());
-                    setActiveStep(2);
-                });
-            } else {
-                // payment failure
-                setShowSubscriptionDetails(true);
-                setActiveStep(3)
-            }
-            history.push('/subscription');
-        } else {
+        try {
             getActiveSubscriptionsList().subscribe((subscriptionsList) => {
                 setAvailableSubscriptions(subscriptionsList.reverse());
                 dispatch(disableLoading());
-                console.log(subscriptionsList);
-                //if user come from competition details 
-                if (state.currentLoginFlow === 'competition-subscription') {
-                    let subscriptionForCompetition = subscriptionsList.filter((data) => data.type === 'competition-enrollment');
-                    dispatch(setActiveSubscription(subscriptionForCompetition[0]));
-                    setActiveStep(activeStepCount);
-                    setShowSubscriptionDetails(true);
+                if (history.location.search && history.location.search.includes('planType')) {
+                    const filterParam = getParameterByName('planType', window.location.href);
+                    if (subscriptionsList.length) {
+                        const matchedSubscription = subscriptionsList.filter( item => {
+                            return (item.planType === filterParam);
+                        });
+                        if (matchedSubscription.length) {
+                            dispatch(setActiveSubscription(matchedSubscription[0]));
+                        } else {
+                            dispatch(setActiveSubscription(subscriptionsList[0]));
+                        }
+                    }
                 }
-            })
-            //is user go to login flow from itself(current page)
-            if (state.currentLoginFlow === 'subscription') {
-                dispatch(disableLoginFlow());
-                setShowSubscriptionDetails(true);
-            }
+                if (history.location.search && history.location.search.includes('status')) {
+                    let paymentStatus = history.location.search.split('status=')[1];
+                    if (paymentStatus === 'success') {
+                        const subscriptionSuccessObj = {
+                            subId: state.activeSubscription.key,
+                            type: state.activeSubscription.type,
+                            status: SUBSCRIPTION_ACTIVE_STATUS, // current subscription status Active or Ended
+                            subscribedAt: new Date()
+                        }
+                        let loggedInUserData = { ...loggedInUser };
+                        if (loggedInUserData.subscriptions) loggedInUserData.subscriptions.push(subscriptionSuccessObj)
+                        else (loggedInUserData.subscriptions = [subscriptionSuccessObj]);
+        
+                        dispatch(enableLoading());
+                        saveUserSubscription(state.activeSubscription.key, loggedInUserData).subscribe((response) => {
+                            sendEmailToAdmin();
+                            sendEmailToUser();
+                            dispatch(loginUser(loggedInUserData));
+                            setShowSubscriptionDetails(true);
+                            dispatch(disableLoading());
+                            setActiveStep(2);
+                        });
+                    } else {
+                        // payment failure
+                        setShowSubscriptionDetails(true);
+                        setActiveStep(3)
+                    }
+                    history.push('/subscription');
+                } else {
+                    //if user come from competition details 
+                    if (state.currentLoginFlow === 'competition-subscription') {
+                        let subscriptionForCompetition = subscriptionsList.filter((data) => data.type === 'competition-enrollment');
+                        dispatch(setActiveSubscription(subscriptionForCompetition[0]));
+                        setActiveStep(activeStepCount);
+                        setShowSubscriptionDetails(true);
+                    }
+                    //is user go to login flow from itself(current page)
+                    if (state.currentLoginFlow === 'subscription') {
+                        dispatch(disableLoginFlow());
+                        setShowSubscriptionDetails(true);
+                    }
+                }
+                console.log(subscriptionsList);
+            });
+        } catch (e) {
+            console.log('Fetching subscription error: ', e);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
@@ -143,7 +155,6 @@ function Subscriptions(props) {
             });
         }
     }
-
 
     const fnCallbackFromBuySubscription = (userDetails) => {
         if (userDetails.subscribed) {

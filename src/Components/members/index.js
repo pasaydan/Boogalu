@@ -4,10 +4,7 @@ import { enableLoading, disableLoading } from "../../Actions/Loader";
 import ProfileImage from "../ProfileImage";
 import { getAllUser, updateFollowUnfollow } from "../../Services/User.service";
 import { useHistory } from "react-router-dom";
-import { getUniqueArrayOfObject } from '../../helpers';
-
 // import { getUserById, updateUser, updateFollowUnfollow } from "../../Services/User.service";
-
 
 function ViewAllMembers() {
     const history = useHistory();
@@ -29,14 +26,6 @@ function ViewAllMembers() {
 
     function redirectToLogin() {
         history.push('/login');
-    }
-
-    const setDefault = (updatedUserList, index) => {
-        updatedUserList[index] = {
-            ...updatedUserList[index],
-            actionBtnText: 'Follow'
-        }
-        return updatedUserList[index];
     }
 
     function getAllUserList(userKey) {

@@ -19,7 +19,12 @@ import Fade from '@material-ui/core/Fade';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 
-export default function BuySubsription({ handleClose, activeStep, alreadySubscribed, fnCallback }) {
+export default function BuySubsription({ 
+        handleClose, 
+        activeStep, 
+        alreadySubscribed, 
+        fnCallback 
+    }) {
     const history = useHistory();
     const { state, dispatch } = useStoreConsumer();
     const loggedInUser = state.loggedInUser;
@@ -120,9 +125,9 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
         };
 
         let orderObj = {};
-        orderObj[subscriptionDetails.planType] = userData;
+        orderObj[subscriptionDetails?.planType] = userData;
         try {
-            postOrder(orderObj, [subscriptionDetails.planType], loggedInUser, handlerFn)
+            postOrder(orderObj, [subscriptionDetails?.planType], loggedInUser, handlerFn)
                 .subscribe((response) => {
                     const responseData = response.data;
                     setSubscription(responseData);
@@ -159,9 +164,9 @@ export default function BuySubsription({ handleClose, activeStep, alreadySubscri
                             <div className="subs-details-wrap">
                                 <p>
                                     Welcome, we are glad to see you. Now, you can subscribe to our application, and
-                                    &npbsp;{SUBSCIPTION_PLANS_MAP[subscriptionDetails.planType].modalMessage}
+                                    &npbsp;{SUBSCIPTION_PLANS_MAP[subscriptionDetails?.planType]?.modalMessage}
                                 </p>
-                                <p className={`planValue ${subscriptionDetails.planType}`}> Just <i className="rupeeSign"><FaRupeeSign /></i>{subscriptionDetails.amount} {subscriptionDetails.plans}</p>
+                                <p className={`planValue ${subscriptionDetails?.planType}`}> Just <i className="rupeeSign"><FaRupeeSign /></i>{subscriptionDetails?.amount} {subscriptionDetails?.plans}</p>
                                 {/* <div>{subscriptionDetails.name}</div> */}
                                 {/* <div>{subscriptionDetails.desc}</div> */}
                                 {/* <div>{subscriptionDetails.amount} / {subscriptionDetails.plans}</div> */}
