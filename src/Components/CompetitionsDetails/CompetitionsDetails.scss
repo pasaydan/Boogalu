@@ -345,6 +345,12 @@
                                 left: 9%;
                                 margin-left: -12px;
                             }
+                            &.loggedInToolTip {
+                                left: -76px;
+                                &:after {
+                                    left: 27%;
+                                }
+                            }
                         }
                     } 
                 }

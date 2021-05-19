@@ -344,7 +344,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                             checked={isTncAccepted}
                                             title="accept terms and condition" onClick={(e) => acceptTnC(e)} />
                                         Terms &amp; Conditions
-                                    {TnC && <div className="tool-tip-wrap">
+                                    {TnC && <div className={`tool-tip-wrap ${loggedInUser.username ? 'loggedInToolTip' : ''}`}>
                                             <div>You may not be able to attend the live session if you are late.</div>
                                             <div>You may face interruptions during the course of the live stream due to internet connectivity issues.</div>
                                             <div>Show details and the artist lineup are subject to change as per the artist’s discretion.</div>

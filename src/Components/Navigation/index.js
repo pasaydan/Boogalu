@@ -345,13 +345,13 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                     item.classList.remove('active');
                 }
             });
-            event.currentTarget.classList.add('active');
             history.push(`/${url}`);
             setTimeout(() => {
                 $('html,body').animate({
                     scrollTop: 0
                 }, 700);
             }, 100);
+            event.currentTarget.classList.add('active');
             setActiveRoute(url);
             setShowProfileTab(false);
             enableProfileTabMenu(false);
@@ -365,14 +365,19 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                 mainNavRef.current.classList.remove('sideMenuVisible');
             }
         } else {
-            const pathName = history?.location?.pathname.split('/')[1];
-            if (getLinkMenu.length) {
-                getLinkMenu.forEach(item => {
-                    if (item.getAttribute('data-url') === pathName) {
-                        item.classList.add('active');
-                    }
-                });
-            }
+            showActiveSideNavMenuFromRoute();
+        }
+    }
+
+    function showActiveSideNavMenuFromRoute() {
+        const getLinkMenu = document.querySelectorAll('.linkMenu');
+        const pathName = history?.location?.pathname.split('/')[1];
+        if (getLinkMenu.length) {
+            getLinkMenu.forEach(item => {
+                if (item.getAttribute('data-url') === pathName) {
+                    item.classList.add('active');
+                }
+            });
         }
     }
 
@@ -407,6 +412,7 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                 enableProfileTabMenu(true);
                 setTimeout(() => {
                     setShowProfileTab(true);
+                    showActiveSideNavMenuFromRoute();
                 }, 100);
             }
         }
@@ -610,6 +616,11 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                         <div className={`profile-tab-wrap ${showProfileTab ? 'showMenu' : ''}`} onClick={(e) => headerMenusClicked(e)}>
                             <i className="crossMenuIcon"></i>
                             <div className="innerMenuWrap">
+                                {
+                                    loggedInUser.username ?
+                                    <div className="linkMenu" data-url="members" onClick={(e) => topRightNavigation(e, 'members')}>Members</div>
+                                    : ''
+                                }
                                 <div className="linkMenu" data-url="subscription" onClick={(e) => topRightNavigation(e, 'subscription')}>Subscription</div>
                                 <div className="linkMenu" data-url="aboutus" onClick={(e) => topRightNavigation(e, 'aboutus')}>About us</div>
                                 <div className="linkMenu" data-url="contactus" onClick={(e) => topRightNavigation(e, 'contactus')}>Contact us</div>
