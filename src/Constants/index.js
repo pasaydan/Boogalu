@@ -43,6 +43,14 @@ export const NOTIFICATION_WARNING = 'NOTIFICATION_WARNING'
 export const ADMIN_USER = 'b2b@boxpuppet.com';
 export const ADMIN_PWD = 'Box-puppet@1001';
 
+// Pre-judges Login
+export const PRE_JUDGES_USER = 'pre-round@boogalu.com';
+export const PRE_JUDGES_PWD = 'Pre-round@1001';
+
+// Final-judges Login
+export const FINAL_JUDGES_USER = 'final-round@boogalu.com';
+export const FINAL_JUDGES_PWD = 'Final-round@1001';
+
 // Subscription Plans Mapping
 export const SUBSCIPTION_PLANS_MAP = {
     startup: {

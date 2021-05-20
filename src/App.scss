@@ -39,6 +39,7 @@
   --mui-button-hover: #303f9f;
   --mui-button-loader: #17247c;
   --sea-green-light: #5ea9b5;
+  --grey-to-blue-bg: #232c33;
 }
 
 
@@ -590,3 +591,4 @@ button:focus {
 @import './Components/ConfirmationModal/confirmationModal.scss';
 @import './Components/ImageCarousel/imageCarousel.scss';
 @import './Components/members/members.scss';
+@import './Components/judgements/judgement.scss';

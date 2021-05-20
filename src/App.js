@@ -29,12 +29,14 @@ import Subscription from "./Components/Admin/Subscription";
 import UploadLessons from './Components/Admin/UploadLessons';
 import { useStoreConsumer } from './Providers/StateProvider';
 import EditProfile from "./Components/EditProfile/EditProfile";
+import PreFinalRound from "./Components/judgements/firstround";
+import FinalRound from "./Components/judgements/finalround";
 
 function App() {
   const { state } = useStoreConsumer();
   const [isSplashVisible, toggleSplash] = useState(true);
   const [isRootPath, rootPathToggle] = useState(true);
-  const [adminPathClass, setAdminPathClass] = useState('');
+  const [adminPathClass, setAdminPathClass] = useState(false);
   const [transitionOpacityClass, toggleTransition] = useState('');
   
   useEffect(() => {
@@ -46,8 +48,10 @@ function App() {
         rootPathToggle(false);
       }
 
-      if (pathName.includes('adminpanel')) {
-        setAdminPathClass('adminPanel');
+      if (pathName.includes('adminpanel') || pathName.includes('judgements')) {
+        setAdminPathClass(true);
+      } else {
+        setAdminPathClass(false);
       }
 
       toggleSplash(false);
@@ -74,17 +78,24 @@ function App() {
 
   return (
     <Router>
-      <div className={`App ${adminPathClass} ${isRootPath && isObjectEmpty(state.loggedInUser) ? 'top-padding0': ''}`}>
+      <div className={`App ${adminPathClass ? 'adminPanel' : ''} ${isRootPath && isObjectEmpty(state.loggedInUser) ? 'top-padding0': ''}`}>
         {
           isSplashVisible ?
             <SplashScreen />
             :
             <div className={`main-content-wrapper ${transitionOpacityClass}`}>
-              <Navigation 
-                isUserLoggedIn = {state.loggedInUser && state.loggedInUser.username}
-                routeChangeTrigger={(e) => routeChanged(e)}
-              />
-              <Notification />
+              {
+                !adminPathClass ?
+                <Navigation 
+                  isUserLoggedIn = {state.loggedInUser && state.loggedInUser.username}
+                  routeChangeTrigger={(e) => routeChanged(e)}
+                /> : ''
+              }
+              {
+                !adminPathClass ?
+                <Notification />
+                : ''
+              }
               {state?.isLoading && <Loader />}
               <Switch>
                 <Route exact path="/aboutus">
@@ -180,12 +191,24 @@ function App() {
                   <UsersInfo />
                 </Route>
 
+                {/* Judgement Routes */}
+                <Route exact path="/judgements/prefinalround">
+                  <PreFinalRound />
+                </Route>
+                <Route exact path="/judgements/finalround">
+                  <FinalRound />
+                </Route>
+
                 {/* Handling 404 */}
                 <Route>
                   <Page404 />
                 </Route>
               </Switch>
-              <Footer />
+              {
+                !adminPathClass ?
+                <Footer />
+                : ''
+              }
             </div>
         }
       </div>
