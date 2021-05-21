@@ -487,7 +487,7 @@
                         align-items: center;
                         margin-top: 20px;
                         .submit-btn {
-                            background: -webkit-linear-gradient(var(--primary-link-color-blue), var(--light-pink-bg));
+                            background: -webkit-linear-gradient(#c063fb, #128ae7);
                             border-radius: 20px;
                             padding: 2px;
                             box-sizing: border-box;
@@ -502,7 +502,7 @@
                                     font-size: 16px;
                                     line-height: 18px;
                                     transition: all 0.3s ease-in-out;
-                                    background: -webkit-linear-gradient(var(--light-pink-bg), var(--primary-link-color-blue));
+                                    background: -webkit-linear-gradient(#c063fb, #128ae7);
                                     background-clip: text;
                                     -webkit-background-clip: text;
                                     -webkit-text-fill-color: transparent;
@@ -512,7 +512,7 @@
                                 }
                                 &:hover {
                                     .MuiButton-label {
-                                        background: -webkit-linear-gradient(var(--primary-link-color-blue), var(--light-pink-bg));
+                                        background: -webkit-linear-gradient(#128ae7, #c063fb);
                                         background-clip: text;
                                         -webkit-background-clip: text;
                                         -webkit-text-fill-color: transparent;
@@ -520,7 +520,7 @@
                                 }
                             }
                             &:hover {
-                                background: -webkit-linear-gradient(var(--light-pink-bg), var(--primary-link-color-blue));
+                                background: -webkit-linear-gradient(#128ae7, #c063fb);
                             }
                         }
                         .forgot-password {
@@ -584,12 +584,12 @@
                         text-transform: uppercase;
                         text-decoration: none;
                         transition: all 0.3s ease-in-out;
-                        background: -webkit-linear-gradient(var(--light-pink-bg), var(--primary-link-color-blue));
+                        background: -webkit-linear-gradient(#c063fb, #128ae7);
                         background-clip: text;
                         -webkit-background-clip: text;
                         -webkit-text-fill-color: transparent;
                         &:hover {
-                            background: -webkit-linear-gradient(var(--primary-link-color-blue), var(--light-pink-bg));
+                            background: -webkit-linear-gradient(#128ae7, #c063fb);
                             background-clip: text;
                             -webkit-background-clip: text;
                             -webkit-text-fill-color: transparent;
@@ -616,7 +616,7 @@
                     line-height: 14px;
                     position: absolute;
                     margin: 0;
-                    top: 48%;
+                    top: 40%;
                     z-index: 1;
                     left: 50%;
                     transform: translate(-50%, 0);
@@ -826,6 +826,7 @@
         }
         &.new-login-signup-ui {
             &.darkMode {
+                min-height: calc(100vh - 60px);
                 .inner-form-wrap {
                     margin-top: 0;
                 }
