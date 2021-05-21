@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { GoogleLogin } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
@@ -13,6 +13,9 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
+import waveImage from '../../Images/waves.svg';
+import userIcon from '../../Images/user-login.svg';
+import pwdKeyIcon from '../../Images/pwd-keys.svg';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
@@ -242,7 +245,7 @@ export default function Login(props) {
                             history.push({
                                 pathname: '/register',
                                 state: data
-                            })
+                            });
                         }
                     })
                 break;
@@ -257,8 +260,16 @@ export default function Login(props) {
         history.goBack();
     }
 
+    function redirectToPolicies(route) {
+        if (route) {
+            history.push({
+                pathname: `/${route}`
+            });
+        }
+    }
+
     return (
-        <div className="login-wrap new-login-signup-ui clearfix gradient-bg-animation">
+        <div className="login-wrap new-login-signup-ui clearfix gradient-bg-animation darkMode">
             <div className={`inner-form-wrap ${componentShowClass}`}>
                 <form className="form-wrap clearfix" onSubmit={(e) => signinUser(e, 'cred')}>
                     <div className="heading-outer">
@@ -273,6 +284,9 @@ export default function Login(props) {
                     </div>
                     <div className="form-outer clearfix">
                         <div className="input-wrap">
+                            <i className="labelIcons">
+                                <img src={userIcon} alt="user" />
+                            </i>
                             <TextField className="input-field"
                                 required
                                 id="outlined-required-username"
@@ -283,6 +297,30 @@ export default function Login(props) {
                             />
                         </div>
                         <div className="input-wrap">
+                            <i className="labelIcons">
+                                <img src={pwdKeyIcon} alt="pwd" />
+                            </i>
+                            <TextField className="input-field"
+                                required
+                                id="outlined-adornment-password"
+                                label="Password"
+                                type={loginCred.showPassWord ? 'text' : 'password'}
+                                onChange={handleChange('password')}
+                                value={loginCred.password}
+                                variant="outlined"
+                            />
+                            <div className="showHideBtn">
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={showPassword}
+                                    onMouseDown={handleMouseDownPassword}
+                                    edge="end"
+                                >
+                                    {loginCred.showPassWord ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                            </div>
+                        </div>
+                        {/* <div className="input-wrap">
                             <FormControl className="" variant="outlined" style={{ width: '100%' }}>
                                 <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
                                 <OutlinedInput
@@ -307,6 +345,7 @@ export default function Login(props) {
                                 />
                             </FormControl>
                         </div>
+                         */}
                         <div className="action-wrap">
                             {LoginError && <div className="login-error">
                                 {LoginError}
@@ -350,6 +389,9 @@ export default function Login(props) {
                             </div>
                         </div>
                     </div>
+                    <div className="singupLink">
+                        New to Boogalu? <Link to="/register" className="registerLink" title="Register to Boogalu">Sign Up</Link>
+                    </div>
                 </form>
                 <div className="image-wrap">
                     <img src="https://i.imgur.com/KS2W5BM.jpg" alt="signup" />
@@ -362,6 +404,14 @@ export default function Login(props) {
                             <Button className="singup-btn" color="primary" onClick={() => history.push('/register')}>SIGN UP</Button>
                         </div>
                     </div>
+                </div>
+                <div className="footerBox">
+                    <img src={waveImage} alt="waves" />
+                    <p className="loginMessage">
+                        By logging in you agree to our<br/> 
+                        <span onClick={() => redirectToPolicies('privacypolicy')}>Privacy policy</span> &amp; 
+                        <span onClick={() => redirectToPolicies('termsandconditions')}>Terms of use</span>
+                    </p>
                 </div>
             </div>
             <div className="img-wrap">

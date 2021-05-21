@@ -353,68 +353,358 @@
     }
 }
 
-@media screen and (max-width: 1023px) {
-    .login-wrap {
-        margin: 0;
-        padding: 20px 10px;
+.new-login-signup-ui {
+    &.darkMode {
+        background: none;
+        animation: none;
+        background-size: auto;
         box-sizing: border-box;
-        .heading-outer {
-            .heading1 {
-                padding: 0;
-                font-size: 24px;
-                line-height: 30px;
-                margin-bottom: 10px;
-            }
-            .heading2 {
-                font-size: 18px;
-                line-height: 22px;
-                margin: 0;
-            }
-        }
-        .form-outer {
+        min-height: 100vh;
+        background: var(--grey-to-blue-bg);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        .inner-form-wrap {
+            width: 70%;
+            max-width: 400px;
+            margin-top: 30px;
+            border-radius: 10px;
+            display: flex;
             flex-direction: column;
-            .input-wrap {
+            background-image: linear-gradient(to bottom, #1a1f28 0%, #2e3b42 100%);
+            .form-wrap {
+                flex-basis: 100%;
                 width: 100%;
-                .MuiInputBase-input {
-                    height: 1.2em;
-                    padding: 12px;
+                left: 0;
+                padding: 20px 20px 10px;
+                .heading-outer {
+                    .heading1, .heading2 {
+                        padding: 0;
+                        margin-bottom: 5px;
+                        color: var(--white-opaque-bg);
+                    }
+                    .heading1 {
+                        font-size: 16px;
+                        line-height: 18px;
+                    }
+                    .heading2 {
+                        font-size: 14px;
+                        line-height: 16px;
+                    }
                 }
-                .MuiInputLabel-formControl {
-                    top: -6px;
+                .form-outer {
+                    margin-top: 20px;
+                    .input-wrap {
+                        width: 100%;
+                        display: block;
+                        padding: 0;
+                        filter: none;
+                        margin-top: 10px;
+                        position: relative;
+                        .labelIcons {
+                            display: inline-block;
+                            width: 20px;
+                            height: 20px;
+                            position: absolute;
+                            left: 12px;
+                            top: 14px;
+                            z-index: 1;
+                            img {
+                                width: 100%;
+                            }
+                        }
+                        .showHideBtn {
+                            position: absolute;
+                            right: 1px;
+                            top: 6px;
+                            width: 30px;
+                            height: 35px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            .MuiButtonBase-root {
+                                padding: 0;
+                                margin: 0;
+                                color: var(--copyright-grey);
+                            }
+                        }
+                        &:first-child {
+                            margin-top: 20px;
+                        }
+                        .MuiInputLabel-outlined {
+                            transform: translate(14px, 14px) scale(1);
+                            color: var(--copyright-grey);
+                            left: 26px;
+                            &.MuiInputLabel-shrink {
+                                left: 0;
+                                transform: translate(14px, -2px) scale(0.75);
+                            }
+                        }
+                        &:hover {
+                            .MuiInputLabel-outlined {
+                                color: var(--btn-primary-light-bg);
+                            }   
+                            .showHideBtn {
+                                .MuiButtonBase-root {
+                                    color: var(--btn-primary-light-bg);
+                                }
+                            }
+                        }
+                        .MuiOutlinedInput-input {
+                            padding: 15px 15px 15px 40px;
+                            height: 42px;
+                            box-sizing: border-box;
+                            color: var(--btn-primary-light-bg);
+                            &:focus, &:active, &:visited {
+                                background: transparent;
+                                border-color: var(--footer-list-text-grey);
+                            }
+                            &:-webkit-autofill,
+                            &:-webkit-autofill:hover, 
+                            &:-webkit-autofill:focus, 
+                            &:-webkit-autofill:active {
+                                -webkit-box-shadow: 0 0 0 30px #1a1f28 inset !important;
+                            }
+                            &:-webkit-autofill {
+                             -webkit-text-fill-color: var(--btn-primary-light-bg) !important;
+                            }
+                        }
+                        .MuiOutlinedInput-root {
+                            .MuiOutlinedInput-notchedOutline {
+                                border-color: var(--copyright-grey);
+                                top: 0;
+                            }
+                            &:hover {
+                                .MuiOutlinedInput-notchedOutline {
+                                    border-color: var(--btn-primary-light-bg);
+                                }
+                            }
+                        }
+                    }
+                    .action-wrap {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-top: 20px;
+                        .submit-btn {
+                            background: -webkit-linear-gradient(var(--primary-link-color-blue), var(--light-pink-bg));
+                            border-radius: 20px;
+                            padding: 2px;
+                            box-sizing: border-box;
+                            transition: all 0.3s ease-in-out;
+                            .MuiButton-containedPrimary {
+                                background-color: #263038;
+                                box-shadow: none;
+                                padding: 6px 12px;
+                                border-radius: 20px;
+                                filter: none;
+                                .MuiButton-label {
+                                    font-size: 16px;
+                                    line-height: 18px;
+                                    transition: all 0.3s ease-in-out;
+                                    background: -webkit-linear-gradient(var(--light-pink-bg), var(--primary-link-color-blue));
+                                    background-clip: text;
+                                    -webkit-background-clip: text;
+                                    -webkit-text-fill-color: transparent;
+                                    svg {
+                                        display: none;
+                                    }
+                                }
+                                &:hover {
+                                    .MuiButton-label {
+                                        background: -webkit-linear-gradient(var(--primary-link-color-blue), var(--light-pink-bg));
+                                        background-clip: text;
+                                        -webkit-background-clip: text;
+                                        -webkit-text-fill-color: transparent;
+                                    }
+                                }
+                            }
+                            &:hover {
+                                background: -webkit-linear-gradient(var(--light-pink-bg), var(--primary-link-color-blue));
+                            }
+                        }
+                        .forgot-password {
+                            margin: 0 0 0 10px;
+                            transition: all 0.3s ease-in-out;
+                            color: var(--footer-list-text-grey);
+                            div {
+                                padding-right: 0;
+                            }
+                            &:hover {
+                                color: var(--btn-primary-light-bg);   
+                            }
+                        }
+                    }
+                    .or-seprator {
+                        padding-top: 10px;
+                        color: var(--footer-list-text-grey);
+                        div {
+                            line-height: 26px;
+                        }
+                        span {
+                            border-color: var(--footer-list-text-grey);
+                        }
+                    }
+                    .login-with {
+                        margin-top: 10px;
+                        padding: 0;
+                        .loginWithTitle {
+                            color: var(--footer-list-text-grey);
+                        }
+                        .login-with-google, .login-with-fb {
+                            width: 36px;
+                            height: 36px;
+                            .google-login-btn {
+                                width: 36px !important;
+                                height: 36px !important;
+                                svg {
+                                    transform: scale(1.2);
+                                    margin: 14px -6px 0;
+                                }
+                            }
+                            .login-with-fb {
+                                .facebook-login-btn {
+                                    width: 36px !important;
+                                    height: 36px !important;
+                                    svg {
+                                        width: 28px !important;
+                                        height: 28px !important;
+                                        margin: -20px 0 0 -11px;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-                .MuiInputLabel-outlined.MuiInputLabel-shrink {
-                    transform: translate(14px, 1px) scale(0.75);
-                }
-            }
-            .action-wrap {
-                .submit-btn {
-                    button {
-                        padding: 9px 40px;
+                .singupLink {
+                    margin-top: 10px;
+                    font-size: 14px;
+                    color: var(--btn-primary-light-bg);
+                    .registerLink {
+                        text-transform: uppercase;
+                        text-decoration: none;
+                        transition: all 0.3s ease-in-out;
+                        background: -webkit-linear-gradient(var(--light-pink-bg), var(--primary-link-color-blue));
+                        background-clip: text;
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        &:hover {
+                            background: -webkit-linear-gradient(var(--primary-link-color-blue), var(--light-pink-bg));
+                            background-clip: text;
+                            -webkit-background-clip: text;
+                            -webkit-text-fill-color: transparent;
+                        }
                     }
                 }
             }
-            .facebook-login-btn {
-                padding: 10px 16px;
-            }
-            .google-login-btn {
-                padding: 1px 5px 2px !important;
-                div {
-                    border-radius: 50% !important;
+            .footerBox {
+                height: 80px;
+                width: 100%;
+                padding: 10px 0 0;
+                position: relative;
+                overflow: hidden;
+                border-radius: 0 0 10px 10px;
+                img {
+                    width: 100%;
+                    transform-origin: center;
+                    transform: rotate(180deg);
+                    margin-top: -65px;
+                    opacity: 0.5;
                 }
-                span {
+                .loginMessage {
+                    font-size: 10px;
+                    line-height: 14px;
+                    position: absolute;
+                    margin: 0;
+                    top: 48%;
+                    z-index: 1;
+                    left: 50%;
+                    transform: translate(-50%, 0);
+                    padding: 5px 20px;
+                    width: 100%;
+                    box-sizing: border-box;
+                    text-align: center;
+                    color: var(--btn-primary-light-bg);
+                    span {
+                        text-decoration: underline;
+                        font-size: 10px;
+                        line-height: 14px;
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+        .circles {
+            display: none;
+        }
+        .img-wrap, .image-wrap {
+            display: none !important;
+        }
+    }
+}
+
+@media screen and (max-width: 1023px) {
+    .login-wrap {
+        margin: -58px 0 0 0;
+        padding: 20px 10px;
+        box-sizing: border-box;
+        &.new-login-signup-ui:not(.darkMode) {
+            .heading-outer {
+                .heading1 {
                     padding: 0;
+                    font-size: 24px;
+                    line-height: 30px;
+                    margin-bottom: 10px;
+                }
+                .heading2 {
+                    font-size: 18px;
+                    line-height: 22px;
+                    margin: 0;
                 }
             }
-        }
-        .img-wrap {
-            overflow: hidden;
-            img {
-                padding-left: 0;
-                min-width: 550px;
-                width: 160%;
+            .form-outer {
+                flex-direction: column;
+                .input-wrap {
+                    width: 100%;
+                    .MuiInputBase-input {
+                        height: 1.2em;
+                        padding: 12px;
+                    }
+                    .MuiInputLabel-formControl {
+                        top: -6px;
+                    }
+                    .MuiInputLabel-outlined.MuiInputLabel-shrink {
+                        transform: translate(14px, 1px) scale(0.75);
+                    }
+                }
+                .action-wrap {
+                    .submit-btn {
+                        button {
+                            padding: 9px 40px;
+                        }
+                    }
+                }
+                .facebook-login-btn {
+                    padding: 10px 16px;
+                }
+                .google-login-btn {
+                    padding: 1px 5px 2px !important;
+                    div {
+                        border-radius: 50% !important;
+                    }
+                    span {
+                        padding: 0;
+                    }
+                }
             }
-        }
-        &.new-login-signup-ui {
+            .img-wrap {
+                overflow: hidden;
+                img {
+                    padding-left: 0;
+                    min-width: 550px;
+                    width: 160%;
+                }
+            }
             margin-top: -58px;
             .inner-form-wrap {
                 width: 95%;
@@ -534,87 +824,109 @@
                 }
             }
         }
+        &.new-login-signup-ui {
+            &.darkMode {
+                .inner-form-wrap {
+                    margin-top: 0;
+                }
+                .form-wrap {
+                    padding: 20px 10px;
+                    .form-outer {
+                        margin-top: 0;
+                    }
+                }
+            }
+        }
     }
 }
 
 @media screen and (max-width: 784px) {
     .login-wrap {
-        .heading-outer {
-            .heading2 {
-                font-size: 14px;
-                line-height: 20px;
-            }
-        }
-    }
-    .form-outer {
-        padding: 0;
-        .login-error {
-            font-size: 12px;
-            text-align: left;
-        }
-        .or-seprator {
-            padding: 0;
-            margin-top: 20px;
-        }
-        .login-with {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .loginWithTitle {
-            display: block;
-            margin-right: 10px;
-        }
-        .login-with-google, .login-with-fb {
-            margin-right: 10px;
-        }
-        .google-login-btn, .facebook-login-btn {
-            white-space: nowrap;
-            border-radius: 50% !important;
-            width: 50px !important;
-            height: 50px !important;
-            overflow: hidden;
-            svg {
-                width: 30px !important;
-                height: 30px !important;
-                margin: 0 0 0 -6px;
-            }
-        }
-        .facebook-login-btn {
-            color: #4050b5;
-        }
-        .login-with-google {
-            width: 50px;
-            height: 50px;
-        }
-        .google-login-btn {
-            svg {
-                transform: scale(1.4);
-                margin: 20px 4px 0;
-            }
-            span {
-                display: none;
-            }
-        }
-        .action-wrap {
-            display: flex;
-            flex-direction: column-reverse;
-            .submit-btn, .forgot-password {
-                float: none;
-                width: 100%;
-                button {
-                    width: 100%;
-                } 
-            }
-            .forgot-password {
-                line-height: 30px;
-                div {
-                    padding-right: 0;
+        &.new-login-signup-ui:not(.darkMode) {
+            .heading-outer {
+                .heading2 {
+                    font-size: 14px;
+                    line-height: 20px;
                 }
             }
-            .login-error {
-                margin: 20px 0 0;
-                text-align: center;
+            .form-outer {
+                padding: 0;
+                .login-error {
+                    font-size: 12px;
+                    text-align: left;
+                }
+                .or-seprator {
+                    padding: 0;
+                    margin-top: 20px;
+                }
+                .login-with {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                .loginWithTitle {
+                    display: block;
+                    margin-right: 10px;
+                }
+                .login-with-google, .login-with-fb {
+                    margin-right: 10px;
+                }
+                .google-login-btn, .facebook-login-btn {
+                    white-space: nowrap;
+                    border-radius: 50% !important;
+                    width: 50px !important;
+                    height: 50px !important;
+                    overflow: hidden;
+                    svg {
+                        width: 30px !important;
+                        height: 30px !important;
+                        margin: 0 0 0 -6px;
+                    }
+                }
+                .facebook-login-btn {
+                    color: #4050b5;
+                }
+                .login-with-google {
+                    width: 50px;
+                    height: 50px;
+                }
+                .google-login-btn {
+                    svg {
+                        transform: scale(1.4);
+                        margin: 20px 4px 0;
+                    }
+                    span {
+                        display: none;
+                    }
+                }
+                .action-wrap {
+                    display: flex;
+                    flex-direction: column-reverse;
+                    .submit-btn, .forgot-password {
+                        float: none;
+                        width: 100%;
+                        button {
+                            width: 100%;
+                        } 
+                    }
+                    .forgot-password {
+                        line-height: 30px;
+                        div {
+                            padding-right: 0;
+                        }
+                    }
+                    .login-error {
+                        margin: 20px 0 0;
+                        text-align: center;
+                    }
+                }
+            }
+        }
+        &.new-login-signup-ui {
+            &.darkMode {
+                .inner-form-wrap {
+                    width: 95%;
+                }
             }
         }
     }
@@ -622,30 +934,32 @@
 
 @media screen and (max-width: 480px) {
     .login-wrap {
-        .form-wrap {
-            width: 100%;
-            position: relative;
-            z-index: 1;
-            padding: 10px;
-            box-sizing: border-box;
-            border-radius: 10px;
-            background: rgba(227, 235, 249, 0.9);
-            box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-        }
-        .img-wrap {
-            position: absolute;
-            z-index: 0;
-            right: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            img {
-                min-width: 550px;
-                width: 70%;
-                height: 85%;
-                object-fit: cover;
-                right: -347px;
+        .new-login-signup-ui:not(.darkMode) {
+            .form-wrap {
+                width: 100%;
+                position: relative;
+                z-index: 1;
+                padding: 10px;
+                box-sizing: border-box;
+                border-radius: 10px;
+                background: rgba(227, 235, 249, 0.9);
+                box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+            }
+            .img-wrap {
                 position: absolute;
+                z-index: 0;
+                right: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                img {
+                    min-width: 550px;
+                    width: 70%;
+                    height: 85%;
+                    object-fit: cover;
+                    right: -347px;
+                    position: absolute;
+                }
             }
         }
     }

@@ -218,6 +218,9 @@
 }
 
 @media screen and (max-width: 767px) {
+    .judgementWrap {
+        min-height: calc(100vh - 60px);
+    }
     .judgesModalBox {
         width: 95%;
         min-width: 300px;
