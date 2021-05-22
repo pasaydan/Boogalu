@@ -298,11 +298,11 @@ export default function Login(props) {
                         setEmailVerificationMessage('Please check your email for reset link!');
                         toggleEmailVerifyClass('success');
                     }).catch(function (e) {
-                        setEmailVerificationMessage('Something went wrong, try social login!');
+                        setEmailVerificationMessage('Something went wrong, try login with Gmail or Facebook!');
                         toggleEmailVerifyClass('error');
                     });
                 } catch (e) {
-                    setEmailVerificationMessage('Something went wrong, try social login!');
+                    setEmailVerificationMessage('Something went wrong, try login with Gmail or Facebook!');
                     toggleEmailVerifyClass('error');
                 }
             }
