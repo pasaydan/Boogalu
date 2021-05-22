@@ -16,7 +16,7 @@ import { Link } from '@material-ui/core';
 
 function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedInUser, followToggle, BtnText, clickedUser }) {
     const history = useHistory();
-    const followMessage = "You need to follow the user to view their Profile";
+    const followMessage = "It's a private account, follow to see the posts!";
     const [followButtonText, setFollowButtonText] = useState(clickedUser && clickedUser.actionBtnText ? clickedUser.actionBtnText : 'Follow');
     const [messageForUser, setMessageForUser] = useState(followMessage);
     // eslint-disable-next-line no-unused-vars

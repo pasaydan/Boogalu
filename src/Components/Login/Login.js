@@ -6,11 +6,7 @@ import FacebookLogin from 'react-facebook-login';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import InputLabel from '@material-ui/core/InputLabel';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
 import waveImage from '../../Images/waves.svg';
@@ -361,32 +357,6 @@ export default function Login(props) {
                                 </IconButton>
                             </div>
                         </div>
-                        {/* <div className="input-wrap">
-                            <FormControl className="" variant="outlined" style={{ width: '100%' }}>
-                                <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-                                <OutlinedInput
-                                    required
-                                    id="outlined-adornment-password"
-                                    type={loginCred.showPassWord ? 'text' : 'password'}
-                                    value={loginCred.password}
-                                    onChange={handleChange('password')}
-                                    endAdornment={
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                                onClick={showPassword}
-                                                onMouseDown={handleMouseDownPassword}
-                                                edge="end"
-                                            >
-                                                {loginCred.showPassWord ? <Visibility /> : <VisibilityOff />}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    }
-                                    labelWidth={70}
-                                />
-                            </FormControl>
-                        </div>
-                         */}
                         <div className="action-wrap">
                             <div className="submit-btn clearfix">
                                 <Button variant="contained" type="submit" color="primary">Sign In
