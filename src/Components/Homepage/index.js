@@ -4,11 +4,15 @@ import { getUploadedVideosList } from "../../Services/UploadedVideo.service";
 import Vedio from "../Vedio/Video";
 import Favorite from '@material-ui/icons/Favorite';
 import Loader from '../Loader';
+import { useStoreConsumer } from '../../Providers/StateProvider';
+import { displayNotification, removeNotification } from "../../Actions/Notification";
+import { NOTIFICATION_ERROR } from "../../Constants";
 
 const isAppAlreadyLoaded = JSON.parse(localStorage.getItem('isAppLoaded'));
 
 export default function Homepage() {
     const history = useHistory();
+    const { dispatch } = useStoreConsumer();
     // const [danceImageVisibleClass, activeDanceImage] = useState('');
     const [UserUploadedVideoList, setUserUploadedVideoList] = useState([]);
     // const [isMobile, toggleMobile] = useState(false);
@@ -36,6 +40,18 @@ export default function Homepage() {
         } catch (e) {
             console.log('Something wrong in video loading!');
             toggleLoading(false);
+            dispatch(displayNotification({
+                msg: "Something went wrong! Please reload and try again!",
+                type: NOTIFICATION_ERROR,
+                time: 5000
+            }));
+            setTimeout(() => {
+                dispatch(removeNotification({
+                    msg: "",
+                    type: NOTIFICATION_ERROR,
+                    time: 0
+                }));
+            }, 5000);
         }
         if (isAppAlreadyLoaded) {
             toggleFirstImageLoad('noFirstImageLoad');
@@ -75,6 +91,7 @@ export default function Homepage() {
         // } else {
         //     toggleMobile(true);
         // }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

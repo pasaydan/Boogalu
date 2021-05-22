@@ -14,6 +14,8 @@ import { sendEmail } from "../../Services/Email.service";
 import { Link } from '@material-ui/core';
 import { useHistory } from "react-router-dom";
 import Loader from '../Loader';
+import { displayNotification, removeNotification } from "../../Actions/Notification";
+import { NOTIFICATION_ERROR } from "../../Constants";
 
 function Feeds() {
     const history = useHistory();
@@ -27,7 +29,7 @@ function Feeds() {
     const [clickedUserDetails, setClickedUserDetails] = useState(null);
     const [commentModal, setCommentModal] = useState(false);
     const [isLoaderActive, toggleLoading] = useState(false);
-    const { state } = useStoreConsumer();
+    const { state, dispatch } = useStoreConsumer();
     const loggedInUser = state.loggedInUser;
 
     const getAllUserList = () => {
@@ -174,6 +176,18 @@ function Feeds() {
         } catch (e) {
             console.log('video user loading erro: ', e);
             toggleLoading(false);
+            dispatch(displayNotification({
+                msg: "Something went wrong! Please reload and try again!",
+                type: NOTIFICATION_ERROR,
+                time: 5000
+            }));
+            setTimeout(() => {
+                dispatch(removeNotification({
+                    msg: "",
+                    type: NOTIFICATION_ERROR,
+                    time: 0
+                }));
+            }, 5000);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -269,6 +283,18 @@ function Feeds() {
         } catch (e) {
             console.log("email sent error: ", e);
             toggleLoading(false);
+            dispatch(displayNotification({
+                msg: "Something went wrong! Please reload and try again!",
+                type: NOTIFICATION_ERROR,
+                time: 5000
+            }));
+            setTimeout(() => {
+                dispatch(removeNotification({
+                    msg: "",
+                    type: NOTIFICATION_ERROR,
+                    time: 0
+                }));
+            }, 5000);
         }
     }
 
