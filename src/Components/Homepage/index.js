@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import { getUploadedVideosList } from "../../Services/UploadedVideo.service";
 import Vedio from "../Vedio/Video";
 import Favorite from '@material-ui/icons/Favorite';
+import Loader from '../Loader';
 
 const isAppAlreadyLoaded = JSON.parse(localStorage.getItem('isAppLoaded'));
 
@@ -23,11 +24,19 @@ export default function Homepage() {
     const [firstStartButtonLoaded, toggleFirstStartButtonLoad] = useState('');
     const [videoAnimateClass, animateVideoContainer] = useState('');
     const [firstVideoAnimateLoaded, toggleVideoAnimateLoad] = useState('');
+    const [isLoaderActive, toggleLoading] = useState(false);
 
     useEffect(() => {
-        getUploadedVideosList().subscribe((videos) => {
-            setUserUploadedVideoList(videos)
-        });
+        toggleLoading(true);
+        try {
+            getUploadedVideosList().subscribe((videos) => {
+                toggleLoading(false);
+                setUserUploadedVideoList(videos);
+            });
+        } catch (e) {
+            console.log('Something wrong in video loading!');
+            toggleLoading(false);
+        }
         if (isAppAlreadyLoaded) {
             toggleFirstImageLoad('noFirstImageLoad');
             toggleDefaultMessageLoad('noFirstMessageLoad')
@@ -70,6 +79,10 @@ export default function Homepage() {
 
     return (
         <div className="homepage clearfix">
+            {
+                isLoaderActive ?
+                <Loader /> : ''
+            }
             <div className={`homepage-display-1 ${firstImageLoaded} ${loadImageClass} ${!UserUploadedVideoList.length ? 'no-video': ''}`}>
                 <div className={`main-bg-message ${defaultFirstMessageLoaded} ${firstMessageLoaded} ${loadMessageBox}`}>
                     <h4 className={`${firstHeadingLoaded} ${headingAnimateClass1}`}>
