@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useHistory, Link } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { GoogleLogin } from 'react-google-login';
@@ -26,16 +26,24 @@ import VideoUploader from "../VideoUploader";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { displayNotification, removeNotification } from "../../Actions/Notification";
 import { NOTIFICATION_SUCCCESS } from "../../Constants";
+import { validateEmailId } from '../../helpers';
 import * as $ from 'jquery';
+
+const firebase = require("firebase");
 
 export default function Login(props) {
     const { state, dispatch } = useStoreConsumer();
     const history = useHistory();
-    const [loginCred, setloginCred] = useState({ username: "", password: "", showPassWord: false })
+    const [loginCred, setloginCred] = useState({ username: "", password: "", showPassWord: false });
     const [LoginError, setLoginError] = useState(null);
-    const [thirdPartyResponse, setThirdPartyResponse] = useState({ isLogginSuccess: false, data: null, source: '' })
-    const [openVdoUploadModal, setOpenVdoUploadModal] = useState(false)
-    const [componentShowClass, toggleShowClass] = useState('')
+    const [thirdPartyResponse, setThirdPartyResponse] = useState({ isLogginSuccess: false, data: null, source: '' });
+    const [openVdoUploadModal, setOpenVdoUploadModal] = useState(false);
+    const [componentShowClass, toggleShowClass] = useState('');
+    const [emailVerifyMessage, setEmailVerificationMessage] = useState('');
+    const [emailVerifyClass, toggleEmailVerifyClass] = useState('');
+    const [isResetClicked, toggleResetLink] = useState(false);
+
+    const resetEmailRef = useRef(null);
 
     useEffect(() => {
         if (thirdPartyResponse.source === 'Facebook') signinUser('', 'Facebook');
@@ -268,6 +276,39 @@ export default function Login(props) {
         }
     }
 
+    function togglePwdResetLayer(action) {
+        toggleResetLink(action);
+    }
+
+    function sendResetEmailLink() {
+        if (resetEmailRef.current) {
+            const resetEmailValue = resetEmailRef.current.value;
+            if (!resetEmailValue) {
+                setEmailVerificationMessage('Enter email id!');
+                toggleEmailVerifyClass('error');
+            } else if (resetEmailValue.length && !validateEmailId(resetEmailValue)) {
+                setEmailVerificationMessage('Enter valid email id!');
+                toggleEmailVerifyClass('error');
+            } else {
+                setEmailVerificationMessage('');
+                toggleEmailVerifyClass('');
+                try {
+                    firebase.auth().sendPasswordResetEmail(resetEmailValue)
+                    .then(function () {
+                        setEmailVerificationMessage('Please check your email for reset link!');
+                        toggleEmailVerifyClass('success');
+                    }).catch(function (e) {
+                        setEmailVerificationMessage('Something went wrong, try social login!');
+                        toggleEmailVerifyClass('error');
+                    });
+                } catch (e) {
+                    setEmailVerificationMessage('Something went wrong, try social login!');
+                    toggleEmailVerifyClass('error');
+                }
+            }
+        }
+    }
+
     return (
         <div className="login-wrap new-login-signup-ui clearfix gradient-bg-animation darkMode">
             <div className={`inner-form-wrap ${componentShowClass}`}>
@@ -347,18 +388,18 @@ export default function Login(props) {
                         </div>
                          */}
                         <div className="action-wrap">
-                            {LoginError && <div className="login-error">
-                                {LoginError}
-                            </div>}
                             <div className="submit-btn clearfix">
                                 <Button variant="contained" type="submit" color="primary">Sign In
                                 <ArrowRightSharpIcon />
                                 </Button>
                             </div>
-                            <div className="forgot-password clearfix">
+                            <div className="forgot-password clearfix" onClick={() => togglePwdResetLayer(true)}>
                                 <div>Forgot Password ?</div>
                             </div>
                         </div>
+                        {LoginError && <div className="login-error">
+                            {LoginError}
+                        </div>}
                         <div className="or-seprator clearfix">
                             <span></span>
                             <div>OR</div>
@@ -413,6 +454,25 @@ export default function Login(props) {
                         <span onClick={() => redirectToPolicies('termsandconditions')}>Terms of use</span>
                     </p>
                 </div>
+                {
+                    isResetClicked ?
+                    <div className="forgotPwdBox">
+                        <div className="logoWrap">
+                            <img src={boogaluLogo} alt="Boogalu" />
+                        </div>
+                        <p className="closeModal" onClick={() => togglePwdResetLayer(false)}></p>
+                        <h2>Enter email for reset link</h2>
+                        <div className="inputWrap">
+                            <input type="email" placeholder="Enter valid email id" ref={resetEmailRef} title="Email" />
+                            <p className="emailLinkBtn" onClick={() => sendResetEmailLink()} title="send link to email">
+                                <label>
+                                    <span>Send</span>
+                                </label>
+                            </p>
+                        </div>
+                        <p className={`emailVerifyMessage ${emailVerifyClass}`}>{emailVerifyMessage}</p>
+                    </div> : ''
+                }
             </div>
             <div className="img-wrap">
                 <img src={bgImg} alt="background" />

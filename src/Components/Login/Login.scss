@@ -187,8 +187,10 @@
 }
 
 .login-error {
+    font-size: 12px;
+    line-height: 14px;
     color: tomato;
-    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .new-login-signup-ui {
@@ -463,6 +465,7 @@
                             &:-webkit-autofill:hover, 
                             &:-webkit-autofill:focus, 
                             &:-webkit-autofill:active {
+                                box-shadow: 0 0 0 30px #1a1f28 inset !important;
                                 -webkit-box-shadow: 0 0 0 30px #1a1f28 inset !important;
                             }
                             &:-webkit-autofill {
@@ -504,6 +507,8 @@
                                     transition: all 0.3s ease-in-out;
                                     background: -webkit-linear-gradient(#c063fb, #128ae7);
                                     background-clip: text;
+                                    box-decoration-break: clone;
+                                    -webkit-box-decoration-break: clone;
                                     -webkit-background-clip: text;
                                     -webkit-text-fill-color: transparent;
                                     svg {
@@ -513,6 +518,8 @@
                                 &:hover {
                                     .MuiButton-label {
                                         background: -webkit-linear-gradient(#128ae7, #c063fb);
+                                        box-decoration-break: clone;
+                                        -webkit-box-decoration-break: clone;
                                         background-clip: text;
                                         -webkit-background-clip: text;
                                         -webkit-text-fill-color: transparent;
@@ -531,7 +538,7 @@
                                 padding-right: 0;
                             }
                             &:hover {
-                                color: var(--btn-primary-light-bg);   
+                                color: var(--btn-primary-light-bg);
                             }
                         }
                     }
@@ -639,6 +646,138 @@
         }
         .img-wrap, .image-wrap {
             display: none !important;
+        }
+    }
+    .forgotPwdBox {
+        width: 100%;
+        height: 82%;
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        border-radius: 10px 10px 0 0;
+        box-sizing: border-box;
+        background-image: linear-gradient(to bottom, #1a1f28 0%, #2a363d 100%);
+        padding: 20px;
+        .logoWrap {
+            width: 120px;
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            img {
+                width: 100%;
+            }
+        }
+        .inputWrap {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            input {
+                flex-basis: 70%;
+                margin-right: 20px;
+                padding: 15px;
+                height: 42px;
+                box-sizing: border-box;
+                border: none;
+                outline: none;
+                box-shadow: none;
+                background: #1a1f28;
+                transition: all 0.3s ease-in-out;
+                color: var(--footer-list-text-grey);
+                border-radius: 5px;
+                &:hover, &:focus {
+                    color: var(--btn-primary-light-bg);
+                }
+            }
+            .emailLinkBtn {
+                background: -webkit-linear-gradient(#c063fb, #128ae7);
+                border-radius: 20px;
+                padding: 2px;
+                box-sizing: border-box;
+                transition: all 0.3s ease-in-out;
+                margin: 0;
+                flex-basis: 30%;
+                cursor: pointer;
+                label {
+                    background-color: #232b33;
+                    box-shadow: none;
+                    padding: 9px 12px;
+                    border-radius: 20px;
+                    display: block;
+                    cursor: pointer;
+                    span {
+                        font-size: 14px;
+                        line-height: 16px;
+                        text-transform: uppercase;
+                        transition: all 0.3s ease-in-out;
+                        background: -webkit-linear-gradient(#c063fb, #128ae7);
+                        background-clip: text;
+                        box-decoration-break: clone;
+                        -webkit-box-decoration-break: clone;
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                    }
+                    &:hover {
+                        .span {
+                            background: -webkit-linear-gradient(#128ae7, #c063fb);
+                            box-decoration-break: clone;
+                            -webkit-box-decoration-break: clone;
+                            background-clip: text;
+                            -webkit-background-clip: text;
+                            -webkit-text-fill-color: transparent;
+                        }
+                    }
+                }
+            }
+        }
+        .emailVerifyMessage {
+            font-size: 14px;
+            height: 16px;
+            line-height: 16px;
+            text-align: center;
+            margin: 10px 0 0;
+            &.error {
+                color: var(--error-red-opaque);
+            }
+            &.success {
+                color: var(--success-green);
+            }
+        }
+        .closeModal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            margin: 0;
+            cursor: pointer;
+            &:before, &:after {
+                content: '';
+                position: absolute;
+                width: 100%;
+                height: 2px;
+                background: var(--footer-text-grey);
+                top: 11px;
+                left: 0;
+            }
+            &:before {
+                transform: rotate(45deg);
+            }
+            &:after {
+                transform: rotate(-45deg);
+            }
+        }
+        h2 {
+            font-size: 18px;
+            text-align: center;
+            margin: 0 auto 20px;
+            font-weight: 500;
+            color: var(--primary-white);
         }
     }
 }
@@ -935,7 +1074,7 @@
 
 @media screen and (max-width: 480px) {
     .login-wrap {
-        .new-login-signup-ui:not(.darkMode) {
+        &.new-login-signup-ui:not(.darkMode) {
             .form-wrap {
                 width: 100%;
                 position: relative;
@@ -960,6 +1099,23 @@
                     object-fit: cover;
                     right: -347px;
                     position: absolute;
+                }
+            }
+        }
+        &.new-login-signup-ui {
+            .forgotPwdBox {
+                .inputWrap {
+                    flex-direction: column;
+                    input {
+                        flex-basis: 100%;
+                        margin: 0 0 10px 0;
+                    }
+                    .emailLinkBtn {
+                        max-width: 100px;
+                        label {
+                            padding: 5px 12px;
+                        }
+                    }
                 }
             }
         }
