@@ -39,14 +39,15 @@ footer {
     .menu-lists {
         list-style: none;
         li {
-            padding: 10px 15px;
-            font-size: 14px;
+            padding: 5px 10px;
             color: var(--footer-list-text-grey);
             letter-spacing: 0.07em;
             text-transform: uppercase;
             transition: all 0.3s ease-in-out;
             cursor: pointer;
             a {
+                font-size: 12px;
+                line-height: 14px;
                 color: var(--footer-list-text-grey);
                 text-decoration: none;
                 &:hover, &.active {
@@ -56,17 +57,20 @@ footer {
         }
         &.menu-lists-2 {
             li {
-                min-width: 117px;
                 a {
                     transition: all 0.3s ease-in-out;
                     color: var(--footer-list-text-grey);
                     text-decoration: none;
                     i {
+                        font-size: 14px;
+                        line-height: 16px;
                         margin-right: 5px;
-                        font-size: 20px;
-                        line-height: 12px;
                         display: inline-block;
-                        vertical-align: top;
+                        vertical-align: middle;
+                    }
+                    span {
+                        font-size: 12px;
+                        line-height: 14px;
                     }
                     &:hover {
                         color: var(--primary-white);
@@ -101,7 +105,8 @@ footer {
     }
     
     .copyright-wrap {
-        font-size: 15px;
+        font-size: 12px;
+        line-height: 16px;
         letter-spacing: 0.02em;
         text-align: center;
         width: 100%;

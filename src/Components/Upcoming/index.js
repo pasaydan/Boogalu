@@ -37,7 +37,7 @@ function Upcoming() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const getAllLessonsData = (from) => {
+    function getAllLessonsData(from) {
         try {
             dispatch(enableLoading());
             if (!isObjectEmpty(loggedInUser)) {

@@ -349,7 +349,7 @@ function Feeds() {
                                     <div className="video-title-like-wrap">
                                         <div className="title">{feed.title}</div>
                                         <div className="like-comment">
-                                            {feed.likes && feed.likes.length > 0 && <div className="likes-count">{feed.likes.length} Likes</div>}
+                                            {feed.likes && feed.likes.length > 0 && <div className="likes-count">{feed.likes.length} { feed.likes.length > 1 ? 'Likes' : 'Like'}</div>}
                                             {!feed.isLiked && <FavoriteBorder title="Unlike" onClick={() => handleLikes(feed, 'liked')} />}
                                             {feed.isLiked && <Favorite title="Like" onClick={() => handleLikes(feed, 'unliked')} />}
                                             <CommentOutlined title="comment" onClick={() => handleCommentClick(feed)} />

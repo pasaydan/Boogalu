@@ -530,7 +530,7 @@ function Profile() {
                                                         <div className="video-title-like-wrap profile-mode">
                                                             <div className="title">{vdo.title}</div>
                                                             <div className="like-comment">
-                                                                {vdo.likes && vdo.likes.length > 0 && <div className="likes-count">{vdo.likes.length} Likes</div>}
+                                                                {vdo.likes && vdo.likes.length > 0 && <div className="likes-count">{vdo.likes.length} {vdo.likes.length > 1 ? 'Likes' : 'Like'}</div>}
                                                                 {!vdo.isLiked && <FavoriteBorder title="Unlike" onClick={() => handleLikes(vdo, 'liked')} />}
                                                                 {vdo.isLiked && <Favorite title="Like" onClick={() => handleLikes(vdo, 'unliked')} />}
                                                                 <CommentOutlined title="comment" onClick={() => handleCommentClick(vdo)} />

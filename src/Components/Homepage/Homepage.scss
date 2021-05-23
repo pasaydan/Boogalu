@@ -272,7 +272,7 @@
                     flex-direction: row-reverse;
                     flex-basis: 100px;
                     .likes-count {
-                        color: var(--btn-primary-light-bg);
+                        color: var(--secondary-dark-grey);
                         margin-right: 10px;
                     }
                 }
@@ -398,7 +398,6 @@
     .homepage {
         .homepage-display-1 {
             .main-bg-message {
-                padding-top: 80px;
                 h4, h5 {
                     font-size: 20px;
                     line-height: 20px;

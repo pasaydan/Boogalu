@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useHistory } from "react-router-dom";
-import boogaluLogo from '../../Images/Boogalu-logo.svg';
 import { FaInstagramSquare, FaYoutube, FaFacebookSquare } from 'react-icons/fa';
 import * as $ from 'jquery';
 
@@ -55,21 +54,8 @@ function Footer() {
     return (
         <div>
             <footer className="flex-container-VC">
-                <div className="footer-logo-wrap">
-                    <img src={boogaluLogo} alt="Logo" className="image-7" />
-                </div>
-                {/* <div className="flex-1">
-                    <div className="footer-tagline" >Get the latest dance content &amp; ChoreoCulture news</div>
-                    <div className="email-input-inner">
-                        <input type="email" placeholder="Email" />
-                    </div>
-                    <button className="subscribe" >Subscribe</button>
-                </div> */}
                 <div className="footer-menus">
                     <ul className="menu-lists js-page-links">
-                        {/* <li data-name="admin">
-                            <a href="/adminpanel" title="Admin panel">Admin panel</a>
-                        </li> */}
                         <li data-name="aboutus">
                             <a href="#aboutus" onClick={(e) => navigatePageLinks(e, 'aboutus')} title="about us">About us</a>
                         </li>

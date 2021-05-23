@@ -128,7 +128,7 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedIn
                                     <div className="video-title-like-wrap">
                                         <div className="title">{videoObj.title}</div>
                                         <div className="like-comment">
-                                            {videoObj.likes && videoObj.likes.length > 0 && <div className="likes-count">{videoObj.likes.length} Likes</div>}
+                                            {videoObj.likes && videoObj.likes.length > 0 && <div className="likes-count">{videoObj.likes.length} {videoObj.likes.length > 1 ? 'Likes' : 'Like'}</div>}
                                             {!videoObj.isLiked && <FavoriteBorder onClick={() => handleLikes(videoObj, 'liked')} />}
                                             {videoObj.isLiked && <Favorite onClick={() => handleLikes(videoObj, 'unliked')} />}
                                         </div>
