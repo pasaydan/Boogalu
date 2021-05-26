@@ -8,7 +8,7 @@ import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import SendOutlined from '@material-ui/icons/SendOutlined';
 import Favorite from '@material-ui/icons/Favorite';
 import TextField from '@material-ui/core/TextField';
-import Vedio from "../Vedio/Video";
+import VideoPlayer from "../Vedio/Video";
 import ProfileImage from "../ProfileImage";
 import { useHistory } from "react-router-dom";
 import { Link } from '@material-ui/core';
@@ -123,7 +123,7 @@ function Comments({ handleClose, videoObj, handleLikes, handleComments, loggedIn
                                             }
                                     </div>
                                     <div>
-                                        <Vedio vdoObj={videoObj} />
+                                        <VideoPlayer vdoObj={videoObj} />
                                     </div>
                                     <div className="video-title-like-wrap">
                                         <div className="title">{videoObj.title}</div>

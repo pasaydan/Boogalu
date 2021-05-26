@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactPlayer from 'react-player';
 
-const Video = ({ vdoObj }) => {
+const VideoPlayer = ({ vdoObj }) => {
     const vdoUrl = vdoObj.url;
     const [videoPlayClass, toggleVideoPlayClass] = useState('');
 
@@ -37,4 +37,4 @@ const Video = ({ vdoObj }) => {
     )
 }
 
-export default Video
+export default VideoPlayer;

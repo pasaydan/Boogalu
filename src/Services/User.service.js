@@ -61,7 +61,9 @@ export function getUserById(id) {
                 key: doc.id,
                 name: data.name,
                 email: data.email,
-                phone: data.phone
+                phone: data.phone,
+                dob: data.dob,
+                bio: data.bio
             });
         });
     });

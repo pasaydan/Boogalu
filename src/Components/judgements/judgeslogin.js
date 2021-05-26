@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
 import waveImage from '../../Images/waves.svg';
 import userIcon from '../../Images/user-login.svg';
@@ -26,6 +26,13 @@ function JudgesLogin(props) {
         props.loginAction(loginData);
     }
 
+    function enterPressed(event) {
+        const keyCode = event.keyCode || event.which;
+        if (keyCode === 13) {
+            triggerJudgesLogin();
+        }
+    }
+
     function showPrivacyModal() {
         props.showPrivacyPolicy(true);
     }
@@ -44,13 +51,26 @@ function JudgesLogin(props) {
                     <i className="labelIcons">
                         <img src={userIcon} alt="user" />
                     </i>
-                    <input onChange={(e) => onLoginValueChange(e, 'username')} type="text" placeholder="Username" id="judgeloginuser" autoComplete="off" />
+                    <input 
+                        onChange={(e) => onLoginValueChange(e, 'username')} 
+                        type="text" placeholder="Username" 
+                        id="judgeloginuser" 
+                        autoComplete="off"
+                        onKeyPress={(e) => enterPressed(e)} 
+                    />
                 </label>
                 <label htmlFor="judgeloginpwd" className="loginLabels">
                     <i className="labelIcons">
                         <img src={pwdKeyIcon} alt="pwd" />
                     </i>
-                    <input onChange={(e) => onLoginValueChange(e, 'password')} type="password" placeholder="Password" id="judgeloginpwd" autoComplete="off" />
+                    <input 
+                        onChange={(e) => onLoginValueChange(e, 'password')} 
+                        type="password" 
+                        placeholder="Password" 
+                        id="judgeloginpwd" 
+                        autoComplete="off"
+                        onKeyPress={(e) => enterPressed(e)} 
+                    />
                 </label>
                 <button className="loginBtn" onClick={triggerJudgesLogin}>Login</button>
                 <p className="messages">{ props.message }</p>

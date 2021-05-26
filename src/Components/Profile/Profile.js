@@ -22,7 +22,7 @@ import { getCompetitionByUserId } from "../../Services/EnrollCompetition.service
 import CompetitionsDetails from "../CompetitionsDetails";
 import { getCompetitionsList } from "../../Services/Competition.service";
 import { setActiveCompetition } from "../../Actions/Competition";
-import Vedio from "../Vedio/Video";
+import VideoPlayer from "../Vedio/Video";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { removeDataRefetchModuleName } from "../../Actions/Utility";
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
@@ -632,7 +632,7 @@ function Profile() {
                                                     </div>}
                                                     <div className="vdo-card">
                                                         <div>
-                                                            <Vedio vdoObj={vdo} />
+                                                            <VideoPlayer vdoObj={vdo} />
                                                         </div>
                                                         <div className="video-title-like-wrap profile-mode">
                                                             <div className="title">{vdo.title}</div>
@@ -657,7 +657,7 @@ function Profile() {
                                     {UserLikedVideoList.length !== 0 ? UserLikedVideoList.map((vdoObj) => {
                                         return <div className="flex-basis-3 like-tab" key={vdoObj.key}>
                                             <div>
-                                                <Vedio vdoObj={vdoObj} />
+                                                <VideoPlayer vdoObj={vdoObj} />
                                             </div>
                                             <div className="video-title-like-wrap">
                                                 <div className="title">{vdoObj.title}</div>
