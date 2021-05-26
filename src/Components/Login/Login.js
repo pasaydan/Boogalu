@@ -17,19 +17,24 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
 import bgImg from '../../Images/bg1.svg';
 import { loginUser } from '../../Actions/User/index';
-import { getUserByEmail, getUserByPhone } from "../../Services/User.service";
+import { getUserByEmail, getUserByPhone, updatePassword } from "../../Services/User.service";
 import VideoUploader from "../VideoUploader";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { displayNotification, removeNotification } from "../../Actions/Notification";
-import { NOTIFICATION_SUCCCESS } from "../../Constants";
+import { NOTIFICATION_ERROR, NOTIFICATION_SUCCCESS } from "../../Constants";
 import { validateEmailId } from '../../helpers';
+import { useCookies } from "react-cookie";
+import { sendEmail } from "../../Services/Email.service";
 import * as $ from 'jquery';
+const restLinkUrlQuery = '?reset-password='
 
 const firebase = require("firebase");
 
 export default function Login(props) {
     const { state, dispatch } = useStoreConsumer();
     const history = useHistory();
+    const [cookie, setCookie] = useCookies();
+    const [resetPswCookie, setResetPswCookie] = useState(cookie['_rst_bgl_']);
     const [loginCred, setloginCred] = useState({ username: "", password: "", showPassWord: false });
     const [LoginError, setLoginError] = useState(null);
     const [thirdPartyResponse, setThirdPartyResponse] = useState({ isLogginSuccess: false, data: null, source: '' });
@@ -38,13 +43,14 @@ export default function Login(props) {
     const [emailVerifyMessage, setEmailVerificationMessage] = useState('');
     const [emailVerifyClass, toggleEmailVerifyClass] = useState('');
     const [isResetClicked, toggleResetLink] = useState(false);
-
-    const resetEmailRef = useRef(null);
+    const [resetEmail, setResetEmail] = useState('');
+    const [resetPassword, setResetPassword] = useState({ password: '', conPassword: '' });
+    // const resetEmailRef = useRef(null);
 
     useEffect(() => {
         if (thirdPartyResponse.source === 'Facebook') signinUser('', 'Facebook');
         if (thirdPartyResponse.source === 'Google') signinUser('', 'Google');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [thirdPartyResponse]);
 
     useEffect(() => {
@@ -53,7 +59,7 @@ export default function Login(props) {
             type: NOTIFICATION_SUCCCESS,
             time: 0
         }));
-        
+
         setTimeout(() => {
             toggleShowClass('show');
         }, 300);
@@ -61,7 +67,34 @@ export default function Login(props) {
         $('html,body').animate({
             scrollTop: 0
         }, 500);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+        const searchQuery = history?.location?.search;
+        if (searchQuery.includes('?')) {
+            //check for reset link
+            if (searchQuery.includes(restLinkUrlQuery)) {
+                // validate reset code in url
+                const resetCodeFromUrl = searchQuery.split('=')[1];
+                if (resetPswCookie?.code == resetCodeFromUrl) {
+                    //valid code
+
+                    //redirect to reset password screen
+
+                } else {
+                    //invalid code
+                    history.replace(window.location.pathname);
+                    dispatch(displayNotification({
+                        msg: "Password reset link expired!",
+                        type: NOTIFICATION_ERROR,
+                        time: 3000
+                    }));
+                }
+            } else {
+                //false query then remove it from url
+                history.replace(window.location.pathname);
+            }
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const setLoginResponseToServer = () => {
@@ -273,37 +306,133 @@ export default function Login(props) {
     }
 
     function togglePwdResetLayer(action) {
+        if (loginCred.username.includes('@') && action) {
+            setResetEmail(loginCred.username);
+        } else setResetEmail('')
         toggleResetLink(action);
     }
 
-    function sendResetEmailLink() {
-        if (resetEmailRef.current) {
-            const resetEmailValue = resetEmailRef.current.value;
-            if (!resetEmailValue) {
-                setEmailVerificationMessage('Enter email id!');
-                toggleEmailVerifyClass('error');
-            } else if (resetEmailValue.length && !validateEmailId(resetEmailValue)) {
-                setEmailVerificationMessage('Enter valid email id!');
-                toggleEmailVerifyClass('error');
-            } else {
-                setEmailVerificationMessage('');
-                toggleEmailVerifyClass('');
-                try {
-                    firebase.auth().sendPasswordResetEmail(resetEmailValue)
-                    .then(function () {
-                        setEmailVerificationMessage('Please check your email for reset link!');
-                        toggleEmailVerifyClass('success');
-                    }).catch(function (e) {
-                        setEmailVerificationMessage('Something went wrong, try login with Gmail or Facebook!');
-                        toggleEmailVerifyClass('error');
-                    });
-                } catch (e) {
-                    setEmailVerificationMessage('Something went wrong, try login with Gmail or Facebook!');
-                    toggleEmailVerifyClass('error');
-                }
+    const sendEmailToUser = (userDetails, resetLink) => {
+        dispatch(enableLoading());
+        return new Promise((resolve, reject) => {
+            const { email, name } = userDetails;
+            let emailBody = `<div>
+            <p>Hi ${name}, need to reset your password? No problem! just click the link bellow and you'll be on your way. If you did not make this request, please ignore this email. </p>.
+            <a href=${resetLink}>Reset Password</a> 
+            </div>`;
+            let payload = {
+                mailTo: email,
+                title: 'Boogalu- Reset Password',
+                content: emailBody
             }
-        }
+            sendEmail(payload).subscribe((res) => {
+                if (!('error' in res)) {
+                    console.log('User Email Send Successfully.');
+                    dispatch(disableLoading());
+                    resolve();
+                } else {
+                    dispatch(disableLoading());
+                    console.log('User Email Send Failed.');
+                    reject();
+                }
+            })
+        })
     }
+
+    const sendResetEmailLink = () => {
+        if (!resetEmail) {
+            dispatch(displayNotification({
+                msg: "Please enter valid email",
+                type: NOTIFICATION_ERROR,
+                time: 3000
+            }));
+            return;
+        }
+        checkForUserEmail(resetEmail).then((isRegisteredUser) => {
+            if (isRegisteredUser && isRegisteredUser.length != 0) {
+                const resetLinkCode = Math.random().toString(36).substring(2);//generate dynamic string for link identification
+                const resetLink = window.location.href + restLinkUrlQuery + resetLinkCode;
+                sendEmailToUser(isRegisteredUser[0], resetLink).then(() => {
+                    // email send successfully now set reset data to cookie
+                    const cookieData = {
+                        email: resetEmail,
+                        id: isRegisteredUser[0].key,
+                        code: resetLinkCode
+                    }
+                    setCookie("_rst_bgl_", cookieData, {
+                        path: "/",
+                        expires: new Date(new Date().setMinutes(new Date().getMinutes() + 15)),//remove cookies after 15 min
+                        sameSite: true,
+                    })
+                    dispatch(displayNotification({
+                        msg: `Reset link send to ${resetEmail}`,
+                        type: NOTIFICATION_SUCCCESS,
+                        time: 3000
+                    }));
+                })
+                    .catch(() => {
+                        //email sending failed so do nothing
+                        dispatch(displayNotification({
+                            msg: "Reset link sending failed",
+                            type: NOTIFICATION_ERROR,
+                            time: 3000
+                        }));
+                    })
+            } else {
+                //user not registered
+                dispatch(displayNotification({
+                    msg: "Seems like you not registered yet, please register!",
+                    type: NOTIFICATION_ERROR,
+                    time: 3000
+                }));
+                history.push('register');
+            }
+        })
+    }
+
+    const updateUserPassword = () => {
+        const userIdFromCookie = resetPswCookie.id;
+        updatePassword(userIdFromCookie, resetPassword.password).subscribe(() => {
+
+            //password reset success
+            dispatch(displayNotification({
+                msg: "Password changed successfully",
+                type: NOTIFICATION_SUCCCESS,
+                time: 3000
+            }));
+            //to login with new password redirect to login screen
+
+        })
+    }
+
+    // function sendResetEmailLink() {
+    //     if (resetEmailRef.current) {
+    //         const resetEmailValue = resetEmailRef.current.value;
+    //         if (!resetEmailValue) {
+    //             setEmailVerificationMessage('Enter email id!');
+    //             toggleEmailVerifyClass('error');
+    //         } else if (resetEmailValue.length && !validateEmailId(resetEmailValue)) {
+    //             setEmailVerificationMessage('Enter valid email id!');
+    //             toggleEmailVerifyClass('error');
+    //         } else {
+    //             setEmailVerificationMessage('');
+    //             toggleEmailVerifyClass('');
+    //             try {
+    //                 firebase.auth().sendPasswordResetEmail(resetEmailValue)
+    //                     .then(function () {
+    //                         setEmailVerificationMessage('Please check your email for reset link!');
+    //                         toggleEmailVerifyClass('success');
+    //                     }).catch(function (e) {
+    //                         setEmailVerificationMessage('Something went wrong, try login with Gmail or Facebook!');
+    //                         toggleEmailVerifyClass('error');
+    //                     });
+    //             } catch (e) {
+    //                 setEmailVerificationMessage('Something went wrong, try login with Gmail or Facebook!');
+    //                 toggleEmailVerifyClass('error');
+    //             }
+    //         }
+    //     }
+    // }
 
     return (
         <div className="login-wrap new-login-signup-ui clearfix gradient-bg-animation darkMode">
@@ -419,29 +548,34 @@ export default function Login(props) {
                 <div className="footerBox">
                     <img src={waveImage} alt="waves" />
                     <p className="loginMessage">
-                        By logging in you agree to our<br/> 
-                        <span onClick={() => redirectToPolicies('privacypolicy')}>Privacy policy</span> &amp; 
+                        By logging in you agree to our<br />
+                        <span onClick={() => redirectToPolicies('privacypolicy')}>Privacy policy</span> &amp;
                         <span onClick={() => redirectToPolicies('termsandconditions')}>Terms of use</span>
                     </p>
                 </div>
                 {
                     isResetClicked ?
-                    <div className="forgotPwdBox">
-                        <div className="logoWrap">
-                            <img src={boogaluLogo} alt="Boogalu" />
-                        </div>
-                        <p className="closeModal" onClick={() => togglePwdResetLayer(false)}></p>
-                        <h2>Enter email for reset link</h2>
-                        <div className="inputWrap">
-                            <input type="email" placeholder="Enter valid email id" ref={resetEmailRef} title="Email" />
-                            <p className="emailLinkBtn" onClick={() => sendResetEmailLink()} title="send link to email">
-                                <label>
-                                    <span>Send</span>
-                                </label>
-                            </p>
-                        </div>
-                        <p className={`emailVerifyMessage ${emailVerifyClass}`}>{emailVerifyMessage}</p>
-                    </div> : ''
+                        <div className="forgotPwdBox">
+                            <div className="logoWrap">
+                                <img src={boogaluLogo} alt="Boogalu" />
+                            </div>
+                            <p className="closeModal" onClick={() => togglePwdResetLayer(false)}></p>
+                            <h2>Enter email for reset link</h2>
+                            <div className="inputWrap">
+                                <input
+                                    type="email"
+                                    placeholder="Enter valid email id"
+                                    value={resetEmail}
+                                    onChange={(e) => setResetEmail(e.target.value)}
+                                    title="Email" />
+                                <p className="emailLinkBtn" onClick={() => sendResetEmailLink()} title="send link to email">
+                                    <label>
+                                        <span>Send</span>
+                                    </label>
+                                </p>
+                            </div>
+                            <p className={`emailVerifyMessage ${emailVerifyClass}`}>{emailVerifyMessage}</p>
+                        </div> : ''
                 }
             </div>
             <div className="img-wrap">
