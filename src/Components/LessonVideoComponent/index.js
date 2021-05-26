@@ -8,7 +8,7 @@ import { enableLoginFlow } from "../../Actions/LoginFlow";
 import { isObjectEmpty } from '../../helpers';
 import { updateLessonPlayTime } from '../../Services/Lessons.service';
 
-let videoTimeInterval = null;
+// let videoTimeInterval = null;
 function LessonsVideoContainer({ 
     lessonKey,
     title, 
@@ -121,8 +121,22 @@ function LessonsVideoContainer({
 
     function pauseVideo(params) {
         const currentVideoState = activeVideoState;
-        clearInterval(videoTimeInterval);
-        videoTimeInterval = null;
+        // clearInterval(videoTimeInterval);
+        // videoTimeInterval = null;
+        if (videoFront !== null) {
+            const videoData = {
+                userKey: loggedInUser.key,
+                playedTime: videoFront.currentTime
+            }
+            setUserLessonVideoPlayedTime(videoData);
+            try {
+                updateLessonPlayTime(lessonKey, videoData).subscribe(res => {
+                    console.log('Res: ', res);
+                });
+            } catch(e) {
+                console.log('Update lesson Error: ', e);
+            }
+        }
         setCurrentVideoPlayTime(Math.round(videoFront.currentTime) - 5);
         console.log('Final Video Played Data: ', videoPlayedData);
         if (currentVideoState === 'front') {
@@ -218,24 +232,24 @@ function LessonsVideoContainer({
                 });
             }
     
-            if (!videoTimeInterval) {
-                videoTimeInterval = setInterval(() => {
-                    if (videoFront !== null) {
-                        const videoData = {
-                            userKey: loggedInUser.key,
-                            playedTime: videoFront.currentTime
-                        }
-                        setUserLessonVideoPlayedTime(videoData);
-                        try {
-                            updateLessonPlayTime(lessonKey, videoData).subscribe(res => {
-                                console.log('Res: ', res);
-                            });
-                        } catch(e) {
-                            console.log('Update lesson Error: ', e);
-                        }
-                    }
-                }, 10000);
-            }
+            // if (!videoTimeInterval) {
+            //     videoTimeInterval = setInterval(() => {
+            //         if (videoFront !== null) {
+            //             const videoData = {
+            //                 userKey: loggedInUser.key,
+            //                 playedTime: videoFront.currentTime
+            //             }
+            //             setUserLessonVideoPlayedTime(videoData);
+            //             try {
+            //                 updateLessonPlayTime(lessonKey, videoData).subscribe(res => {
+            //                     console.log('Res: ', res);
+            //                 });
+            //             } catch(e) {
+            //                 console.log('Update lesson Error: ', e);
+            //             }
+            //         }
+            //     }, 10000);
+            // }
         }, 100);
     }
 

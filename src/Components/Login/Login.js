@@ -19,7 +19,7 @@ import bgImg from '../../Images/bg1.svg';
 import { loginUser } from '../../Actions/User/index';
 import { getUserByEmail, getUserByPhone, updatePassword } from "../../Services/User.service";
 import VideoUploader from "../VideoUploader";
-import { enableLoading, disableLoading } from "../../Actions/Loader";
+import Loader from '../Loader';
 import { displayNotification, removeNotification } from "../../Actions/Notification";
 import { NOTIFICATION_ERROR, NOTIFICATION_SUCCCESS } from "../../Constants";
 import { validateEmailId } from '../../helpers';
@@ -43,8 +43,11 @@ export default function Login(props) {
     const [emailVerifyMessage, setEmailVerificationMessage] = useState('');
     const [emailVerifyClass, toggleEmailVerifyClass] = useState('');
     const [isResetClicked, toggleResetLink] = useState(false);
+    const [isPageLoaderActive, togglePageLoader] = useState(false);
+    const [isResetPasswordViewOpen, toggleResetPwdModal] = useState(false);
     const [resetEmail, setResetEmail] = useState('');
-    const [resetPassword, setResetPassword] = useState({ password: '', conPassword: '' });
+    const [confirmPasswordMessage, setConfirmPwdMessage] = useState('');
+    const [resetPassword, setResetPassword] = useState({ password: '', confirmPassword: '' });
     // const resetEmailRef = useRef(null);
 
     useEffect(() => {
@@ -74,9 +77,9 @@ export default function Login(props) {
             if (searchQuery.includes(restLinkUrlQuery)) {
                 // validate reset code in url
                 const resetCodeFromUrl = searchQuery.split('=')[1];
-                if (resetPswCookie?.code == resetCodeFromUrl) {
+                if (resetPswCookie?.code === resetCodeFromUrl) {
                     //valid code
-
+                    toggleResetPwdModal(true);
                     //redirect to reset password screen
 
                 } else {
@@ -102,6 +105,7 @@ export default function Login(props) {
         console.log('Save loggin user to db')
 
     }
+
     const successResponseGoogle = function (response) {
         console.log(response);
         let loginResponse = {
@@ -151,64 +155,82 @@ export default function Login(props) {
     }
 
     const checkForUserPhone = (phone) => {
-        return new Promise((res, rej) => {
-            getUserByPhone(phone).subscribe((data) => {
-                if (data && data.length) res(data);
-                else res(null);
-            })
-        })
+        try {
+            return new Promise((res, rej) => {
+                getUserByPhone(phone).subscribe((data) => {
+                    if (data && data.length) res(data);
+                    else res(null);
+                })
+            });
+        } catch (e) {
+            console.log('check phone error: ', e);
+        }
     }
 
     const checkForUserEmail = (email) => {
-        return new Promise((res, rej) => {
-            getUserByEmail(email).subscribe((data) => {
-                if (data && data.length) res(data);
-                else res(null);
-            })
-        })
+        try {
+            return new Promise((res, rej) => {
+                getUserByEmail(email).subscribe((data) => {
+                    if (data && data.length) res(data);
+                    else res(null);
+                })
+            });
+        } catch(e) {
+            console.log('check user email erro: ', e);
+        }
     }
 
     const getUserLoginData = (userData) => {
-        return new Promise((res, rej) => {
-            if (thirdPartyResponse.data && thirdPartyResponse.data.email) {
-                // with gmail or fb flow
-                getUserByEmail(userData.email).subscribe((isRegisteredUser) => {
-                    if (isRegisteredUser.length) {
-                        res(isRegisteredUser[0]);
-                    } else {
-                        setLoginError('Please enter correct credentials.')
-                        rej({ ...userData, isRegistered: false });
-                    }
-                })
-            } else {
-                // without gmail fb flow
-                checkForUserEmail(userData.emailOrPhone).then((isRegisteredUser) => {
-                    if (isRegisteredUser && isRegisteredUser.length) {
-                        if (isRegisteredUser[0].password === userData.password) res(isRegisteredUser[0]);
-                        else {
+        togglePageLoader(true);
+        try {
+            return new Promise((res, rej) => {
+                if (thirdPartyResponse.data && thirdPartyResponse.data.email) {
+                    // with gmail or fb flow
+                    getUserByEmail(userData.email).subscribe((isRegisteredUser) => {
+                        togglePageLoader(false);
+                        if (isRegisteredUser.length) {
+                            res(isRegisteredUser[0]);
+                        } else {
                             setLoginError('Please enter correct credentials.')
-                            rej();
+                            rej({ ...userData, isRegistered: false });
                         }
-                    } else {
-                        checkForUserPhone(userData.emailOrPhone).then((isRegisteredUser) => {
-                            if (isRegisteredUser && isRegisteredUser.length) {
-                                if (isRegisteredUser[0].password === userData.password) res(isRegisteredUser[0]);
-                                else {
-                                    setLoginError('Please enter correct credentials.')
-                                    rej();
-                                }
-                            } else {
+                    })
+                } else {
+                    // without gmail fb flow
+                    checkForUserEmail(userData.emailOrPhone).then((isRegisteredUser) => {
+                        togglePageLoader(false);
+                        if (isRegisteredUser && isRegisteredUser.length) {
+                            if (isRegisteredUser[0].password === userData.password) res(isRegisteredUser[0]);
+                            else {
                                 setLoginError('Please enter correct credentials.')
                                 rej();
                             }
-                        })
-                    }
-                })
-            }
-        })
+                        } else {
+                            checkForUserPhone(userData.emailOrPhone).then((isRegisteredUser) => {
+                                togglePageLoader(false);
+                                if (isRegisteredUser && isRegisteredUser.length) {
+                                    if (isRegisteredUser[0].password === userData.password) res(isRegisteredUser[0]);
+                                    else {
+                                        setLoginError('Please enter correct credentials.')
+                                        rej();
+                                    }
+                                } else {
+                                    setLoginError('Please enter correct credentials.')
+                                    rej();
+                                }
+                            })
+                        }
+                    })
+                }
+            });
+        } catch(e) {
+            togglePageLoader(false);
+            console.log('user login data error: ', e);
+        }
     }
+
     const signinUser = (e, status) => {
-        dispatch(enableLoading());
+        togglePageLoader(true);
         setLoginError(null);
         let userData = {};
         switch (status) {
@@ -225,10 +247,10 @@ export default function Login(props) {
                 getUserLoginData(userData)
                     .then((data) => {
                         //user is registered
+                        togglePageLoader(false);
                         setLoginResponseToServer();
                         data.source = 'Website';
                         dispatch(loginUser(data));
-                        dispatch(disableLoading());
                         dispatch(displayNotification({
                             msg: "Login successfully",
                             type: NOTIFICATION_SUCCCESS,
@@ -241,7 +263,7 @@ export default function Login(props) {
                         else history.push('/')
                     })
                     .catch((data) => {
-                        dispatch(disableLoading());
+                        togglePageLoader(false);
                         if (data) {
                             //user not registered
                             history.push({
@@ -259,7 +281,7 @@ export default function Login(props) {
                 getUserLoginData(userData)
                     .then((data) => {
                         //user is registered
-                        dispatch(disableLoading());
+                        togglePageLoader(false);
                         setLoginResponseToServer();
                         data.source = thirdPartyResponse.source;
                         dispatch(loginUser(data));
@@ -275,7 +297,7 @@ export default function Login(props) {
                         else history.push('/')
                     })
                     .catch((data) => {
-                        dispatch(disableLoading());
+                        togglePageLoader(false);
                         if (data) {
                             data.source = thirdPartyResponse.source;
                             //user not registered
@@ -310,37 +332,46 @@ export default function Login(props) {
             setResetEmail(loginCred.username);
         } else setResetEmail('')
         toggleResetLink(action);
+        if (isResetPasswordViewOpen) {
+            toggleResetPwdModal(false);
+        }
     }
 
     const sendEmailToUser = (userDetails, resetLink) => {
-        dispatch(enableLoading());
-        return new Promise((resolve, reject) => {
-            const { email, name } = userDetails;
-            let emailBody = `<div>
-            <p>Hi ${name}, need to reset your password? No problem! just click the link bellow and you'll be on your way. If you did not make this request, please ignore this email. </p>.
-            <a href=${resetLink}>Reset Password</a> 
-            </div>`;
-            let payload = {
-                mailTo: email,
-                title: 'Boogalu- Reset Password',
-                content: emailBody
-            }
-            sendEmail(payload).subscribe((res) => {
-                if (!('error' in res)) {
-                    console.log('User Email Send Successfully.');
-                    dispatch(disableLoading());
-                    resolve();
-                } else {
-                    dispatch(disableLoading());
-                    console.log('User Email Send Failed.');
-                    reject();
+        togglePageLoader(true);
+        try {
+            return new Promise((resolve, reject) => {
+                const { email, name } = userDetails;
+                let emailBody = `<div>
+                <p>Hi ${name}, need to reset your password? No problem! just click the link bellow and you'll be on your way. If you did not make this request, please ignore this email. </p>.
+                <a href=${resetLink}>Reset Password</a> 
+                </div>`;
+                let payload = {
+                    mailTo: email,
+                    title: 'Boogalu- Reset Password',
+                    content: emailBody
                 }
-            })
-        })
+                sendEmail(payload).subscribe((res) => {
+                    togglePageLoader(false);
+                    if (!('error' in res)) {
+                        console.log('User Email Send Successfully.');
+                        resolve();
+                    } else {
+                        console.log('User Email Send Failed.');
+                        reject();
+                    }
+                })
+            });
+        } catch(e) {
+            togglePageLoader(false);
+            console.log('email to user error: ', e);
+        }
     }
 
-    const sendResetEmailLink = () => {
+    function sendResetEmailLink() {
+        togglePageLoader(true);
         if (!resetEmail) {
+            togglePageLoader(false);
             dispatch(displayNotification({
                 msg: "Please enter valid email",
                 type: NOTIFICATION_ERROR,
@@ -348,61 +379,109 @@ export default function Login(props) {
             }));
             return;
         }
-        checkForUserEmail(resetEmail).then((isRegisteredUser) => {
-            if (isRegisteredUser && isRegisteredUser.length != 0) {
-                const resetLinkCode = Math.random().toString(36).substring(2);//generate dynamic string for link identification
-                const resetLink = window.location.href + restLinkUrlQuery + resetLinkCode;
-                sendEmailToUser(isRegisteredUser[0], resetLink).then(() => {
-                    // email send successfully now set reset data to cookie
-                    const cookieData = {
-                        email: resetEmail,
-                        id: isRegisteredUser[0].key,
-                        code: resetLinkCode
+        try {
+            checkForUserEmail(resetEmail).then((isRegisteredUser) => {
+                if (isRegisteredUser && isRegisteredUser.length !== 0) {
+                    const resetLinkCode = Math.random().toString(36).substring(2);//generate dynamic string for link identification
+                    const resetLink = window.location.href + restLinkUrlQuery + resetLinkCode;
+                    try {
+                        sendEmailToUser(isRegisteredUser[0], resetLink).then(() => {
+                            togglePageLoader(false);
+                            // email send successfully now set reset data to cookie
+                            const cookieData = {
+                                email: resetEmail,
+                                id: isRegisteredUser[0].key,
+                                code: resetLinkCode
+                            }
+                            setCookie("_rst_bgl_", cookieData, {
+                                path: "/",
+                                expires: new Date(new Date().setMinutes(new Date().getMinutes() + 15)),//remove cookies after 15 min
+                                sameSite: true,
+                            })
+                            dispatch(displayNotification({
+                                msg: `Reset link send to ${resetEmail}`,
+                                type: NOTIFICATION_SUCCCESS,
+                                time: 3000
+                            }));
+                        }).catch(() => {
+                                //email sending failed so do nothing
+                                togglePageLoader(false);
+                                dispatch(displayNotification({
+                                    msg: "Reset link sending failed",
+                                    type: NOTIFICATION_ERROR,
+                                    time: 3000
+                                }));
+                        });
+                    } catch(e) {
+                        togglePageLoader(false);
+                        dispatch(displayNotification({
+                            msg: "Something went wrong with the network, please try in sometime!",
+                            type: NOTIFICATION_ERROR,
+                            time: 5000
+                        }));
+                        console.log('send reset email error: ', e);
                     }
-                    setCookie("_rst_bgl_", cookieData, {
-                        path: "/",
-                        expires: new Date(new Date().setMinutes(new Date().getMinutes() + 15)),//remove cookies after 15 min
-                        sameSite: true,
-                    })
+                } else {
+                    //user not registered
+                    togglePageLoader(false);
                     dispatch(displayNotification({
-                        msg: `Reset link send to ${resetEmail}`,
-                        type: NOTIFICATION_SUCCCESS,
+                        msg: "Seems like you not registered yet, please register!",
+                        type: NOTIFICATION_ERROR,
                         time: 3000
                     }));
-                })
-                    .catch(() => {
-                        //email sending failed so do nothing
-                        dispatch(displayNotification({
-                            msg: "Reset link sending failed",
-                            type: NOTIFICATION_ERROR,
-                            time: 3000
-                        }));
-                    })
-            } else {
-                //user not registered
-                dispatch(displayNotification({
-                    msg: "Seems like you not registered yet, please register!",
-                    type: NOTIFICATION_ERROR,
-                    time: 3000
-                }));
-                history.push('register');
-            }
-        })
+                    history.push('register');
+                }
+            });
+        } catch(e) {
+            togglePageLoader(false);
+            console.log('Error in sending reset link: ', e);
+        }
     }
 
-    const updateUserPassword = () => {
-        const userIdFromCookie = resetPswCookie.id;
-        updatePassword(userIdFromCookie, resetPassword.password).subscribe(() => {
+    function resetNewPassword(newPwd, type) {
+        if(type === 'new') {
+            setResetPassword({ ...resetPassword, 'password': newPwd });
+        } else {
+            setResetPassword({ ...resetPassword, 'confirmPassword': newPwd });
+        }
+    }
 
-            //password reset success
-            dispatch(displayNotification({
-                msg: "Password changed successfully",
-                type: NOTIFICATION_SUCCCESS,
-                time: 3000
-            }));
-            //to login with new password redirect to login screen
-
-        })
+    function updateUserPassword() {
+        if (resetPassword.password && resetPassword.confirmPassword) {
+            if (resetPassword.password === resetPassword.confirmPassword) {
+                const userIdFromCookie = resetPswCookie?.id;
+                togglePageLoader(true);
+                toggleEmailVerifyClass('');
+                setConfirmPwdMessage('');
+                try {
+                    updatePassword(userIdFromCookie, resetPassword.password).subscribe(() => {
+                        togglePageLoader(false);
+                        toggleResetPwdModal(false);
+                        //password reset success
+                        dispatch(displayNotification({
+                            msg: "Password changed successfully",
+                            type: NOTIFICATION_SUCCCESS,
+                            time: 3000
+                        }));
+                        //to login with new password redirect to login screen
+                    });
+                } catch(e) {
+                    togglePageLoader(false);
+                    dispatch(displayNotification({
+                        msg: "Something went wrong, please try again in sometime!",
+                        type: NOTIFICATION_ERROR,
+                        time: 3000
+                    }));
+                    console.log('password change error: ', e);
+                }
+            } else {
+                toggleEmailVerifyClass('error');
+                setConfirmPwdMessage('Password should match!');
+            }
+        } else {
+            toggleEmailVerifyClass('error');
+            setConfirmPwdMessage('Please enter password and confirm password!');
+        }
     }
 
     // function sendResetEmailLink() {
@@ -436,6 +515,10 @@ export default function Login(props) {
 
     return (
         <div className="login-wrap new-login-signup-ui clearfix gradient-bg-animation darkMode">
+            {
+                isPageLoaderActive ? 
+                <Loader /> : ''
+            }
             <div className={`inner-form-wrap ${componentShowClass}`}>
                 <form className="form-wrap clearfix" onSubmit={(e) => signinUser(e, 'cred')}>
                     <div className="heading-outer">
@@ -577,12 +660,42 @@ export default function Login(props) {
                             <p className={`emailVerifyMessage ${emailVerifyClass}`}>{emailVerifyMessage}</p>
                         </div> : ''
                 }
+                {
+                    isResetPasswordViewOpen ?
+                        <div className="forgotPwdBox resetPwdBox">
+                            <div className="logoWrap">
+                                <img src={boogaluLogo} alt="Boogalu" />
+                            </div>
+                            <p className="closeModal" onClick={() => togglePwdResetLayer(false)}></p>
+                            <h2>Reset your password</h2>
+                            <div className="inputWrap">
+                                <input
+                                    type="password"
+                                    placeholder="New password"
+                                    value={resetPassword.password}
+                                    onChange={(e) => resetNewPassword(e.target.value, 'new')}
+                                    title="New password" />
+                                <input
+                                    type="password"
+                                    placeholder="Confirm password"
+                                    value={resetPassword.confirmPassword}
+                                    onChange={(e) => resetNewPassword(e.target.value, 'confirm')}
+                                    title="New password" />
+                                <p className="emailLinkBtn" onClick={() => updateUserPassword()} title="send link to email">
+                                    <label>
+                                        <span>Reset</span>
+                                    </label>
+                                </p>
+                            </div>
+                            <p className={`emailVerifyMessage ${emailVerifyClass}`}>{confirmPasswordMessage}</p>
+                        </div> : ''
+                }
             </div>
-            <div className="img-wrap">
+            {/* <div className="img-wrap">
                 <img src={bgImg} alt="background" />
-            </div>
+            </div> */}
             {openVdoUploadModal && <VideoUploader handleClose={() => setOpenVdoUploadModal(false)} />}
-            <ul className="circles">
+            {/* <ul className="circles">
                 <li></li>
                 <li></li>
                 <li></li>
@@ -593,7 +706,7 @@ export default function Login(props) {
                 <li></li>
                 <li></li>
                 <li></li>
-            </ul>
+            </ul> */}
         </div>
     );
 }
