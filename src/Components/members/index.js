@@ -74,10 +74,10 @@ function ViewAllMembers() {
               } else if (userItem.privacy.toLowerCase() === "private") {
                 if (userItem) {
                   if (
-                    userItem.followedRequestedBy &&
-                    userItem.followedRequestedBy.length > 0
+                    userItem.followRequestedBy &&
+                    userItem.followRequestedBy.length > 0
                   ) {
-                    const amIFollowing = userItem.followedRequestedBy.filter(
+                    const amIFollowing = userItem.followRequestedBy.filter(
                       (requestId) => requestId === loggedInUser.key
                     );
                     if (amIFollowing && amIFollowing.length > 0) {
@@ -93,10 +93,10 @@ function ViewAllMembers() {
                       };
                     }
                   } else if (
-                    userItem.acceptedRequested &&
-                    userItem.acceptedRequested.length > 0
+                    userItem.followedBy &&
+                    userItem.followedBy.length > 0
                   ) {
-                    const amIFollowing = userItem.acceptedRequested.filter(
+                    const amIFollowing = userItem.followedBy.filter(
                       (requestId) => requestId === loggedInUser.key
                     );
                     if (amIFollowing && amIFollowing.length > 0) {

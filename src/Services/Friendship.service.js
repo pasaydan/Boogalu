@@ -1,5 +1,6 @@
 import { Observable } from "rxjs";
 import db from "../Database";
+import { updateNotification } from "./Notifications.service";
 
 const userRef = db.collection("users");
 const notificationsRef = db.collection("notifications");
@@ -47,10 +48,10 @@ export function updateFollowUnfollow(toFollowUser, followByUser, action) {
                 }
               } else {
                 requested = true;
-                if (!data.followedRequestedBy) {
-                  data = { ...data, followedRequestedBy: [followByUserKey] };
+                if (!data.followRequestedBy) {
+                  data = { ...data, followRequestedBy: [followByUserKey] };
                 } else {
-                  data.followedRequestedBy.push(followByUserKey);
+                  data.followRequestedBy.push(followByUserKey);
                 }
               }
 
@@ -92,174 +93,190 @@ export function updateFollowUnfollow(toFollowUser, followByUser, action) {
   });
 }
 
-export const acceptFollowRequest = (loggedInUserKey, userKey) => {
+export const acceptFollowRequest = (toFollowUser, followByUser) => {
+  const toFollowUserKey = toFollowUser.key;
+  const followByUserKey = followByUser.key;
+  let acceptedUserData = {};
   return new Observable((observer) => {
     userRef
-      .doc(loggedInUserKey)
+      .doc(toFollowUserKey)
       .get()
       .then((doc) => {
         let data = doc.data();
-        if (data && data.notification) {
-          if (data.notification.followRequestedBy) {
-            data.notification.followRequestedBy.forEach((requestId) => {
-              if (requestId === userKey) {
-                data.notification.followRequestedBy.splice(userKey);
-                if (data.acceptedRequested) {
-                  data.acceptedRequested.push(userKey);
-                } else {
-                  data = { ...data, acceptedRequested: [userKey] };
-                }
-                userRef
-                  .doc(userKey)
-                  .get()
-                  .then((doc) => {
-                    let acceptedUserData = doc.data();
-                    if (!acceptedUserData.notification) {
+        userRef
+          .doc(followByUserKey)
+          .get()
+          .then((doc) => {
+            acceptedUserData = doc.data();
+
+            if (data) {
+              if (data.followRequestedBy) {
+                data.followRequestedBy.forEach((requestId) => {
+                  if (requestId === followByUserKey) {
+                    data.followRequestedBy.splice(followByUserKey);
+                    if (data.followedBy) {
+                      data.followedBy.push(followByUserKey);
+                    } else {
+                      data = { ...data, followedBy: [followByUserKey] };
+                    }
+                    if (!acceptedUserData.following) {
                       acceptedUserData = {
                         ...acceptedUserData,
-                        notification: {
-                          followRequestAcceptedBy: [loggedInUserKey],
-                        },
-                      };
-                    } else if (
-                      !acceptedUserData.notification.followRequestAcceptedBy
-                    ) {
-                      acceptedUserData = {
-                        ...acceptedUserData,
-                        notification: {
-                          followRequestAcceptedBy: [loggedInUserKey],
-                        },
+                        following: [toFollowUserKey],
                       };
                     } else {
-                      acceptedUserData.notification.followRequestAcceptedBy.push(
-                        loggedInUserKey
-                      );
+                      acceptedUserData.following.push(toFollowUserKey);
                     }
+                  }
+                });
+
+                userRef
+                  .doc(toFollowUserKey)
+                  .set(data)
+                  .then(() => {
+                    console.log(
+                      `Follow request accepted by  ${toFollowUserKey}`
+                    );
                     userRef
-                      .doc(userKey)
+                      .doc(followByUserKey)
                       .set(acceptedUserData)
-                      .then((doc) => {
-                        userRef
-                          .doc(loggedInUserKey)
-                          .set(data)
-                          .then(() => {
-                            observer.next({ success: true });
-                          });
+                      .then(() => {
+                        console.log(
+                          `${followByUserKey} request has been accepted`
+                        );
+                        observer.next({
+                          accepted: true,
+                          followedUser: toFollowUserKey,
+                          followedBy: followByUserKey,
+                          email: data.email,
+                          name: data.name,
+                        });
                       });
                   });
               }
+            }
+          });
+      });
+  });
+};
+
+export const rejectFollowRequest = (toFollowUser, followByUser) => {
+  const toFollowUserKey = toFollowUser.key;
+  const followByUserKey = followByUser.key;
+  return new Observable((observer) => {
+    userRef
+      .doc(toFollowUserKey)
+      .get()
+      .then((doc) => {
+        let data = doc.data();
+        if (data) {
+          if (data.followRequestedBy) {
+            data.followRequestedBy.forEach((requestId) => {
+              if (requestId === followByUserKey) {
+                data.followRequestedBy.splice(followByUserKey);
+              }
             });
+            userRef
+              .doc(toFollowUserKey)
+              .set(data)
+              .then(() => {
+                console.log(
+                  `Follow request from ${followByUserKey} rejected by  ${toFollowUserKey}`
+                );
+                observer.next({
+                  rejected: true,
+                  followedUser: toFollowUserKey,
+                  followedBy: followByUserKey,
+                  email: data.email,
+                  name: data.name,
+                });
+              });
           }
         }
       });
   });
 };
 
-export const rejectFollowRequest = (loggedInUserKey, userKey) => {
+export const blockUser = (toFollowUser, followByUser) => {
+  const toFollowUserKey = toFollowUser.key;
+  const followByUserKey = followByUser.key;
   return new Observable((observer) => {
     userRef
-      .doc(loggedInUserKey)
+      .doc(toFollowUserKey)
       .get()
       .then((doc) => {
         let data = doc.data();
-        if (data && data.notification) {
-          if (data.notification.followRequestedBy) {
-            data.notification.followRequestedBy.forEach((requestId) => {
-              if (requestId === userKey) {
-                data.notification.followRequestedBy.splice(userKey);
-                if (data.rejectRequested) {
-                  data.rejectRequested.push(userKey);
+        if (data) {
+          if (data.followedBy) {
+            data.followedBy.forEach((requestId) => {
+              if (requestId === followByUserKey) {
+                data.followedBy.splice(followByUserKey);
+                if (data.blockList) {
+                  data.blockList.push(followByUserKey);
                 } else {
-                  data = { ...data, rejectRequested: [userKey] };
+                  data = { ...data, blockList: [followByUserKey] };
                 }
-
-                userRef
-                  .doc(loggedInUserKey)
-                  .set(data)
-                  .then(() => {
-                    observer.next({ success: true });
-                  });
-                // userRef.doc(userKey).get().then((doc) => {
-                //     let rejectedUserData = doc.data();
-                //     if (!rejectedUserData.notification) {
-                //         rejectedUserData = {...rejectedUserData, 'notification': {'followRequestRejectedtedBy' : [loggedInUserKey]}};
-                //     } else if (!rejectedUserData.notification.followRequestRejectedtedBy) {
-                //         rejectedUserData = {...rejectedUserData, 'notification': {'followRequestRejectedtedBy' : [loggedInUserKey]}};
-                //     } else {
-                //         rejectedUserData.notification.followRequestRejectedtedBy.push(loggedInUserKey);
-                //     }
-                //     userRef.doc(userKey).set(rejectedUserData).then((doc) => {
-                //         userRef.doc(loggedInUserKey).set(data).then(() => {
-                //             observer.next({success: true});
-                //         });
-                //     });
-                // })
               }
             });
+
+            userRef
+              .doc(toFollowUserKey)
+              .set(data)
+              .then(() => {
+                console.log(
+                  `${toFollowUserKey} has blocked this user : ${followByUserKey}`
+                );
+                observer.next({
+                  blocked: true,
+                  followedUser: toFollowUserKey,
+                  followedBy: followByUserKey,
+                  email: data.email,
+                  name: data.name,
+                });
+              });
           }
         }
       });
   });
 };
 
-export const blockUser = (loggedInUserKey, userKey) => {
+export const unFollowUser = (toFollowUser, followByUser) => {
+  const toFollowUserKey = toFollowUser.key;
+  const followByUserKey = followByUser.key;
   return new Observable((observer) => {
     userRef
-      .doc(loggedInUserKey)
+      .doc(toFollowUserKey)
       .get()
       .then((doc) => {
         let data = doc.data();
-        if (data && data.notification) {
-          if (data.notification.followedBy) {
-            data.notification.followedBy.forEach((requestId) => {
-              if (requestId === userKey) {
-                data.notification.followedBy.splice(userKey);
-                if (data.blockFollowRequest) {
-                  data.blockFollowRequest.push(userKey);
+        if (data) {
+          if (data.following) {
+            data.following.forEach((requestId) => {
+              if (requestId === followByUserKey) {
+                data.following.splice(followByUserKey);
+                if (data.blockList) {
+                  data.blockList.push(followByUserKey);
                 } else {
-                  data = { ...data, blockFollowRequest: [userKey] };
+                  data = { ...data, blockList: [followByUserKey] };
                 }
-
-                userRef
-                  .doc(loggedInUserKey)
-                  .set(data)
-                  .then(() => {
-                    observer.next({ success: true });
-                  });
               }
             });
-          }
-        }
-      });
-  });
-};
 
-export const unFollowUser = (loggedInUserKey, userKey) => {
-  return new Observable((observer) => {
-    userRef
-      .doc(loggedInUserKey)
-      .get()
-      .then((doc) => {
-        let data = doc.data();
-        if (data && data.notification) {
-          if (data.notification.followedBy) {
-            data.notification.followedBy.forEach((requestId) => {
-              if (requestId === userKey) {
-                data.notification.followedBy.splice(userKey);
-                if (data.blockFollowRequest) {
-                  data.blockFollowRequest.push(userKey);
-                } else {
-                  data = { ...data, blockFollowRequest: [userKey] };
-                }
-
-                userRef
-                  .doc(loggedInUserKey)
-                  .set(data)
-                  .then(() => {
-                    observer.next({ success: true });
-                  });
-              }
-            });
+            userRef
+              .doc(toFollowUserKey)
+              .set(data)
+              .then(() => {
+                console.log(
+                  `${toFollowUserKey} unfollowed this user : ${followByUserKey}`
+                );
+                observer.next({
+                  unfollowed: true,
+                  followedUser: toFollowUserKey,
+                  followedBy: followByUserKey,
+                  email: data.email,
+                  name: data.name,
+                });
+              });
           }
         }
       });

@@ -23,7 +23,10 @@ import { NOTIFICATION_SUCCCESS } from "../../Constants";
 import { displayNotification } from "../../Actions/Notification";
 import * as $ from "jquery";
 import { getUserById } from "../../Services/User.service";
-import { getNotifications } from "../../Services/Notifications.service";
+import {
+  getNotifications,
+  updateNotification,
+} from "../../Services/Notifications.service";
 import {
   acceptFollowRequest,
   rejectFollowRequest,
@@ -211,41 +214,24 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
     let followNotificationArray = [];
     if (loggedInUser.key) {
       getNotifications(loggedInUser.key).subscribe((response) => {
-        const notification = response ? response : [];
-        if (notification && Object.keys(notification).length > 0) {
-          const notificationKeys = Object.keys(notification);
-          const flatValues = Object.values(notification).flat();
+        const notifications =
+          response && response.data && response.data ? response.data : [];
+        if (notifications && Object.keys(notifications).length > 0) {
+          const notificationKeys = Object.keys(notifications);
+          const flatValues = Object.values(notifications).flat();
           notificationKeys.forEach((key, index) => {
-            const valuesByKey = notification[key];
-            // followNotificationArray.push(notification[key]);
-            // if (
-            //   followNotificationArray &&
-            //   followNotificationArray.length === flatValues.length
-            // ) {
-            //   setUserNotificationList(followNotificationArray);
-            // }
-
-            valuesByKey.forEach((value) => {
-              followNotificationArray.push(value);
-              if (
-                followNotificationArray &&
-                followNotificationArray.length === flatValues.length
-              ) {
-                setUserNotificationList(followNotificationArray);
-              }
-              // getUserById(value).subscribe((response) => {
-              //   // eslint-disable-next-line no-unused-vars
-              //   let responseData = response;
-              //   responseData = { ...responseData, [key]: true };
-              //   followNotificationArray.push(responseData);
-              //   if (
-              //     followNotificationArray &&
-              //     followNotificationArray.length === flatValues.length
-              //   ) {
-              //     setUserNotificationList(followNotificationArray);
-              //   }
-              // });
-            });
+            const valuesByKey = notifications[key];
+            if (valuesByKey && valuesByKey.length > 0) {
+              valuesByKey.forEach((value) => {
+                followNotificationArray.push(value);
+                if (
+                  followNotificationArray &&
+                  followNotificationArray.length === flatValues.length
+                ) {
+                  setUserNotificationList(followNotificationArray);
+                }
+              });
+            }
           });
         }
       });
@@ -596,11 +582,40 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
     event.stopPropagation();
     event.target.classList.add("loading");
     try {
-      acceptFollowRequest(loggedInUser.key, user.key).subscribe((response) => {
+      user.key = user.userKey;
+      user.name = user.username;
+      acceptFollowRequest(loggedInUser, user).subscribe((response) => {
         console.log("response", response);
         event.target.classList.remove("loading");
-        if (response && response.success) {
-          getNotifications();
+        if (response) {
+          let notificationData = {};
+          if (response && response.accepted) {
+            notificationData = {
+              notify: loggedInUser,
+              action: response.accepted,
+              user: user,
+              createdAt: new Date(),
+            };
+          }
+          if (notificationData && Object.keys(notificationData).length > 0) {
+            // Updating Nofification for user who accepted request
+            updateNotification(notificationData).subscribe((response) => {
+              console.log("response", response);
+              if (response && response.notified) {
+                // Updating Nofification for user whose request accepted
+                notificationData = {
+                  notify: user,
+                  action: "accepted",
+                  user: loggedInUser,
+                  createdAt: new Date(),
+                };
+
+                updateNotification(notificationData).subscribe((reponse) => {
+                  console.log("reponse", reponse);
+                });
+              }
+            });
+          }
         }
       });
     } catch (e) {
@@ -609,19 +624,103 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
     }
   };
 
-  const rejectFollowRequestHandler = (event) => {
+  const rejectFollowRequestHandler = (event, user) => {
     event.stopPropagation();
-    console.log("Reject follow request code goes here");
+    event.target.classList.add("loading");
+    try {
+      user.key = user.userKey;
+      user.name = user.username;
+      acceptFollowRequest(loggedInUser, user).subscribe((response) => {
+        console.log("response", response);
+        event.target.classList.remove("loading");
+        if (response) {
+          let notificationData = {};
+          if (response && response.rejected) {
+            notificationData = {
+              notify: loggedInUser,
+              action: response.rejected ? "rejected" : null,
+              user: user,
+              createdAt: new Date(),
+            };
+          }
+          // if (notificationData && Object.keys(notificationData).length > 0) {
+          //   // Updating Nofification for user who accepted request
+          //   updateNotification(notificationData).subscribe((response) => {
+          //     console.log("response", response);
+          //   });
+          // }
+        }
+      });
+    } catch (e) {
+      event.target.classList.remove("loading");
+      console.log("accept follow error: ", e);
+    }
   };
 
-  const blockUserHandler = (event) => {
+  const blockUserHandler = (event, user) => {
     event.stopPropagation();
-    console.log("Block user request code goes here");
+    event.target.classList.add("loading");
+    try {
+      user.key = user.userKey;
+      user.name = user.username;
+      acceptFollowRequest(loggedInUser, user).subscribe((response) => {
+        console.log("response", response);
+        event.target.classList.remove("loading");
+        if (response) {
+          let notificationData = {};
+          if (response && response.blocked) {
+            notificationData = {
+              notify: loggedInUser,
+              action: response.blocked ? "blocked" : null,
+              user: user,
+              createdAt: new Date(),
+            };
+          }
+          // if (notificationData && Object.keys(notificationData).length > 0) {
+          //   // Updating Nofification for user who accepted request
+          //   updateNotification(notificationData).subscribe((response) => {
+          //     console.log("response", response);
+          //   });
+          // }
+        }
+      });
+    } catch (e) {
+      event.target.classList.remove("loading");
+      console.log("accept follow error: ", e);
+    }
   };
 
-  const unFollowkUserHandler = (event) => {
+  const unFollowkUserHandler = (event, user) => {
     event.stopPropagation();
-    console.log("Block user request code goes here");
+    event.target.classList.add("loading");
+    try {
+      user.key = user.userKey;
+      user.name = user.username;
+      acceptFollowRequest(loggedInUser, user).subscribe((response) => {
+        console.log("response", response);
+        event.target.classList.remove("loading");
+        if (response) {
+          let notificationData = {};
+          if (response && response.unfollowed) {
+            notificationData = {
+              notify: loggedInUser,
+              action: response.unfollowed ? "unfollowed" : null,
+              user: user,
+              createdAt: new Date(),
+            };
+          }
+          // if (notificationData && Object.keys(notificationData).length > 0) {
+          //   // Updating Nofification for user who accepted request
+          //   updateNotification(notificationData).subscribe((response) => {
+          //     console.log("response", response);
+          //   });
+          // }
+        }
+      });
+    } catch (e) {
+      event.target.classList.remove("loading");
+      console.log("accept follow error: ", e);
+    }
   };
   return (
     <>

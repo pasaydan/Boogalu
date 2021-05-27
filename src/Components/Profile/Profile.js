@@ -296,9 +296,11 @@ function Profile() {
                 }
               });
             }
-            vdoObj.username = userData[0].name;
-            vdoObj.userEmail = userData[0].email;
-            vdoObj.privacy = userData[0].privacy || "Public";
+            if (userData && userData.length > 0) {
+              vdoObj.username = userData[0].name;
+              vdoObj.userEmail = userData[0].email;
+              vdoObj.privacy = userData[0].privacy || "Public";
+            }
             let user = userData[0];
             if (user.followedBy && user.followedBy.length > 0) {
               const checkIfUserFollowingVideoCreator = user.followedBy.filter(

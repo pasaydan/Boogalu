@@ -13,9 +13,10 @@ export const getNotifications = (id) => {
         let data = doc.data();
         console.log("getNotifications >>>>> ", data);
         if (data) {
-          observer.next(data);
+          observer.next({ data: data });
         } else {
           observer.next({
+            data: [],
             message: "No notifications found!",
           });
         }
@@ -38,9 +39,6 @@ export const updateNotification = (notificationData) => {
       .then((doc) => {
         let data = doc.data();
         if (action === "requested") {
-          // if (!data) {
-          //   data = { ...data, followRequestedBy: [notificationData] };
-          // } else
           if (!data || !data.followRequestedBy) {
             data = { ...data, followRequestedBy: [updateData] };
           } else {
@@ -56,39 +54,31 @@ export const updateNotification = (notificationData) => {
         }
         if (action === "accepted") {
           if (!data || !data.accepted) {
-            data = { ...data, acceptedBy: [updateData] };
+            data = { ...data, accepted: [updateData] };
           } else {
-            data.acceptedBy.push(updateData);
+            data.accepted.push(updateData);
+          }
+        }
+        if (action === true) {
+          if (data && data.followRequestedBy) {
+            let tempData = data.followRequestedBy;
+            tempData.map((item, index) => {
+              if (item.userKey === updateData.userKey) {
+                tempData.splice(index);
+              }
+            });
+            data.followRequestedBy = tempData;
           }
         }
         notificationsRef
           .doc(notify.key)
           .set(data)
-          .then((doc) => {
+          .then(() => {
             observer.next({
               name: notify.name,
               notified: true,
             });
           });
-        // if (!data.followedBy) {
-        //   data = { ...data, followedBy: [followByUserKey] };
-        // } else {
-        //   data.followedBy.push(followByUserKey);
-        // }
-        // console.log("data ", data);
-        // if (data) {
-        //   observer.next({
-        //     key: doc.id,
-        //     name: data.name,
-        //     email: data.email,
-        //     phone: data.phone,
-        //     notification: data.notification,
-        //   });
-        // } else {
-        //   observer.next({
-        //     message: "No notifications found!",
-        //   });
-        // }
       });
   });
 };
