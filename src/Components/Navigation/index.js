@@ -637,20 +637,20 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
         if (response) {
           let notificationData = {};
           if (response && response.rejected) {
-            fetchNotifications();
-            // notificationData = {
-            //   notify: loggedInUser,
-            //   action: response.rejected ? "rejected" : null,
-            //   user: user,
-            //   createdAt: new Date(),
-            // };
+            notificationData = {
+              notify: loggedInUser,
+              action: response.rejected ? "rejected" : null,
+              user: user,
+              createdAt: new Date(),
+            };
           }
-          // if (notificationData && Object.keys(notificationData).length > 0) {
-          //   // Updating Nofification for user who accepted request
-          //   updateNotification(notificationData).subscribe((response) => {
-          //     console.log("response", response);
-          //   });
-          // }
+          if (notificationData && Object.keys(notificationData).length > 0) {
+            // Updating Nofification for user who accepted request
+            updateNotification(notificationData).subscribe((response) => {
+              console.log("response", response);
+              fetchNotifications();
+            });
+          }
         }
       });
     } catch (e) {

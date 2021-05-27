@@ -70,6 +70,17 @@ export const updateNotification = (notificationData) => {
             data.followRequestedBy = tempData;
           }
         }
+        if (action === "rejected") {
+          if (data && data.followRequestedBy) {
+            let tempData = data.followRequestedBy;
+            tempData.map((item, index) => {
+              if (item.userKey === updateData.userKey) {
+                tempData.splice(index);
+              }
+            });
+            data.followRequestedBy = tempData;
+          }
+        }
         notificationsRef
           .doc(notify.key)
           .set(data)
