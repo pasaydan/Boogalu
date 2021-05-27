@@ -631,7 +631,7 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
     try {
       user.key = user.userKey;
       user.name = user.username;
-      acceptFollowRequest(loggedInUser, user).subscribe((response) => {
+      rejectFollowRequest(loggedInUser, user).subscribe((response) => {
         console.log("response", response);
         event.target.classList.remove("loading");
         if (response) {
@@ -665,7 +665,7 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
     try {
       user.key = user.userKey;
       user.name = user.username;
-      acceptFollowRequest(loggedInUser, user).subscribe((response) => {
+      blockUser(loggedInUser, user).subscribe((response) => {
         console.log("response", response);
         event.target.classList.remove("loading");
         if (response) {
@@ -699,7 +699,7 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
     try {
       user.key = user.userKey;
       user.name = user.username;
-      acceptFollowRequest(loggedInUser, user).subscribe((response) => {
+      unFollowUser(loggedInUser, user).subscribe((response) => {
         console.log("response", response);
         event.target.classList.remove("loading");
         if (response) {
