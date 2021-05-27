@@ -612,6 +612,7 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
 
                 updateNotification(notificationData).subscribe((reponse) => {
                   console.log("reponse", reponse);
+                  fetchNotifications();
                 });
               }
             });
@@ -636,12 +637,13 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
         if (response) {
           let notificationData = {};
           if (response && response.rejected) {
-            notificationData = {
-              notify: loggedInUser,
-              action: response.rejected ? "rejected" : null,
-              user: user,
-              createdAt: new Date(),
-            };
+            fetchNotifications();
+            // notificationData = {
+            //   notify: loggedInUser,
+            //   action: response.rejected ? "rejected" : null,
+            //   user: user,
+            //   createdAt: new Date(),
+            // };
           }
           // if (notificationData && Object.keys(notificationData).length > 0) {
           //   // Updating Nofification for user who accepted request
@@ -669,12 +671,13 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
         if (response) {
           let notificationData = {};
           if (response && response.blocked) {
-            notificationData = {
-              notify: loggedInUser,
-              action: response.blocked ? "blocked" : null,
-              user: user,
-              createdAt: new Date(),
-            };
+            fetchNotifications();
+            // notificationData = {
+            //   notify: loggedInUser,
+            //   action: response.blocked ? "blocked" : null,
+            //   user: user,
+            //   createdAt: new Date(),
+            // };
           }
           // if (notificationData && Object.keys(notificationData).length > 0) {
           //   // Updating Nofification for user who accepted request
@@ -702,12 +705,13 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
         if (response) {
           let notificationData = {};
           if (response && response.unfollowed) {
-            notificationData = {
-              notify: loggedInUser,
-              action: response.unfollowed ? "unfollowed" : null,
-              user: user,
-              createdAt: new Date(),
-            };
+            fetchNotifications();
+            // notificationData = {
+            //   notify: loggedInUser,
+            //   action: response.unfollowed ? "unfollowed" : null,
+            //   user: user,
+            //   createdAt: new Date(),
+            // };
           }
           // if (notificationData && Object.keys(notificationData).length > 0) {
           //   // Updating Nofification for user who accepted request
