@@ -12,7 +12,7 @@ import CommentOutlined from "@material-ui/icons/CommentOutlined";
 import { useStoreConsumer } from "../../Providers/StateProvider";
 import VideoDetails from "../VideoDetails";
 import ProfileImage from "../ProfileImage";
-import Vedio from "../Vedio/Video";
+import VideoPlayer from "../Vedio/Video";
 // import { getUserById, updateUser, updateFollowUnfollow } from "../../Services/User.service";
 import { sendEmail } from "../../Services/Email.service";
 import { Link } from "@material-ui/core";
@@ -419,7 +419,7 @@ function Feeds() {
                   return (
                     <div key={feed.key} className="feed-card">
                       <div>
-                        <Vedio vdoObj={feed} />
+                        <VideoPlayer vdoObj={feed} />
                       </div>
                       <div className="username">
                         <ProfileImage src={feed.profileImage} />

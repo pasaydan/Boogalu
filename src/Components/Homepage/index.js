@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { getUploadedVideosList } from "../../Services/UploadedVideo.service";
-import Vedio from "../Vedio/Video";
+import VideoPlayer from "../Vedio/Video";
 import Favorite from '@material-ui/icons/Favorite';
 import Loader from '../Loader';
 import { useStoreConsumer } from '../../Providers/StateProvider';
@@ -117,7 +117,7 @@ export default function Homepage() {
                                 {UserUploadedVideoList && UserUploadedVideoList.map((vdo) => {
                                     return <div key={vdo.key} className="vdo-card">
                                         <div>
-                                            <Vedio vdoObj={vdo} />
+                                            <VideoPlayer vdoObj={vdo} />
                                         </div>
                                         <div className="video-title-like-wrap">
                                             <div className="title">{vdo.title}</div>

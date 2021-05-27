@@ -8,7 +8,7 @@ export function getUserByPhone(phone) {
         userRef.where('phone', '==', phone).get().then((querySnapshot) => {
             let user = []
             querySnapshot.forEach(function (doc) {
-                let data = doc.data();  
+                let data = doc.data();
                 data.key = doc.id;
                 user.push(data);
             })
@@ -36,7 +36,7 @@ export function updateUser(id, data) {
     data.modifiedOn = new Date();
     return new Observable((observer) => {
         userRef.doc(id).set(data).then(() => {
-            observer.next({updated: true});
+            observer.next({ updated: true });
         });
     });
 }
@@ -61,7 +61,9 @@ export function getUserById(id) {
                 key: doc.id,
                 name: data.name,
                 email: data.email,
-                phone: data.phone
+                phone: data.phone,
+                dob: data.dob,
+                bio: data.bio
             });
         });
     });
@@ -112,7 +114,7 @@ export function getAllUser(userKey) {
                         if (data.key !== userKey) {
                             users.push(data);
                         }
-                    });     
+                    });
                 } else {
                     querySnapshot.forEach((doc) => {
                         let data = doc.data();
@@ -129,18 +131,18 @@ export function getAllUser(userKey) {
 export function getAllUserLazyLoad(userKey) {
     return new Observable((observer) => {
         userRef.orderByChild('username')
-                .startAt(0)
-                .endAt(14)
-                .limitToFirst(5)
-                .onSnapshot((querySnapshot) => {
-            let users = [];
-            querySnapshot.forEach((doc) => {
-                let data = doc.data();
-                data.key = doc.id;
-                users.push(data);
+            .startAt(0)
+            .endAt(14)
+            .limitToFirst(5)
+            .onSnapshot((querySnapshot) => {
+                let users = [];
+                querySnapshot.forEach((doc) => {
+                    let data = doc.data();
+                    data.key = doc.id;
+                    users.push(data);
+                });
+                observer.next(users);
             });
-            observer.next(users);
-        });
     });
 }
 
@@ -152,28 +154,28 @@ export function updateFollowUnfollow(id, followedById, action) {
             let data = doc.data();
             if (action === 'follow') {
                 if (data && !data.privacy) {
-                    data = {...data, 'privacy': 'public'}
+                    data = { ...data, 'privacy': 'public' }
                 }
                 if (data.privacy && (data.privacy === 'Public' || data.privacy === 'public')) {
                     followed = true;
                     if (!data.notification) {
-                        data = {...data, 'notification': {'followedBy' : [followedById]}};
+                        data = { ...data, 'notification': { 'followedBy': [followedById] } };
                     } else if (!data.notification.followedBy) {
-                        data = {...data, 'notification': {'followedBy' : [followedById]}};
+                        data = { ...data, 'notification': { 'followedBy': [followedById] } };
                     } else {
                         data.notification.followedBy.push(followedById);
                     }
                     if (!data.followedBy) {
-                        data = {...data, 'followedBy' : [followedById]};
+                        data = { ...data, 'followedBy': [followedById] };
                     } else {
                         data.followedBy.push(followedById);
                     }
                 } else {
                     requested = true;
                     if (!data.notification) {
-                        data = {...data, 'notification': {'followRequestedBy' : [followedById]}};
+                        data = { ...data, 'notification': { 'followRequestedBy': [followedById] } };
                     } else if (!data.notification.followRequestedBy) {
-                        data = {...data, 'notification': {'followRequestedBy' : [followedById]}};
+                        data = { ...data, 'notification': { 'followRequestedBy': [followedById] } };
                     } else {
                         data.notification.followRequestedBy.push(followedById);
                     }
@@ -182,7 +184,7 @@ export function updateFollowUnfollow(id, followedById, action) {
                     userRef.doc(followedById).get().then((doc) => {
                         let followedByUserData = doc.data();
                         if (!followedByUserData.following) {
-                            followedByUserData = {...followedByUserData, 'following' : [id]};
+                            followedByUserData = { ...followedByUserData, 'following': [id] };
                         } else {
                             followedByUserData.following.push(id);
                         }
@@ -191,11 +193,11 @@ export function updateFollowUnfollow(id, followedById, action) {
                         });
                     });
                     if (followed) {
-                        observer.next({followed: true, followedUser: id, followedBy: followedById, email: data.email, name: data.name});
+                        observer.next({ followed: true, followedUser: id, followedBy: followedById, email: data.email, name: data.name });
                     } else if (requested) {
-                        observer.next({requested: true, followedUser: id, followedBy: followedById, email: data.email, name: data.name});
+                        observer.next({ requested: true, followedUser: id, followedBy: followedById, email: data.email, name: data.name });
                     } else {
-                        observer.next({error: true});
+                        observer.next({ error: true });
                     }
                 });
             }
@@ -203,7 +205,7 @@ export function updateFollowUnfollow(id, followedById, action) {
     });
 }
 
-export function getUserPublicProfile(email){
+export function getUserPublicProfile(email) {
     return new Observable((observer) => {
         userRef.where('email', '==', email).get().then((querySnapshot) => {
             let user = []
@@ -223,5 +225,14 @@ export function getUserPublicProfile(email){
             })
             observer.next(user);
         })
-    })  
+    })
+}
+
+export function updatePassword(id, password) {
+    return new Observable((observer) => {
+        userRef.doc(`/${id}`).update({ 'password': password }).then(() => {
+            observer.next();
+        });
+    });
+
 }

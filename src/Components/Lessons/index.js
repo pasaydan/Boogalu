@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import LessonsCategories from '../../Data/LessonsCategory';
-import Video from "../Vedio/Video";
+import VideoPlayer from "../Vedio/Video";
 import FilterListIcon from '@material-ui/icons/FilterList';
 import ArrowDropDownOutlinedIcon from '@material-ui/icons/ArrowDropDownOutlined';
 import Button from '@material-ui/core/Button';
@@ -116,7 +116,7 @@ function Lessons() {
             </div>
             <div className="lessons-vdo-wrap">
                 {activeCategory.vedios.map((item) => {
-                    return <Video vdoObj={item}></Video>
+                    return <VideoPlayer vdoObj={item} />
                 })}
             </div>
         </div>

@@ -367,12 +367,23 @@
             .username-wrap {
                 padding: 0;
                 margin-bottom: 10px;
+                text-align: left;
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
                 .username {
-                    font-size: 20px;
-                    line-height: 34px;
+                    font-size: 14px;
+                    line-height: 32px;
+                    display: block;
+                    padding-right: 10px;
+                    box-sizing: border-box;
+                    flex-basis: 69%;
                 }
                 .edit-profile {
+                    display: block;
                     margin-top: 0;
+                    float: none;
+                    padding: 5px 8px;
                 }
             }
             .followers-wrap {

@@ -13,7 +13,6 @@ export function deleteUploadedVideoByVideoKey(videoKey) {
             console.error("Error removing document: ", error);
             observer.next({deleted: false, error: error});
         });
-        
     });
 }
 
@@ -48,7 +47,7 @@ export function saveUploadedVideo(data) {
 
 export function getUploadedVideosByUserId(id) {
     return new Observable((observer) => {
-        uploadedVideosRef.where('userId', '==', id).get().then((querySnapshot) => {
+        uploadedVideosRef.where('userId', '===', id).get().then((querySnapshot) => {
             let videos = []
             querySnapshot.forEach(function (doc) {
                 let data = doc.data();

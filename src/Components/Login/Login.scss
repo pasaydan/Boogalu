@@ -779,6 +779,17 @@
             font-weight: 500;
             color: var(--primary-white);
         }
+        &.resetPwdBox {
+            h2 {
+                margin-top: 50px;
+            }
+            .inputWrap {
+                flex-direction: column;
+                input {
+                    margin: 0 0 20px 0;
+                }
+            }    
+        }
     }
 }
 
@@ -1115,6 +1126,13 @@
                         label {
                             padding: 5px 12px;
                         }
+                    }
+                }
+            }
+            .resetPwdBox {
+                .inputWrap {
+                    .emailLinkBtn {
+                        max-width: 100%;
                     }
                 }
             }
