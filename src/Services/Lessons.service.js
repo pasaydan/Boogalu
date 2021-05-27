@@ -78,6 +78,18 @@ export function getAllLessons() {
     });
 }
 
+export function deleteLessons(lessonKey) {
+    return new Observable((observer) => {
+        lessonsVideosRef.doc(lessonKey).delete().then(() => {
+            console.log("Document successfully deleted!");
+            observer.next({deleted: true});
+        }).catch((error) => {
+            console.error("Error removing document: ", error);
+            observer.next({deleted: false, error: error});
+        });
+    });
+}
+
 export function getLessonsWithOnlyPreview() {
     return new Observable((observer) => {
         lessonsVideosRef.onSnapshot((querySnapshot) => {
@@ -111,6 +123,16 @@ export function updateLessonPlayTime(id, playedTimeData) {
                             data.lessonPlayedTimes.push(playedTimeData);
                         }
                     });
+                    
+                    const setObj = new Set();
+                    const uniqueResult = data.lessonPlayedTimes.reduce((acc, item) => {
+                    if(!setObj.has(item.userKey)){
+                        setObj.add(item.userKey, item);
+                        acc.push(item);
+                    }
+                    return acc;
+                    },[]);
+                    data.lessonPlayedTimes = uniqueResult;
                 }
             }
 

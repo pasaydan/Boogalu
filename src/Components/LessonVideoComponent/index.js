@@ -8,7 +8,6 @@ import { enableLoginFlow } from "../../Actions/LoginFlow";
 import { isObjectEmpty } from '../../helpers';
 import { updateLessonPlayTime } from '../../Services/Lessons.service';
 
-// let videoTimeInterval = null;
 function LessonsVideoContainer({ 
     lessonKey,
     title, 
@@ -36,8 +35,8 @@ function LessonsVideoContainer({
     const [visibilityClass, toggleVideoVisibilityClass] = useState('');
     const [isLoggedInUser, setLoggedInUserValue] = useState(false);
     const [isSubscribedUser, setSubscribedUser] = useState(false);
-    const [videoPlayedData, setUserLessonVideoPlayedTime] = useState({});
     const [videoCurrentPlayTime, setCurrentVideoPlayTime] = useState(null);
+    const [isVideoPlayed, toggleVideoPlayedValue] = useState(false);
     
     const thumbNailOverlayRef = useRef(null);
 
@@ -119,26 +118,12 @@ function LessonsVideoContainer({
         }
     }
 
-    function pauseVideo(params) {
+    function pauseVideo(event, params) {
+        event.stopPropagation();
+        event.preventDefault();
         const currentVideoState = activeVideoState;
-        // clearInterval(videoTimeInterval);
-        // videoTimeInterval = null;
-        if (videoFront !== null) {
-            const videoData = {
-                userKey: loggedInUser.key,
-                playedTime: videoFront.currentTime
-            }
-            setUserLessonVideoPlayedTime(videoData);
-            try {
-                updateLessonPlayTime(lessonKey, videoData).subscribe(res => {
-                    console.log('Res: ', res);
-                });
-            } catch(e) {
-                console.log('Update lesson Error: ', e);
-            }
-        }
         setCurrentVideoPlayTime(Math.round(videoFront.currentTime) - 5);
-        console.log('Final Video Played Data: ', videoPlayedData);
+        setVideoCurrentTimeToDB();
         if (currentVideoState === 'front') {
             videoFrontMirror.pause();
             videoBack.pause();
@@ -231,25 +216,6 @@ function LessonsVideoContainer({
                     console.log("Back played error");
                 });
             }
-    
-            // if (!videoTimeInterval) {
-            //     videoTimeInterval = setInterval(() => {
-            //         if (videoFront !== null) {
-            //             const videoData = {
-            //                 userKey: loggedInUser.key,
-            //                 playedTime: videoFront.currentTime
-            //             }
-            //             setUserLessonVideoPlayedTime(videoData);
-            //             try {
-            //                 updateLessonPlayTime(lessonKey, videoData).subscribe(res => {
-            //                     console.log('Res: ', res);
-            //                 });
-            //             } catch(e) {
-            //                 console.log('Update lesson Error: ', e);
-            //             }
-            //         }
-            //     }, 10000);
-            // }
         }, 100);
     }
 
@@ -299,6 +265,8 @@ function LessonsVideoContainer({
     // This seeking function is to sync all the videos on a specific time
     // when user use video slider to go ahead or back
     function onVideoSeek(event, status) {
+        event.stopPropagation();
+        event.preventDefault();
         if (activeVideoState === status) {
             if (activeVideoState === 'front') {
                 videoBack.currentTime = videoFront.currentTime;
@@ -317,22 +285,25 @@ function LessonsVideoContainer({
                 videoBack.currentTime = videoBackMirror.currentTime;
                 videoFrontMirror.currentTime = videoBackMirror.currentTime;
             }
-            if (videoFront !== null) {
-                const videoData = {
-                    userKey: loggedInUser.key,
-                    playedTime: videoFront.currentTime
-                }
-                setUserLessonVideoPlayedTime(videoData);
-                try {
-                    updateLessonPlayTime(lessonKey, videoData).subscribe(res => {
-                        console.log('Res: ', res);
-                    });
-                } catch(e) {
-                    console.log('Update lesson Error: ', e);
-                }
+        }
+        if (isVideoPlayed) {
+            setVideoCurrentTimeToDB();
+        }
+    }
+
+    function setVideoCurrentTimeToDB() {
+        if (videoFront !== null) {
+            const videoData = {
+                userKey: loggedInUser.key,
+                playedTime: videoFront.currentTime
             }
-            event.preventDefault();
-            event.stopPropagation();
+            try {
+                updateLessonPlayTime(lessonKey, videoData).subscribe(res => {
+                    console.log('Res: ', res);
+                });
+            } catch(e) {
+                console.log('Update lesson Error: ', e);
+            }
         }
     }
 
@@ -369,6 +340,7 @@ function LessonsVideoContainer({
                     overlayItem.classList.remove('activeOverlay');
                 } else {
                     toggleisVideoOverlayActive(true);
+                    toggleVideoPlayedValue(true);
                     videoFront.play();
                     if (thumbNailOverlayRef.current) {
                         thumbNailOverlayRef.current.classList.add('activeOverlay');
@@ -385,6 +357,7 @@ function LessonsVideoContainer({
                     overlayItem.classList.remove('activeOverlay');
                 } else {
                     toggleisVideoOverlayActive(true);
+                    toggleVideoPlayedValue(true);
                     videoFront.play();
                     if (thumbNailOverlayRef.current) {
                         thumbNailOverlayRef.current.classList.add('activeOverlay');
@@ -558,16 +531,19 @@ function LessonsVideoContainer({
                 
             <div className={`innerLessonVideoWrap ${visibilityClass} js-${videoId}`}>
                 <div className="inner-video-wrap" id={videoId}>
-                    <div className="actions">
-                        <MdSettingsBackupRestore title="Flip video" className="vdo-controlls flipVideoIcon" variant="contained" type="submit" onClick={(e) => flipVideos(e)} />
-                        <MdFlip title="Mirror video" className="vdo-controlls mirrorVideoIcon" variant="contained" type="submit" onClick={(e) => mirrorVideos(e)} />
-                        <MdShare title="Share this lesson" className="vdo-controlls" variant="contained" onClick={(e) => shareLessonDetails(e)} />
-                        {fullScreenMode ?
-                            <FullscreenExitIcon title="Fullscreen mode" className="vdo-controlls fullScreenToggleIcon" variant="contained" type="submit" onClick={(e) => triggerFullScreen(e)} />
-                            :
-                            <FullscreenIcon title="Exit fullscreen" className="vdo-controlls fullScreenToggleIcon" variant="contained" type="submit" onClick={(e) => triggerFullScreen(e)} />
-                        }
-                    </div>
+                    {
+                        isVideoOverlayActive ? 
+                        <div className="actions">
+                            <MdSettingsBackupRestore title="Flip video" className="vdo-controlls flipVideoIcon" variant="contained" type="submit" onClick={(e) => flipVideos(e)} />
+                            <MdFlip title="Mirror video" className="vdo-controlls mirrorVideoIcon" variant="contained" type="submit" onClick={(e) => mirrorVideos(e)} />
+                            <MdShare title="Share this lesson" className="vdo-controlls" variant="contained" onClick={(e) => shareLessonDetails(e)} />
+                            {fullScreenMode ?
+                                <FullscreenExitIcon title="Fullscreen mode" className="vdo-controlls fullScreenToggleIcon" variant="contained" type="submit" onClick={(e) => triggerFullScreen(e)} />
+                                :
+                                <FullscreenIcon title="Exit fullscreen" className="vdo-controlls fullScreenToggleIcon" variant="contained" type="submit" onClick={(e) => triggerFullScreen(e)} />
+                            }
+                        </div> : ''
+                    }
                     {
                         activeVideosList?.frontView ?
                         <video 

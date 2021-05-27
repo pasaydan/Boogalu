@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import LessonsVideoContainer from '../LessonVideoComponent';
 import Lessons from "../../Data/Dummy";
 import { useStoreConsumer } from '../../Providers/StateProvider';
-import { getAllLessons, getLessonByPlanType, getLessonsWithOnlyPreview, getLessonByPlanTypeOnlyPreview } from "../../Services/Lessons.service";
+import { getAllLessons, deleteLessons, getLessonByPlanType, getLessonsWithOnlyPreview, getLessonByPlanTypeOnlyPreview } from "../../Services/Lessons.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { getParameterByName, isObjectEmpty } from '../../helpers';
 
@@ -80,6 +80,7 @@ function Upcoming() {
             setLessonsList(lessons);
             setLessonSubHeading('Learn from the experts and many dance forms!');
         } else {
+            toggleFilterOptionVisiblity(false);
             setLessonSubHeading('Lessons video launching soon, stay connected!');
         }
     }
@@ -177,7 +178,7 @@ function Upcoming() {
     }
 
     return (
-        <div className="lessons lessons-wrap" id="upcomingLessons">
+        <div className={`lessons lessons-wrap ${!isDataPresentAndFilterApplied ? 'flexBox' : ''}`} id="upcomingLessons">
             <div className="inner-page">
                 <h1>Learn from the Experts</h1>
                 {/* <p>
