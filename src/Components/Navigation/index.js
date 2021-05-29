@@ -22,7 +22,6 @@ import {
 import { NOTIFICATION_SUCCCESS } from "../../Constants";
 import { displayNotification } from "../../Actions/Notification";
 import * as $ from "jquery";
-import { getUserById } from "../../Services/User.service";
 import {
   getNotifications,
   updateNotification,
@@ -207,12 +206,15 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
   useEffect(() => {
     if (userNotificationList && userNotificationList.length > 0) {
       setNotificationValue(true);
+    } else {
+      setNotificationValue(false);
     }
   }, [userNotificationList]);
 
   const fetchNotifications = () => {
     let followNotificationArray = [];
     if (loggedInUser.key) {
+      setUserNotificationList([]);
       getNotifications(loggedInUser.key).subscribe((response) => {
         const notifications =
           response && response.data && response.data ? response.data : [];
@@ -671,20 +673,20 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
         if (response) {
           let notificationData = {};
           if (response && response.blocked) {
-            fetchNotifications();
-            // notificationData = {
-            //   notify: loggedInUser,
-            //   action: response.blocked ? "blocked" : null,
-            //   user: user,
-            //   createdAt: new Date(),
-            // };
+            notificationData = {
+              notify: loggedInUser,
+              action: response.blocked ? "blocked" : null,
+              user: user,
+              createdAt: new Date(),
+            };
           }
-          // if (notificationData && Object.keys(notificationData).length > 0) {
-          //   // Updating Nofification for user who accepted request
-          //   updateNotification(notificationData).subscribe((response) => {
-          //     console.log("response", response);
-          //   });
-          // }
+          if (notificationData && Object.keys(notificationData).length > 0) {
+            // Updating Nofification for user who accepted request
+            updateNotification(notificationData).subscribe((response) => {
+              console.log("response", response);
+              fetchNotifications();
+            });
+          }
         }
       });
     } catch (e) {
@@ -705,20 +707,20 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
         if (response) {
           let notificationData = {};
           if (response && response.unfollowed) {
-            fetchNotifications();
-            // notificationData = {
-            //   notify: loggedInUser,
-            //   action: response.unfollowed ? "unfollowed" : null,
-            //   user: user,
-            //   createdAt: new Date(),
-            // };
+            notificationData = {
+              notify: loggedInUser,
+              action: response.unfollowed ? "unfollowed" : null,
+              user: user,
+              createdAt: new Date(),
+            };
           }
-          // if (notificationData && Object.keys(notificationData).length > 0) {
-          //   // Updating Nofification for user who accepted request
-          //   updateNotification(notificationData).subscribe((response) => {
-          //     console.log("response", response);
-          //   });
-          // }
+          if (notificationData && Object.keys(notificationData).length > 0) {
+            // Updating Nofification for user who accepted request
+            updateNotification(notificationData).subscribe((response) => {
+              console.log("response", response);
+              fetchNotifications();
+            });
+          }
         }
       });
     } catch (e) {

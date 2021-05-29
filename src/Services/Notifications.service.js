@@ -2,7 +2,6 @@ import { Observable } from "rxjs";
 import db from "../Database";
 
 const notificationsRef = db.collection("notifications");
-const userRef = db.collection("users");
 
 export const getNotifications = (id) => {
   return new Observable((observer) => {
@@ -62,7 +61,7 @@ export const updateNotification = (notificationData) => {
         if (action === true) {
           if (data && data.followRequestedBy) {
             let tempData = data.followRequestedBy;
-            tempData.map((item, index) => {
+            tempData.forEach((item, index) => {
               if (item.userKey === updateData.userKey) {
                 tempData.splice(index);
               }
@@ -73,12 +72,23 @@ export const updateNotification = (notificationData) => {
         if (action === "rejected") {
           if (data && data.followRequestedBy) {
             let tempData = data.followRequestedBy;
-            tempData.map((item, index) => {
+            tempData.forEach((item, index) => {
               if (item.userKey === updateData.userKey) {
                 tempData.splice(index);
               }
             });
             data.followRequestedBy = tempData;
+          }
+        }
+        if (action === "blocked") {
+          if (data && data.followedBy) {
+            let tempData = data.followedBy;
+            tempData.forEach((item, index) => {
+              if (item.userKey === updateData.userKey) {
+                tempData.splice(index);
+              }
+            });
+            data.followedBy = tempData;
           }
         }
         notificationsRef
