@@ -22,7 +22,6 @@ import {
 import { NOTIFICATION_SUCCCESS } from "../../Constants";
 import { displayNotification } from "../../Actions/Notification";
 import * as $ from "jquery";
-import { getUserById } from "../../Services/User.service";
 import {
   getNotifications,
   updateNotification,
@@ -207,12 +206,15 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
   useEffect(() => {
     if (userNotificationList && userNotificationList.length > 0) {
       setNotificationValue(true);
+    } else {
+      setNotificationValue(false);
     }
   }, [userNotificationList]);
 
   const fetchNotifications = () => {
     let followNotificationArray = [];
     if (loggedInUser.key) {
+      setUserNotificationList([]);
       getNotifications(loggedInUser.key).subscribe((response) => {
         const notifications =
           response && response.data && response.data ? response.data : [];
@@ -612,6 +614,7 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
 
                 updateNotification(notificationData).subscribe((reponse) => {
                   console.log("reponse", reponse);
+                  fetchNotifications();
                 });
               }
             });
@@ -630,7 +633,7 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
     try {
       user.key = user.userKey;
       user.name = user.username;
-      acceptFollowRequest(loggedInUser, user).subscribe((response) => {
+      rejectFollowRequest(loggedInUser, user).subscribe((response) => {
         console.log("response", response);
         event.target.classList.remove("loading");
         if (response) {
@@ -643,12 +646,13 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
               createdAt: new Date(),
             };
           }
-          // if (notificationData && Object.keys(notificationData).length > 0) {
-          //   // Updating Nofification for user who accepted request
-          //   updateNotification(notificationData).subscribe((response) => {
-          //     console.log("response", response);
-          //   });
-          // }
+          if (notificationData && Object.keys(notificationData).length > 0) {
+            // Updating Nofification for user who accepted request
+            updateNotification(notificationData).subscribe((response) => {
+              console.log("response", response);
+              fetchNotifications();
+            });
+          }
         }
       });
     } catch (e) {
@@ -663,7 +667,7 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
     try {
       user.key = user.userKey;
       user.name = user.username;
-      acceptFollowRequest(loggedInUser, user).subscribe((response) => {
+      blockUser(loggedInUser, user).subscribe((response) => {
         console.log("response", response);
         event.target.classList.remove("loading");
         if (response) {
@@ -676,12 +680,13 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
               createdAt: new Date(),
             };
           }
-          // if (notificationData && Object.keys(notificationData).length > 0) {
-          //   // Updating Nofification for user who accepted request
-          //   updateNotification(notificationData).subscribe((response) => {
-          //     console.log("response", response);
-          //   });
-          // }
+          if (notificationData && Object.keys(notificationData).length > 0) {
+            // Updating Nofification for user who accepted request
+            updateNotification(notificationData).subscribe((response) => {
+              console.log("response", response);
+              fetchNotifications();
+            });
+          }
         }
       });
     } catch (e) {
@@ -696,7 +701,7 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
     try {
       user.key = user.userKey;
       user.name = user.username;
-      acceptFollowRequest(loggedInUser, user).subscribe((response) => {
+      unFollowUser(loggedInUser, user).subscribe((response) => {
         console.log("response", response);
         event.target.classList.remove("loading");
         if (response) {
@@ -709,12 +714,13 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
               createdAt: new Date(),
             };
           }
-          // if (notificationData && Object.keys(notificationData).length > 0) {
-          //   // Updating Nofification for user who accepted request
-          //   updateNotification(notificationData).subscribe((response) => {
-          //     console.log("response", response);
-          //   });
-          // }
+          if (notificationData && Object.keys(notificationData).length > 0) {
+            // Updating Nofification for user who accepted request
+            updateNotification(notificationData).subscribe((response) => {
+              console.log("response", response);
+              fetchNotifications();
+            });
+          }
         }
       });
     } catch (e) {

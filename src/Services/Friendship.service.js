@@ -1,9 +1,7 @@
 import { Observable } from "rxjs";
 import db from "../Database";
-import { updateNotification } from "./Notifications.service";
 
 const userRef = db.collection("users");
-const notificationsRef = db.collection("notifications");
 
 export function updateFollowUnfollow(toFollowUser, followByUser, action) {
   const toFollowUserKey = toFollowUser.key;
