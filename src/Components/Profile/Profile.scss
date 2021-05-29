@@ -205,8 +205,8 @@
         color: var(--primary-white);
         i {
             border-radius: 50%;
-            padding: 4px 5px 5px 5px;
-            background: rgba(0, 0, 0, 0.3);
+            padding: 6px 5px 5px 6px;
+            background: rgba(0, 0, 0, 0.6);
             box-sizing: border-box;
             display: block;
             width: 26px;
@@ -271,15 +271,35 @@
         right: 0;
         top: 34px;
         width: 200px;
-        height: 44px;
+        height: auto;
         background: var(--primary-white);
         border-radius: 5px;
-        color: var(--footer-text-grey);
-        padding: 10px;
+        padding: 0;
         box-sizing: border-box;
         z-index: 10;
-        &:hover {
-            color: var(--secondary-bg-blue);
+        &:before {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--primary-white);
+            transform: rotate(45deg);
+            right: 12px;
+            top: -4px;
+            z-index: 0;
+        }
+        .profileItem {
+            position: relative;
+            z-index: 1;
+            cursor: pointer;
+            font-size: 12px;
+            padding: 5px 8px;
+            transition: all 0.3s ease-in-out;
+            color: var(--footer-text-grey);
+            &:hover {
+                background: rgba(0, 0, 0, 0.1);
+                color: var(--secondary-bg-blue);
+            }
         }
     }   
 }

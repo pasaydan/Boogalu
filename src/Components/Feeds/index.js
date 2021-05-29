@@ -169,7 +169,7 @@ function Feeds() {
                         }
                         addUserDetailsToFeed(feed, tempUserList);
                     })
-                })
+                });
                 setFeedList(tempFeedList)
                 setUserList(tempUserList);
             })

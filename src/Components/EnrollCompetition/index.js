@@ -8,6 +8,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { THUMBNAIL_URL } from '../../Constants';
 import { useStoreConsumer } from '../../Providers/StateProvider';
+import { updateVideo } from '../../Services/UploadedVideo.service';
 import { saveCompetition, updateCompetition } from "../../Services/EnrollCompetition.service";
 import { enableLoginFlow } from "../../Actions/LoginFlow";
 import { setActiveCompetition } from "../../Actions/Competition";
@@ -27,11 +28,11 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
     const [IsUserSubscribed, setIsUserSubscribed] = useState(null);
 
     useEffect(() => {
-        if (loggedInUser.subscriptions) {
-            let isSubscribed = loggedInUser.subscriptions.filter((data) => data.type === 'competition-enrollment');
-            if (isSubscribed.length) setIsUserSubscribed(true);
-            else setIsUserSubscribed(false);
-        } else setIsUserSubscribed(false);
+        if (loggedInUser.subscribed) {
+            setIsUserSubscribed(true);
+        } else {
+            setIsUserSubscribed(false);
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -98,31 +99,53 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
                 url: competitionDetails.selectedVideo.url,
                 desc: competitionDetails.selectedVideo.desc,
             },
-            ageGroup: competitionDetails.ageGroup,
+            ageGroup: competitionDetails?.ageGroup || competitionDetails?.userSubmitedDetails?.ageGroup,
             status: 'Submited'
         }
-        console.log(competitionObj)
+        console.log(competitionObj);
         if (competitionDetails.isUserEnrolled) {
-            updateCompetition(competitionDetails.userSubmitedDetails.key, competitionObj).subscribe((response) => {
-                dispatch(disableLoading());
-                console.log('vdo updated for competition suceess');
-                history.push('/profile');
-            })
+            if (competitionDetails?.userSubmitedDetails?.vdo?.key) {
+                const previousObj = Object.assign({}, competitionDetails.userSubmitedDetails.vdo);
+                previousObj.enrolledCompetition = null;
+                previousObj.userId = competitionDetails.userSubmitedDetails.userId;
+                try {
+                    updateVideo(previousObj.key, previousObj).subscribe(resp => {
+                        try {
+                            updateCompetition(competitionDetails.userSubmitedDetails.key, competitionObj).subscribe((response) => {
+                                dispatch(disableLoading());
+                                console.log('vdo updated for competition suceess');
+                                history.push('/profile');
+                            })
+                        } catch(e) {
+                            dispatch(disableLoading());
+                            console.log('Error updating competition: ', e);
+                        }
+                    });
+                } catch(e) {
+                    dispatch(disableLoading());
+                    console.log('update previous video error: ', e);
+                }
+            }
         } else {
-            saveCompetition(competitionObj).subscribe((response) => {
+            try {
+                saveCompetition(competitionObj).subscribe((response) => {
+                    dispatch(disableLoading());
+                    sendEmailToAdmin();
+                    sendEmailToUser();
+                    console.log('vdo uploaded for competition suceess');
+                    history.push('/profile');
+                })
+            } catch(e) {
                 dispatch(disableLoading());
-                sendEmailToAdmin();
-                sendEmailToUser();
-                console.log('vdo uploaded for competition suceess');
-                history.push('/profile');
-            })
+                console.log('Error saving competition: ', e);
+            }
         }
 
         // handleClose();
     }
 
     const proceedForSubscription = () => {
-        if (competitionDetails.ageGroup) {
+        if (competitionDetails?.ageGroup || competitionDetails?.userSubmitedDetails?.ageGroup) {
             handleClose();
             dispatch(enableLoginFlow('competition-subscription'));
             history.push({
@@ -131,7 +154,7 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
             })
         } else {
             dispatch(displayNotification({
-                msg: "Please the age group!",
+                msg: "Please select the age group!",
                 type: NOTIFICATION_ERROR,
                 time: 3000
             }))
@@ -179,7 +202,8 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
             {/* check for user subscribed or not */}
             {IsUserSubscribed ?
                 <div>
-                    {!competitionDetails?.isUserEnrolled ? <Button variant="contained" color="primary" onClick={() => submitForCompetition()}>Complete Enrollment <ArrowRightSharpIcon /></Button>
+                    {!competitionDetails?.isUserEnrolled ? 
+                        <Button variant="contained" color="primary" onClick={() => submitForCompetition()}>Complete Enrollment <ArrowRightSharpIcon /></Button>
                         : <Button variant="contained" color="primary" onClick={() => submitForCompetition()}>Update Competition<ArrowRightSharpIcon /></Button>
                     }
                 </div> :

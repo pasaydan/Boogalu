@@ -18,7 +18,8 @@ export default function Notification() {
             }, state.notification.time);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [state])
+    }, [state]);
+
     return (
         <>
             {ShowNotification ? <div className={`${ActiveNotification?.type ? ActiveNotification.type : 'noNotification'} notification-wrap`}>

@@ -1,4 +1,4 @@
-import { LOGIN_USER, LOGOUT_USER, SIGN_UP_USER } from '../../Constants'
+import { LOGIN_USER, LOGOUT_USER, SIGN_UP_USER, GET_UPLOADED_VIDEOS_BY_USER } from '../../Constants'
 
 export const loginUser = payload => {
     return {
@@ -17,6 +17,13 @@ export const logoutUser = payload => {
 export const signupUser = payload => {
     return {
         type: SIGN_UP_USER,
+        payload
+    }
+}
+
+export const getUploadedVideosByUser = payload => {
+    return {
+        type: GET_UPLOADED_VIDEOS_BY_USER,
         payload
     }
 }

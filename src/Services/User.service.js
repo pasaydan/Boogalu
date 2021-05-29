@@ -83,7 +83,6 @@ export function getLimitedUser(userKey) {
     return new Observable((observer) => {
         userRef.orderBy('name').limit(10).onSnapshot((querySnapshot) => {
             let users = [];
-            console.log('User key: ', userKey);
             querySnapshot.forEach((doc) => {
                 let data = doc.data();
                 data.key = doc.id;

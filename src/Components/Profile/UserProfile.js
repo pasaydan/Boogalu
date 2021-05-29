@@ -520,7 +520,7 @@ function Profile() {
                                                     <div className="menu" onClick={() => { setOpenUploadCompModalFor(vdo.key); setShowProfileTab(true) }}>
                                                         <i><FaBars /></i>
                                                     </div>
-                                                    {showProfileTab && openUploadCompModalFor == vdo.key && <div className="videoUploadToolTip" ref={ref}>
+                                                    {showProfileTab && openUploadCompModalFor === vdo.key && <div className="videoUploadToolTip" ref={ref}>
                                                         <div className="profile" onClick={() => redirectToCompetition()}>Upload for competition</div>
                                                     </div>}
                                                     <div className="vdo-card">

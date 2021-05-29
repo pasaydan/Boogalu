@@ -319,6 +319,10 @@ button:focus {
 
 .MuiButton-containedSecondary, .MuiButton-containedPrimary {
   position: relative;
+  font-size: 12px;
+  .MuiButton-label, span {
+    font-size: 12px;
+  }
   &:before, &:after {
     position: absolute;
     content: '';
@@ -627,3 +631,4 @@ button:focus {
 @import './Components/ImageCarousel/imageCarousel.scss';
 @import './Components/members/members.scss';
 @import './Components/judgements/judgement.scss';
+@import './Components/genericInfoModal/genericModal.scss';

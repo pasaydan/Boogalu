@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory, Link } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { GoogleLogin } from 'react-google-login';
@@ -15,20 +15,21 @@ import pwdKeyIcon from '../../Images/pwd-keys.svg';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
-import bgImg from '../../Images/bg1.svg';
+// import bgImg from '../../Images/bg1.svg';
 import { loginUser } from '../../Actions/User/index';
 import { getUserByEmail, getUserByPhone, updatePassword } from "../../Services/User.service";
+import { getUploadedVideosByUserId } from '../../Services/UploadedVideo.service';
 import VideoUploader from "../VideoUploader";
 import Loader from '../Loader';
+import GenericInfoModal from '../genericInfoModal';
 import { displayNotification, removeNotification } from "../../Actions/Notification";
+import { getUploadedVideosByUser } from "../../Actions/User";
 import { NOTIFICATION_ERROR, NOTIFICATION_SUCCCESS } from "../../Constants";
-import { validateEmailId } from '../../helpers';
+// import { validateEmailId } from '../../helpers';
 import { useCookies } from "react-cookie";
 import { sendEmail } from "../../Services/Email.service";
 import * as $ from 'jquery';
 const restLinkUrlQuery = '?reset-password='
-
-const firebase = require("firebase");
 
 export default function Login(props) {
     const { state, dispatch } = useStoreConsumer();
@@ -48,6 +49,11 @@ export default function Login(props) {
     const [resetEmail, setResetEmail] = useState('');
     const [confirmPasswordMessage, setConfirmPwdMessage] = useState('');
     const [resetPassword, setResetPassword] = useState({ password: '', confirmPassword: '' });
+    const [openInformationModal, toggleInfoModal] = useState(false); 
+    const [infoModalTitle, setInfoModalTitle] = useState(''); 
+    const [infoModalMessage, setInfoModalMessage] = useState(''); 
+    const [infoModalStatus, setInfoModalStatus] = useState(''); 
+    const [navigateLink, setInfoModalNavigateLink] = useState(''); 
     // const resetEmailRef = useRef(null);
 
     useEffect(() => {
@@ -99,6 +105,17 @@ export default function Login(props) {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    function shouldCloseInfoModal(navigationValue) {
+        setInfoModalTitle('');
+        setInfoModalMessage('');
+        setInfoModalStatus('');
+        setInfoModalNavigateLink('');
+        toggleInfoModal(false);
+        if (navigationValue) {
+            history.push(navigationValue);
+        }
+    }
 
     const setLoginResponseToServer = () => {
         // notify server that user is loggedin
@@ -229,6 +246,21 @@ export default function Login(props) {
         }
     }
 
+    function getUsersVideoList(userKey) {
+        if (userKey) {
+            togglePageLoader(true);
+            try {
+                getUploadedVideosByUserId(userKey).subscribe( list => {
+                    togglePageLoader(false);
+                    dispatch(getUploadedVideosByUser(list));
+                });
+            } catch(e) {
+                togglePageLoader(false);
+                console.log('Video fetch erro: ', e);
+            }
+        }
+    }
+
     const signinUser = (e, status) => {
         togglePageLoader(true);
         setLoginError(null);
@@ -247,6 +279,7 @@ export default function Login(props) {
                 getUserLoginData(userData)
                     .then((data) => {
                         //user is registered
+                        getUsersVideoList(data.key);
                         togglePageLoader(false);
                         setLoginResponseToServer();
                         data.source = 'Website';
@@ -256,11 +289,24 @@ export default function Login(props) {
                             type: NOTIFICATION_SUCCCESS,
                             time: 3000
                         }));
-                        if (state.currentLoginFlow === 'competition') history.push('/competitions');
-                        else if (state.currentLoginFlow === 'subscription') history.push('/subscription');
-                        else if (state.currentLoginFlow === 'lessons') history.push('/lessons');
-                        else if (state.currentLoginFlow === 'upload-video') setOpenVdoUploadModal(true);
-                        else history.push('/')
+                        if (state.currentLoginFlow === 'competition') {
+                            history.push('/competitions');
+                        } else if (state.currentLoginFlow === 'subscription') {
+                            history.push('/subscription');
+                        } else if (state.currentLoginFlow === 'lessons') {
+                            history.push('/lessons');
+                        } else if (state.currentLoginFlow === 'upload-video') {
+                            if (state.userVideosList && state.userVideosList.length < 4) {
+                                setOpenVdoUploadModal(true);
+                            } else {
+                                setInfoModalMessage('You have exceeds your maximum video upload limit of 4, please delete some videos to upload another one!');
+                                setInfoModalStatus('error');
+                                setInfoModalNavigateLink('/profile');
+                                toggleInfoModal(true);
+                            }
+                        } else {
+                            history.push('/');
+                        } 
                     })
                     .catch((data) => {
                         togglePageLoader(false);
@@ -281,6 +327,7 @@ export default function Login(props) {
                 getUserLoginData(userData)
                     .then((data) => {
                         //user is registered
+                        getUsersVideoList(data.key);
                         togglePageLoader(false);
                         setLoginResponseToServer();
                         data.source = thirdPartyResponse.source;
@@ -290,11 +337,21 @@ export default function Login(props) {
                             type: NOTIFICATION_SUCCCESS,
                             time: 3000
                         }));
-                        if (state.currentLoginFlow === 'competition') history.push('/competitions');
-                        else if (state.currentLoginFlow === 'subscription') history.push('/subscription');
-                        else if (state.currentLoginFlow === 'lessons') history.push('/lessons');
-                        else if (state.currentLoginFlow === 'upload-video') setOpenVdoUploadModal(true);
-                        else history.push('/')
+                        if (state.currentLoginFlow === 'competition') {
+                            history.push('/competitions');
+                        } else if (state.currentLoginFlow === 'subscription') {
+                            history.push('/subscription');
+                        } else if (state.currentLoginFlow === 'lessons') {
+                            history.push('/lessons');
+                        } else if (state.currentLoginFlow === 'upload-video') {
+                            if (state.userVideosList && state.userVideosList.length < 4) {
+                                setOpenVdoUploadModal(true);
+                            } else {
+                                history.push('/profile');
+                            }
+                        } else {
+                            history.push('/');
+                        } 
                     })
                     .catch((data) => {
                         togglePageLoader(false);
@@ -694,7 +751,14 @@ export default function Login(props) {
             {/* <div className="img-wrap">
                 <img src={bgImg} alt="background" />
             </div> */}
-            {openVdoUploadModal && <VideoUploader handleClose={() => setOpenVdoUploadModal(false)} />}
+            {openVdoUploadModal ? <VideoUploader handleClose={() => setOpenVdoUploadModal(false)} /> : ''}
+            {openInformationModal ? <GenericInfoModal 
+                title={infoModalTitle}
+                message={infoModalMessage}
+                status={infoModalStatus}
+                navigateUrl={navigateLink}
+                closeInfoModal={shouldCloseInfoModal}
+            /> : ''}
             {/* <ul className="circles">
                 <li></li>
                 <li></li>

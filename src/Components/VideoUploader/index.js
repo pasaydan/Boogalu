@@ -25,7 +25,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
-export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) {
+export default function VideoUploader({ selectedVdo, competitionKey, handleVdoUploadResponse }) {
     const history = useHistory();
     const { state, dispatch } = useStoreConsumer();
     const loggedInUser = state.loggedInUser;
@@ -36,6 +36,7 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
     const [openVdoUploaderModal, setOpenVdoUploaderModal] = useState(true);
     const [progress, setProgress] = useState(0);
     const [ShowVdoUploadProgress, setShowVdoUploadProgress] = useState(false);
+    const [isUserSubscribed, setUserSubscription] = useState(false);
 
     // useEffect(() => {
     //     const timer = setInterval(() => {
@@ -48,6 +49,11 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
 
     useEffect(() => {
         dispatch(disableLoginFlow());
+        if (loggedInUser?.subscribed) {
+            setUserSubscription(true);
+        } else {
+            setUserSubscription(false);
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     
@@ -163,6 +169,9 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
                     userId: loggedInUser.key,
                     thumbnail: thumbnailImage
                 }
+                if (state.currentLoginFlow === 'competition-uploadvdo' && competitionKey) {
+                    uploadObj.enrolledCompetition = competitionKey;
+                }
                 saveUploadedVideo(uploadObj).subscribe((response) => {
                     console.log("vedio data saved to db", response);
                     dispatch(disableLoading());
@@ -171,7 +180,7 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
                     closeUploaderModal();
                     if (state.currentLoginFlow === 'competition-uploadvdo') handleVdoUploadResponse(3);
                     else history.push('/profile');
-                })
+                });
             }
         })
         console.log(SelectedVideo);
@@ -218,6 +227,15 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
         );
     }
 
+    function sectionScrolled(event) {
+        event.stopPropagation();
+        if (event?.currentTarget?.scrollTop > 5) {
+            event?.currentTarget.classList.add('scrolled');
+        } else {
+            event?.currentTarget.classList.remove('scrolled');
+        }
+    }
+
     return (
         <div>
             <Modal
@@ -233,85 +251,103 @@ export default function VideoUploader({ selectedVdo, handleVdoUploadResponse }) 
                 }}
             >
                 <Fade in={openVdoUploaderModal}>
-                    <div className="video-uploader-inner-modal">
-                        <IconButton className="close-modal-btn" onClick={() => { closeUploaderModal(false); dispatch(disableLoginFlow()); }}>
-                            <CloseIcon />
-                        </IconButton>
-                        <h3>Upload your dance performance video!</h3>
-                        <span className="uploadInfo">( Video size should not exceed 200 MB )</span>
-                        <div className={`uploader-wrap ${SelectedVideo.file ? 'selected-file' : ''}`}>
-                            {
-                                !SelectedVideo.file ?
-                                    <div className="upload-input-wrap">
-                                        <i className="upload-icon"><FaCloudUploadAlt /></i>
-                                        <input id="myInput"
-                                            type="file"
-                                            accept="video/mp4,video/x-m4v,video/*"
-                                            ref={uploaderRef}
-                                            onChange={(e) => onChangeFile(e)}
-                                        />
-                                    </div> : ''
-                            }
+                    {
+                        isUserSubscribed ?
+                            <div className="video-uploader-inner-modal">
+                                <IconButton className="close-modal-btn" onClick={() => { closeUploaderModal(false); dispatch(disableLoginFlow()); }}>
+                                    <CloseIcon />
+                                </IconButton>
+                                <h3>Upload your dance performance video!</h3>
+                                <span className="uploadInfo">( You can upload maximum 4 videos and use them for the compeitions )</span>
+                                <span className="uploadInfo">( Video size should not exceed 200 MB )</span>
+                                <div className={`uploader-wrap ${SelectedVideo.file ? 'selected-file' : ''}`} onScroll={(e) => sectionScrolled(e)}>
+                                    {
+                                        !SelectedVideo.file ?
+                                            <div className="upload-input-wrap">
+                                                <i className="upload-icon"><FaCloudUploadAlt /></i>
+                                                <input id="myInput"
+                                                    type="file"
+                                                    accept="video/mp4,video/x-m4v,video/*"
+                                                    ref={uploaderRef}
+                                                    onChange={(e) => onChangeFile(e)}
+                                                />
+                                            </div> : ''
+                                    }
 
-                            {!SelectedVideo.file ?
-                                <div className="upload-btn-file">
-                                    <Button
-                                        variant="contained" color="primary"
-                                        onClick={() => { uploaderRef.current.click() }}>Upload Video</Button>
-                                </div> :
-                                <div className="video-information-wrap">
-                                    <video width="400" controls>
-                                        <source src={SelectedVideo.file} />
-                                    </video>
-                                    <div className="change-video-btn">
-                                        <Button
-                                            variant="contained" color="primary"
-                                            onClick={() => { uploaderRef.current.click() }}
-                                        >Change vdo</Button>
-                                    </div>
-                                    <div className="input-form-wrap">
-                                        <div className="input-wrap image-uploader-wrap">
-                                            <ImageUploader
-                                                withIcon={true}
-                                                buttonText='Select image'
-                                                onChange={onThumbnailImgSelect}
-                                                imgExtension={['.jpg', '.gif', '.png', '.gif', '.svg']}
-                                                maxFileSize={2200000}
-                                                accept="image/*"
-                                                withPreview={true}
-                                                singleImage={true}
-                                                label="Select thumbnail image ( Max size 2 MB)"
-                                            />
-                                        </div>
-                                        <div className="text-form-wrapper">
-                                            <div className="input-field-wrap">
-                                                <TextField className="input-field"
-                                                    required
-                                                    id="outlined-required-title"
-                                                    label="Video title"
-                                                    onChange={handleChange('title')}
-                                                    value={SelectedVideo.title}
-                                                    variant="outlined"
-                                                    autoComplete="off"
-                                                />
+                                    {!SelectedVideo.file ?
+                                        <div className="upload-btn-file">
+                                            <Button
+                                                variant="contained" color="primary"
+                                                onClick={() => { uploaderRef.current.click() }}>Upload Video</Button>
+                                        </div> :
+                                        <div className="video-information-wrap">
+                                            <video width="400" controls>
+                                                <source src={SelectedVideo.file} />
+                                            </video>
+                                            <div className="change-video-btn">
+                                                <Button
+                                                    variant="contained" color="primary"
+                                                    onClick={() => { uploaderRef.current.click() }}
+                                                >Change video</Button>
                                             </div>
-                                            <div className="input-field-wrap">
-                                                <TextField className="input-field"
-                                                    required
-                                                    id="outlined-required-desc"
-                                                    label="Video description"
-                                                    onChange={handleChange('desc')}
-                                                    value={SelectedVideo.desc}
-                                                    variant="outlined"
-                                                    autoComplete="off"
-                                                />
+                                            <div className="input-form-wrap">
+                                                <div className="input-wrap image-uploader-wrap">
+                                                    <ImageUploader
+                                                        withIcon={true}
+                                                        buttonText='Select image'
+                                                        onChange={onThumbnailImgSelect}
+                                                        imgExtension={['.jpg', '.gif', '.png', '.gif', '.svg']}
+                                                        maxFileSize={2200000}
+                                                        accept="image/*"
+                                                        withPreview={true}
+                                                        singleImage={true}
+                                                        label="Select thumbnail image ( Max size 2 MB)"
+                                                    />
+                                                </div>
+                                                <div className="text-form-wrapper">
+                                                    <div className="input-field-wrap">
+                                                        <TextField className="input-field"
+                                                            required
+                                                            id="outlined-required-title"
+                                                            label="Video title"
+                                                            onChange={handleChange('title')}
+                                                            value={SelectedVideo.title}
+                                                            variant="outlined"
+                                                            autoComplete="off"
+                                                        />
+                                                    </div>
+                                                    <div className="input-field-wrap">
+                                                        <TextField className="input-field"
+                                                            required
+                                                            id="outlined-required-desc"
+                                                            label="Video description"
+                                                            onChange={handleChange('desc')}
+                                                            value={SelectedVideo.desc}
+                                                            variant="outlined"
+                                                            autoComplete="off"
+                                                        />
+                                                    </div>
+                                                    <Button variant="contained" color="secondary" onClick={(e) => uploadSelectedVideo(e)}>Upload</Button>
+                                                </div>
                                             </div>
-                                            <Button variant="contained" color="secondary" onClick={(e) => uploadSelectedVideo(e)}>Upload</Button>
-                                        </div>
-                                    </div>
-                                </div>}
-                        </div>
-                    </div>
+                                        </div>}
+                                </div>
+                            </div>
+                        : 
+                            <div className="video-uploader-inner-modal videoUploadSubscribeBox">
+                                <IconButton className="close-modal-btn" onClick={() => { closeUploaderModal(false); dispatch(disableLoginFlow()); }}>
+                                    <CloseIcon />
+                                </IconButton>
+                                <h3>Subscribe &amp; enjoy video uploads</h3>
+                                <p>
+                                    Take our subscription(Start-up, Pro or Premium) and get access to our video upload feature.
+                                    You can upload upto 4 videos and then submit those videos to any active competition and also get
+                                    chance of winning exciting prizes.<br/>
+                                    So, what are you waiting for?
+                                </p>
+                                <a href="/subscription" className="btn primary-dark" title="Navigate to Subscription">Let's Subscribe</a>
+                            </div>
+                    }
                 </Fade>
             </Modal>
             {ShowVdoUploadProgress && <div className="progress-wrap">

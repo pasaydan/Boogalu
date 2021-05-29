@@ -13,6 +13,7 @@ import { displayNotification } from "../../Actions/Notification";
 import * as $ from 'jquery';
 import {  getUserById } from '../../Services/User.service';
 import {  getNotifications, acceptFollowRequest } from '../../Services/Friendship.service';
+import GenericInfoModal from '../genericInfoModal';
 
 const SCROLL_TOP_LIMIT = 200;
 
@@ -34,6 +35,12 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
     // eslint-disable-next-line no-unused-vars
     const [userNotificationList, setUserNotificationList] = useState([]);
     // eslint-disable-next-line no-unused-vars
+
+    const [openInformationModal, toggleInfoModal] = useState(false); 
+    const [infoModalTitle, setInfoModalTitle] = useState(''); 
+    const [infoModalMessage, setInfoModalMessage] = useState(''); 
+    const [infoModalStatus, setInfoModalStatus] = useState(''); 
+    const [navigateLink, setInfoModalNavigateLink] = useState(''); 
     
     const ref = useRef();
     const hamburgerMenuRef = useRef(null);
@@ -318,6 +325,18 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
         return null;
     }
 
+    function shouldCloseInfoModal() {
+        setInfoModalTitle('');
+        setInfoModalMessage('');
+        setInfoModalStatus('');
+        setInfoModalNavigateLink('');
+        toggleInfoModal(false);
+        const pathName = history?.location?.pathname.split('/')[1];
+        if (!pathName.includes('profile')) {
+            setInfoModalNavigateLink('/profile');
+        }
+    }
+
     const uploadVdo = (e) => {
         // setHideVdoUploadBtn(true);
         e.stopPropagation();
@@ -327,7 +346,17 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
             //     pathname: '/upload-video',
             //     state: null
             // })
-            setOpenVdoUploadModal(true);
+            if (state.userVideosList && state.userVideosList.length < 4) {
+                setOpenVdoUploadModal(true);
+            } else {
+                const pathName = history?.location?.pathname.split('/')[1];
+                if (!pathName.includes('profile')) {
+                    setInfoModalNavigateLink('/profile');
+                }
+                setInfoModalMessage('You have exceeds your maximum video upload limit of 4, please delete some videos to upload another one!');
+                setInfoModalStatus('error');
+                toggleInfoModal(true);
+            }
         } else {
             dispatch(enableLoginFlow('upload-video'));
             history.push({
@@ -803,6 +832,13 @@ function Navigation( {routeChangeTrigger, isUserLoggedIn} ) {
                         : ''
                 }
                 {openVdoUploadModal && <VideoUploader handleVdoUploadResponse={() => setOpenVdoUploadModal(false)} />}
+                {   openInformationModal ? <GenericInfoModal 
+                    title={infoModalTitle}
+                    message={infoModalMessage}
+                    status={infoModalStatus}
+                    navigateUrl={navigateLink}
+                    closeInfoModal={shouldCloseInfoModal}
+                /> : ''}
             </nav>
         </>
     )

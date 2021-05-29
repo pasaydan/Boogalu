@@ -42,7 +42,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
     const [selectedVideoData, setVideoData] = useState(null);
     const [disableSubmitVdoButton, setDisableSubmitVdoButton] = useState(false);
     const [VdoUploadDateLimit, setVdoUploadDateLimit] = useState(null)
-    const [SelectedVideo, setSelectedVideo] = useState({ title: "", desc: "", file: null });
+    const [SelectedVideo, setSelectedVideo] = useState({ title: "", desc: "", file: null, enrolledCompetition: null });
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
@@ -55,9 +55,13 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
         if (competitionDetails) {
             let vdoUploadUpto = new Date(competitionDetails.startAt);
             new Date(vdoUploadUpto.setDate(vdoUploadUpto.getDate() + 30));
-            let displayDate = formatDate(vdoUploadUpto, 3) + " " + formatTime(vdoUploadUpto)
-            setVdoUploadDateLimit(displayDate);
+            let displayDate = formatDate(vdoUploadUpto, 3) + " " + formatTime(vdoUploadUpto);
+            if (loggedInUser.key && competitionDetails?.isUserEnrolled) {
+                tncAcceptedValue(true);
+            }
+            setVdoUploadDateLimit(displayDate);   
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [competitionDetails]);
 
     useEffect(() => {
@@ -122,6 +126,9 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
         e.stopPropagation();
         if (vdo && vdo?.key && vdo?.key.length) {
             toggleVideoSelect(false);
+            if (vdo?.enrolledCompetition !== competitionDetails.key) {
+                vdo.enrolledCompetition = competitionDetails.key;
+            }
             setVideoData(vdo);
         }
         if (competitionDetails.isUserEnrolled && competitionDetails.userSubmitedDetails.vdo.key === vdo.key) {
@@ -318,7 +325,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                                         )
                                                     } else {
                                                         return (
-                                                            <li className="sub-titles price-details">
+                                                            <li className="sub-titles price-details" key={`price-item-${index}`}>
                                                                 {`${index + 1} ${ index === 0 ? 'st' : index === 1 ? 'nd' : 'rd'}`} : <span>{item}</span>
                                                             </li>
                                                         )
@@ -342,7 +349,9 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                     <div className="terms-button" ref={tncRef} onClick={() => setTnC((TnC ? false : true))}>
                                         <input type="checkbox"
                                             checked={isTncAccepted}
-                                            title="accept terms and condition" onClick={(e) => acceptTnC(e)} />
+                                            title="accept terms and condition"
+                                            onChange={(e) => console.log('event: ', isTncAccepted)} 
+                                            onClick={(e) => acceptTnC(e)} />
                                         Terms &amp; Conditions
                                     {TnC && <div className={`tool-tip-wrap ${loggedInUser.username ? 'loggedInToolTip' : ''}`}>
                                             <div>You may not be able to attend the live session if you are late.</div>
@@ -365,7 +374,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                             <Button variant="contained" color="primary" onClick={() => proceedForLogin()}>Login</Button>
                                         </div>
                                     }
-                                    {loggedInUser && true && competitionDetails?.isUserEnrolled && <div className="change-video-wrap">
+                                    {loggedInUser.key && competitionDetails?.isUserEnrolled && <div className="change-video-wrap">
                                         <div >
                                             Submitted details:
                                         {/* <video width="400" controls>
@@ -419,7 +428,10 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                             {ActiveStep === 4 && <div>
                                 <EnrollCompetition handleClose={(e) => handleClose(e)} changeSelectedVdo={() => setActiveStep(3)} />
                             </div>}
-                            {SelectedVideo?.file && <VideoUploader selectedVdo={SelectedVideo} handleVdoUploadResponse={(e) => handleVdoUploadResponse(e)} />}
+                            {SelectedVideo?.file && <VideoUploader 
+                                selectedVdo={SelectedVideo}
+                                competitionKey={competitionDetails.key} 
+                                handleVdoUploadResponse={(e) => handleVdoUploadResponse(e)} />}
                             {
                                 competitionDetails.type && competitionDetails.type === 'upcoming' ?
                                 <span className="upcomingEventMessage">Upcoming Event, we'll notify you once active!</span>

@@ -84,7 +84,6 @@ export function saveCompetition(data) {
     });
 };
 
-
 export function updateCompetition(id, data) {
     data.createdOn = data.createdOn || new Date();
     data.modifiedOn = new Date();

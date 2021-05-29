@@ -79,4 +79,7 @@ export const SUBSCIPTION_PLANS_MAP = {
     }
 }
 
+// User Videos Count
+export const GET_UPLOADED_VIDEOS_BY_USER = 'GET_UPLOADED_VIDEOS_BY_USER';
+
 // boogalu.email.test@gmail.com / Box-puppet@1001
