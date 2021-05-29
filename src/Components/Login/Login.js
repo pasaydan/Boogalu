@@ -44,7 +44,7 @@ export default function Login(props) {
     const [emailVerifyClass, toggleEmailVerifyClass] = useState('');
     const [isResetClicked, toggleResetLink] = useState(false);
     const [isPageLoaderActive, togglePageLoader] = useState(false);
-    const [isResetPasswordViewOpen, toggleResetPwdModal] = useState(false);
+    const [isResetPasswordViewOpen, toggleResetPwdModal] = useState(true);
     const [resetEmail, setResetEmail] = useState('');
     const [confirmPasswordMessage, setConfirmPwdMessage] = useState('');
     const [resetPassword, setResetPassword] = useState({ password: '', confirmPassword: '' });
@@ -175,7 +175,7 @@ export default function Login(props) {
                     else res(null);
                 })
             });
-        } catch(e) {
+        } catch (e) {
             console.log('check user email erro: ', e);
         }
     }
@@ -223,7 +223,7 @@ export default function Login(props) {
                     })
                 }
             });
-        } catch(e) {
+        } catch (e) {
             togglePageLoader(false);
             console.log('user login data error: ', e);
         }
@@ -342,10 +342,16 @@ export default function Login(props) {
         try {
             return new Promise((resolve, reject) => {
                 const { email, name } = userDetails;
-                let emailBody = `<div>
-                <p>Hi ${name}, need to reset your password? No problem! just click the link bellow and you'll be on your way. If you did not make this request, please ignore this email. </p>.
-                <a href=${resetLink}>Reset Password</a> 
-                </div>`;
+                let emailBody =
+                    `<div>
+                        <p>Hi ${name}, need to reset your password? No problem! just click the link bellow and you'll be on your way. If you did not make this request, please ignore this email. </p>.
+                        <div>
+                            <a href=${resetLink}>Reset Password</a> 
+                        </div>
+                        <div>If you don't use this link within 30 minutes, it will expire. To get new password reset link, visit:
+                            <a href=https://boogalusite.web.app >New Reset Password Link</a>
+                        </div>
+                    </div>`;
                 let payload = {
                     mailTo: email,
                     title: 'Boogalu- Reset Password',
@@ -362,7 +368,7 @@ export default function Login(props) {
                     }
                 })
             });
-        } catch(e) {
+        } catch (e) {
             togglePageLoader(false);
             console.log('email to user error: ', e);
         }
@@ -404,15 +410,15 @@ export default function Login(props) {
                                 time: 3000
                             }));
                         }).catch(() => {
-                                //email sending failed so do nothing
-                                togglePageLoader(false);
-                                dispatch(displayNotification({
-                                    msg: "Reset link sending failed",
-                                    type: NOTIFICATION_ERROR,
-                                    time: 3000
-                                }));
+                            //email sending failed so do nothing
+                            togglePageLoader(false);
+                            dispatch(displayNotification({
+                                msg: "Reset link sending failed",
+                                type: NOTIFICATION_ERROR,
+                                time: 3000
+                            }));
                         });
-                    } catch(e) {
+                    } catch (e) {
                         togglePageLoader(false);
                         dispatch(displayNotification({
                             msg: "Something went wrong with the network, please try in sometime!",
@@ -432,14 +438,14 @@ export default function Login(props) {
                     history.push('register');
                 }
             });
-        } catch(e) {
+        } catch (e) {
             togglePageLoader(false);
             console.log('Error in sending reset link: ', e);
         }
     }
 
     function resetNewPassword(newPwd, type) {
-        if(type === 'new') {
+        if (type === 'new') {
             setResetPassword({ ...resetPassword, 'password': newPwd });
         } else {
             setResetPassword({ ...resetPassword, 'confirmPassword': newPwd });
@@ -465,7 +471,7 @@ export default function Login(props) {
                         }));
                         //to login with new password redirect to login screen
                     });
-                } catch(e) {
+                } catch (e) {
                     togglePageLoader(false);
                     dispatch(displayNotification({
                         msg: "Something went wrong, please try again in sometime!",
@@ -516,8 +522,8 @@ export default function Login(props) {
     return (
         <div className="login-wrap new-login-signup-ui clearfix gradient-bg-animation darkMode">
             {
-                isPageLoaderActive ? 
-                <Loader /> : ''
+                isPageLoaderActive ?
+                    <Loader /> : ''
             }
             <div className={`inner-form-wrap ${componentShowClass}`}>
                 <form className="form-wrap clearfix" onSubmit={(e) => signinUser(e, 'cred')}>
