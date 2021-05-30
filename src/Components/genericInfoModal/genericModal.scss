@@ -74,42 +74,43 @@
                 transform: rotate(-45deg);
             }
         }
+        .btn {
+            padding: 5px 8px;
+            min-width: 80px;
+            filter: none;
+            margin-left: 20px;
+            color: var(--primary-white);
+            opacity: 0.8;
+            &:hover {
+                opacity: 1;
+                color: var(--primary-white);
+            }
+            &.primary-light {
+                background: var(--success-green-opaque);
+                &:hover {
+                    background: var(--success-green-opaque);
+                }
+            }
+            &.primary-dark {
+                background: var(--light-pink-bg);
+                &:hover {
+                    background: var(--light-pink-bg);
+                }   
+            }
+            &:first-child {
+                margin: 0;
+            }
+        }
         .navigateLink {
-            font-size: 14px;
             text-decoration: none;
-            color: var(--info-blue-dark);
+            display: block;
+            max-width: 160px;
+            margin: 10px auto 15px;
         }
         .actionWrap {
             display: flex;
             justify-content: center;
             margin: 0 0 15px 0;
-            .btn {
-                padding: 5px 8px;
-                min-width: 80px;
-                filter: none;
-                margin-left: 20px;
-                color: var(--primary-white);
-                opacity: 0.8;
-                &:hover {
-                    opacity: 1;
-                    color: var(--primary-white);
-                }
-                &.primary-light {
-                    background: var(--success-green-opaque);
-                    &:hover {
-                        background: var(--success-green-opaque);
-                    }
-                }
-                &.primary-dark {
-                    background: var(--light-pink-bg);
-                    &:hover {
-                        background: var(--light-pink-bg);
-                    }   
-                }
-                &:first-child {
-                    margin: 0;
-                }
-            }
         }
     }
 }

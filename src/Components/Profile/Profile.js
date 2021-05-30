@@ -17,7 +17,12 @@ import secondPrizeBadge from "../../Images/2nd-prize-badge.png";
 // eslint-disable-next-line no-unused-vars
 import thirdPrizeBadge from "../../Images/3rd-prize-badge.png";
 import * as $ from "jquery";
-import { getUploadedVideosByUserId } from "../../Services/UploadedVideo.service";
+import { 
+  getUploadedVideosByUserId, 
+  updateVideoLikes, 
+  updateVideoComments, 
+  deleteUploadedVideoByVideoKey 
+} from "../../Services/UploadedVideo.service";
 import { getCompetitionByUserId } from "../../Services/EnrollCompetition.service";
 import CompetitionsDetails from "../CompetitionsDetails";
 import { getCompetitionsList } from "../../Services/Competition.service";
@@ -30,10 +35,6 @@ import { removeDataRefetchModuleName } from "../../Actions/Utility";
 import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
 import Favorite from "@material-ui/icons/Favorite";
 import CommentOutlined from "@material-ui/icons/CommentOutlined";
-import {
-  updateVideoLikes,
-  updateVideoComments,
-} from "../../Services/UploadedVideo.service";
 import VideoDetails from "../VideoDetails";
 import {
   getAllUser,
@@ -48,6 +49,8 @@ import { FaBars } from "react-icons/fa";
 import { disableLoginFlow, enableLoginFlow } from "../../Actions/LoginFlow";
 import { setActiveVideoForCompetition } from "../../Actions/Competition";
 import { loginUser } from "../../Actions/User";
+import GenericInfoModal from '../genericInfoModal';
+import { deleteImage, deleteVideo } from "../../Services/Upload.service";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -108,10 +111,24 @@ function Profile() {
   const [userProfileData, setUserProfileData] = useState({});
   const [userData, setUserData] = useState({});
   const [followButtonText, setFollowButtonText] = useState("Follow");
+  const [openInformationModal, toggleInfoModal] = useState(false); 
+  const [infoModalMessage, setInfoModalMessage] = useState(''); 
+  const [infoModalStatus, setInfoModalStatus] = useState(''); 
+  const [genericInforModalAction, setInfoModalAction] = useState(false); 
+  const [userDeleteVideoSelection, setUserVideoSelectionForRemove] = useState(null); 
+
   const profileOuterRef = useRef();
   const userTabsRef = useRef();
   const ref = useRef();
   const headerWrapRef = useRef();
+
+  function shouldCloseInfoModal(navigationValue) {
+    setUserVideoSelectionForRemove({})
+    setInfoModalMessage('');
+    setInfoModalStatus('');
+    setInfoModalAction(false);
+    toggleInfoModal(false);
+  }
 
   const fetchUserDetailsByEmail = (email, responseType) => {
     let loggedUser = loggedInUser;
@@ -153,7 +170,6 @@ function Profile() {
     let data = {};
     updateUser(userObj.key, userObj).subscribe((response) => {
       if (response.updated) {
-        console.log("Follow Request Approved by logged in user updated");
         if (requestRaisedByUser) {
           if (!requestRaisedByUser.following) {
             data = { ...requestRaisedByUser, following: [loggedInUser.key] };
@@ -177,7 +193,7 @@ function Profile() {
     setShowProfileTab(false);
     setOpenUploadCompModalFor(null);
   });
-  console.log("loggedInUser", loggedInUser);
+
   useEffect(() => {
     if (!loggedInUser || !loggedInUser.email) history.push("/login");
     if (loggedInUser && loggedInUser.email) {
@@ -204,7 +220,6 @@ function Profile() {
               if (response && response.length > 0) {
                 const tempProfileData = response[0];
                 setUserProfileData(tempProfileData);
-                console.log("userProfileData", tempProfileData);
                 setUserData(tempProfileData);
               } else {
                 setUserData(loggedInUser);
@@ -280,11 +295,11 @@ function Profile() {
             if (vdoObj.likes && vdoObj.likes.length) {
               vdoObj.likes.forEach((likeObj) => {
                 let userData = userList.filter(
-                  (userObj) => userObj.key === likeObj.userId
+                  (userObj) => userObj?.key === likeObj.userId
                 );
                 if (userData.length !== 0) {
-                  likeObj.username = userData[0].username;
-                  likeObj.profileImage = userData[0].profileImage;
+                  likeObj.username = userData && userData[0]?.username;
+                  likeObj.profileImage = userData && userData[0]?.profileImage;
                 }
               });
             }
@@ -294,19 +309,19 @@ function Profile() {
                   (userObj) => userObj.key === commentObj.userId
                 );
                 if (userData.length !== 0) {
-                  commentObj.username = userData[0].username;
-                  commentObj.profileImage = userData[0].profileImage;
+                  commentObj.username = userData[0]?.username;
+                  commentObj.profileImage = userData[0]?.profileImage;
                 }
               });
             }
             if (userData && userData.length > 0) {
-              vdoObj.username = userData[0].name;
-              vdoObj.userEmail = userData[0].email;
-              vdoObj.privacy = userData[0].privacy || "Public";
+              vdoObj.username = userData[0]?.name;
+              vdoObj.userEmail = userData[0]?.email;
+              vdoObj.privacy = userData[0]?.privacy || "Public";
             }
-            let user = userData[0];
-            if (user.followedBy && user.followedBy.length > 0) {
-              const checkIfUserFollowingVideoCreator = user.followedBy.filter(
+            let user = userData && userData[0];
+            if (user?.followedBy && user?.followedBy.length > 0) {
+              const checkIfUserFollowingVideoCreator = user?.followedBy.filter(
                 (followedByUserId) => followedByUserId === loggedInUser.key
               );
               console.log(
@@ -347,6 +362,21 @@ function Profile() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
+
+  function fetchUserUpdatedVideoList() {
+    dispatch(enableLoading());
+    const profileUser = userData && Object.keys(userData).length > 0 ? userData : loggedInUser;
+    try {
+      getUploadedVideosByUserId(profileUser.key).subscribe( list => {
+        dispatch(disableLoading()); 
+        setUserUploadedVideoList(list);
+        dispatch(getUploadedVideosByUser(list));
+      });        
+    } catch(e) {
+      dispatch(disableLoading()); 
+      console.log('video fetch error: ', e);
+    }
+  }
 
   function onWindowScroll(event) {
     if (window.outerWidth > 1023) {
@@ -531,12 +561,79 @@ function Profile() {
     setActiveVideoObj(video);
   };
 
-  const redirectToCompetition = () => {
-    dispatch(setActiveVideoForCompetition(openUploadCompModalFor));
-    dispatch(enableLoginFlow("profile-competition"));
-    history.push("/competitions");
-    setShowProfileTab(false);
-  };
+  const redirectToCompetition = (event, videoObj) => {
+    event.stopPropagation();
+    if (videoObj && videoObj?.enrolledCompetition) {
+      setInfoModalMessage('This video you have already submitted for a Competition, please select another video!');
+      setInfoModalStatus('info');
+      setInfoModalAction(false);
+      toggleInfoModal(true);
+    } else {
+      dispatch(setActiveVideoForCompetition(openUploadCompModalFor));
+      dispatch(enableLoginFlow('profile-competition'));
+      history.push('/competitions');
+      setShowProfileTab(false);
+    }
+  }
+
+  function deleteSelectedVideo(event, videoToDelete) {
+    event.stopPropagation();
+    if (videoToDelete && videoToDelete?.enrolledCompetition) {
+      setInfoModalMessage('This video is submitted for a Competition, to delete this you have to use another video for that competition!');
+      setInfoModalStatus('info');
+      setInfoModalAction(false);
+      toggleInfoModal(true);
+    } else {
+      setUserVideoSelectionForRemove(videoToDelete);
+      setInfoModalMessage('Are you sure you want to delete this Video?');
+      setInfoModalStatus('info');
+      setInfoModalAction(true);
+      toggleInfoModal(true);
+    }
+  }
+
+  function confirmUserActionSelected(action) {
+    if (action) {
+      dispatch(enableLoading());
+      // Delete Video Thumbnail
+      try {
+        deleteImage(userDeleteVideoSelection.thumbnail).subscribe(response => {
+          if (response && (response.deleted || response.success)) {
+            // Delete Video
+            try {
+              deleteVideo(userDeleteVideoSelection.url).subscribe(response => {
+                console.log("response", response);
+                if (response && response.deleted) {
+                  // Delete Video record from `uploadedVideos` collection
+                  try {
+                    deleteUploadedVideoByVideoKey(userDeleteVideoSelection.key).subscribe(response => {
+                      dispatch(disableLoading());
+                      if (response && response.deleted) {
+                        setInfoModalMessage('The video has been deleted successfully!');
+                        setInfoModalStatus('success');
+                        setInfoModalAction(false);
+                        toggleInfoModal(true);
+                        fetchUserUpdatedVideoList();
+                      }
+                    });
+                  } catch(e) {            
+                    dispatch(disableLoading());
+                    console.log('error deleting video data: ', e);
+                  }
+                }
+              });
+            } catch(e) {
+              dispatch(disableLoading());
+              console.log('error deleting video: ', e);
+            }
+          }
+        });
+      } catch(e) {
+        dispatch(disableLoading());
+        console.log('thumbnail delete error: ', e);
+      }
+    }
+  }
 
   // Hook
   function useOnClickOutside(ref, handler) {
@@ -741,12 +838,8 @@ function Profile() {
                             {showProfileTab &&
                               openUploadCompModalFor === vdo.key && (
                                 <div className="videoUploadToolTip" ref={ref}>
-                                  <div
-                                    className="profile"
-                                    onClick={() => redirectToCompetition()}
-                                  >
-                                    Upload for competition
-                                  </div>
+                                  <div className="profileItem" title="Submit video for competition" onClick={(e) => redirectToCompetition(e, vdo)}>{vdo?.enrolledCompetition ? 'Enrolled for competition' : 'Upload for competition'}</div>
+                                  <div className="profileItem" title="Delete the video" onClick={(e) => deleteSelectedVideo(e, vdo)}>Delete this video</div>
                                 </div>
                               )}
                             <div className="vdo-card">
@@ -854,6 +947,13 @@ function Profile() {
           initialStep={initialStep}
         />
       )}
+      {openInformationModal ? <GenericInfoModal 
+        message={infoModalMessage}
+        status={infoModalStatus}
+        shouldHaveAction={genericInforModalAction}
+        confirmUserAction={confirmUserActionSelected}
+        closeInfoModal={shouldCloseInfoModal}
+      /> : ''}
     </div>
   );
 }

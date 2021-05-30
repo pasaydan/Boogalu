@@ -134,8 +134,8 @@ function Feeds() {
           (userObj) => userObj.key === likeObj.userId
         );
         if (userData.length !== 0) {
-          likeObj.username = userData[0].username;
-          likeObj.profileImage = userData[0].profileImage;
+          likeObj.username = userData[0]?.username;
+          likeObj.profileImage = userData[0]?.profileImage;
         }
       });
     }
@@ -145,8 +145,8 @@ function Feeds() {
           (userObj) => userObj.key === commentObj.userId
         );
         if (userData.length !== 0) {
-          commentObj.username = userData[0].username;
-          commentObj.profileImage = userData[0].profileImage;
+          commentObj.username = userData[0]?.username;
+          commentObj.profileImage = userData[0]?.profileImage;
         }
       });
     }

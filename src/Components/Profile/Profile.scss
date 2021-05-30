@@ -335,6 +335,7 @@
                 video {
                     border-radius: 5px 5px 0 0;
                     max-height: 280px !important;
+                    min-height: 280px;
                     object-fit: cover;
                 }
             }

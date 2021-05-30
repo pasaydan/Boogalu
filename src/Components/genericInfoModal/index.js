@@ -32,7 +32,7 @@ export default function GenericInfoModal(props) {
                     navigateUrl ?
                     <a 
                         href={navigateUrl} 
-                        className="navigateLink" 
+                        className="navigateLink btn primary-dark" 
                         title={`navigate to ${navigateUrl.split('/')[1]} page`}>Let's goto Profile!</a> : ''
                 }
                 {

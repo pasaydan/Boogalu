@@ -258,7 +258,7 @@ export default function VideoUploader({ selectedVdo, competitionKey, handleVdoUp
                                     <CloseIcon />
                                 </IconButton>
                                 <h3>Upload your dance performance video!</h3>
-                                <span className="uploadInfo">( You can upload maximum 4 videos and use them for the compeitions )</span>
+                                <span className="uploadInfo">( You can upload maximum 4 videos &amp; use it for competitions )</span>
                                 <span className="uploadInfo">( Video size should not exceed 200 MB )</span>
                                 <div className={`uploader-wrap ${SelectedVideo.file ? 'selected-file' : ''}`} onScroll={(e) => sectionScrolled(e)}>
                                     {

@@ -45,7 +45,7 @@ export default function Login(props) {
     const [emailVerifyClass, toggleEmailVerifyClass] = useState('');
     const [isResetClicked, toggleResetLink] = useState(false);
     const [isPageLoaderActive, togglePageLoader] = useState(false);
-    const [isResetPasswordViewOpen, toggleResetPwdModal] = useState(true);
+    const [isResetPasswordViewOpen, toggleResetPwdModal] = useState(false);
     const [resetEmail, setResetEmail] = useState('');
     const [confirmPasswordMessage, setConfirmPwdMessage] = useState('');
     const [resetPassword, setResetPassword] = useState({ password: '', confirmPassword: '' });
@@ -256,7 +256,7 @@ export default function Login(props) {
                 });
             } catch(e) {
                 togglePageLoader(false);
-                console.log('Video fetch erro: ', e);
+                console.log('Video fetch error: ', e);
             }
         }
     }
@@ -299,10 +299,7 @@ export default function Login(props) {
                             if (state.userVideosList && state.userVideosList.length < 4) {
                                 setOpenVdoUploadModal(true);
                             } else {
-                                setInfoModalMessage('You have exceeds your maximum video upload limit of 4, please delete some videos to upload another one!');
-                                setInfoModalStatus('error');
-                                setInfoModalNavigateLink('/profile');
-                                toggleInfoModal(true);
+                                setVideoLimitParameters();
                             }
                         } else {
                             history.push('/');
@@ -347,6 +344,7 @@ export default function Login(props) {
                             if (state.userVideosList && state.userVideosList.length < 4) {
                                 setOpenVdoUploadModal(true);
                             } else {
+                                setVideoLimitParameters();
                                 history.push('/profile');
                             }
                         } else {
@@ -367,6 +365,13 @@ export default function Login(props) {
                 break;
             default: break;
         }
+    }
+
+    function setVideoLimitParameters() {
+        setInfoModalMessage('You have reached your maximum video upload limit of 4, please delete some videos to upload another one!');
+        setInfoModalStatus('error');
+        toggleInfoModal(true);
+        setInfoModalNavigateLink('/profile');
     }
 
     function goToPrevious(event) {

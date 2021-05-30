@@ -14,7 +14,7 @@ export default function Notification() {
             setTimeout(() => {
                 setShowNotification(false);
                 setActiveNotification(null);
-                dispatch(removeNotification({ msg: '', type: '', time: 3000 }))
+                dispatch(removeNotification({ msg: '', type: '', time: 3000 }));
             }, state.notification.time);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps

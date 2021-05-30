@@ -32,6 +32,7 @@ import {
   blockUser,
   unFollowUser,
 } from "../../Services/Friendship.service";
+import GenericInfoModal from '../genericInfoModal';
 
 const SCROLL_TOP_LIMIT = 200;
 
@@ -46,14 +47,16 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
   const [userIconProfileMenu, setUserIconProfileMenu] = useState(false);
   const [showUserIconProfileMenu, setShowUserIconProfileMenu] = useState(false);
   const [isHomeRoute, togglHomeRouteValue] = useState(true);
-  // eslint-disable-next-line no-unused-vars
   const [isNotificationsPresent, setNotificationValue] = useState(false);
   const [userNotificationMenu, setUserNotificationMenu] = useState(false);
   const [showUserNotificationMenu, setShowUserIconNotificationMenu] =
     useState(false);
-  // eslint-disable-next-line no-unused-vars
   const [userNotificationList, setUserNotificationList] = useState([]);
-  // eslint-disable-next-line no-unused-vars
+  const [openInformationModal, toggleInfoModal] = useState(false); 
+  const [infoModalTitle, setInfoModalTitle] = useState(''); 
+  const [infoModalMessage, setInfoModalMessage] = useState(''); 
+  const [infoModalStatus, setInfoModalStatus] = useState(''); 
+  const [navigateLink, setInfoModalNavigateLink] = useState(''); 
 
   const ref = useRef();
   const hamburgerMenuRef = useRef(null);
@@ -210,6 +213,18 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
       setNotificationValue(false);
     }
   }, [userNotificationList]);
+
+  function shouldCloseInfoModal() {
+    setInfoModalTitle('');
+    setInfoModalMessage('');
+    setInfoModalStatus('');
+    setInfoModalNavigateLink('');
+    toggleInfoModal(false);
+    const pathName = history?.location?.pathname.split('/')[1];
+    if (!pathName.includes('profile')) {
+        setInfoModalNavigateLink('/profile');
+    }
+}
 
   const fetchNotifications = () => {
     let followNotificationArray = [];
@@ -368,15 +383,20 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
   }
 
   const uploadVdo = (e) => {
-    // setHideVdoUploadBtn(true);
     e.stopPropagation();
     e.preventDefault();
     if (loggedInUser && loggedInUser.email && loggedInUser.phone) {
-      // history.push({
-      //     pathname: '/upload-video',
-      //     state: null
-      // })
-      setOpenVdoUploadModal(true);
+      if (state.userVideosList && state.userVideosList.length < 4) {
+        setOpenVdoUploadModal(true);
+      } else {
+        const pathName = history?.location?.pathname.split('/')[1];
+        if (!pathName.includes('profile')) {
+            setInfoModalNavigateLink('/profile');
+        }
+        setInfoModalMessage('You have reached your maximum video upload limit of 4, please delete some videos to upload another one!');
+        setInfoModalStatus('error');
+        toggleInfoModal(true);
+      }
     } else {
       dispatch(enableLoginFlow("upload-video"));
       history.push({
@@ -1141,6 +1161,13 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
             handleVdoUploadResponse={() => setOpenVdoUploadModal(false)}
           />
         )}
+        { openInformationModal ? <GenericInfoModal 
+            title={infoModalTitle}
+            message={infoModalMessage}
+            status={infoModalStatus}
+            navigateUrl={navigateLink}
+            closeInfoModal={shouldCloseInfoModal}
+        /> : ''}
       </nav>
     </>
   );
