@@ -67,6 +67,7 @@ function LessonsVideoContainer({
                             item.currentTime = videoCurrentPlayTime;
                         }
                     });
+                    item.addEventListener("contextmenu", e => e.preventDefault());
                 }
 
                 if (item.getAttribute('data-id') === activeVideosList.frontMirrorView) {
@@ -76,6 +77,7 @@ function LessonsVideoContainer({
                             item.currentTime = videoCurrentPlayTime;
                         }
                     });
+                    item.addEventListener("contextmenu", e => e.preventDefault());
                 }
                 
                 if (item.getAttribute('data-id') === activeVideosList.rearView) {
@@ -84,7 +86,8 @@ function LessonsVideoContainer({
                         if (item !== null) {
                             item.currentTime = videoCurrentPlayTime;
                         }
-                    });                
+                    });
+                    item.addEventListener("contextmenu", e => e.preventDefault());
                 }
                 
                 if (item.getAttribute('data-id') === activeVideosList.rearMirrorView) {
@@ -93,7 +96,8 @@ function LessonsVideoContainer({
                         if (item !== null) {
                             item.currentTime = videoCurrentPlayTime;
                         }
-                    });                
+                    });
+                    item.addEventListener("contextmenu", e => e.preventDefault());       
                 }
             });
         }

@@ -21,6 +21,8 @@ const VideoPlayer = ({ vdoObj }) => {
                     url={vdoUrl}
                     controls={true}
                     width='100%'
+                    config={{ file: { attributes: { controlsList: 'nodownload' } } }}
+                    onContextMenu={e => e.preventDefault()}
                     onPlay={() => videoPlayed()}
                     onPause={() => videoPaused()}
                     style={{
