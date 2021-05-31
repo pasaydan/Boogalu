@@ -17,11 +17,11 @@ import secondPrizeBadge from "../../Images/2nd-prize-badge.png";
 // eslint-disable-next-line no-unused-vars
 import thirdPrizeBadge from "../../Images/3rd-prize-badge.png";
 import * as $ from "jquery";
-import { 
-  getUploadedVideosByUserId, 
-  updateVideoLikes, 
-  updateVideoComments, 
-  deleteUploadedVideoByVideoKey 
+import {
+  getUploadedVideosByUserId,
+  updateVideoLikes,
+  updateVideoComments,
+  deleteUploadedVideoByVideoKey,
 } from "../../Services/UploadedVideo.service";
 import { getCompetitionByUserId } from "../../Services/EnrollCompetition.service";
 import CompetitionsDetails from "../CompetitionsDetails";
@@ -49,9 +49,9 @@ import { FaBars } from "react-icons/fa";
 import { disableLoginFlow, enableLoginFlow } from "../../Actions/LoginFlow";
 import { setActiveVideoForCompetition } from "../../Actions/Competition";
 import { loginUser } from "../../Actions/User";
-import GenericInfoModal from '../genericInfoModal';
+import GenericInfoModal from "../genericInfoModal";
 import { deleteImage, deleteVideo } from "../../Services/Upload.service";
-
+import FollowButton from "../FollowButton";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -111,11 +111,13 @@ function Profile() {
   const [userProfileData, setUserProfileData] = useState({});
   const [userData, setUserData] = useState({});
   const [followButtonText, setFollowButtonText] = useState("Follow");
-  const [openInformationModal, toggleInfoModal] = useState(false); 
-  const [infoModalMessage, setInfoModalMessage] = useState(''); 
-  const [infoModalStatus, setInfoModalStatus] = useState(''); 
-  const [genericInforModalAction, setInfoModalAction] = useState(false); 
-  const [userDeleteVideoSelection, setUserVideoSelectionForRemove] = useState(null); 
+  const [openInformationModal, toggleInfoModal] = useState(false);
+  const [infoModalMessage, setInfoModalMessage] = useState("");
+  const [infoModalStatus, setInfoModalStatus] = useState("");
+  const [genericInforModalAction, setInfoModalAction] = useState(false);
+  const [userDeleteVideoSelection, setUserVideoSelectionForRemove] =
+    useState(null);
+  const [followStatus, setFollowStatus] = useState("");
 
   const profileOuterRef = useRef();
   const userTabsRef = useRef();
@@ -123,9 +125,9 @@ function Profile() {
   const headerWrapRef = useRef();
 
   function shouldCloseInfoModal(navigationValue) {
-    setUserVideoSelectionForRemove({})
-    setInfoModalMessage('');
-    setInfoModalStatus('');
+    setUserVideoSelectionForRemove({});
+    setInfoModalMessage("");
+    setInfoModalStatus("");
     setInfoModalAction(false);
     toggleInfoModal(false);
   }
@@ -333,8 +335,31 @@ function Profile() {
                 checkIfUserFollowingVideoCreator.length > 0
               ) {
                 vdoObj.following = true;
+                setFollowStatus("following");
               } else {
                 vdoObj.following = false;
+                setFollowStatus("");
+              }
+            }
+            if (user?.followRequestedBy && user?.followRequestedBy.length > 0) {
+              const checkIfUserRequestedToFollowVideoCreator =
+                user?.followRequestedBy.filter(
+                  (followRequestedByUserId) =>
+                    followRequestedByUserId === loggedInUser.key
+                );
+              console.log(
+                "checkIfUserRequestedToFollowVideoCreator",
+                checkIfUserRequestedToFollowVideoCreator
+              );
+              if (
+                checkIfUserRequestedToFollowVideoCreator &&
+                checkIfUserRequestedToFollowVideoCreator.length > 0
+              ) {
+                vdoObj.requested = true;
+                setFollowStatus("requested");
+              } else {
+                vdoObj.requested = false;
+                setFollowStatus("");
               }
             }
           });
@@ -365,16 +390,17 @@ function Profile() {
 
   function fetchUserUpdatedVideoList() {
     dispatch(enableLoading());
-    const profileUser = userData && Object.keys(userData).length > 0 ? userData : loggedInUser;
+    const profileUser =
+      userData && Object.keys(userData).length > 0 ? userData : loggedInUser;
     try {
-      getUploadedVideosByUserId(profileUser.key).subscribe( list => {
-        dispatch(disableLoading()); 
+      getUploadedVideosByUserId(profileUser.key).subscribe((list) => {
+        dispatch(disableLoading());
         setUserUploadedVideoList(list);
         dispatch(getUploadedVideosByUser(list));
-      });        
-    } catch(e) {
-      dispatch(disableLoading()); 
-      console.log('video fetch error: ', e);
+      });
+    } catch (e) {
+      dispatch(disableLoading());
+      console.log("video fetch error: ", e);
     }
   }
 
@@ -564,29 +590,33 @@ function Profile() {
   const redirectToCompetition = (event, videoObj) => {
     event.stopPropagation();
     if (videoObj && videoObj?.enrolledCompetition) {
-      setInfoModalMessage('This video you have already submitted for a Competition, please select another video!');
-      setInfoModalStatus('info');
+      setInfoModalMessage(
+        "This video you have already submitted for a Competition, please select another video!"
+      );
+      setInfoModalStatus("info");
       setInfoModalAction(false);
       toggleInfoModal(true);
     } else {
       dispatch(setActiveVideoForCompetition(openUploadCompModalFor));
-      dispatch(enableLoginFlow('profile-competition'));
-      history.push('/competitions');
+      dispatch(enableLoginFlow("profile-competition"));
+      history.push("/competitions");
       setShowProfileTab(false);
     }
-  }
+  };
 
   function deleteSelectedVideo(event, videoToDelete) {
     event.stopPropagation();
     if (videoToDelete && videoToDelete?.enrolledCompetition) {
-      setInfoModalMessage('This video is submitted for a Competition, to delete this you have to use another video for that competition!');
-      setInfoModalStatus('info');
+      setInfoModalMessage(
+        "This video is submitted for a Competition, to delete this you have to use another video for that competition!"
+      );
+      setInfoModalStatus("info");
       setInfoModalAction(false);
       toggleInfoModal(true);
     } else {
       setUserVideoSelectionForRemove(videoToDelete);
-      setInfoModalMessage('Are you sure you want to delete this Video?');
-      setInfoModalStatus('info');
+      setInfoModalMessage("Are you sure you want to delete this Video?");
+      setInfoModalStatus("info");
       setInfoModalAction(true);
       toggleInfoModal(true);
     }
@@ -597,40 +627,48 @@ function Profile() {
       dispatch(enableLoading());
       // Delete Video Thumbnail
       try {
-        deleteImage(userDeleteVideoSelection.thumbnail).subscribe(response => {
-          if (response && (response.deleted || response.success)) {
-            // Delete Video
-            try {
-              deleteVideo(userDeleteVideoSelection.url).subscribe(response => {
-                console.log("response", response);
-                if (response && response.deleted) {
-                  // Delete Video record from `uploadedVideos` collection
-                  try {
-                    deleteUploadedVideoByVideoKey(userDeleteVideoSelection.key).subscribe(response => {
-                      dispatch(disableLoading());
-                      if (response && response.deleted) {
-                        setInfoModalMessage('The video has been deleted successfully!');
-                        setInfoModalStatus('success');
-                        setInfoModalAction(false);
-                        toggleInfoModal(true);
-                        fetchUserUpdatedVideoList();
+        deleteImage(userDeleteVideoSelection.thumbnail).subscribe(
+          (response) => {
+            if (response && (response.deleted || response.success)) {
+              // Delete Video
+              try {
+                deleteVideo(userDeleteVideoSelection.url).subscribe(
+                  (response) => {
+                    console.log("response", response);
+                    if (response && response.deleted) {
+                      // Delete Video record from `uploadedVideos` collection
+                      try {
+                        deleteUploadedVideoByVideoKey(
+                          userDeleteVideoSelection.key
+                        ).subscribe((response) => {
+                          dispatch(disableLoading());
+                          if (response && response.deleted) {
+                            setInfoModalMessage(
+                              "The video has been deleted successfully!"
+                            );
+                            setInfoModalStatus("success");
+                            setInfoModalAction(false);
+                            toggleInfoModal(true);
+                            fetchUserUpdatedVideoList();
+                          }
+                        });
+                      } catch (e) {
+                        dispatch(disableLoading());
+                        console.log("error deleting video data: ", e);
                       }
-                    });
-                  } catch(e) {            
-                    dispatch(disableLoading());
-                    console.log('error deleting video data: ', e);
+                    }
                   }
-                }
-              });
-            } catch(e) {
-              dispatch(disableLoading());
-              console.log('error deleting video: ', e);
+                );
+              } catch (e) {
+                dispatch(disableLoading());
+                console.log("error deleting video: ", e);
+              }
             }
           }
-        });
-      } catch(e) {
+        );
+      } catch (e) {
         dispatch(disableLoading());
-        console.log('thumbnail delete error: ', e);
+        console.log("thumbnail delete error: ", e);
       }
     }
   }
@@ -721,18 +759,38 @@ function Profile() {
         <div className="profile-details clearfix">
           <div className="username-wrap clearfix">
             <div className="username">{userData.username}</div>
-            {userData && loggedInUser && userData.key === loggedInUser.key && (
+            {userData && loggedInUser && userData.key === loggedInUser.key ? (
               <div
                 className="edit-profile"
                 onClick={() => history.push("/profile/edit")}
               >
                 Edit Profile
               </div>
+            ) : (
+              <FollowButton status={followStatus} />
             )}
           </div>
           <div className="followers-wrap clearfix">
             <div className="posts">
-              <span>{UserUploadedVideoList.length}</span> Posts
+              <div className="followInfo">
+                <h5>Posts : {UserUploadedVideoList.length}</h5>
+                {/* {userData.followedBy && userData.followedBy.length && ( */}
+                <h5>
+                  Followers :{" "}
+                  {userData.followedBy && userData.followedBy.length
+                    ? userData.followedBy.length
+                    : 0}
+                </h5>
+                {/* )} */}
+                {/* {userData.following && userData.following.length && ( */}
+                <h5>
+                  Following :{" "}
+                  {userData.following && userData.following.length
+                    ? userData.following.length
+                    : 0}
+                </h5>
+                {/* )} */}
+              </div>
             </div>
             {/* <div className="followers">
                             <span>999</span> Followers
@@ -753,14 +811,6 @@ function Profile() {
                 list.
               </div>
             )}
-            <div className="followInfo">
-              {userData.followedBy && userData.followedBy.length && (
-                <h5>Followers : {userData.followedBy.length}</h5>
-              )}
-              {userData.following && userData.following.length && (
-                <h5>Following : {userData.following.length}</h5>
-              )}
-            </div>
           </div>
         </div>
       </div>
@@ -838,8 +888,24 @@ function Profile() {
                             {showProfileTab &&
                               openUploadCompModalFor === vdo.key && (
                                 <div className="videoUploadToolTip" ref={ref}>
-                                  <div className="profileItem" title="Submit video for competition" onClick={(e) => redirectToCompetition(e, vdo)}>{vdo?.enrolledCompetition ? 'Enrolled for competition' : 'Upload for competition'}</div>
-                                  <div className="profileItem" title="Delete the video" onClick={(e) => deleteSelectedVideo(e, vdo)}>Delete this video</div>
+                                  <div
+                                    className="profileItem"
+                                    title="Submit video for competition"
+                                    onClick={(e) =>
+                                      redirectToCompetition(e, vdo)
+                                    }
+                                  >
+                                    {vdo?.enrolledCompetition
+                                      ? "Enrolled for competition"
+                                      : "Upload for competition"}
+                                  </div>
+                                  <div
+                                    className="profileItem"
+                                    title="Delete the video"
+                                    onClick={(e) => deleteSelectedVideo(e, vdo)}
+                                  >
+                                    Delete this video
+                                  </div>
                                 </div>
                               )}
                             <div className="vdo-card">
@@ -947,13 +1013,17 @@ function Profile() {
           initialStep={initialStep}
         />
       )}
-      {openInformationModal ? <GenericInfoModal 
-        message={infoModalMessage}
-        status={infoModalStatus}
-        shouldHaveAction={genericInforModalAction}
-        confirmUserAction={confirmUserActionSelected}
-        closeInfoModal={shouldCloseInfoModal}
-      /> : ''}
+      {openInformationModal ? (
+        <GenericInfoModal
+          message={infoModalMessage}
+          status={infoModalStatus}
+          shouldHaveAction={genericInforModalAction}
+          confirmUserAction={confirmUserActionSelected}
+          closeInfoModal={shouldCloseInfoModal}
+        />
+      ) : (
+        ""
+      )}
     </div>
   );
 }

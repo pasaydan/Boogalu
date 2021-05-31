@@ -178,6 +178,10 @@ function ViewAllMembers() {
     );
   }
 
+  const redirectToUserProfile = (event, user) => {
+    history.push(`/profile/${window.btoa(user.email)}`);
+  };
+
   return (
     <div className="userDashBoardAfterLogin viewAllMemberDashBoard">
       <div className="user-dashboard-wrap">
@@ -191,8 +195,15 @@ function ViewAllMembers() {
                   className="user-icon-wrap userMemberListing"
                   title={`View ${user.username}`}
                 >
-                  <ProfileImage src={user.profileImage} size="medium" />
-                  <div className="userNameWrap">
+                  <ProfileImage
+                    src={user.profileImage}
+                    size="medium"
+                    onClick={(e) => redirectToUserProfile(e, user)}
+                  />
+                  <div
+                    className="userNameWrap"
+                    onClick={(e) => redirectToUserProfile(e, user)}
+                  >
                     <span className="userName">{user.username}</span>
                     <span className="userFullName">{user.name}</span>
                     {/* This will be dynamic data */}
