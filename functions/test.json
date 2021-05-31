@@ -1,8 +1,8 @@
 {
     "razorpayservice": {
         "url": "http://localhost:5001/boogalusite/us-central1/postOrder",
-        "key": "rzp_test_I6E2xi7pm2VOPG",
-        "secret": "120I15dXhVxr68bXaYTzRMDT"
+        "key": "rzp_live_6rESd2vAJ2QD9F",
+        "secret": "ToOOjiZhBIM6o6oyjrPMGMWK"
     },
     "oauthservice" : {
         "clientSecret": "s5Ig826BsWQ-rZgKgCJXSvLK",

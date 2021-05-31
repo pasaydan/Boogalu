@@ -67,6 +67,7 @@ function LessonsVideoContainer({
                             item.currentTime = videoCurrentPlayTime;
                         }
                     });
+                    item.addEventListener("contextmenu", e => e.preventDefault());
                 }
 
                 if (item.getAttribute('data-id') === activeVideosList.frontMirrorView) {
@@ -76,6 +77,7 @@ function LessonsVideoContainer({
                             item.currentTime = videoCurrentPlayTime;
                         }
                     });
+                    item.addEventListener("contextmenu", e => e.preventDefault());
                 }
                 
                 if (item.getAttribute('data-id') === activeVideosList.rearView) {
@@ -84,7 +86,8 @@ function LessonsVideoContainer({
                         if (item !== null) {
                             item.currentTime = videoCurrentPlayTime;
                         }
-                    });                
+                    });
+                    item.addEventListener("contextmenu", e => e.preventDefault());
                 }
                 
                 if (item.getAttribute('data-id') === activeVideosList.rearMirrorView) {
@@ -93,7 +96,8 @@ function LessonsVideoContainer({
                         if (item !== null) {
                             item.currentTime = videoCurrentPlayTime;
                         }
-                    });                
+                    });
+                    item.addEventListener("contextmenu", e => e.preventDefault());       
                 }
             });
         }
@@ -438,7 +442,7 @@ function LessonsVideoContainer({
                 <div className="previewVideoWrap">
                     {
                         activeVideosList?.preview ?
-                        <video muted className="js-previewVideo" onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}>
+                        <video controlsList="nodownload" muted className="js-previewVideo" onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}>
                             <source src={activeVideosList?.preview} type="video/mp4" />
                         </video> : ''
                     }
@@ -554,6 +558,7 @@ function LessonsVideoContainer({
                             onSeeked={(e) => onVideoSeek(e, 'front')} 
                             poster={thumbNail} 
                             controls
+                            controlsList="nodownload"
                             onLoadedMetadata={(e) => setVideoDuration(e)}
                             >
                             <source src={activeVideosList?.frontView} type="video/mp4" />
@@ -561,19 +566,19 @@ function LessonsVideoContainer({
                     }
                     {
                         activeVideosList?.frontMirrorView ?
-                        <video muted data-id={activeVideosList?.frontMirrorView} className={(activeVideoState === 'front-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'front-mirror')} poster={thumbNail} controls>
+                        <video muted controlsList="nodownload" data-id={activeVideosList?.frontMirrorView} className={(activeVideoState === 'front-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'front-mirror')} poster={thumbNail} controls>
                             <source src={activeVideosList?.frontMirrorView} type="video/mp4" />
                         </video> : ''
                     }
                     {
                         activeVideosList?.rearView ?
-                        <video muted data-id={activeVideosList?.rearView} className={(activeVideoState === 'back') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back')} poster={thumbNail} controls>
+                        <video muted controlsList="nodownload" data-id={activeVideosList?.rearView} className={(activeVideoState === 'back') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back')} poster={thumbNail} controls>
                             <source src={activeVideosList?.rearView} type="video/mp4" />
                         </video> : ''
                     }
                     {
                         activeVideosList?.rearMirrorView ?
-                        <video muted data-id={activeVideosList?.rearMirrorView} className={(activeVideoState === 'back-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back-mirror')} poster={thumbNail} controls>
+                        <video muted controlsList="nodownload" data-id={activeVideosList?.rearMirrorView} className={(activeVideoState === 'back-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back-mirror')} poster={thumbNail} controls>
                             <source src={activeVideosList?.rearMirrorView} type="video/mp4" />
                         </video> : ''
                     }

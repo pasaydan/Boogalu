@@ -19,7 +19,7 @@ import {
   MdNotificationsActive,
   MdAccountCircle,
 } from "react-icons/md";
-import { NOTIFICATION_SUCCCESS } from "../../Constants";
+import { NOTIFICATION_SUCCCESS, VIDEO_LIMIT_COUNT } from "../../Constants";
 import { displayNotification } from "../../Actions/Notification";
 import * as $ from "jquery";
 import {
@@ -386,14 +386,14 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
     e.stopPropagation();
     e.preventDefault();
     if (loggedInUser && loggedInUser.email && loggedInUser.phone) {
-      if (state.userVideosList && state.userVideosList.length < 4) {
+      if (state.userVideosList && state.userVideosList.length < VIDEO_LIMIT_COUNT.monthly) {
         setOpenVdoUploadModal(true);
       } else {
         const pathName = history?.location?.pathname.split('/')[1];
         if (!pathName.includes('profile')) {
-            setInfoModalNavigateLink('/profile');
+          setInfoModalNavigateLink('/profile');
         }
-        setInfoModalMessage('You have reached your maximum video upload limit of 4, please delete some videos to upload another one!');
+        setInfoModalMessage(`You have reached your maximum video upload limit of ${state?.userVideosList?.length || VIDEO_LIMIT_COUNT.monthly}, please delete some videos to upload another one!`);
         setInfoModalStatus('error');
         toggleInfoModal(true);
       }

@@ -24,7 +24,7 @@ import Loader from '../Loader';
 import GenericInfoModal from '../genericInfoModal';
 import { displayNotification, removeNotification } from "../../Actions/Notification";
 import { getUploadedVideosByUser } from "../../Actions/User";
-import { NOTIFICATION_ERROR, NOTIFICATION_SUCCCESS } from "../../Constants";
+import { NOTIFICATION_ERROR, NOTIFICATION_SUCCCESS, VIDEO_LIMIT_COUNT } from "../../Constants";
 // import { validateEmailId } from '../../helpers';
 import { useCookies } from "react-cookie";
 import { sendEmail } from "../../Services/Email.service";
@@ -296,7 +296,7 @@ export default function Login(props) {
                         } else if (state.currentLoginFlow === 'lessons') {
                             history.push('/lessons');
                         } else if (state.currentLoginFlow === 'upload-video') {
-                            if (state.userVideosList && state.userVideosList.length < 4) {
+                            if (state.userVideosList && state.userVideosList.length < VIDEO_LIMIT_COUNT.monthly) {
                                 setOpenVdoUploadModal(true);
                             } else {
                                 setVideoLimitParameters();
@@ -341,7 +341,7 @@ export default function Login(props) {
                         } else if (state.currentLoginFlow === 'lessons') {
                             history.push('/lessons');
                         } else if (state.currentLoginFlow === 'upload-video') {
-                            if (state.userVideosList && state.userVideosList.length < 4) {
+                            if (state.userVideosList && state.userVideosList.length < VIDEO_LIMIT_COUNT.monthly) {
                                 setOpenVdoUploadModal(true);
                             } else {
                                 setVideoLimitParameters();
@@ -368,7 +368,7 @@ export default function Login(props) {
     }
 
     function setVideoLimitParameters() {
-        setInfoModalMessage('You have reached your maximum video upload limit of 4, please delete some videos to upload another one!');
+        setInfoModalMessage(`You have reached your maximum video upload limit of ${state?.userVideosList?.length || VIDEO_LIMIT_COUNT.monthly}, please delete some videos to upload another one!`);
         setInfoModalStatus('error');
         toggleInfoModal(true);
         setInfoModalNavigateLink('/profile');
