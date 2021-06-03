@@ -245,12 +245,12 @@ function Feeds() {
   function openUserStory(user) {
     let currentuser = user;
     currentuser = { ...currentuser, actionBtnText: "Follow" };
-    if (currentuser.notification) {
+    if (currentuser) {
       if (
-        currentuser.notification.followRequestedBy &&
-        currentuser.notification.followRequestedBy.length > 0
+        currentuser.followRequestedBy &&
+        currentuser.followRequestedBy.length > 0
       ) {
-        currentuser.notification.followRequestedBy.forEach((requestId) => {
+        currentuser.followRequestedBy.forEach((requestId) => {
           if (requestId === loggedInUser.key) {
             currentuser = {
               ...currentuser,
@@ -260,11 +260,8 @@ function Feeds() {
           }
         });
       }
-      if (
-        currentuser.notification.followedBy &&
-        currentuser.notification.followedBy.length > 0
-      ) {
-        currentuser.notification.followedBy.forEach((requestId) => {
+      if (currentuser.followedBy && currentuser.followedBy.length > 0) {
+        currentuser.followedBy.forEach((requestId) => {
           if (requestId === loggedInUser.key) {
             currentuser = {
               ...currentuser,
