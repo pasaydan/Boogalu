@@ -34,7 +34,7 @@ export function getLessonByName(name) {
 
 export function getLessonByPlanType(filter) {
     return new Observable((observer) => {
-        lessonsVideosRef.where('accessbility', '==', filter.toLowerCase()).get().then((querySnapshot) => {
+        lessonsVideosRef.where('accessbility', '==', filter).get().then((querySnapshot) => {
             let lessons = [];
             querySnapshot.forEach(function (doc) {
                 let data = doc.data();
@@ -46,20 +46,100 @@ export function getLessonByPlanType(filter) {
     })
 }
 
-export function getLessonByPlanTypeOnlyPreview(filter) {
+export function getLessonByPlanTypeOnlyPreview(filter, levelFilter, styleFilter) {
     return new Observable((observer) => {
-        lessonsVideosRef.where('accessbility', '==', filter.toLowerCase()).get().then((querySnapshot) => {
-            let lessons = [];
-            querySnapshot.forEach(function (doc) {
-                let data = doc.data();
-                let previewKeyOnly = data.videoList.preview;
-                data.videoList = {};
-                data.videoList['preview'] = previewKeyOnly;
-                data.key = doc.id;
-                lessons.push(data);
-            })
-            observer.next(lessons);
-        })
+        if (filter && levelFilter && styleFilter) {
+            lessonsVideosRef.where('accessbility', '==', filter).where('expertiseLevel', '==', levelFilter).where('artForm', '==', styleFilter).get().then((querySnapshot) => {
+                let lessons = [];
+                querySnapshot.forEach(function (doc) {
+                    let data = doc.data();
+                    let previewKeyOnly = data.videoList.preview;
+                    data.videoList = {};
+                    data.videoList['preview'] = previewKeyOnly;
+                    data.key = doc.id;
+                    lessons.push(data);
+                })
+                observer.next(lessons);
+            });
+        } else if (filter && levelFilter) {
+            lessonsVideosRef.where('accessbility', '==', filter).where('expertiseLevel', '==', levelFilter).get().then((querySnapshot) => {
+                let lessons = [];
+                querySnapshot.forEach(function (doc) {
+                    let data = doc.data();
+                    let previewKeyOnly = data.videoList.preview;
+                    data.videoList = {};
+                    data.videoList['preview'] = previewKeyOnly;
+                    data.key = doc.id;
+                    lessons.push(data);
+                })
+                observer.next(lessons);
+            });
+        } else if (filter && styleFilter) {
+            lessonsVideosRef.where('accessbility', '==', filter).where('artForm', '==', styleFilter).get().then((querySnapshot) => {
+                let lessons = [];
+                querySnapshot.forEach(function (doc) {
+                    let data = doc.data();
+                    let previewKeyOnly = data.videoList.preview;
+                    data.videoList = {};
+                    data.videoList['preview'] = previewKeyOnly;
+                    data.key = doc.id;
+                    lessons.push(data);
+                })
+                observer.next(lessons);
+            });
+        } else if (levelFilter && styleFilter) {
+            lessonsVideosRef.where('expertiseLevel', '==', levelFilter).where('artForm', '==', styleFilter).get().then((querySnapshot) => {
+                let lessons = [];
+                querySnapshot.forEach(function (doc) {
+                    let data = doc.data();
+                    let previewKeyOnly = data.videoList.preview;
+                    data.videoList = {};
+                    data.videoList['preview'] = previewKeyOnly;
+                    data.key = doc.id;
+                    lessons.push(data);
+                })
+                observer.next(lessons);
+            });
+        } else if (levelFilter) {
+            lessonsVideosRef.where('expertiseLevel', '==', levelFilter).get().then((querySnapshot) => {
+                let lessons = [];
+                querySnapshot.forEach(function (doc) {
+                    let data = doc.data();
+                    let previewKeyOnly = data.videoList.preview;
+                    data.videoList = {};
+                    data.videoList['preview'] = previewKeyOnly;
+                    data.key = doc.id;
+                    lessons.push(data);
+                })
+                observer.next(lessons);
+            });
+        } else if (styleFilter) {
+            lessonsVideosRef.where('artForm', '==', styleFilter).get().then((querySnapshot) => {
+                let lessons = [];
+                querySnapshot.forEach(function (doc) {
+                    let data = doc.data();
+                    let previewKeyOnly = data.videoList.preview;
+                    data.videoList = {};
+                    data.videoList['preview'] = previewKeyOnly;
+                    data.key = doc.id;
+                    lessons.push(data);
+                })
+                observer.next(lessons);
+            });
+        } else {
+            lessonsVideosRef.where('accessbility', '==', filter).get().then((querySnapshot) => {
+                let lessons = [];
+                querySnapshot.forEach(function (doc) {
+                    let data = doc.data();
+                    let previewKeyOnly = data.videoList.preview;
+                    data.videoList = {};
+                    data.videoList['preview'] = previewKeyOnly;
+                    data.key = doc.id;
+                    lessons.push(data);
+                })
+                observer.next(lessons);
+            });
+        }
     })
 }
 

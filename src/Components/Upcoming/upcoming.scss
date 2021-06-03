@@ -88,6 +88,21 @@
         background-color: transparent;
         border: 1px solid var(--info-blue-dark);
         color: var(--info-blue-dark);
+        &:focus, &:hover {
+            background: rgba(0, 0, 0, 0.4);
+            color: var(--primary-white);
+        }
+        &.otherFilterIcon {
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            padding: 0;
+            text-align: center;
+            line-height: 45px;
+            svg {
+                font-size: 18px;
+            }
+        }
         &.active {
             background: var(--info-blue-dark);
             color: var(--primary-white);
@@ -107,6 +122,110 @@
     line-height: 20px;
     text-align: center;
     color: var(--primary-white);
+}
+
+.otherFiltersWrap {
+    position: fixed;
+    z-index: 200;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    .innerBox {
+        background: var(--primary-white);
+        padding: 15px 0;
+        box-sizing: border-box;
+        max-width: 320px;
+        width: 95%;
+        border-radius: 5px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        .close-modal-icon {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            width: 24px;
+            height: 24px;
+            margin: 0 !important;
+        }
+        h3 {
+            font-size: 16px;
+            margin: 5px 0 10px;
+            text-align: center;
+            text-transform: uppercase;
+            color: var(--copyright-grey);
+            font-weight: 600;
+        }
+        .filterInnerWrap {
+            overflow-y: auto;
+            padding-bottom: 50px;
+            box-sizing: border-box;
+            max-height: 400px;
+        }
+        .filterItem {
+            margin-top: 10px;
+            .filterTitle {
+                margin: 0 0 5px !important;
+                padding: 5px 15px;
+                box-sizing: border-box;
+                font-size: 12px;
+                background: rgba(0, 0, 0, 0.1);
+                color: var(--ternary-dark-grey);
+            }
+            .optionsWrap {
+                padding: 0 15px 0 30px;
+                .PrivateSwitchBase-root-1 {
+                    padding: 5px;
+                }
+                .MuiFormControlLabel-label {
+                    font-size: 14px;
+                    color: var(--footer-text-grey);
+                }
+            }
+        }
+        .filterActionWrap {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+            background: var(--primary-white);
+            box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.2);
+            button {
+                margin-left: 10px;
+                padding: 8px 10px;
+                flex-basis: 45%;
+                filter: none;
+                box-sizing: border-box;
+                &.primary-light {
+                    background: transparent;
+                    border: 1px solid var(--footer-text-grey);
+                    color: var(--footer-text-grey);
+                    &:hover {
+                        border: 1px solid var(--dark-grey-21);
+                        color: var(--dark-grey-21);
+                    }
+                }
+                &.primary-dark {
+                    background-image: none;
+                    color: var(--primary-white);
+                    background: var(--secondary-bg-blue);
+                    &:hover {
+                        background-image: none;
+                        background: var(--info-blue-dark);
+                    }
+                }
+                &:first-child {
+                    margin-left: 0;
+                }
+            }
+        }
+    }
 }
 
 @media screen and (max-width: 1023px) {
@@ -154,7 +273,18 @@
     .filterWrap {
         .btn {
             margin: 0 0 0 10px;
-            padding: 5px 8px;
+            padding: 5px;
+            height: 28px;
+            line-height: 18px;
+            font-size: 10px;
+            &.otherFilterIcon {
+                width: 28px;
+                height: 28px;
+                line-height: 36px;
+                svg {
+                    font-size: 14px;
+                }
+            }
         }
     }
 }
