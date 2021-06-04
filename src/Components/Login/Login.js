@@ -28,6 +28,7 @@ import { NOTIFICATION_ERROR, NOTIFICATION_SUCCCESS, VIDEO_LIMIT_COUNT } from "..
 // import { validateEmailId } from '../../helpers';
 import { useCookies } from "react-cookie";
 import { sendEmail } from "../../Services/Email.service";
+import { EmailTemplate } from "../EmailTemplate/Emailer";
 import * as $ from 'jquery';
 const restLinkUrlQuery = '?reset-password='
 
@@ -49,11 +50,11 @@ export default function Login(props) {
     const [resetEmail, setResetEmail] = useState('');
     const [confirmPasswordMessage, setConfirmPwdMessage] = useState('');
     const [resetPassword, setResetPassword] = useState({ password: '', confirmPassword: '' });
-    const [openInformationModal, toggleInfoModal] = useState(false); 
-    const [infoModalTitle, setInfoModalTitle] = useState(''); 
-    const [infoModalMessage, setInfoModalMessage] = useState(''); 
-    const [infoModalStatus, setInfoModalStatus] = useState(''); 
-    const [navigateLink, setInfoModalNavigateLink] = useState(''); 
+    const [openInformationModal, toggleInfoModal] = useState(false);
+    const [infoModalTitle, setInfoModalTitle] = useState('');
+    const [infoModalMessage, setInfoModalMessage] = useState('');
+    const [infoModalStatus, setInfoModalStatus] = useState('');
+    const [navigateLink, setInfoModalNavigateLink] = useState('');
     // const resetEmailRef = useRef(null);
 
     useEffect(() => {
@@ -63,6 +64,10 @@ export default function Login(props) {
     }, [thirdPartyResponse]);
 
     useEffect(() => {
+
+        //uncomment for test email template then copy console ouptput and paste it toemailer.html and run this file in new browser tab
+        // testEmailTemplate();
+
         dispatch(removeNotification({
             msg: "",
             type: NOTIFICATION_SUCCCESS,
@@ -106,6 +111,21 @@ export default function Login(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    const testEmailTemplate = () => {
+        const emailBodyConfig = {
+            heading: `Hello, Boogalu User we wanted to let you know that your password was changed.`,
+            content: `<div>
+            <p>To access your account just click the link bellow and try to login using your new password.</p>
+            <div class="action-btn-wrap">
+                <a class="action" href=${window.location.href}>Login</a> 
+            </div>
+        </div>`,
+            bodyFooterText: `<div>Please do not reply to this email with your password. We will never ask for your password, and we strongly discourage you from sharing it with anyone.</div>`
+        }
+        const emailTemplate = EmailTemplate(emailBodyConfig);
+        console.log(emailTemplate);
+    }
+
     function shouldCloseInfoModal(navigationValue) {
         setInfoModalTitle('');
         setInfoModalMessage('');
@@ -117,14 +137,7 @@ export default function Login(props) {
         }
     }
 
-    const setLoginResponseToServer = () => {
-        // notify server that user is loggedin
-        console.log('Save loggin user to db')
-
-    }
-
     const successResponseGoogle = function (response) {
-        console.log(response);
         let loginResponse = {
             data: {
                 name: response.profileObj.name,
@@ -144,7 +157,6 @@ export default function Login(props) {
     }
 
     const responseFacebook = (response) => {
-        console.log(response);
         if (response && response.userID) {
             let loginResponse = {
                 isLogginSuccess: true,
@@ -250,11 +262,11 @@ export default function Login(props) {
         if (userKey) {
             togglePageLoader(true);
             try {
-                getUploadedVideosByUserId(userKey).subscribe( list => {
+                getUploadedVideosByUserId(userKey).subscribe(list => {
                     togglePageLoader(false);
                     dispatch(getUploadedVideosByUser(list));
                 });
-            } catch(e) {
+            } catch (e) {
                 togglePageLoader(false);
                 console.log('Video fetch error: ', e);
             }
@@ -281,7 +293,6 @@ export default function Login(props) {
                         //user is registered
                         getUsersVideoList(data.key);
                         togglePageLoader(false);
-                        setLoginResponseToServer();
                         data.source = 'Website';
                         dispatch(loginUser(data));
                         dispatch(displayNotification({
@@ -303,7 +314,7 @@ export default function Login(props) {
                             }
                         } else {
                             history.push('/');
-                        } 
+                        }
                     })
                     .catch((data) => {
                         togglePageLoader(false);
@@ -326,7 +337,6 @@ export default function Login(props) {
                         //user is registered
                         getUsersVideoList(data.key);
                         togglePageLoader(false);
-                        setLoginResponseToServer();
                         data.source = thirdPartyResponse.source;
                         dispatch(loginUser(data));
                         dispatch(displayNotification({
@@ -349,7 +359,7 @@ export default function Login(props) {
                             }
                         } else {
                             history.push('/');
-                        } 
+                        }
                     })
                     .catch((data) => {
                         togglePageLoader(false);
@@ -399,28 +409,66 @@ export default function Login(props) {
         }
     }
 
-    const sendEmailToUser = (userDetails, resetLink) => {
+    const sendEmailBeforePasswordChange = (userDetails, resetLink) => {
         togglePageLoader(true);
         try {
             return new Promise((resolve, reject) => {
                 const { email, name } = userDetails;
-                let emailBody =
-                    `<div>
-                        <p>Hi ${name}, need to reset your password? No problem! just click the link bellow and you'll be on your way. If you did not make this request, please ignore this email. </p>.
-                        <div>
-                            <a href=${resetLink}>Reset Password</a> 
-                        </div>
-                        <div>If you don't use this link within 30 minutes, it will expire. To get new password reset link, visit:
-                            <a href=https://boogalusite.web.app >New Reset Password Link</a>
-                        </div>
-                    </div>`;
+                const emailBodyConfig = {
+                    heading: `Hi ${name}, need to reset your password?`,
+                    content: `
+                    <div>No problem! just click the link bellow and you'll be on your way. If you did not make this request, please ignore this email.</div>
+                    <div class="action-btn-wrap">
+                        <a class="action" href=${resetLink}>Reset Password</a> 
+                    </div>`,
+                    bodyFooterText: `<div>If you don't use this link within 30 minutes, it will expire. To get new password reset link, visit:
+                <a href=${window.location.href}>New Reset Password Link</a>
+            </div>`
+                }
                 let payload = {
                     mailTo: email,
                     title: 'Boogalu- Reset Password',
-                    content: emailBody
+                    content: EmailTemplate(emailBodyConfig)
                 }
                 sendEmail(payload).subscribe((res) => {
                     togglePageLoader(false);
+                    if (!('error' in res)) {
+                        console.log('User Email Send Successfully.');
+                        resolve();
+                    } else {
+                        console.log('User Email Send Failed.');
+                        togglePageLoader(false);
+                        reject();
+                    }
+                })
+            });
+        } catch (e) {
+            togglePageLoader(false);
+            console.log('email to user error: ', e);
+        }
+    }
+
+    const sendEmailAfterPasswordChange = () => {
+        try {
+            return new Promise((resolve, reject) => {
+                const loginLink = window.location.href
+                const { email } = resetPswCookie;
+                const emailBodyConfig = {
+                    heading: `Hello, Boogalu User we wanted to let you know that your password was changed.`,
+                    content: `<div>
+                    <p>To access your account just click the link bellow and try to login using your new password.</p>
+                    <div class="action-btn-wrap">
+                        <a class="action" href=${loginLink}>Login</a> 
+                    </div>
+                </div>`,
+                    bodyFooterText: `<div>Please do not reply to this email with your password. We will never ask for your password, and we strongly discourage you from sharing it with anyone.</div>`
+                }
+                let payload = {
+                    mailTo: email,
+                    title: 'Your password was changed successfully',
+                    content: EmailTemplate(emailBodyConfig)
+                }
+                sendEmail(payload).subscribe((res) => {
                     if (!('error' in res)) {
                         console.log('User Email Send Successfully.');
                         resolve();
@@ -453,7 +501,7 @@ export default function Login(props) {
                     const resetLinkCode = Math.random().toString(36).substring(2);//generate dynamic string for link identification
                     const resetLink = window.location.href + restLinkUrlQuery + resetLinkCode;
                     try {
-                        sendEmailToUser(isRegisteredUser[0], resetLink).then(() => {
+                        sendEmailBeforePasswordChange(isRegisteredUser[0], resetLink).then(() => {
                             togglePageLoader(false);
                             // email send successfully now set reset data to cookie
                             const cookieData = {
@@ -463,7 +511,7 @@ export default function Login(props) {
                             }
                             setCookie("_rst_bgl_", cookieData, {
                                 path: "/",
-                                expires: new Date(new Date().setMinutes(new Date().getMinutes() + 15)),//remove cookies after 15 min
+                                expires: new Date(new Date().setMinutes(new Date().getMinutes() + 30)),//remove cookies after 30 min
                                 sameSite: true,
                             })
                             dispatch(displayNotification({
@@ -523,9 +571,18 @@ export default function Login(props) {
                 setConfirmPwdMessage('');
                 try {
                     updatePassword(userIdFromCookie, resetPassword.password).subscribe(() => {
-                        togglePageLoader(false);
-                        toggleResetPwdModal(false);
                         //password reset success
+                        toggleResetPwdModal(false);
+                        sendEmailAfterPasswordChange();
+                        //remove reset password code from url
+                        history.replace(window.location.pathname);
+                        //remove reset password data from cookies
+                        setCookie("_rst_bgl_", {}, {
+                            path: "/",
+                            expires: new Date(new Date().setSeconds(new Date().getSeconds() + 15)),//remove cookies after 10 sec
+                            sameSite: true,
+                        })
+                        togglePageLoader(false);
                         dispatch(displayNotification({
                             msg: "Password changed successfully",
                             type: NOTIFICATION_SUCCCESS,
@@ -763,7 +820,7 @@ export default function Login(props) {
                 <img src={bgImg} alt="background" />
             </div> */}
             {openVdoUploadModal ? <VideoUploader handleClose={() => setOpenVdoUploadModal(false)} /> : ''}
-            {openInformationModal ? <GenericInfoModal 
+            {openInformationModal ? <GenericInfoModal
                 title={infoModalTitle}
                 message={infoModalMessage}
                 status={infoModalStatus}
