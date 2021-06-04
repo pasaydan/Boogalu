@@ -109,6 +109,7 @@ function Profile() {
   const [followRequestUser, setFollowRequestUser] = useState({});
   // eslint-disable-next-line no-unused-vars
   const [userProfileData, setUserProfileData] = useState({});
+  const [selfProfile, setSelfProfile] = useState(false);
   const [userData, setUserData] = useState({});
   const [followButtonText, setFollowButtonText] = useState("Follow");
   const [openInformationModal, toggleInfoModal] = useState(false);
@@ -223,12 +224,14 @@ function Profile() {
                 const tempProfileData = response[0];
                 setUserProfileData(tempProfileData);
                 setUserData(tempProfileData);
+                setSelfProfile(false);
               } else {
-                setUserData(loggedInUser);
-                history.push("/profile");
+                // setUserData(loggedInUser);
+                // history.push("/profile");
               }
             });
           } else {
+            setSelfProfile(true);
             setUserData(loggedInUser);
             history.push("/profile");
           }
@@ -281,99 +284,145 @@ function Profile() {
   };
 
   useEffect(() => {
-    const profileUser =
-      userData && Object.keys(userData).length > 0 ? userData : loggedInUser;
-    getUploadedVideosByUserId(profileUser.key).subscribe((list) => {
-      setUserUploadedVideoList(list);
-      if (list.length !== 0) {
-        getAllUserList().then((data) => {
-          setUserList(data);
-          let userList = data;
-          let userVdoCopy = [...list];
-          userVdoCopy.forEach((vdoObj) => {
-            let userData = userList.filter(
-              (userObj) => userObj.key === profileUser.key
-            );
-            if (vdoObj.likes && vdoObj.likes.length) {
-              vdoObj.likes.forEach((likeObj) => {
-                let userData = userList.filter(
-                  (userObj) => userObj?.key === likeObj.userId
-                );
-                if (userData.length !== 0) {
-                  likeObj.username = userData && userData[0]?.username;
-                  likeObj.profileImage = userData && userData[0]?.profileImage;
-                }
-              });
-            }
-            if (vdoObj.comments && vdoObj.comments.length) {
-              vdoObj.comments.forEach((commentObj) => {
-                let userData = userList.filter(
-                  (userObj) => userObj.key === commentObj.userId
-                );
-                if (userData.length !== 0) {
-                  commentObj.username = userData[0]?.username;
-                  commentObj.profileImage = userData[0]?.profileImage;
-                }
-              });
-            }
-            if (userData && userData.length > 0) {
-              vdoObj.username = userData[0]?.name;
-              vdoObj.userEmail = userData[0]?.email;
-              vdoObj.privacy = userData[0]?.privacy || "Public";
-            }
-            let user = userData && userData[0];
-            if (user?.followedBy && user?.followedBy.length > 0) {
-              const checkIfUserFollowingVideoCreator = user?.followedBy.filter(
-                (followedByUserId) => followedByUserId === loggedInUser.key
+    // if (selfProfile)
+    const profileUser = !selfProfile ? userData : loggedInUser;
+    if (profileUser && Object.keys(profileUser).length > 0) {
+      getUploadedVideosByUserId(profileUser.key).subscribe((list) => {
+        setUserUploadedVideoList(list);
+        if (list.length !== 0) {
+          getAllUserList().then((data) => {
+            setUserList(data);
+            let userList = data;
+            let userVdoCopy = [...list];
+            userVdoCopy.forEach((vdoObj) => {
+              let userData = userList.filter(
+                (userObj) => userObj.key === profileUser.key
               );
-              console.log(
-                "checkIfUserFollowingVideoCreator",
-                checkIfUserFollowingVideoCreator
-              );
-              if (
-                checkIfUserFollowingVideoCreator &&
-                checkIfUserFollowingVideoCreator.length > 0
-              ) {
-                vdoObj.following = true;
-                setFollowStatus("following");
-              } else {
-                vdoObj.following = false;
-                setFollowStatus("");
+              if (vdoObj.likes && vdoObj.likes.length) {
+                vdoObj.likes.forEach((likeObj) => {
+                  let userData = userList.filter(
+                    (userObj) => userObj?.key === likeObj.userId
+                  );
+                  if (userData.length !== 0) {
+                    likeObj.username = userData && userData[0]?.username;
+                    likeObj.profileImage =
+                      userData && userData[0]?.profileImage;
+                  }
+                });
               }
-            }
-            if (user?.followRequestedBy && user?.followRequestedBy.length > 0) {
-              const checkIfUserRequestedToFollowVideoCreator =
-                user?.followRequestedBy.filter(
-                  (followRequestedByUserId) =>
-                    followRequestedByUserId === loggedInUser.key
-                );
-              console.log(
-                "checkIfUserRequestedToFollowVideoCreator",
-                checkIfUserRequestedToFollowVideoCreator
-              );
-              if (
-                checkIfUserRequestedToFollowVideoCreator &&
-                checkIfUserRequestedToFollowVideoCreator.length > 0
-              ) {
-                vdoObj.requested = true;
-                setFollowStatus("requested");
-              } else {
-                vdoObj.requested = false;
-                setFollowStatus("");
+              if (vdoObj.comments && vdoObj.comments.length) {
+                vdoObj.comments.forEach((commentObj) => {
+                  let userData = userList.filter(
+                    (userObj) => userObj.key === commentObj.userId
+                  );
+                  if (userData.length !== 0) {
+                    commentObj.username = userData[0]?.username;
+                    commentObj.profileImage = userData[0]?.profileImage;
+                  }
+                });
               }
-            }
+              if (userData && userData.length > 0) {
+                vdoObj.username = userData[0]?.name;
+                vdoObj.userEmail = userData[0]?.email;
+                vdoObj.privacy = userData[0]?.privacy || "Public";
+              }
+              let user = userData && userData[0];
+              if (user?.followedBy && user?.followedBy.length > 0) {
+                const checkIfUserFollowingVideoCreator =
+                  user?.followedBy.filter(
+                    (followedByUserId) => followedByUserId === loggedInUser.key
+                  );
+                console.log(
+                  "checkIfUserFollowingVideoCreator",
+                  checkIfUserFollowingVideoCreator
+                );
+                if (
+                  checkIfUserFollowingVideoCreator &&
+                  checkIfUserFollowingVideoCreator.length > 0
+                ) {
+                  vdoObj.following = true;
+                  setFollowStatus("following");
+                } else {
+                  vdoObj.following = false;
+                  setFollowStatus("");
+                }
+              }
+              if (
+                user?.followRequestedBy &&
+                user?.followRequestedBy.length > 0
+              ) {
+                const checkIfUserRequestedToFollowVideoCreator =
+                  user?.followRequestedBy.filter(
+                    (followRequestedByUserId) =>
+                      followRequestedByUserId === loggedInUser.key
+                  );
+                console.log(
+                  "checkIfUserRequestedToFollowVideoCreator",
+                  checkIfUserRequestedToFollowVideoCreator
+                );
+                if (
+                  checkIfUserRequestedToFollowVideoCreator &&
+                  checkIfUserRequestedToFollowVideoCreator.length > 0
+                ) {
+                  vdoObj.requested = true;
+                  setFollowStatus("requested");
+                } else {
+                  vdoObj.requested = false;
+                  setFollowStatus("");
+                }
+              }
+            });
+            dispatch(disableLoading());
+            console.log("userVdoCopy", userVdoCopy);
+            setUserUploadedVideoList(userVdoCopy);
           });
+        } else {
+          let user = profileUser;
+          if (user?.followedBy && user?.followedBy.length > 0) {
+            const checkIfUserFollowingVideoCreator = user?.followedBy.filter(
+              (followedByUserId) => followedByUserId === loggedInUser.key
+            );
+            console.log(
+              "checkIfUserFollowingVideoCreator",
+              checkIfUserFollowingVideoCreator
+            );
+            if (
+              checkIfUserFollowingVideoCreator &&
+              checkIfUserFollowingVideoCreator.length > 0
+            ) {
+              setFollowStatus("following");
+            } else {
+              setFollowStatus("");
+            }
+          }
+          if (user?.followRequestedBy && user?.followRequestedBy.length > 0) {
+            const checkIfUserRequestedToFollowVideoCreator =
+              user?.followRequestedBy.filter(
+                (followRequestedByUserId) =>
+                  followRequestedByUserId === loggedInUser.key
+              );
+            console.log(
+              "checkIfUserRequestedToFollowVideoCreator",
+              checkIfUserRequestedToFollowVideoCreator
+            );
+            if (
+              checkIfUserRequestedToFollowVideoCreator &&
+              checkIfUserRequestedToFollowVideoCreator.length > 0
+            ) {
+              setFollowStatus("requested");
+            } else {
+              setFollowStatus("");
+            }
+          }
           dispatch(disableLoading());
-          console.log("userVdoCopy", userVdoCopy);
-          setUserUploadedVideoList(userVdoCopy);
-        });
-      } else dispatch(disableLoading());
-    });
-    getCompetitionByUserId(profileUser.key).subscribe((list) => {
-      dispatch(disableLoading());
-      setUserCompetitionsList(list);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        }
+      });
+      getCompetitionByUserId(profileUser.key).subscribe((list) => {
+        dispatch(disableLoading());
+        setUserCompetitionsList(list);
+      });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }
   }, [userData]);
 
   useEffect(() => {

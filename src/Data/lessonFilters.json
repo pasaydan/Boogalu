@@ -1,0 +1,48 @@
+{
+    "filterBy": [
+        {
+            "id": "expertiseLevel",
+            "name": "Expertise level",
+            "values": [
+                {
+                    "id": "beginners",
+                    "label": "Beginners"
+                },
+                {
+                    "id": "intermediate",
+                    "label": "Intermediate"
+                },
+                {
+                    "id": "advance",
+                    "label": "Advance"
+                }
+            ]
+        },
+        {
+            "id": "danceStyles",
+            "name": "Styles",
+            "values": [
+                {
+                    "id": "hip-hop",
+                    "label": "Hip hop"   
+                },
+                {
+                    "id": "jazz",
+                    "label": "Jazz"   
+                },
+                {
+                    "id": "contemporary",
+                    "label": "Contemporary"   
+                },
+                {
+                    "id": "ballet",
+                    "label": "Ballet"   
+                },
+                {
+                    "id": "bharatnatyam",
+                    "label": "Bharatnatyam"   
+                }
+            ]
+        }
+    ]
+}

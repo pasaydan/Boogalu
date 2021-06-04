@@ -12,6 +12,7 @@ import VideoPlayer from "../Vedio/Video";
 import ProfileImage from "../ProfileImage";
 import { useHistory } from "react-router-dom";
 import { Link } from "@material-ui/core";
+import FollowButton from "../FollowButton";
 
 function Comments({
   handleClose,
@@ -30,6 +31,7 @@ function Comments({
       ? clickedUser.actionBtnText
       : "Follow"
   );
+  const [followStatus, setFollowStatus] = useState("");
   const [messageForUser, setMessageForUser] = useState(followMessage);
   // eslint-disable-next-line no-unused-vars
   const [openDetailsModal, setOpenDetailsModal] = useState(true);
@@ -69,6 +71,7 @@ function Comments({
     }
     if (videoObj.followRequested) {
       setFollowButtonText("Requested");
+      setFollowStatus("requested");
       setMessageForUser(
         `We have notified ${videoObj.username}, let them accept your Follow Request`
       );
@@ -78,12 +81,14 @@ function Comments({
       clickedUser.iRequestedFollow &&
       clickedUser.actionBtnText
     ) {
+      setFollowStatus("requested");
       setFollowButtonText(clickedUser.actionBtnText);
       setMessageForUser(
         `We have notified ${videoObj.username}, let them accept your Follow Request`
       );
     }
     if (clickedUser && clickedUser.imFollowing && clickedUser.actionBtnText) {
+      setFollowStatus("following");
       setFollowButtonText(clickedUser.actionBtnText);
       setPrivacyToggle(true);
     }
@@ -146,7 +151,8 @@ function Comments({
                       {videoObj.username || clickedUser.name}
                     </Link>
                   </span>
-                  {loggedInUser &&
+                  <FollowButton status={followStatus} />
+                  {/* {loggedInUser &&
                   loggedInUser.key !== videoObj.userId &&
                   !videoObj.following ? (
                     <Link
@@ -168,7 +174,7 @@ function Comments({
                     <span className="btn primary-light followBtn">
                       {followButtonText}
                     </span>
-                  )}
+                  )} */}
                 </div>
                 <div>
                   <VideoPlayer vdoObj={videoObj} />

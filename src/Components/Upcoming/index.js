@@ -2,9 +2,16 @@ import React, { useState, useRef, useEffect } from 'react';
 import LessonsVideoContainer from '../LessonVideoComponent';
 import Lessons from "../../Data/Dummy";
 import { useStoreConsumer } from '../../Providers/StateProvider';
+// eslint-disable-next-line no-unused-vars
 import { getAllLessons, deleteLessons, getLessonByPlanType, getLessonsWithOnlyPreview, getLessonByPlanTypeOnlyPreview } from "../../Services/Lessons.service";
+import { FaFilter } from "react-icons/fa";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { getParameterByName, isObjectEmpty } from '../../helpers';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+
+const FILTER_BY = require('../../Data/lessonFilters.json');
 
 function Upcoming() {
 
@@ -16,27 +23,46 @@ function Upcoming() {
     const [filterEmptyMessage, setFilterEmptyMessage] = useState('');
     const [lessonsSubHeading, setLessonSubHeading] = useState('');
     const [isDataPresentAndFilterApplied, toggleFilterOptionVisiblity] = useState(false);
+    const [isOtherFiltersActive, toggleOtherFilterOverlay] = useState(false);
+    const [levelFilterValue, setLevelFilter] = useState('');
+    const [styleFilterValue, setStyleFilter] = useState('');
+    const [planTypeFilterValue, setPlanTypeFilter] = useState('');
 
     const allFilterBtnRef = useRef();
+    const proFilterBtnRef = useRef();
     const freeFilterBtnRef = useRef();
     const paidFilterBtnRef = useRef();
-    const proFilterBtnRef = useRef();
+    const otherFiltersBtnRef = useRef();
     const premiumFilterBtnRef = useRef();
 
     useEffect(() => {
-        let filterParam = getParameterByName('filter', window.location.href);
-        if (filterParam && filterParam.length) {
-            filterParam = filterParam.toLocaleLowerCase();
-            filterLesson(null, filterParam);
+        let planFilterParam = getParameterByName('pricing', window.location.href);
+        let levelFilterParam = getParameterByName('el', window.location.href);
+        let styleFilterParam = getParameterByName('ds', window.location.href);
+        if ((planFilterParam && planFilterParam?.length) || (levelFilterParam && levelFilterParam?.length) || (styleFilterParam && styleFilterParam?.length)) {
+            planFilterParam = planFilterParam?.toLocaleLowerCase();
+            levelFilterParam = levelFilterParam?.toLocaleLowerCase();
+            styleFilterParam = styleFilterParam?.toLocaleLowerCase();
+            setPlanTypeFilter(planFilterParam);
+            setLevelFilter(levelFilterParam);
+            setStyleFilter(styleFilterParam);
+            filterLesson(null, planFilterParam);
         } else {
             if (allFilterBtnRef.current) {
                 allFilterBtnRef.current.classList.add('active');
             }
             getAllLessonsData();
         }
+        document.addEventListener('keyup', escFunction, false);
+        return () => document.removeEventListener('keyup', escFunction, false);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    function escFunction(event) {
+        if (event && event.keyCode === 27) {
+            resetAppliedFilters(event, false);
+        }
+    }
     function getAllLessonsData(from) {
         try {
             dispatch(enableLoading());
@@ -72,7 +98,7 @@ function Upcoming() {
         }
         
         if (from && from === 'filters') {
-            window.history.replaceState(null, null, `?filter=all`);   
+            window.history.replaceState(null, null, `?pricing=all`);   
         }
 
         if (lessons.length) {
@@ -85,24 +111,36 @@ function Upcoming() {
         }
     }
 
+    useEffect(() => {
+        if (planTypeFilterValue) {
+            filterLesson(null, planTypeFilterValue);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [planTypeFilterValue]);
+
     function filterLesson(event, filter) {
         if (event) {
             event.stopPropagation();
+            setPlanTypeFilter(filter);
         }
+        toggleOtherFilterOverlay(false);
         if (filter === 'all') {
             getAllLessonsData('filters');
+            setPlanTypeFilter(filter);
+            setLevelFilter('');
+            setStyleFilter('');
         } else {
             try {
                 dispatch(enableLoading());
                 if (!isObjectEmpty(loggedInUser)) {
-                    getLessonByPlanType(filter === 'startup' ? 'paid' : filter).subscribe(lessons => {
+                    getLessonByPlanType((planTypeFilterValue === 'startup' ? 'paid' : planTypeFilterValue), levelFilterValue, styleFilterValue).subscribe(lessons => {
                         dispatch(disableLoading());
-                        setLessonsDataByFilter(lessons, event, filter);
+                        setLessonsDataByFilter(lessons, event, planTypeFilterValue);
                     });
                 } else {
-                    getLessonByPlanTypeOnlyPreview(filter === 'startup' ? 'paid' : filter).subscribe(lessons => {
+                    getLessonByPlanTypeOnlyPreview((planTypeFilterValue === 'startup' ? 'paid' : planTypeFilterValue), levelFilterValue, styleFilterValue).subscribe(lessons => {
                         dispatch(disableLoading());
-                        setLessonsDataByFilter(lessons, event, filter);
+                        setLessonsDataByFilter(lessons, event, planTypeFilterValue);
                     });
                 }
             } catch (e) {
@@ -117,14 +155,30 @@ function Upcoming() {
         const filterBtns = document.querySelectorAll('.js-filterWrap')[0].querySelectorAll('button');
         if (filterBtns.length) {
             filterBtns.forEach( item => {
-                if (item.classList.contains('active')) {
-                    item.classList.remove('active');
+                if (!(event && event.target.classList.contains('js-otherFilterIcon'))) {
+                    if (item.classList.contains('active')) {
+                        item.classList.remove('active');
+                    }
                 }
             });
         }
+        if (planTypeFilterValue && levelFilterValue && styleFilterValue) {
+            window.history.replaceState(null, null, `?pricing=${planTypeFilterValue}&el=${levelFilterValue}&ds=${styleFilterValue}`);
+        } else if (planTypeFilterValue && levelFilterValue) {
+            window.history.replaceState(null, null, `?pricing=${planTypeFilterValue}&el=${levelFilterValue}`);
+        } else if (planTypeFilterValue && styleFilterValue) {
+            window.history.replaceState(null, null, `?pricing=${planTypeFilterValue}&ds=${styleFilterValue}`);
+        } else if (levelFilterValue && styleFilterValue) {
+            window.history.replaceState(null, null, `?el=${levelFilterValue}&ds=${styleFilterValue}`);
+        } else if (levelFilterValue) {
+            window.history.replaceState(null, null, `?el=${levelFilterValue}`);
+        } else if (styleFilterValue) {
+            window.history.replaceState(null, null, `?ds=${styleFilterValue}`);
+        } else {
+            window.history.replaceState(null, null, `?pricing=${planTypeFilterValue}`);
+        }
         if (event) {
             event.target.classList.add('active');
-            window.history.replaceState(null, null, `?filter=${filter}`);
         } else {
             switch (filter) {
                 case 'all':     if (allFilterBtnRef.current) {
@@ -159,21 +213,35 @@ function Upcoming() {
             setLessonsList(lessons);
         } else {
             setLessonsList([]);
-            switch (filter) {
-                case 'startup': setFilterEmptyMessage("Sorry, there is no Startup lessons currently available. Please try another filters!");
-                                break;
+            setFilterEmptyMessage("Sorry, no lessons for the filters you have selected. Please try with another filters!");
+        }
+    }
 
-                case 'premium': setFilterEmptyMessage("Sorry, there is no Premium lessons currently available. Please try another filters!");
-                                break;
-                
-                case 'free':    setFilterEmptyMessage("Sorry, there is no Free lessons currently available. Please try another filters!");
-                                break;
-                
-                case 'pro':     setFilterEmptyMessage("Sorry, there is no Pro lessons currently available. Please try another filters!");
-                                break;
-                
-                default: break;
-            }
+    function toggleOtherFilters(event, action) {
+        event.stopPropagation();
+        if (!action) {
+            setLevelFilter('');
+            setStyleFilter('');
+        }
+        toggleOtherFilterOverlay(action);
+    }
+
+    function resetAppliedFilters(event, action) {
+        event.stopPropagation();
+        if (!action) {
+            setLevelFilter('');
+            setStyleFilter('');
+        }
+        filterLesson(null, 'all');
+        toggleOtherFilterOverlay(action);
+    }
+    
+    function handleOtherFilters(event, filterName) {
+        event.stopPropagation();
+        if (filterName === 'expertiseLevel') {
+            setLevelFilter(event.target.value);
+        } else {
+            setStyleFilter(event.target.value);
         }
     }
 
@@ -199,12 +267,62 @@ function Upcoming() {
                 {
                     isDataPresentAndFilterApplied ?
                     <div className="filterWrap js-filterWrap">
-                        <button ref={allFilterBtnRef} className="btn primary-dark active" onClick={(e) => filterLesson(e, 'all')}>All</button>
-                        <button ref={freeFilterBtnRef} className="btn primary-dark" onClick={(e) => filterLesson(e, 'free')}>Free</button>
-                        <button ref={paidFilterBtnRef} className="btn primary-dark" onClick={(e) => filterLesson(e, 'startup')}>Startup</button>
-                        <button ref={proFilterBtnRef} className="btn primary-dark" onClick={(e) => filterLesson(e, 'pro')}>Pro</button>
-                        <button ref={premiumFilterBtnRef} className="btn primary-dark" onClick={(e) => filterLesson(e, 'premium')}>Premium</button>
+                        <button ref={allFilterBtnRef} title="apply all filter" className="btn primary-dark active" onClick={(e) => filterLesson(e, 'all')}>All</button>
+                        <button ref={freeFilterBtnRef} title="apply free filter" className="btn primary-dark" onClick={(e) => filterLesson(e, 'free')}>Free</button>
+                        <button ref={paidFilterBtnRef} title="apply startup filter" className="btn primary-dark" onClick={(e) => filterLesson(e, 'startup')}>Startup</button>
+                        <button ref={proFilterBtnRef} title="apply pro filter" className="btn primary-dark" onClick={(e) => filterLesson(e, 'pro')}>Pro</button>
+                        <button ref={premiumFilterBtnRef} title="apply premium filter" className="btn primary-dark" onClick={(e) => filterLesson(e, 'premium')}>Premium</button>
+                        <button ref={otherFiltersBtnRef} title="apply other filters" className="btn primary-dark otherFilterIcon js-otherFilterIcon" onClick={(e) => toggleOtherFilters(e, true)}>
+                            <span><FaFilter /></span>
+                        </button>
                     </div> : ''
+                }
+                {
+                    isOtherFiltersActive ?
+                    <div className="otherFiltersWrap">
+                        <div className="innerBox">
+                            <p className="close-modal-icon dark" onClick={(e) => toggleOtherFilters(e, false)} title="close filter"></p>
+                            <h3>Filter by</h3>
+                            <div className="filterInnerWrap">
+                                {
+                                    FILTER_BY && FILTER_BY?.filterBy.length ?
+                                    FILTER_BY?.filterBy.map( filterItem => {
+                                        return (
+                                            <div className="filterItem" key={filterItem?.id}>
+                                                <p className="filterTitle">{filterItem?.name}</p>
+                                                <div className="optionsWrap">
+                                                    <RadioGroup 
+                                                        className="radioGroupControls"
+                                                        aria-label={`aria label for ${filterItem?.name}`} 
+                                                        name={filterItem?.id} 
+                                                        value={filterItem?.id === 'expertiseLevel' ? levelFilterValue : styleFilterValue}
+                                                        defaultValue={filterItem?.values[0]?.id}
+                                                        onChange={(e) => handleOtherFilters(e, filterItem?.id)}>
+                                                            {
+                                                                filterItem?.values && filterItem?.values.length ?
+                                                                filterItem.values.map( option => {
+                                                                    return (
+                                                                        <FormControlLabel
+                                                                        key={option?.id} 
+                                                                        value={option?.id} control={<Radio />} label={option?.label} />
+                                                                    )
+                                                                }) : ''
+                                                            }
+                                                    </RadioGroup>
+                                                </div>
+                                            </div>
+                                        )
+                                    })
+                                    : ''
+                                }
+                            </div>
+                            <div className="filterActionWrap">
+                                <button className="btn primary-light" onClick={(e) => resetAppliedFilters(e, false)}>Reset &amp; cancel</button>
+                                <button className="btn primary-dark" onClick={(e) => filterLesson(e, null)}>Apply</button>
+                            </div>
+                        </div>
+                    </div>
+                    : ''
                 }
                 <div className="lessons-vdo-wrap">
                     {lessonsData && lessonsData.length ? lessonsData.map((videoData, index) => {
