@@ -163,51 +163,57 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
 
     return (
         <div className="final-enrollment-wrap">
-            <h2 id="title">Basic Details for Enrollment</h2>
             {/* <img src={competitionDetails.img} alt={competitionDetails.name} style={{ width: '20%' }} /> */}
             {/* <p id="description">{competitionDetails.desc}</p> */}
-            <div className="userdata">
-                <div className="user-info"><label>Name:</label><span>{loggedInUser.name}</span></div>
-                <div className="user-info"><label>Phone:</label><span>{loggedInUser.phone}</span></div>
-                <div className="user-info"><label>Email:</label><span>{loggedInUser.email}</span></div>
-                <div className="user-info"><label>Gender:</label><span>{loggedInUser.gender}</span></div>
-            </div>
-            {!competitionDetails?.isUserEnrolled ? <div className="age-group-dropdown">
-                <FormControl variant="outlined" className="input-field">
-                    <InputLabel id="select-outlined-label">Select Age Group</InputLabel>
-                    <Select
-                        labelId="select-outlined-label"
-                        id="select-outlined"
-                        value={competitionDetails.ageGroup}
-                        onChange={(e) => onAgeGroupChange(e.target.value)}
-                        label="Select Age Group"
-                    >
-                        <MenuItem value="Age 4 to 13 years">Age 4 to 13 years</MenuItem>
-                        <MenuItem value="Age 14 to 17 years">Age 14 to 17 years</MenuItem>
-                        <MenuItem value="Age 18 and above">Age 18 and above</MenuItem>
-                    </Select>
-                </FormControl>
-            </div>
-                :
-                <div>Submited age group - {competitionDetails.userSubmitedDetails.ageGroup}</div>
-            }
-            {SelectedVdo && <div className="selected-vdo">
-                <div className="sub-title">Selected video for competition</div>
-                <div className="change-link" onClick={() => changeSelectedVdo()}>Change</div>
-                <div className="vdo-wrap" >
-                    <img src={SelectedVdo.thumbnail ? SelectedVdo.thumbnail : THUMBNAIL_URL} style={{ width: "50%" }} alt={SelectedVdo.title} />
-                    <div>{SelectedVdo.title}</div>
+            <h2 id="title">Basic Details for Enrollment</h2>
+            <div className="detailsWrapOuter">
+                <div className="basicDetailsWrapper">
+                    <div className="userdata">
+                        <div className="user-info"><label>Name:</label><span>{loggedInUser.name}</span></div>
+                        <div className="user-info"><label>Phone:</label><span>{loggedInUser.phone}</span></div>
+                        <div className="user-info"><label>Email:</label><span>{loggedInUser.email}</span></div>
+                        <div className="user-info"><label>Gender:</label><span>{loggedInUser.gender}</span></div>
+                    </div>
+                    {!competitionDetails?.isUserEnrolled ? <div className="age-group-dropdown">
+                        <FormControl variant="outlined" className="input-field">
+                            <InputLabel id="select-outlined-label">Select Age Group</InputLabel>
+                            <Select
+                                labelId="select-outlined-label"
+                                id="select-outlined"
+                                value={competitionDetails.ageGroup}
+                                onChange={(e) => onAgeGroupChange(e.target.value)}
+                                label="Select Age Group"
+                            >
+                                <MenuItem value="Age 4 to 13 years">Age 4 to 13 years</MenuItem>
+                                <MenuItem value="Age 14 to 17 years">Age 14 to 17 years</MenuItem>
+                                <MenuItem value="Age 18 and above">Age 18 and above</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </div>
+                        :
+                        <div>Submited age group - {competitionDetails.userSubmitedDetails.ageGroup}</div>
+                    }
                 </div>
-            </div>}
+                {SelectedVdo && <div className="selected-vdo">
+                    {/* <div className="sub-title">Video you have selected</div> */}
+                    <div className="vdo-wrap">
+                        <div className="videoTitle">Video Title: <span>{SelectedVdo.title}</span></div>
+                        <div className="imgWrap">
+                            <img src={SelectedVdo.thumbnail ? SelectedVdo.thumbnail : THUMBNAIL_URL} alt={SelectedVdo.title} />
+                        </div>
+                    </div>
+                    <div className="change-link" onClick={() => changeSelectedVdo()}>Change</div>
+                </div>}
+            </div>
             {/* check for user subscribed or not */}
             {IsUserSubscribed ?
-                <div>
+                <div className="continueButtonWrap">
                     {!competitionDetails?.isUserEnrolled ? 
                         <Button variant="contained" color="primary" onClick={() => submitForCompetition()}>Complete Enrollment <ArrowRightSharpIcon /></Button>
                         : <Button variant="contained" color="primary" onClick={() => submitForCompetition()}>Update Competition<ArrowRightSharpIcon /></Button>
                     }
                 </div> :
-                <div>
+                <div className="continueButtonWrap">
                     {/* <div>To upload video you need to subscribe</div> */}
                     <Button variant="contained" color="primary" onClick={() => proceedForSubscription()}>Continue</Button>
                 </div>

@@ -248,6 +248,15 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
         }
     }
 
+    function sectionScrolled(event) {
+        event.stopPropagation();
+        if (event?.currentTarget?.scrollTop > 5) {
+            event?.currentTarget.classList.add('scrolled');
+        } else {
+            event?.currentTarget.classList.remove('scrolled');
+        }
+    }
+
     return (
         <div>
             <Modal
@@ -277,7 +286,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                     <div className="image-wrap">
                                         <img src={competitionDetails.img} alt={competitionDetails.name} />
                                     </div>
-                                    <div className="about-competition-wrap">
+                                    <div className="about-competition-wrap" onScroll={(e) => sectionScrolled(e)}>
                                         <div className="sub-titles">About Competition</div>
                                         <p id="description">{competitionDetails.desc}</p>
 

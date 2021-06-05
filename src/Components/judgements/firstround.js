@@ -190,7 +190,7 @@ function PreFinalRound() {
                         <button className="mainActionBtn reject" ref={rejectBtnRef} onClick={(e) => toggleUserVideoSelection(e, 'reject')}>Reject</button>
                         <textarea className="comments" 
                             ref={contestantCommentRef}
-                            placeholder={`Few comments ${selectOrRejection ? 'for' : ''} ${selectOrRejection}`}></textarea>
+                            placeholder={`Comments ${selectOrRejection ? 'for' : ''} ${selectOrRejection}`}></textarea>
                         <button className="btn mainActionBtn submitBtn" ref={submitBtnRef} onClick={(e) => submitActionSelection(e)}>Submit</button>
                     </div>
                 </div> : ''

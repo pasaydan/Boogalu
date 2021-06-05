@@ -14,6 +14,176 @@
     }
 }
 
+.eventDetailModal {
+    position: fixed;
+    z-index: 200;
+    background: rgba(0, 0, 0, 0.8);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    .eventDetailInner {
+        padding: 15px;
+        background: var(--primary-white);
+        box-sizing: border-box;
+        border-radius: 5px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 480px;
+        text-align: center;
+        h3 {
+            color: var(--copyright-grey);margin: 0 0 20px 0;
+            padding: 0 20px;
+            font-weight: 600;
+        }
+        p {
+            color: var(--copyright-grey);
+            margin: 0 0 15px 0;
+            padding: 0 20px;
+        }
+        .imgWrap {
+            width: 100%;
+            box-sizing: border-box;
+            height: 150px;
+            margin: 0;
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+        .closeModal {
+            position: absolute;
+            padding: 0;
+            top: 5px;
+            right: 5px;
+            width: 22px;
+            height: 22px;
+            margin: 0;
+            cursor: pointer;
+            &:before, &:after {
+                position: absolute;
+                content: '';
+                width: 100%;
+                height: 2px;
+                top: 10px;
+                left: 0;
+                background: var(--footer-text-grey);
+                transform-origin: center;
+                transform: rotate(45deg);
+            }
+            &:after {
+                transform: rotate(-45deg);
+            }
+        }
+        .btn {
+            padding: 5px 8px;
+            min-width: 80px;
+            display: block;
+            width: 100%;
+            margin: 10px 0 0;
+            filter: none;
+            color: var(--primary-white);
+            opacity: 0.8;
+            &.registeredInfoBtn {
+                margin: 10px 0 0 0;
+                box-sizing: border-box;
+                cursor: default;
+            }
+            &:hover {
+                opacity: 1;
+                color: var(--primary-white);
+            }
+            &.primary-light {
+                background: var(--success-green-opaque);
+                &:hover {
+                    background: var(--success-green-opaque);
+                }
+            }
+            &.primary-dark {
+                background: var(--light-pink-bg);
+                &:hover {
+                    background: var(--light-pink-bg);
+                }   
+            }
+            &:first-child {
+                margin: 0;
+            }
+        }
+        .navigateLink {
+            text-decoration: none;
+            display: block;
+            max-width: 160px;
+            margin: 10px auto 15px;
+        }
+        .actionWrap {
+            display: flex;
+            justify-content: center;
+            margin: 0 0 15px 0;
+        }
+        .eventDate {
+            margin-top: 10px;
+            text-align: left;
+            padding-left: 10px;
+            &.registrationFees {
+                .value {
+                    color: var(--dark-pink-hover-bg);
+                    i {
+                        font-weight: 600;
+                    }
+                }
+            }
+            a {
+                text-decoration: none;
+                color: var(--secondary-bg-blue);
+                &:hover {
+                    color: var(--info-blue-dark);
+                }
+            }
+            span {
+                font-size: 14px;
+                color: var(--footer-text-grey);
+                &.value {
+                    font-weight: 600;
+                }
+            }
+        }
+        .judgesWrap {
+            margin-top: 10px;
+            h3 {
+                font-size: 12px;
+                text-transform: uppercase;
+                color: var(--footer-text-grey);
+                font-weight: 600;
+                padding: 5px;
+                margin: 0 0 5px 0;
+                text-align: center;
+                background: rgba(0, 0, 0, 0.1);
+            }
+            .judgesItem {
+                text-align: left;
+                padding-left: 10px;
+                p {
+                    font-size: 12px;
+                    color: var(--footer-text-grey);
+                    margin: 10px 0 0 0;
+                    padding: 0;
+                    &.name {
+                        text-transform: uppercase;
+                        font-weight: 600;
+                        span {
+                            font-size: 12px;
+                            text-transform: capitalize;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 .competition-desc{
     font-size: 20px;
     line-height: 24px;

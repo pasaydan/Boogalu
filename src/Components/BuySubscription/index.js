@@ -104,7 +104,6 @@ export default function BuySubsription({
                     planType: planType[0]
                 };
                 updateUser(userDetails.key, userDetails).subscribe(() => {
-    
                     dispatch(loginUser(userDetails));
                     console.log('updateUser userDetails>>>>>> ', userDetails);
                     fnCallback(userDetails)

@@ -51,6 +51,9 @@
                     color: var(--btn-primary-dark-bg);
                     font-size: 14px;
                     line-height: 18px;
+                    &.scrolled {
+                        box-shadow: inset 0 7px 9px -7px rgba(0, 0, 0, 0.4);
+                    }
                     .sub-titles {
                         color: var(--secondary-dark-grey);
                         font-weight: 600;
@@ -250,11 +253,23 @@
                     .image-wrap {
                         flex-basis: 40%;
                         min-width: 270px;
-                        height: 162px;
-                        margin: 0 auto 20px;
+                        height: 140px;
+                        margin: 0 auto 10px;
                     }
                     .about-competition-wrap {
                         max-height: 235px;
+                        margin: 0;
+                        padding: 0 10px;
+                        p, li, div, span, label {
+                            font-size: 12px;
+                            line-height: 16px;
+                        }
+                        h3, h4 {
+                            font-size: 12px;
+                            margin: 10px 0;
+                            font-weight: 600;
+                            line-height: 18px;
+                        }
                     }
                 }
             }
@@ -284,11 +299,22 @@
                 .image-contentWrap {
                     .about-competition-wrap {
                         max-height: 290px;
+                        padding-bottom: 80px;
+                        box-sizing: border-box;
                     }
                 }
                 .action-wrap {
                     justify-content: space-between;
                     flex-wrap: wrap;
+                    position: absolute;
+                    width: 100%;
+                    bottom: 0;
+                    padding: 10px;
+                    box-sizing: border-box;
+                    left: 0;
+                    background: var(--primary-white);
+                    border-radius: 0 0 10px 10px;
+                    box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.2);
                     .terms-button {
                         font-size: 12px;
                         input {
