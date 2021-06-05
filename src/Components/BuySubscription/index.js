@@ -179,7 +179,7 @@ export default function BuySubsription({
                         </div>}
                         {activeStep === 2 && <div>
                             <p className="subscriptionMessage success">Subscription Payment Recieved Successfully</p>
-                            <div className="actionWrap">
+                            <div className="actionWrap success">
                                 <Button variant="contained" color="secondary" onClick={(e) => proceedForLessons()}>Continue to Lessons</Button>
                                 <Button variant="contained" color="secondary" onClick={(e) => proceedForCompetition()}>Continue to competition</Button>
                             </div>
