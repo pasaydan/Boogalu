@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import axios from 'axios';
-const {REACT_APP_API_URL} = process.env;
+const { REACT_APP_API_URL } = process.env;
 const header = new Headers();
 header.append('Access-Control-Allow-Origin', '*');
 header.append('Content-Type', 'application/json');
