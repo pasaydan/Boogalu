@@ -32,22 +32,86 @@ export function getLessonByName(name) {
     })
 }
 
-export function getLessonByPlanType(filter) {
+export function getLessonByPlanType(filter, levelFilter, styleFilter) {
     return new Observable((observer) => {
-        lessonsVideosRef.where('accessbility', '==', filter).get().then((querySnapshot) => {
-            let lessons = [];
-            querySnapshot.forEach(function (doc) {
-                let data = doc.data();
-                data.key = doc.id;
-                lessons.push(data);
+        filter = filter === 'all' ? '' : filter;
+        if (filter && levelFilter && styleFilter) {
+            lessonsVideosRef.where('accessbility', '==', filter).where('expertiseLevel', '==', levelFilter).where('artForm', '==', styleFilter).get().then((querySnapshot) => {
+                let lessons = [];
+                querySnapshot.forEach(function (doc) {
+                    let data = doc.data();
+                    data.key = doc.id;
+                    lessons.push(data);
+                })
+                observer.next(lessons);
             })
-            observer.next(lessons);
-        })
+        } else if (filter && levelFilter) {
+            lessonsVideosRef.where('accessbility', '==', filter).where('expertiseLevel', '==', levelFilter).get().then((querySnapshot) => {
+                let lessons = [];
+                querySnapshot.forEach(function (doc) {
+                    let data = doc.data();
+                    data.key = doc.id;
+                    lessons.push(data);
+                })
+                observer.next(lessons);
+            });
+        } else if (filter && styleFilter) {
+            lessonsVideosRef.where('accessbility', '==', filter).where('artForm', '==', styleFilter).get().then((querySnapshot) => {
+                let lessons = [];
+                querySnapshot.forEach(function (doc) {
+                    let data = doc.data();
+                    data.key = doc.id;
+                    lessons.push(data);
+                })
+                observer.next(lessons);
+            });
+        } else if (levelFilter && styleFilter) {
+            lessonsVideosRef.where('expertiseLevel', '==', levelFilter).where('artForm', '==', styleFilter).get().then((querySnapshot) => {
+                let lessons = [];
+                querySnapshot.forEach(function (doc) {
+                    let data = doc.data();
+                    data.key = doc.id;
+                    lessons.push(data);
+                })
+                observer.next(lessons);
+            });
+        } else if (levelFilter) {
+            lessonsVideosRef.where('expertiseLevel', '==', levelFilter).get().then((querySnapshot) => {
+                let lessons = [];
+                querySnapshot.forEach(function (doc) {
+                    let data = doc.data();
+                    data.key = doc.id;
+                    lessons.push(data);
+                })
+                observer.next(lessons);
+            });
+        } else if (styleFilter) {
+            lessonsVideosRef.where('artForm', '==', styleFilter).get().then((querySnapshot) => {
+                let lessons = [];
+                querySnapshot.forEach(function (doc) {
+                    let data = doc.data();
+                    data.key = doc.id;
+                    lessons.push(data);
+                })
+                observer.next(lessons);
+            });
+        } else {
+            lessonsVideosRef.where('accessbility', '==', filter).get().then((querySnapshot) => {
+                let lessons = [];
+                querySnapshot.forEach(function (doc) {
+                    let data = doc.data();
+                    data.key = doc.id;
+                    lessons.push(data);
+                })
+                observer.next(lessons);
+            });
+        }
     })
 }
 
 export function getLessonByPlanTypeOnlyPreview(filter, levelFilter, styleFilter) {
     return new Observable((observer) => {
+        filter = filter === 'all' ? '' : filter;
         if (filter && levelFilter && styleFilter) {
             lessonsVideosRef.where('accessbility', '==', filter).where('expertiseLevel', '==', levelFilter).where('artForm', '==', styleFilter).get().then((querySnapshot) => {
                 let lessons = [];

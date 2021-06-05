@@ -36,12 +36,14 @@ export default function Login(props) {
     const { state, dispatch } = useStoreConsumer();
     const history = useHistory();
     const [cookie, setCookie] = useCookies();
+    // eslint-disable-next-line no-unused-vars
     const [resetPswCookie, setResetPswCookie] = useState(cookie['_rst_bgl_']);
     const [loginCred, setloginCred] = useState({ username: "", password: "", showPassWord: false });
     const [LoginError, setLoginError] = useState(null);
     const [thirdPartyResponse, setThirdPartyResponse] = useState({ isLogginSuccess: false, data: null, source: '' });
     const [openVdoUploadModal, setOpenVdoUploadModal] = useState(false);
     const [componentShowClass, toggleShowClass] = useState('');
+    // eslint-disable-next-line no-unused-vars
     const [emailVerifyMessage, setEmailVerificationMessage] = useState('');
     const [emailVerifyClass, toggleEmailVerifyClass] = useState('');
     const [isResetClicked, toggleResetLink] = useState(false);
@@ -111,6 +113,7 @@ export default function Login(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    // eslint-disable-next-line no-unused-vars
     const testEmailTemplate = () => {
         const emailBodyConfig = {
             heading: `Hello, Boogalu User we wanted to let you know that your password was changed.`,
