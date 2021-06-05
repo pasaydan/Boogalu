@@ -105,6 +105,7 @@ function Competitions() {
                 setEventsData(eventsDataCopy);
             }
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loggedInUser])
 
     const openDetailsModal = (competition) => {
@@ -116,16 +117,8 @@ function Competitions() {
     function eventImageClicked(event) {
         // console.log('event data: ', event);
         if (event?.id) {
-            if (!isObjectEmpty(loggedInUser)) {
-                setEventData(event);
-                toggleEventModal(true);
-            } else {
-                dispatch(enableLoginFlow({ type: 'competition-event', data: event }));
-                history.push({
-                    pathname: '/login',
-                    state: null
-                });
-            }
+            setEventData(event);
+            toggleEventModal(true);
         }
     }
 
@@ -204,23 +197,31 @@ function Competitions() {
     }
 
     const proceedForPayment = () => {
-        toggleButtonLoading('loading');
-        const userData = {
-            "amount": clickedEventData.amount * 100,
-            "currency": "INR",
-            "receipt": loggedInUser.key
-        };
+        if (!isObjectEmpty(loggedInUser)) {
+            toggleButtonLoading('loading');
+            const userData = {
+                "amount": clickedEventData.amount * 100,
+                "currency": "INR",
+                "receipt": loggedInUser.key
+            };
 
-        let orderObj = {};
-        orderObj[clickedEventData?.type] = userData;
-        try {
-            postOrder(orderObj, [clickedEventData?.type], 'Monthly Subscription', loggedInUser, afterPaymentResponse)
-                .subscribe((response) => {
-                    // console.log('postOrder response >>>>>', response);
-                    toggleButtonLoading('');
-                });
-        } catch (e) {
-            console.log('Error: ', e);
+            let orderObj = {};
+            orderObj[clickedEventData?.type] = userData;
+            try {
+                postOrder(orderObj, [clickedEventData?.type], 'Monthly Subscription', loggedInUser, afterPaymentResponse)
+                    .subscribe((response) => {
+                        // console.log('postOrder response >>>>>', response);
+                        toggleButtonLoading('');
+                    });
+            } catch (e) {
+                console.log('Error: ', e);
+            }
+        } else {
+            dispatch(enableLoginFlow({ type: 'competition-event', data: clickedEventData }));
+            history.push({
+                pathname: '/login',
+                state: null
+            });
         }
     }
 
@@ -325,7 +326,7 @@ function Competitions() {
                                 clickedEventData.isRegistered ?
                                     <p className="btn primary-light registeredInfoBtn">You have already registered</p>
                                     :
-                                    <button className="btn primary-dark" className={buttonLoadingClass ? `${buttonLoadingClass} btn primary-dark` : 'btn primary-dark'} onClick={proceedForPayment}>Register &amp; pay {clickedEventData?.amount}/-</button>
+                                    <button className={buttonLoadingClass ? `${buttonLoadingClass} btn primary-dark` : 'btn primary-dark'} onClick={proceedForPayment}>Register &amp; pay {clickedEventData?.amount}/-</button>
                             }
                         </div>
                     </div> : ''
