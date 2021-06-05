@@ -52,11 +52,11 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
   const [showUserNotificationMenu, setShowUserIconNotificationMenu] =
     useState(false);
   const [userNotificationList, setUserNotificationList] = useState([]);
-  const [openInformationModal, toggleInfoModal] = useState(false); 
-  const [infoModalTitle, setInfoModalTitle] = useState(''); 
-  const [infoModalMessage, setInfoModalMessage] = useState(''); 
-  const [infoModalStatus, setInfoModalStatus] = useState(''); 
-  const [navigateLink, setInfoModalNavigateLink] = useState(''); 
+  const [openInformationModal, toggleInfoModal] = useState(false);
+  const [infoModalTitle, setInfoModalTitle] = useState('');
+  const [infoModalMessage, setInfoModalMessage] = useState('');
+  const [infoModalStatus, setInfoModalStatus] = useState('');
+  const [navigateLink, setInfoModalNavigateLink] = useState('');
 
   const ref = useRef();
   const hamburgerMenuRef = useRef(null);
@@ -222,9 +222,9 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
     toggleInfoModal(false);
     const pathName = history?.location?.pathname.split('/')[1];
     if (!pathName.includes('profile')) {
-        setInfoModalNavigateLink('/profile');
+      setInfoModalNavigateLink('/profile');
     }
-}
+  }
 
   const fetchNotifications = () => {
     let followNotificationArray = [];
@@ -398,7 +398,7 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
         toggleInfoModal(true);
       }
     } else {
-      dispatch(enableLoginFlow("upload-video"));
+      dispatch(enableLoginFlow({ type: "upload-video" }));
       history.push({
         pathname: "/login",
         state: null,
@@ -753,11 +753,9 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
       <nav
         ref={mainNavRef}
         onClick={(e) => navBoxClick(e)}
-        className={`navigation-wrap ${animateNavClass} ${
-          isHomeRoute && !isUserLoggedIn ? "home-nav-style" : ""
-        } ${goingUpClass} ${isNavHidden ? "hide-nav" : ""} ${goingDownClass} ${
-          !loggedInUser.username ? "user-logged-out" : ""
-        }`}
+        className={`navigation-wrap ${animateNavClass} ${isHomeRoute && !isUserLoggedIn ? "home-nav-style" : ""
+          } ${goingUpClass} ${isNavHidden ? "hide-nav" : ""} ${goingDownClass} ${!loggedInUser.username ? "user-logged-out" : ""
+          }`}
       >
         <div className="flex-container desktop-navigation">
           <h1 title="home">
@@ -850,9 +848,8 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
                 </div>
                 <div
                   onClick={(e) => activateNotificationMenu(e)}
-                  className={`profile-img-wrap notificationIcon ${
-                    isNotificationsPresent ? "active" : ""
-                  }`}
+                  className={`profile-img-wrap notificationIcon ${isNotificationsPresent ? "active" : ""
+                    }`}
                 >
                   {isNotificationsPresent ? (
                     <span className="notificationCount">
@@ -948,9 +945,8 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
 
           {userIconProfileMenu ? (
             <div
-              className={`profile-tab-wrap user-icon-menu-wrap ${
-                showUserIconProfileMenu ? "showMenu" : ""
-              }`}
+              className={`profile-tab-wrap user-icon-menu-wrap ${showUserIconProfileMenu ? "showMenu" : ""
+                }`}
               onClick={(e) => headerMenusClicked(e)}
             >
               <div className="innerMenuWrap">
@@ -979,9 +975,8 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
 
           {userNotificationMenu ? (
             <div
-              className={`profile-tab-wrap userNotificationOptionWrap user-icon-menu-wrap ${
-                showUserNotificationMenu ? "showMenu" : ""
-              }`}
+              className={`profile-tab-wrap userNotificationOptionWrap user-icon-menu-wrap ${showUserNotificationMenu ? "showMenu" : ""
+                }`}
               onClick={(e) => headerMenusClicked(e)}
             >
               <i
@@ -990,8 +985,8 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
                 onClick={(e) => headerMenusClicked(e)}
               ></i>
               {isNotificationsPresent &&
-              userNotificationList &&
-              userNotificationList.length ? (
+                userNotificationList &&
+                userNotificationList.length ? (
                 <div className="innerMenuWrap">
                   <ul className="notificationList">
                     {userNotificationList.map((user, index) => {
@@ -1161,12 +1156,12 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
             handleVdoUploadResponse={() => setOpenVdoUploadModal(false)}
           />
         )}
-        { openInformationModal ? <GenericInfoModal 
-            title={infoModalTitle}
-            message={infoModalMessage}
-            status={infoModalStatus}
-            navigateUrl={navigateLink}
-            closeInfoModal={shouldCloseInfoModal}
+        {openInformationModal ? <GenericInfoModal
+          title={infoModalTitle}
+          message={infoModalMessage}
+          status={infoModalStatus}
+          navigateUrl={navigateLink}
+          closeInfoModal={shouldCloseInfoModal}
         /> : ''}
       </nav>
     </>

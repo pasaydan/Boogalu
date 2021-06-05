@@ -8,18 +8,18 @@ import { enableLoginFlow } from "../../Actions/LoginFlow";
 import { isObjectEmpty } from '../../helpers';
 import { updateLessonPlayTime } from '../../Services/Lessons.service';
 
-function LessonsVideoContainer({ 
+function LessonsVideoContainer({
     lessonKey,
-    title, 
-    artist, 
-    desc, 
+    title,
+    artist,
+    desc,
     lessonPlayTime,
     videoUserLevel,
     artForm,
-    isPaid, 
-    thumbNail, 
-    activeVideosList, 
-    videoId 
+    isPaid,
+    thumbNail,
+    activeVideosList,
+    videoId
 }) {
     const { state, dispatch } = useStoreConsumer();
     const loggedInUser = state.loggedInUser;
@@ -37,7 +37,7 @@ function LessonsVideoContainer({
     const [isSubscribedUser, setSubscribedUser] = useState(false);
     const [videoCurrentPlayTime, setCurrentVideoPlayTime] = useState(null);
     const [isVideoPlayed, toggleVideoPlayedValue] = useState(false);
-    
+
     const thumbNailOverlayRef = useRef(null);
 
     useEffect(() => {
@@ -45,18 +45,18 @@ function LessonsVideoContainer({
 
         if (!isObjectEmpty(loggedInUser)) {
             if (lessonPlayTime && lessonPlayTime.length) {
-                const matchedUser = lessonPlayTime.filter( user =>  user.userKey === loggedInUser.key );
+                const matchedUser = lessonPlayTime.filter(user => user.userKey === loggedInUser.key);
                 if (matchedUser?.length && matchedUser[0]?.playedTime) {
                     setCurrentVideoPlayTime(Math.round(matchedUser[0].playedTime) - 5);
                 }
             }
             setLoggedInUserValue(true);
         }
-        
+
         if (!isObjectEmpty(loggedInUser) && state.loggedInUser.subscribed) {
             setSubscribedUser(true);
         }
-        
+
         if (videoElements && videoElements.length) {
             videoElements.forEach(item => {
                 if (item.getAttribute('data-id') === activeVideosList.frontView) {
@@ -79,7 +79,7 @@ function LessonsVideoContainer({
                     });
                     item.addEventListener("contextmenu", e => e.preventDefault());
                 }
-                
+
                 if (item.getAttribute('data-id') === activeVideosList.rearView) {
                     setVideoBack(item);
                     item.addEventListener('loadeddata', () => {
@@ -89,7 +89,7 @@ function LessonsVideoContainer({
                     });
                     item.addEventListener("contextmenu", e => e.preventDefault());
                 }
-                
+
                 if (item.getAttribute('data-id') === activeVideosList.rearMirrorView) {
                     setVideoBackMirror(item);
                     item.addEventListener('loadeddata', () => {
@@ -97,12 +97,12 @@ function LessonsVideoContainer({
                             item.currentTime = videoCurrentPlayTime;
                         }
                     });
-                    item.addEventListener("contextmenu", e => e.preventDefault());       
+                    item.addEventListener("contextmenu", e => e.preventDefault());
                 }
             });
         }
         // Video Mirror will also come here
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     function triggerFullScreen(e) {
@@ -160,7 +160,7 @@ function LessonsVideoContainer({
                     console.log("Front mirror played");
                 }).catch(e => {
                     console.log("Front mirror error");
-                }) ;
+                });
                 videoBack.play().then(_ => {
                     console.log("Back played");
                 }).catch(e => {
@@ -305,7 +305,7 @@ function LessonsVideoContainer({
                 updateLessonPlayTime(lessonKey, videoData).subscribe(res => {
                     console.log('Res: ', res);
                 });
-            } catch(e) {
+            } catch (e) {
                 console.log('Update lesson Error: ', e);
             }
         }
@@ -331,7 +331,7 @@ function LessonsVideoContainer({
 
     function toggleVideoOverlay(event, overlayBox) {
         event.stopPropagation();
-        
+
         if (isLoggedInUser) {
             const overlayItem = document.getElementsByClassName(overlayBox)[0];
             if (isPaid === 'free') {
@@ -369,34 +369,34 @@ function LessonsVideoContainer({
                     overlayItem.classList.add('activeOverlay');
                 }
             } else {
-                redirectToSubscription(); 
+                redirectToSubscription();
             }
         } else {
-            dispatch(enableLoginFlow('lessons'));
+            dispatch(enableLoginFlow({ type: 'lessons' }));
             history.push({
                 pathname: '/login',
                 state: null
-            });    
+            });
         }
     }
 
     function redirectToSubscription() {
-        dispatch(enableLoginFlow('subscription'));
+        dispatch(enableLoginFlow({ type: 'subscription' }));
         history.push({
             pathname: '/subscription',
             search: `?from=lesson&planType=${isPaid === 'paid' ? 'startup' : isPaid}`,
             state: null
-        }); 
+        });
     }
 
     function shareLessonDetails(event) {
         event.stopPropagation();
-        if (navigator.share) { 
+        if (navigator.share) {
             navigator.share({
-               title: 'Learn from the Experts',
-               url: `${window.location.origin}/lessons`
+                title: 'Learn from the Experts',
+                url: `${window.location.origin}/lessons`
             }).then(() => {
-               console.log('Thanks for sharing!');
+                console.log('Thanks for sharing!');
             }).catch(console.error);
         }
     }
@@ -433,68 +433,68 @@ function LessonsVideoContainer({
             </div>
             {
                 isVideoOverlayActive ?
-                <p title="close lesson" className="closeLessonBox" onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}><span></span></p>
-                : ''
+                    <p title="close lesson" className="closeLessonBox" onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}><span></span></p>
+                    : ''
             }
 
             {
                 !isVideoOverlayActive ?
-                <div className="previewVideoWrap">
-                    {
-                        activeVideosList?.preview ?
-                        <video controlsList="nodownload" muted className="js-previewVideo" onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}>
-                            <source src={activeVideosList?.preview} type="video/mp4" />
-                        </video> : ''
-                    }
-                </div>
-                 : ''
+                    <div className="previewVideoWrap">
+                        {
+                            activeVideosList?.preview ?
+                                <video controlsList="nodownload" muted className="js-previewVideo" onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}>
+                                    <source src={activeVideosList?.preview} type="video/mp4" />
+                                </video> : ''
+                        }
+                    </div>
+                    : ''
             }
 
             {
                 isPaid === 'free' ?
-                <span className="diagonalStrip free">
-                    <span>Free</span>
-                </span>
-                : ''
+                    <span className="diagonalStrip free">
+                        <span>Free</span>
+                    </span>
+                    : ''
             }
-            
+
             {
                 isPaid === 'paid' ?
-                <span className="diagonalStrip paid">
-                    <span>Startup</span>
-                </span>
-                : ''
+                    <span className="diagonalStrip paid">
+                        <span>Startup</span>
+                    </span>
+                    : ''
             }
 
             {
                 isPaid === 'pro' ?
-                <span className="diagonalStrip pro">
-                    <span>Pro</span>
-                </span>
-                : ''
+                    <span className="diagonalStrip pro">
+                        <span>Pro</span>
+                    </span>
+                    : ''
             }
-            
+
             {
                 isPaid === 'premium' ?
-                <span className="diagonalStrip premium">
-                    <span>Premium</span>
-                </span>
-                : ''
+                    <span className="diagonalStrip premium">
+                        <span>Premium</span>
+                    </span>
+                    : ''
             }
 
             {
                 (!isLoggedInUser && isPaid === 'free') ?
                     <p className="lockIconWrap" title="Login to unlock this lesson" onClick={(e) => redirectToLogin(e)}>
                         <MdLock />
-                    </p> : 
-                (isLoggedInUser && (!isSubscribedUser && (isPaid === 'paid' || isPaid === 'pro' || isPaid === 'premium'))) ?
-                <p className="lockIconWrap" title="Subscribe to unlock this lesson" onClick={(e) => redirectToLogin(e)}>
-                    <MdLock />
-                </p> : 
-                (!isLoggedInUser && !isSubscribedUser && (isPaid === 'paid' || isPaid === 'pro' || isPaid === 'premium')) ?
-                <p className="lockIconWrap" title="Login &amp; subscribe to unlock this lesson" onClick={(e) => redirectToLogin(e)}>
-                    <MdLock />
-                </p> : ''
+                    </p> :
+                    (isLoggedInUser && (!isSubscribedUser && (isPaid === 'paid' || isPaid === 'pro' || isPaid === 'premium'))) ?
+                        <p className="lockIconWrap" title="Subscribe to unlock this lesson" onClick={(e) => redirectToLogin(e)}>
+                            <MdLock />
+                        </p> :
+                        (!isLoggedInUser && !isSubscribedUser && (isPaid === 'paid' || isPaid === 'pro' || isPaid === 'premium')) ?
+                            <p className="lockIconWrap" title="Login &amp; subscribe to unlock this lesson" onClick={(e) => redirectToLogin(e)}>
+                                <MdLock />
+                            </p> : ''
             }
 
             <div className="videoInfoWrap" onClick={(e) => toggleVideoOverlay(e, `js-${videoId}`)}>
@@ -506,15 +506,15 @@ function LessonsVideoContainer({
                     </span>
                     {
                         videoDuration ?
-                        <span>
-                            &nbsp; | &nbsp;
-                            <strong>{videoDuration}</strong> 
-                        </span> 
-                        : ''
+                            <span>
+                                &nbsp; | &nbsp;
+                            <strong>{videoDuration}</strong>
+                            </span>
+                            : ''
                     }
                 </p>
             </div>
-            
+
             <i className="shareIcon" title="Share this lesson" onClick={(e) => shareLessonDetails(e)}>
                 <MdShare />
             </i>
@@ -522,65 +522,65 @@ function LessonsVideoContainer({
             <div className="videoTags">
                 {
                     videoUserLevel ?
-                    <span className={`userLevel ${videoUserLevel.toLowerCase()}`}>{videoUserLevel}</span>
-                    : ''
+                        <span className={`userLevel ${videoUserLevel.toLowerCase()}`}>{videoUserLevel}</span>
+                        : ''
                 }
 
                 {
                     artForm ?
-                    <span className="danceStyle">{artForm}</span>
-                    : ''
+                        <span className="danceStyle">{artForm}</span>
+                        : ''
                 }
             </div>
-                
+
             <div className={`innerLessonVideoWrap ${visibilityClass} js-${videoId}`}>
                 <div className="inner-video-wrap" id={videoId}>
                     {
-                        isVideoOverlayActive ? 
-                        <div className="actions">
-                            <MdSettingsBackupRestore title="Flip video" className="vdo-controlls flipVideoIcon" variant="contained" type="submit" onClick={(e) => flipVideos(e)} />
-                            <MdFlip title="Mirror video" className="vdo-controlls mirrorVideoIcon" variant="contained" type="submit" onClick={(e) => mirrorVideos(e)} />
-                            <MdShare title="Share this lesson" className="vdo-controlls" variant="contained" onClick={(e) => shareLessonDetails(e)} />
-                            {fullScreenMode ?
-                                <FullscreenExitIcon title="Fullscreen mode" className="vdo-controlls fullScreenToggleIcon" variant="contained" type="submit" onClick={(e) => triggerFullScreen(e)} />
-                                :
-                                <FullscreenIcon title="Exit fullscreen" className="vdo-controlls fullScreenToggleIcon" variant="contained" type="submit" onClick={(e) => triggerFullScreen(e)} />
-                            }
-                        </div> : ''
+                        isVideoOverlayActive ?
+                            <div className="actions">
+                                <MdSettingsBackupRestore title="Flip video" className="vdo-controlls flipVideoIcon" variant="contained" type="submit" onClick={(e) => flipVideos(e)} />
+                                <MdFlip title="Mirror video" className="vdo-controlls mirrorVideoIcon" variant="contained" type="submit" onClick={(e) => mirrorVideos(e)} />
+                                <MdShare title="Share this lesson" className="vdo-controlls" variant="contained" onClick={(e) => shareLessonDetails(e)} />
+                                {fullScreenMode ?
+                                    <FullscreenExitIcon title="Fullscreen mode" className="vdo-controlls fullScreenToggleIcon" variant="contained" type="submit" onClick={(e) => triggerFullScreen(e)} />
+                                    :
+                                    <FullscreenIcon title="Exit fullscreen" className="vdo-controlls fullScreenToggleIcon" variant="contained" type="submit" onClick={(e) => triggerFullScreen(e)} />
+                                }
+                            </div> : ''
                     }
                     {
                         activeVideosList?.frontView ?
-                        <video 
-                            data-id={activeVideosList?.frontView} 
-                            className={(activeVideoState === 'front') ? 'active' : ''} 
-                            onPause={(e) => pauseVideo(e)} 
-                            onPlay={(e) => playVideo(e)} 
-                            onSeeked={(e) => onVideoSeek(e, 'front')} 
-                            poster={thumbNail} 
-                            controls
-                            controlsList="nodownload"
-                            onLoadedMetadata={(e) => setVideoDuration(e)}
+                            <video
+                                data-id={activeVideosList?.frontView}
+                                className={(activeVideoState === 'front') ? 'active' : ''}
+                                onPause={(e) => pauseVideo(e)}
+                                onPlay={(e) => playVideo(e)}
+                                onSeeked={(e) => onVideoSeek(e, 'front')}
+                                poster={thumbNail}
+                                controls
+                                controlsList="nodownload"
+                                onLoadedMetadata={(e) => setVideoDuration(e)}
                             >
-                            <source src={activeVideosList?.frontView} type="video/mp4" />
-                        </video> : ''
+                                <source src={activeVideosList?.frontView} type="video/mp4" />
+                            </video> : ''
                     }
                     {
                         activeVideosList?.frontMirrorView ?
-                        <video muted controlsList="nodownload" data-id={activeVideosList?.frontMirrorView} className={(activeVideoState === 'front-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'front-mirror')} poster={thumbNail} controls>
-                            <source src={activeVideosList?.frontMirrorView} type="video/mp4" />
-                        </video> : ''
+                            <video muted controlsList="nodownload" data-id={activeVideosList?.frontMirrorView} className={(activeVideoState === 'front-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'front-mirror')} poster={thumbNail} controls>
+                                <source src={activeVideosList?.frontMirrorView} type="video/mp4" />
+                            </video> : ''
                     }
                     {
                         activeVideosList?.rearView ?
-                        <video muted controlsList="nodownload" data-id={activeVideosList?.rearView} className={(activeVideoState === 'back') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back')} poster={thumbNail} controls>
-                            <source src={activeVideosList?.rearView} type="video/mp4" />
-                        </video> : ''
+                            <video muted controlsList="nodownload" data-id={activeVideosList?.rearView} className={(activeVideoState === 'back') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back')} poster={thumbNail} controls>
+                                <source src={activeVideosList?.rearView} type="video/mp4" />
+                            </video> : ''
                     }
                     {
                         activeVideosList?.rearMirrorView ?
-                        <video muted controlsList="nodownload" data-id={activeVideosList?.rearMirrorView} className={(activeVideoState === 'back-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back-mirror')} poster={thumbNail} controls>
-                            <source src={activeVideosList?.rearMirrorView} type="video/mp4" />
-                        </video> : ''
+                            <video muted controlsList="nodownload" data-id={activeVideosList?.rearMirrorView} className={(activeVideoState === 'back-mirror') ? 'active' : ''} onPause={(e) => pauseVideo(e)} onPlay={(e) => playVideo(e)} onSeeked={(e) => onVideoSeek(e, 'back-mirror')} poster={thumbNail} controls>
+                                <source src={activeVideosList?.rearMirrorView} type="video/mp4" />
+                            </video> : ''
                     }
                 </div>
             </div>

@@ -300,7 +300,7 @@ export default function Login(props) {
                             type: NOTIFICATION_SUCCCESS,
                             time: 3000
                         }));
-                        if (state.currentLoginFlow === 'competition') {
+                        if (state.currentLoginFlow === 'competition' || state.currentLoginFlow === 'competition-event') {//event-competition ==> event click from compitition page
                             history.push('/competitions');
                         } else if (state.currentLoginFlow === 'subscription') {
                             history.push('/subscription');
@@ -344,7 +344,7 @@ export default function Login(props) {
                             type: NOTIFICATION_SUCCCESS,
                             time: 3000
                         }));
-                        if (state.currentLoginFlow === 'competition') {
+                        if (state.currentLoginFlow === 'competition' || state.currentLoginFlow === 'competition-event') {
                             history.push('/competitions');
                         } else if (state.currentLoginFlow === 'subscription') {
                             history.push('/subscription');

@@ -9,9 +9,9 @@ const storeReducer = (initialState, action) => {
         case SIGN_UP_USER:
             return { ...initialState, loggedInUser: action.payload };
         case ENABLE_LOGIN_FLOW:
-            return { ...initialState, currentLoginFlow: action.payload };
+            return { ...initialState, currentLoginFlow: action.payload.type, currentLoginFlowData: action.payload.data, };
         case DISABLE_LOGIN_FLOW:
-            return { ...initialState, currentLoginFlow: action.payload };
+            return { ...initialState, currentLoginFlow: '', currentLoginFlowData: '', };
         case ENABLE_LOADER:
             return { ...initialState, isLoading: action.payload };
         case DISABLE_LOADER:

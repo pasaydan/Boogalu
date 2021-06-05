@@ -647,7 +647,7 @@ function Profile() {
       toggleInfoModal(true);
     } else {
       dispatch(setActiveVideoForCompetition(openUploadCompModalFor));
-      dispatch(enableLoginFlow("profile-competition"));
+      dispatch(enableLoginFlow({type:"profile-competition"}));
       history.push("/competitions");
       setShowProfileTab(false);
     }

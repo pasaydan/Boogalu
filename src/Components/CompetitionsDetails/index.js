@@ -59,9 +59,9 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
             if (loggedInUser.key && competitionDetails?.isUserEnrolled) {
                 tncAcceptedValue(true);
             }
-            setVdoUploadDateLimit(displayDate);   
+            setVdoUploadDateLimit(displayDate);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [competitionDetails]);
 
     useEffect(() => {
@@ -92,7 +92,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                 setActiveTabInVdoSelection(2);
             }
         });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ActiveStep]);
 
     const setActiveTabInVdoSelection = (tab) => {
@@ -174,7 +174,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
 
     const proceedForLogin = () => {
         handleClose();
-        dispatch(enableLoginFlow('competition'));
+        dispatch(enableLoginFlow({ type: 'competition' }));
         history.push({
             pathname: '/login',
             state: null
@@ -201,7 +201,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                 reader.readAsDataURL(file);
                 reader.onload = () => {
                     setSelectedVideo({ ...SelectedVideo, file: reader.result });
-                    dispatch(enableLoginFlow('competition-uploadvdo'));
+                    dispatch(enableLoginFlow({ type: 'competition-uploadvdo' }));
                     // handleClose();
                     // open = false;
                 }
@@ -325,17 +325,17 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                         <ul className="prices">
                                             {
                                                 competitionDetails.prices && competitionDetails.prices.length &&
-                                                competitionDetails.prices.map( (item, index) => {
+                                                competitionDetails.prices.map((item, index) => {
                                                     if (item.key) {
                                                         return (
                                                             <li className="sub-titles price-details" key={item.key}>
                                                                 {item.name} : <span>{item.value}</span>
-                                                            </li>                
+                                                            </li>
                                                         )
                                                     } else {
                                                         return (
                                                             <li className="sub-titles price-details" key={`price-item-${index}`}>
-                                                                {`${index + 1} ${ index === 0 ? 'st' : index === 1 ? 'nd' : 'rd'}`} : <span>{item}</span>
+                                                                {`${index + 1} ${index === 0 ? 'st' : index === 1 ? 'nd' : 'rd'}`} : <span>{item}</span>
                                                             </li>
                                                         )
                                                     }
@@ -353,47 +353,47 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                     </div>
                                 </div>
                                 {
-                                    competitionDetails.type &&  competitionDetails.type !== 'upcoming' ?
-                                    <div className="action-wrap">
-                                    <div className="terms-button" ref={tncRef} onClick={() => setTnC((TnC ? false : true))}>
-                                        <input type="checkbox"
-                                            checked={isTncAccepted}
-                                            title="accept terms and condition"
-                                            onChange={(e) => console.log('event: ', isTncAccepted)} 
-                                            onClick={(e) => acceptTnC(e)} />
+                                    competitionDetails.type && competitionDetails.type !== 'upcoming' ?
+                                        <div className="action-wrap">
+                                            <div className="terms-button" ref={tncRef} onClick={() => setTnC((TnC ? false : true))}>
+                                                <input type="checkbox"
+                                                    checked={isTncAccepted}
+                                                    title="accept terms and condition"
+                                                    onChange={(e) => console.log('event: ', isTncAccepted)}
+                                                    onClick={(e) => acceptTnC(e)} />
                                         Terms &amp; Conditions
                                     {TnC && <div className={`tool-tip-wrap ${loggedInUser.username ? 'loggedInToolTip' : ''}`}>
-                                            <div>You may not be able to attend the live session if you are late.</div>
-                                            <div>You may face interruptions during the course of the live stream due to internet connectivity issues.</div>
-                                            <div>Show details and the artist lineup are subject to change as per the artist’s discretion.</div>
-                                            <div> No refunds on purchased tickets are possible, even in case of any rescheduling.</div>
-                                        </div>}
-                                    </div>
-                                    {/* check for user logged in or not */}
-                                    {loggedInUser.email && loggedInUser.username ?
-                                        <div>
-                                            {!competitionDetails?.isUserEnrolled && <Button variant="contained"
-                                                disabled={!isTncAccepted}
-                                                color="primary"
-                                                onClick={() => setActiveStep(3)}
-                                            >Select Video</Button>}
-                                        </div> :
-                                        <div>
-                                            {/* <div>To upload video you need to login first</div> */}
-                                            <Button variant="contained" color="primary" onClick={() => proceedForLogin()}>Login</Button>
-                                        </div>
-                                    }
-                                    {loggedInUser.key && competitionDetails?.isUserEnrolled && <div className="change-video-wrap">
-                                        <div >
-                                            Submitted details:
+                                                    <div>You may not be able to attend the live session if you are late.</div>
+                                                    <div>You may face interruptions during the course of the live stream due to internet connectivity issues.</div>
+                                                    <div>Show details and the artist lineup are subject to change as per the artist’s discretion.</div>
+                                                    <div> No refunds on purchased tickets are possible, even in case of any rescheduling.</div>
+                                                </div>}
+                                            </div>
+                                            {/* check for user logged in or not */}
+                                            {loggedInUser.email && loggedInUser.username ?
+                                                <div>
+                                                    {!competitionDetails?.isUserEnrolled && <Button variant="contained"
+                                                        disabled={!isTncAccepted}
+                                                        color="primary"
+                                                        onClick={() => setActiveStep(3)}
+                                                    >Select Video</Button>}
+                                                </div> :
+                                                <div>
+                                                    {/* <div>To upload video you need to login first</div> */}
+                                                    <Button variant="contained" color="primary" onClick={() => proceedForLogin()}>Login</Button>
+                                                </div>
+                                            }
+                                            {loggedInUser.key && competitionDetails?.isUserEnrolled && <div className="change-video-wrap">
+                                                <div >
+                                                    Submitted details:
                                         {/* <video width="400" controls>
                                             <source src={competitionDetails.userSubmitedDetails.vdo.url} />
                                         </video> */}
-                                            <Button variant="contained" color="primary" onClick={() => setActiveStep(3)}>Change Video</Button>
+                                                    <Button variant="contained" color="primary" onClick={() => setActiveStep(3)}>Change Video</Button>
+                                                </div>
+                                            </div>}
                                         </div>
-                                    </div>}
-                                </div>
-                                : '' 
+                                        : ''
                                 }
                             </div>}
                             {ActiveStep === 3 && <div className="video-submit-section">
@@ -437,14 +437,14 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                             {ActiveStep === 4 && <div>
                                 <EnrollCompetition handleClose={(e) => handleClose(e)} changeSelectedVdo={() => setActiveStep(3)} />
                             </div>}
-                            {SelectedVideo?.file && <VideoUploader 
+                            {SelectedVideo?.file && <VideoUploader
                                 selectedVdo={SelectedVideo}
-                                competitionKey={competitionDetails.key} 
+                                competitionKey={competitionDetails.key}
                                 handleVdoUploadResponse={(e) => handleVdoUploadResponse(e)} />}
                             {
                                 competitionDetails.type && competitionDetails.type === 'upcoming' ?
-                                <span className="upcomingEventMessage">Upcoming Event, we'll notify you once active!</span>
-                                : ''
+                                    <span className="upcomingEventMessage">Upcoming Event, we'll notify you once active!</span>
+                                    : ''
                             }
                         </div>}
                     </div>

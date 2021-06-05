@@ -33,7 +33,7 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
         } else {
             setIsUserSubscribed(false);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const onAgeGroupChange = (groupValue) => {
@@ -116,12 +116,12 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
                                 console.log('vdo updated for competition suceess');
                                 history.push('/profile');
                             })
-                        } catch(e) {
+                        } catch (e) {
                             dispatch(disableLoading());
                             console.log('Error updating competition: ', e);
                         }
                     });
-                } catch(e) {
+                } catch (e) {
                     dispatch(disableLoading());
                     console.log('update previous video error: ', e);
                 }
@@ -135,7 +135,7 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
                     console.log('vdo uploaded for competition suceess');
                     history.push('/profile');
                 })
-            } catch(e) {
+            } catch (e) {
                 dispatch(disableLoading());
                 console.log('Error saving competition: ', e);
             }
@@ -147,7 +147,7 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
     const proceedForSubscription = () => {
         if (competitionDetails?.ageGroup || competitionDetails?.userSubmitedDetails?.ageGroup) {
             handleClose();
-            dispatch(enableLoginFlow('competition-subscription'));
+            dispatch(enableLoginFlow({ type: 'competition-subscription' }));
             history.push({
                 pathname: '/subscription',
                 state: null
@@ -208,7 +208,7 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
             {/* check for user subscribed or not */}
             {IsUserSubscribed ?
                 <div className="continueButtonWrap">
-                    {!competitionDetails?.isUserEnrolled ? 
+                    {!competitionDetails?.isUserEnrolled ?
                         <Button variant="contained" color="primary" onClick={() => submitForCompetition()}>Complete Enrollment <ArrowRightSharpIcon /></Button>
                         : <Button variant="contained" color="primary" onClick={() => submitForCompetition()}>Update Competition<ArrowRightSharpIcon /></Button>
                     }

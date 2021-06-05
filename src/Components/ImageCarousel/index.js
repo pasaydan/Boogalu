@@ -16,36 +16,44 @@ const ImageCarousel = (props) => {
         <div className="carouselWrap">
             {
                 carouselData && carouselData.length ?
-                <Carousel
-                    autoPlay={false}
-                    interval={3500}
-                    infiniteLoop={true}
-                    showThumbs={false}
-                >
-                    {
-                        carouselData.map( item => {
-                            return (
-                                <div 
-                                    className="imageContentWrap" key={item.id}
-                                    aria-label={`${item.name} aria label`}
-                                    onClick={(e) => eventDataTrigger(e, item)}
-                                >
-                                    {
-                                        viewportWidth <= 640  ? 
-                                            <img src={item?.imgUrlMobile} alt={`${item.id}-mobile`} />
-                                        :
-                                            <img src={item?.imgUrl} alt={`${item.id}-desktop`} />
-                                    }
-                                    {
-                                        item?.fees ?
-                                        <button className="evetnRegisterBtn btn primary-light">Register now</button> : ''
-                                    }
-                                    {/* <p className="legend">Solo Dance Competition</p> */}
-                                </div>
-                            )
-                        })
-                    }
-                </Carousel> : ''
+                    <Carousel
+                        autoPlay={false}
+                        interval={3500}
+                        infiniteLoop={true}
+                        showThumbs={false}
+                    >
+                        {
+                            carouselData.map(item => {
+                                return (
+                                    <div
+                                        className="imageContentWrap" key={item.id}
+                                        aria-label={`${item.name} aria label`}
+                                        onClick={(e) => eventDataTrigger(e, item)}
+                                    >
+                                        {
+                                            viewportWidth <= 640 ?
+                                                <img src={item?.imgUrlMobile} alt={`${item.id}-mobile`} />
+                                                :
+                                                <img src={item?.imgUrl} alt={`${item.id}-desktop`} />
+                                        }
+                                        {
+                                            item?.amount ?
+                                                <>
+                                                    { item.isRegistered ?
+                                                        <button className="evetnRegisterBtn btn primary-light">Registered</button>
+                                                        :
+                                                        <button className="evetnRegisterBtn btn primary-light">Register Now</button>
+                                                    }
+                                                </>
+                                                :
+                                                ''
+                                        }
+                                        {/* <p className="legend">Solo Dance Competition</p> */}
+                                    </div>
+                                )
+                            })
+                        }
+                    </Carousel> : ''
             }
         </div>
     );

@@ -1,11 +1,12 @@
 {
     "events": [
         {
-            "id": "event-0",
+            "id": "ev-0",
+            "type":"event_01",
             "name": "Hip-hop international dance competition",
             "imgUrl": "https://i.imgur.com/7dzYFKS.jpg",
             "imgUrlMobile": "https://i.imgur.com/Mf66SeA.jpeg",
-            "fees": 1280,
+            "amount": 1280,
             "info": {
                 "eventDate": "9/29/2021",
                 "registrationLastDate": "8/20/2021",
@@ -27,11 +28,12 @@
             }
         },
         {
-            "id": "event-1",
+            "id": "ev-1",
+            "type":"event_02",
             "name": "Find new stars",
             "imgUrl": "https://i.imgur.com/zOHB88w.jpeg",
             "imgUrlMobile": "https://i.imgur.com/nFQgzwS.jpeg",
-            "fees": 1000,
+            "amount": 1000,
             "info": {
                 "eventDate": "12/14/2021",
                 "registrationLastDate": "11/20/2021",

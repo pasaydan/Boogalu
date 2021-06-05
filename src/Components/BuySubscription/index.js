@@ -60,7 +60,7 @@ export default function BuySubsription({
         saveCompetition(competitionObj).subscribe((response) => {
             dispatch(disableLoading());
             console.log('vdo uploaded for competition suceess');
-            dispatch(enableLoginFlow('profile-competition'));
+            dispatch(enableLoginFlow({ type: 'profile-competition' }));
             history.push('/profile');
         })
     }
@@ -112,7 +112,7 @@ export default function BuySubsription({
         let orderObj = {};
         orderObj[subscriptionDetails?.planType] = userData;
         try {
-            postOrder(orderObj, [subscriptionDetails?.planType], loggedInUser, handlerFn)
+            postOrder(orderObj, [subscriptionDetails?.planType], 'Monthly Subscription', loggedInUser, handlerFn)
                 .subscribe((response) => {
                     console.log('postOrder response >>>>>', response);
                     toggleButtonLoading('');
