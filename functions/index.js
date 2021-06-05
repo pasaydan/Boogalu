@@ -29,15 +29,17 @@ let { clientsecret, clientid, redirecturi, refreshtoken, sendemailfrom } =
 
 // post order to razorpay
 exports.postOrder = functions.https.onRequest((request, response) => {
+  console.log(' post order to razorpay', request.body)
   return cors(request, response, () => {
     var instance = new Razorpay({
       key_id: razorpayconfig.key,
       key_secret: razorpayconfig.secret,
     });
     var options = request.body;
-    const identifier = Object.keys(options)[0];
-    const data = options[identifier];
+    const identifier = Object.keys(options)[0];  //order type -- "startup" Subscription / "premium" Subscription
+    const data = options[identifier];            //{ "amount": 19900-- order amount, "currency": "INR", "receipt": "EM9ronoBLk2Q70OMk2wg-- user id" }
     let paymentDetails = null;
+
 
     const getPaymentByUserKey = async (options) => {
       const paymentRef = db
@@ -58,7 +60,7 @@ exports.postOrder = functions.https.onRequest((request, response) => {
           paymentDetails &&
           paymentDetails[identifier] === identifier &&
           paymentDetails[identifier].id !==
-            paymentDetails[identifier].razorpay_payment_id
+          paymentDetails[identifier].razorpay_payment_id
         ) {
           response.send(paymentDetails);
           return paymentDetails;
