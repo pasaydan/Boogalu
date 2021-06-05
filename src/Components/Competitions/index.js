@@ -110,7 +110,7 @@ function Competitions() {
     }
 
     function eventImageClicked(event) {
-        console.log('event data: ', event);
+        // console.log('event data: ', event);
         if (event?.id) {
             if (!isObjectEmpty(loggedInUser)) {
                 setEventData(event);
@@ -132,7 +132,7 @@ function Competitions() {
     }
 
     const afterPaymentResponse = (response) => {
-        console.log("response", response);
+        // console.log("response", response);
         try {
             const updatedUserData = {
                 ...loggedInUser,
@@ -148,7 +148,7 @@ function Competitions() {
                 toggleEventModal(false);
                 setEventData(null);
                 setOpenPaymentSuccessModal(true);
-                console.log('updateUser updatedUserData>>>>>> ', updatedUserData);
+                // console.log('updateUser updatedUserData>>>>>> ', updatedUserData);
 
             })
         } catch (e) {
@@ -169,7 +169,7 @@ function Competitions() {
         try {
             postOrder(orderObj, [clickedEventData?.type], 'Monthly Subscription', loggedInUser, afterPaymentResponse)
                 .subscribe((response) => {
-                    console.log('postOrder response >>>>>', response);
+                    // console.log('postOrder response >>>>>', response);
                     toggleButtonLoading('');
                 });
         } catch (e) {
