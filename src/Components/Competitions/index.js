@@ -15,6 +15,10 @@ import { postOrder, updatePayment } from "./../../Services/Razorpay.service";
 import Button from '@material-ui/core/Button';
 import { isObjectEmpty } from '../../helpers';
 import { useHistory } from "react-router-dom";
+import { displayNotification } from "../../Actions/Notification";
+import { NOTIFICATION_SUCCCESS } from "../../Constants";
+import { EmailTemplate } from "../EmailTemplate/Emailer";
+import { sendEmail } from "../../Services/Email.service";
 const eventsList = require('../../Data/events.json');
 
 function Competitions() {
@@ -131,23 +135,66 @@ function Competitions() {
         toggleEventModal(false);
     }
 
+    const sendEmailAfterEventRegSuccess = () => {
+        try {
+            return new Promise((resolve, reject) => {
+                const { email } = loggedInUser;
+                const emailBodyConfig = {
+                    heading: `Hi ${loggedInUser.name},`,
+                    content: `<div>
+                    <p>Thanks for registering for ${clickedEventData.name} You’re all set.</p>
+                    <p>To know more about event just click the link bellow.</p>
+                    <div class="action-btn-wrap">
+                        <a class="action" href=${window.location.href}>Login</a> 
+                    </div>
+                </div>`,
+                    bodyFooterText: `<div>See you soon!</div>`
+                }
+                let payload = {
+                    mailTo: email,
+                    title: `Your registration is confirmed for ${clickedEventData.name}`,
+                    content: EmailTemplate(emailBodyConfig)
+                }
+                sendEmail(payload).subscribe((res) => {
+                    if (!('error' in res)) {
+                        console.log('User Email Send Successfully.');
+                        resolve();
+                    } else {
+                        console.log('User Email Send Failed.');
+                        reject();
+                    }
+                })
+            });
+        } catch (e) {
+            console.log('email to user error: ', e);
+        }
+    }
     const afterPaymentResponse = (response) => {
         // console.log("response", response);
         try {
-            const updatedUserData = {
-                ...loggedInUser,
-                events: [{
-                    id: clickedEventData.id,
-                    type: clickedEventData.type,
-                    name: clickedEventData.name,
-                    paymentDate: new Date()
-                }]
-            };
+            let updatedEvent = {
+                id: clickedEventData.id,
+                type: clickedEventData.type,
+                name: clickedEventData.name,
+                paymentDate: new Date()
+            }
+            const updatedUserData = { ...loggedInUser };
+            if ('events' in loggedInUser) {
+                updatedUserData.events.push(updatedEvent);
+            } else {
+                updatedUserData.events = [updatedEvent];
+            }
             updateUser(updatedUserData.key, updatedUserData).subscribe(() => {
                 dispatch(loginUser(updatedUserData));
                 toggleEventModal(false);
                 setEventData(null);
                 setOpenPaymentSuccessModal(true);
+                sendEmailAfterEventRegSuccess();
+                dispatch(displayNotification({
+                    msg: `${clickedEventData.name} Event Registration successfully`,
+                    type: NOTIFICATION_SUCCCESS,
+                    time: 4000
+                }));
                 // console.log('updateUser updatedUserData>>>>>> ', updatedUserData);
 
             })
@@ -293,7 +340,7 @@ function Competitions() {
                             <div>
                                 <p className="subscriptionMessage success">Payment For Event Registration Recieved Successfully</p>
                                 <div className="actionWrap success">
-                                    <Button variant="contained" color="secondary" onClick={(e) => openPaymentSuccessModal(false)}>Explore competition</Button>
+                                    <Button variant="contained" color="secondary" onClick={(e) => setOpenPaymentSuccessModal(false)}>Explore competition</Button>
                                 </div>
                             </div>
                         </div>
