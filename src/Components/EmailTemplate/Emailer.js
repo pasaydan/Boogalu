@@ -53,22 +53,24 @@ export const EmailTemplate = (emailConfig) => {
                 object-fit: contain;
             }
             .innerEmailWrap {
-                width: 90%;
+                width: 100%;
+                box-sizing: border-box;
                 padding: 0 15px;
                 font-family: Arial, Helvetica, sans-serif;
             }
             .innerEmailWrap h1, 
             .innerEmailWrap h2 {
                 text-align: center;
-                font-size: 25px;
-                line-height: 31px;
+                font-size: 20px;
+                line-height: 22px;
                 color: #512da8;
                 font-weight: 500;
                 margin: 20px auto 0;
                 letter-spacing: 0.5px;
             }
             .innerEmailWrap h2 {
-                font-size: 20px;
+                font-size: 16px;
+                line-height: 18px;
                 color: #2d2d2d;
             }
             .innerEmailWrap .content-wrap {
@@ -79,15 +81,16 @@ export const EmailTemplate = (emailConfig) => {
                 text-align: center;
             }
 
-            .innerEmailWrap .action-btn-wrap{
+            .innerEmailWrap .action-btn-wrap {
                 text-align: center;
-                margin: 40px auto;
+                margin: 30px auto;
             }
 
-            .innerEmailWrap .action-btn-wrap .action{ 
+            .innerEmailWrap .action-btn-wrap .action { 
                 border: 1px solid #069ce5;
-                padding: 15px 20px;
-                border-radius: 10px;
+                display: inline-block;
+                padding: 10px 20px;
+                border-radius: 5px;
                 text-decoration: none;
                 color: white;
                 background-color: #039be5;
@@ -95,9 +98,12 @@ export const EmailTemplate = (emailConfig) => {
                 letter-spacing: 0.5px;
                 font-weight: 500;
             }
-            .body-footer-text{
-                font-size: 12px;
-                font-weight: 400;
+            .body-footer-text {
+                font-size: 10px;
+                font-weight: 600;
+                line-height: 16px;
+                text-transform: uppercase;
+                color: #7a7a7a;
             }
             .footer {
                 background-color: #333333;
@@ -109,20 +115,20 @@ export const EmailTemplate = (emailConfig) => {
             }
             .footer a {
                 color: #039be5;
+                font-family: Arial, Helvetica, sans-serif;
                 text-decoration: none;
             }
-            .footer .footer-links-wrap{
+            .footer .footer-links-wrap {
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 margin: 6px 0;
             }
-            .footer .link{
+            .footer .link {
                 padding: 0px 10px;
                 border-right: 1px solid white;
                 font-size: 11px;
                 letter-spacing: 0.5px;
-                text-decoration: underline;
             }
             .footer .link:last-child {
                 border-right: unset;
