@@ -106,7 +106,7 @@ function Competitions() {
                 setEventsData(eventsDataCopy);
             }
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loggedInUser])
 
     const openDetailsModal = (competition) => {
@@ -165,20 +165,20 @@ function Competitions() {
     }
     const afterPaymentResponse = (response) => {
         // console.log("response", response);
+        let updatedEvent = {
+            id: clickedEventData.id,
+            type: clickedEventData.type,
+            name: clickedEventData.name,
+            fees: clickedEventData.fees,
+            paymentDate: new Date()
+        }
+        const updatedUserData = { ...loggedInUser };
+        if ('events' in loggedInUser) {
+            updatedUserData.events.push(updatedEvent);
+        } else {
+            updatedUserData.events = [updatedEvent];
+        }
         try {
-            let updatedEvent = {
-                id: clickedEventData.id,
-                type: clickedEventData.type,
-                name: clickedEventData.name,
-                fees: clickedEventData.fees,
-                paymentDate: new Date()
-            }
-            const updatedUserData = { ...loggedInUser };
-            if ('events' in loggedInUser) {
-                updatedUserData.events.push(updatedEvent);
-            } else {
-                updatedUserData.events = [updatedEvent];
-            }
             updateUser(updatedUserData.key, updatedUserData).subscribe(() => {
                 dispatch(loginUser(updatedUserData));
                 toggleEventModal(false);
@@ -192,7 +192,7 @@ function Competitions() {
                 }));
                 // console.log('updateUser updatedUserData>>>>>> ', updatedUserData);
 
-            })
+            });
         } catch (e) {
             console.log('Error: ', e);
         }
