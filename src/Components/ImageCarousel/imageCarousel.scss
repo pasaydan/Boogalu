@@ -8,6 +8,11 @@
             border-radius: 10px;
             max-height: 380px;
         }
+        .control-dots {
+            width: auto;
+            left: 50%;
+            transform: translateX(-50%);
+        }
         .slide {
             height: 100%;
             border-radius: 10px;
