@@ -161,7 +161,6 @@ function PreFinalRound() {
     }
 
     function toggleActionModalBox(compItem) {
-        console.log('Selected item: ', compItem);
         toggleSelectionRejectionText('');
         setContestantName('');
         setCompetitionActionValue(null);
@@ -223,9 +222,9 @@ function PreFinalRound() {
                                     compeitionListData.map((item, index) => {
                                         return (
                                             <div className="competitionBox" key={`comp-box-${index}`}>
-                                                <p className="compTitle">
-                                                    <span>{item?.compName}</span>
-                                                    <span>{item?.status}</span>
+                                                <p className={`compTitle ${item?.status.toLowerCase()}`}>
+                                                    <span className="name">{item?.compName}</span>
+                                                    <span className="status">{item?.status}</span>
                                                 </p>
                                                 <div className="videoWrap">
                                                     <VideoPlayer vdoObj={item.vdo} />

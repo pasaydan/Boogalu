@@ -421,8 +421,8 @@ function Profile() {
         dispatch(disableLoading());
         setUserCompetitionsList(list);
       });
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
 
   useEffect(() => {

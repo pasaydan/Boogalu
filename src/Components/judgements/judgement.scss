@@ -84,6 +84,16 @@
                     &.compTitle {
                         display: flex;
                         justify-content: space-between;
+                        &.rejected {
+                            .status {
+                                color: var(--error-red-opaque);
+                            }
+                        }
+                        &.selected {
+                            .status {
+                                color: var(--success-green-opaque);
+                            }
+                        }
                         span:first-child {
                             margin-right: 10px;
                         }
