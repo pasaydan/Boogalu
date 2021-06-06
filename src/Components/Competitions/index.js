@@ -105,7 +105,7 @@ function Competitions() {
                 setEventsData(eventsDataCopy);
             }
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loggedInUser])
 
     const openDetailsModal = (competition) => {
@@ -165,31 +165,33 @@ function Competitions() {
     const afterPaymentResponse = (response) => {
         // console.log("response", response);
         try {
-            let updatedEvent = {
-                id: clickedEventData.id,
-                type: clickedEventData.type,
-                name: clickedEventData.name,
-                paymentDate: new Date()
-            }
-            const updatedUserData = { ...loggedInUser };
-            if ('events' in loggedInUser) {
-                updatedUserData.events.push(updatedEvent);
-            } else {
-                updatedUserData.events = [updatedEvent];
-            }
-            updateUser(updatedUserData.key, updatedUserData).subscribe(() => {
-                dispatch(loginUser(updatedUserData));
-                toggleEventModal(false);
-                setEventData(null);
-                setOpenPaymentSuccessModal(true);
-                sendEmailAfterEventRegSuccess();
-                dispatch(displayNotification({
-                    msg: `${clickedEventData.name} Event Registration successfully`,
-                    type: NOTIFICATION_SUCCCESS,
-                    time: 4000
-                }));
-                // console.log('updateUser updatedUserData>>>>>> ', updatedUserData);
+            updatePayment(response).subscribe((res) => {
+                let updatedEvent = {
+                    id: clickedEventData.id,
+                    type: clickedEventData.type,
+                    name: clickedEventData.name,
+                    paymentDate: new Date()
+                }
+                const updatedUserData = { ...loggedInUser };
+                if ('events' in loggedInUser) {
+                    updatedUserData.events.push(updatedEvent);
+                } else {
+                    updatedUserData.events = [updatedEvent];
+                }
+                updateUser(updatedUserData.key, updatedUserData).subscribe(() => {
+                    dispatch(loginUser(updatedUserData));
+                    toggleEventModal(false);
+                    setEventData(null);
+                    setOpenPaymentSuccessModal(true);
+                    sendEmailAfterEventRegSuccess();
+                    dispatch(displayNotification({
+                        msg: `${clickedEventData.name} Event Registration successfully`,
+                        type: NOTIFICATION_SUCCCESS,
+                        time: 4000
+                    }));
+                    // console.log('updateUser updatedUserData>>>>>> ', updatedUserData);
 
+                })
             })
         } catch (e) {
             console.log('Error: ', e);
