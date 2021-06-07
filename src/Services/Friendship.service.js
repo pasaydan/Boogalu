@@ -3,7 +3,7 @@ import db from "../Database";
 
 const userRef = db.collection("users");
 
-export function updateFollowUnfollow(toFollowUser, followByUser, action) {
+export function updateFollowUnfollow(action, toFollowUser, followByUser) {
   const toFollowUserKey = toFollowUser.key;
   const followByUserKey = followByUser.key;
   return new Observable((observer) => {

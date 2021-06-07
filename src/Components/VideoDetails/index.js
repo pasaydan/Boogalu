@@ -151,7 +151,12 @@ function Comments({
                       {videoObj.username || clickedUser.name}
                     </Link>
                   </span>
-                  <FollowButton status={followStatus} />
+                  <FollowButton
+                    status={followStatus}
+                    onClickHandler={handleFollowBtnClick}
+                    user={videoObj || clickedUser}
+                    loggedInUser={loggedInUser}
+                  />
                   {/* {loggedInUser &&
                   loggedInUser.key !== videoObj.userId &&
                   !videoObj.following ? (

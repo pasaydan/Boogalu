@@ -647,7 +647,7 @@ function Profile() {
       toggleInfoModal(true);
     } else {
       dispatch(setActiveVideoForCompetition(openUploadCompModalFor));
-      dispatch(enableLoginFlow({type:"profile-competition"}));
+      dispatch(enableLoginFlow({ type: "profile-competition" }));
       history.push("/competitions");
       setShowProfileTab(false);
     }
@@ -741,9 +741,9 @@ function Profile() {
     }, [ref, handler]);
   }
 
-  const handleFollowToggle = (toFollow, followBy, action) => {
+  const handleFollowBtnClick = (action, toFollow, followBy) => {
     dispatch(enableLoading());
-    updateFollowUnfollow(toFollow, followBy, action).subscribe((response) => {
+    updateFollowUnfollow(action, toFollow, followBy).subscribe((response) => {
       if (response) {
         // eslint-disable-next-line no-unused-vars
         const { name, email } = response;
@@ -816,7 +816,12 @@ function Profile() {
                 Edit Profile
               </div>
             ) : (
-              <FollowButton status={followStatus} />
+              <FollowButton
+                status={followStatus}
+                onClickHandler={handleFollowBtnClick}
+                user={userData}
+                loggedInUser={loggedInUser}
+              />
             )}
           </div>
           <div className="followers-wrap clearfix">
@@ -1051,7 +1056,7 @@ function Profile() {
           handleLikes={handleLikes}
           handleComments={handleComments}
           loggedInUser={loggedInUser}
-          followToggle={handleFollowToggle}
+          followToggle={handleFollowBtnClick}
           BtnText={followButtonText}
         />
       )}
