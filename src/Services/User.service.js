@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
 import db from '../Database';
+import { timeStampToNewDate } from './Utils';
 
 const userRef = db.collection('users');
 
@@ -100,7 +101,7 @@ export function getUserById(id) {
                 name: data.name,
                 email: data.email,
                 phone: data.phone,
-                dob: data.dob,
+                dob: data?.dob?.seconds ? timeStampToNewDate(data.dob) : data.dob,
                 bio: data.bio
             });
         });

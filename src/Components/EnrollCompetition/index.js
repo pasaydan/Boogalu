@@ -102,7 +102,7 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
                 enrolledCompetition: competitionDetails.selectedVideo?.enrolledCompetition
             },
             ageGroup: competitionDetails?.ageGroup || competitionDetails?.userSubmitedDetails?.ageGroup,
-            status: 'Submited'
+            status: 'Submitted'
         }
         console.log(competitionObj);
         if (competitionDetails.isUserEnrolled) {
@@ -201,7 +201,7 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
                         </FormControl>
                     </div>
                         :
-                        <div>Submited age group - {competitionDetails.userSubmitedDetails.ageGroup}</div>
+                        <div>Submitted age group - {competitionDetails.userSubmitedDetails.ageGroup}</div>
                     }
                 </div>
                 {SelectedVdo && <div className="selected-vdo">

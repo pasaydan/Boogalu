@@ -6,7 +6,7 @@ import JudgesLogin from './judgeslogin';
 import JudgesPrivacyPolicy from './judgesPrivacyPolicy';
 import JudgesTermsUse from './judgesTermsOfUse';
 import { PRE_JUDGES_USER, PRE_JUDGES_PWD } from '../../Constants';
-import { getCompetitionsList, updateCompetition } from '../../Services/EnrollCompetition.service';
+import { getCompetitionsList, updateCompetition, getCompetitionsByFilter } from '../../Services/EnrollCompetition.service';
 import { getUserById } from '../../Services/User.service';
 import RippleLoader from '../RippleLoader';
 import VideoPlayer from "../Vedio/Video";
@@ -32,6 +32,8 @@ function PreFinalRound() {
     const [isVideoActionModalOpen, toggleVideoActionModal] = useState(false);
     const [contestantName, setContestantName] = useState('');
     const [competionForAction, setCompetitionActionValue] = useState(null);
+    const [isFiltersVisible, toggleFilterVisibility] = useState(false);
+    const [filterBtnElements, setFilterBtns] = useState(null);
 
     const selectBtnRef = useRef(null);
     const rejectBtnRef = useRef(null);
@@ -91,7 +93,10 @@ function PreFinalRound() {
                             compList.push(compObj);
                             if (compList.length === response.length) {
                                 toggleRippleLoader(false);
+                                toggleFilterVisibility(true);
                                 setComptitionList(compList);
+                                const filterBtns = document.querySelectorAll('.js-filterBtn');
+                                setFilterBtns(filterBtns);
                             }
                         });
                     });
@@ -104,6 +109,50 @@ function PreFinalRound() {
             toggleRippleLoader(false);
             handleDataFectchMessages('Oops! something went wrong, please try in sometime!');
             console.log('Competition list error: ', e);
+        }
+    }
+
+    function getEnrolledCompetitionsByFilter(event, filterValue) {
+        event.stopPropagation();
+        if (filterBtnElements && filterBtnElements.length) {
+            filterBtnElements.forEach( item => {
+                if (item.classList.contains('active')) {
+                    item.classList.remove('active');
+                }
+            });
+        }
+        event.target.classList.add('active');
+        if (filterValue === 'all') {
+            getEnrolledCompetitionList();
+        } else {
+            toggleRippleLoader(true);
+            try {
+                getCompetitionsByFilter(filterValue).subscribe(response => {
+                    if (response.length) {
+                        const compList = [];
+                        response.forEach( item => {
+                            getUserById(item.userId).subscribe( resp => {
+                                const compObj = {
+                                    ...item,
+                                    userDetails: JSON.parse(JSON.stringify(resp))
+                                };
+                                compList.push(compObj);
+                                if (compList.length === response.length) {
+                                    toggleRippleLoader(false);
+                                    setComptitionList(compList);
+                                }
+                            });
+                        });
+                    } else {
+                        toggleRippleLoader(false);
+                        handleDataFectchMessages('There are no competition videos matching the filter applied, change filter & try!');
+                    }
+                });
+            } catch(e) {
+                toggleRippleLoader(false);
+                handleDataFectchMessages('Oops! something went wrong, please try in sometime!');
+                console.log('Competition filter error: ', e);
+            }
         }
     }
 
@@ -216,9 +265,22 @@ function PreFinalRound() {
                             </div> :
                             <div className="videoListBox">
                                 {
+                                    isFiltersVisible ?
+                                    <div className="filters">
+                                        <p>Filter by: </p>
+                                        <div className="filtersBtn">
+                                            <button className="btn primary-light js-filterBtn" onClick={(e) => getEnrolledCompetitionsByFilter(e, 'all')}>All</button>
+                                            <button className="btn primary-light js-filterBtn" onClick={(e) => getEnrolledCompetitionsByFilter(e, 'Submitted')}>Submitted</button>
+                                            <button className="btn primary-light js-filterBtn" onClick={(e) => getEnrolledCompetitionsByFilter(e, 'Selected')}>Selected</button>
+                                            <button className="btn primary-light js-filterBtn" onClick={(e) => getEnrolledCompetitionsByFilter(e, 'Rejected')}>Rejected</button>
+                                        </div>
+                                    </div> : ''
+                                }
+                                {
                                     isVideosLoading ?
                                     <RippleLoader />
-                                    : compeitionListData && compeitionListData.length ?
+                                    : 
+                                    compeitionListData && compeitionListData.length ?
                                     compeitionListData.map((item, index) => {
                                         return (
                                             <div className="competitionBox" key={`comp-box-${index}`}>
