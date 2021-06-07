@@ -17,6 +17,44 @@ export function getUserByPhone(phone) {
     })
 }
 
+export function getUsersByFilter(filter, filterType) {
+    return new Observable((observer) => {
+        if (filterType === 'event') {
+            userRef.orderBy('username').onSnapshot((querySnapshot) => {
+                let user = []
+                querySnapshot.forEach(function (doc) {
+                    let isEventPresent = false;
+                    let data = doc.data();
+                    data.key = doc.id;
+                    if (data.events && data.events.length) {
+                        for(let i = 0; i < data.events.length; i++) {
+                            if (data.events[i].id === filter) {
+                                isEventPresent = true;
+                            }
+                        }
+                    }
+                    if (isEventPresent) {
+                        user.push(data);
+                    }
+                })
+                observer.next(user);
+            })
+        } else {
+            userRef.where(filterType, '==', filter).get().then((querySnapshot) => {
+                let user = []
+                querySnapshot.forEach(function (doc) {
+                    let data = doc.data();
+                    data.key = doc.id;
+                    if (data.role !== 'admin') {
+                        user.push(data);
+                    }
+                })
+                observer.next(user);
+            })
+        }
+    })
+}
+
 export function getUserByEmail(email) {
     return new Observable((observer) => {
         userRef.where('email', '==', email).get().then((querySnapshot) => {

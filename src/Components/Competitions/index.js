@@ -20,6 +20,7 @@ import { displayNotification } from "../../Actions/Notification";
 import { NOTIFICATION_SUCCCESS } from "../../Constants";
 import { EmailTemplate } from "../EmailTemplate/Emailer";
 import { sendEmail } from "../../Services/Email.service";
+
 const eventsList = require('../../Data/events.json');
 
 function Competitions() {

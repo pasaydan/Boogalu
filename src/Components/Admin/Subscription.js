@@ -8,7 +8,7 @@ import Select from '@material-ui/core/Select';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Button from '@material-ui/core/Button';
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
-import logOutIcon from '../../Images/logout-icon.png';
+import { FaPowerOff } from "react-icons/fa";
 import ActionToolTip from '../ActionTooltip';
 import ConfirmationModal from '../ConfirmationModal';
 import { Link } from 'react-router-dom';
@@ -323,7 +323,7 @@ export default function Subscription() {
                 {
                     isAdminLoggedIn || checkAdminLogIn ?
                     <p className="logOutIconWrap" title="logout" onClick={(e) => tiggerAdminLogout(e, false)}>
-                        <img src={logOutIcon} alt="logout" />
+                        <FaPowerOff />
                     </p> : ''
                 }
                 {
