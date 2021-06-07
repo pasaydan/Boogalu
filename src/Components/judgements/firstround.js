@@ -267,7 +267,7 @@ function PreFinalRound() {
                                 {
                                     isFiltersVisible ?
                                     <div className="filters">
-                                        <p>Filter by: </p>
+                                        <p className="filterTitle">Filter by: </p>
                                         <div className="filtersBtn">
                                             <button className="btn primary-light js-filterBtn" onClick={(e) => getEnrolledCompetitionsByFilter(e, 'all')}>All</button>
                                             <button className="btn primary-light js-filterBtn" onClick={(e) => getEnrolledCompetitionsByFilter(e, 'Submitted')}>Submitted</button>

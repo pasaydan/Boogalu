@@ -9,7 +9,7 @@
     justify-content: center;
     align-items: center;
     h1 {
-        margin: 0 0 30px 0;
+        margin: 0 0 20px 0;
         font-size: 22px;
         line-height: 26px;
         text-align: center;
@@ -540,11 +540,43 @@
 @media screen and (max-width: 767px) {
     .judgementWrap {
         min-height: calc(100vh - 60px);
+        h1 {
+            padding: 0 10px;
+            box-sizing: border-box;
+            font-size: 20px;
+            line-height: 22px;
+        }
     }
     .judgesModalBox {
         width: 95%;
         min-width: 300px;
         padding: 20px 10px;
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .judgementWrap {
+        .compeitionsVideoAndRules {
+            .videoListBox {
+                .filters {
+                    display: block;
+                    padding: 0 10px;
+                    box-sizing: border-box;
+                    .filterTitle {
+                        width: 100%;
+                        text-align: center;
+                        margin: 0 0 5px;
+                    }
+                    .filtersBtn {
+                        margin-left: 0;
+                        .btn {
+                            font-size: 10px;
+                            padding: 5px 8px;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
