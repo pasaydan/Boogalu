@@ -98,9 +98,11 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
                 thumbnail: competitionDetails.selectedVideo.thumbnail,
                 url: competitionDetails.selectedVideo.url,
                 desc: competitionDetails.selectedVideo.desc,
+                userId: loggedInUser.key,
+                enrolledCompetition: competitionDetails.selectedVideo?.enrolledCompetition
             },
             ageGroup: competitionDetails?.ageGroup || competitionDetails?.userSubmitedDetails?.ageGroup,
-            status: 'Submited'
+            status: 'Submitted'
         }
         console.log(competitionObj);
         if (competitionDetails.isUserEnrolled) {
@@ -112,10 +114,11 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
                     updateVideo(previousObj.key, previousObj).subscribe(resp => {
                         try {
                             updateCompetition(competitionDetails.userSubmitedDetails.key, competitionObj).subscribe((response) => {
-                                dispatch(disableLoading());
-                                console.log('vdo updated for competition suceess');
-                                history.push('/profile');
-                            })
+                                updateVideo(competitionObj.vdo.key, competitionObj.vdo).subscribe( resp => {
+                                    dispatch(disableLoading());
+                                    history.push('/profile');
+                                });
+                            });
                         } catch (e) {
                             dispatch(disableLoading());
                             console.log('Error updating competition: ', e);
@@ -128,16 +131,23 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
             }
         } else {
             try {
-                saveCompetition(competitionObj).subscribe((response) => {
-                    dispatch(disableLoading());
-                    sendEmailToAdmin();
-                    sendEmailToUser();
-                    console.log('vdo uploaded for competition suceess');
-                    history.push('/profile');
-                })
-            } catch (e) {
+                updateVideo(competitionObj.vdo.key, competitionObj.vdo).subscribe( resp => {
+                    try {
+                        saveCompetition(competitionObj).subscribe((response) => {
+                            dispatch(disableLoading());
+                            sendEmailToAdmin();
+                            sendEmailToUser();
+                            console.log('vdo uploaded for competition suceess');
+                            history.push('/profile');
+                        })
+                    } catch (e) {
+                        dispatch(disableLoading());
+                        console.log('Error saving competition: ', e);
+                    }
+                });
+            } catch(e) {
                 dispatch(disableLoading());
-                console.log('Error saving competition: ', e);
+                console.log('Error updating video before saving competition: ', e);
             }
         }
 
@@ -191,7 +201,7 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
                         </FormControl>
                     </div>
                         :
-                        <div>Submited age group - {competitionDetails.userSubmitedDetails.ageGroup}</div>
+                        <div>Submitted age group - {competitionDetails.userSubmitedDetails.ageGroup}</div>
                     }
                 </div>
                 {SelectedVdo && <div className="selected-vdo">

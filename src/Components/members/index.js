@@ -6,12 +6,14 @@ import { getAllUser } from "../../Services/User.service";
 import { updateFollowUnfollow } from "../../Services/Friendship.service";
 import { updateNotification } from "../../Services/Notifications.service";
 import { useHistory } from "react-router-dom";
+import FollowButton from "../FollowButton";
 // import { getUserById, updateUser, updateFollowUnfollow } from "../../Services/User.service";
 
 function ViewAllMembers() {
   const history = useHistory();
   // eslint-disable-next-line no-unused-vars
   const [followButtonText, setFollowButtonText] = useState("Follow");
+  // const [followStatus, setFollowStatus] = useState("");
   const [userList, setUserList] = useState([]);
   const { state, dispatch } = useStoreConsumer();
   const loggedInUser = state.loggedInUser;
@@ -57,19 +59,22 @@ function ViewAllMembers() {
                     updatedUserList[index] = {
                       ...updatedUserList[index],
                       imFollowing: true,
-                      actionBtnText: "Following",
+                      followButtonStatus: "following",
                     };
+                    // setFollowStatus("following");
                   } else {
                     updatedUserList[index] = {
                       ...updatedUserList[index],
-                      actionBtnText: "Follow",
+                      followButtonStatus: "",
                     };
+                    // setFollowStatus("");
                   }
                 } else {
                   updatedUserList[index] = {
                     ...updatedUserList[index],
-                    actionBtnText: "Follow",
+                    followButtonStatus: "",
                   };
+                  // setFollowStatus("");
                 }
               } else if (userItem.privacy.toLowerCase() === "private") {
                 if (userItem) {
@@ -84,13 +89,15 @@ function ViewAllMembers() {
                       updatedUserList[index] = {
                         ...updatedUserList[index],
                         iRequestedFollow: true,
-                        actionBtnText: "Requested",
+                        followButtonStatus: "requested",
                       };
+                      // setFollowStatus("requested");
                     } else {
                       updatedUserList[index] = {
                         ...updatedUserList[index],
-                        actionBtnText: "Follow",
+                        followButtonStatus: "",
                       };
+                      // setFollowStatus("");
                     }
                   } else if (
                     userItem.followedBy &&
@@ -103,31 +110,36 @@ function ViewAllMembers() {
                       updatedUserList[index] = {
                         ...updatedUserList[index],
                         imFollowing: true,
-                        actionBtnText: "Following",
+                        followButtonStatus: "following",
                       };
+                      // setFollowStatus("following");
                     } else {
                       updatedUserList[index] = {
                         ...updatedUserList[index],
-                        actionBtnText: "Follow",
+                        followButtonStatus: "",
                       };
+                      // setFollowStatus("");
                     }
                   } else {
                     updatedUserList[index] = {
                       ...updatedUserList[index],
-                      actionBtnText: "Follow",
+                      followButtonStatus: "",
                     };
+                    // setFollowStatus("");
                   }
                 } else {
                   updatedUserList[index] = {
                     ...updatedUserList[index],
-                    actionBtnText: "Follow",
+                    followButtonStatus: "",
                   };
+                  // setFollowStatus("");
                 }
               } else {
                 updatedUserList[index] = {
                   ...updatedUserList[index],
-                  actionBtnText: "Follow",
+                  followButtonStatus: "",
                 };
+                // setFollowStatus("");
               }
             }
           }
@@ -211,15 +223,22 @@ function ViewAllMembers() {
                       Follows you / followed by text
                     </span>
                   </div>
-                  <button
+
+                  <FollowButton
+                    status={user.followButtonStatus}
+                    onClickHandler={handleFollowBtnClick}
+                    user
+                    loggedInUser
+                  />
+                  {/* <button
                     onClick={(event) =>
                       handleFollowBtnClick(event, user, loggedInUser)
                     }
                     className="btn primary-light followBtn"
-                    data-action={user.actionBtnText}
+                    data-action={user.followButtonStatus}
                   >
-                    {user.actionBtnText}
-                  </button>
+                    {user.followButtonStatus}
+                  </button> */}
                 </div>
               );
             })}

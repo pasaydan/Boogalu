@@ -2,23 +2,27 @@ import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
-import logOutIcon from '../../Images/logout-icon.png';
+import { FaFilter, FaPowerOff } from "react-icons/fa";
 import { Link } from 'react-router-dom';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { ADMIN_USER, ADMIN_PWD } from '../../Constants';
 import championIcon from '../../Images/champion-box-icon.png';
 import lessonsIcon from '../../Images/lessons-icon.png';
 import subscribeIcon from '../../Images/subscribe-icon.png';
 import usersIcon from '../../Images/users-icon.png';
 import { useStoreConsumer } from '../../Providers/StateProvider';
-import { getAllUser } from "../../Services/User.service";
+import { getAllUser, getUserById, getUsersByFilter } from "../../Services/User.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { MdRemoveRedEye, MdBlock, MdDeleteForever } from 'react-icons/md';
 import { getUploadedVideosByUserId, deleteUploadedVideoByVideoKey } from "../../Services/UploadedVideo.service";
 import ConfirmationModal from '../ConfirmationModal';
 import { deleteImage, deleteVideo } from "../../Services/Upload.service";
 import { sendEmail } from "../../Services/Email.service";
-import { getUserById } from "../../Services/User.service";
+
 const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
+const eventsList = require('../../Data/events.json');
 
 export default function UsersInfo() {
     const { dispatch } = useStoreConsumer();
@@ -40,6 +44,9 @@ export default function UsersInfo() {
     const [thumbnailURL, setThumbnailURL] = useState('');
     const [confirmationAction, setConfirmationAction] = useState('');
     const [userDetails, setUserDetails] = useState('');
+    const [isUserFilterOpen, toggleUserFilterModal] = useState(false);
+    const [userFilterValue, setUserFilter] = useState(null);
+    const [filterType, setFilterType] = useState(null);
 
     useEffect(() => {
         if (checkAdminLogIn) {
@@ -197,6 +204,44 @@ export default function UsersInfo() {
         })
     }
 
+    function toggleOtherFilters(event, action) {
+        event.stopPropagation();
+        toggleUserFilterModal(action);
+    }
+
+    function resetAppliedFilters(event, action) {
+        event.stopPropagation();
+        toggleUserFilterModal(action);
+        setFilterType(null);
+        setUserFilter(null);
+        getUsersList();
+    }
+
+    function handleUsersFilter(event, filterType) {
+        event.stopPropagation();
+        const filterValue = event.target.value || null;
+        setFilterType(filterType);
+        setUserFilter(filterValue);
+    }
+
+    function applyUserFilter(event, action) {
+        event.stopPropagation();
+        toggleUserFilterModal(action);
+        if (userFilterValue && filterType) {
+            dispatch(enableLoading());
+            try {
+                getUsersByFilter(userFilterValue, filterType).subscribe( users => {
+                    dispatch(disableLoading());
+                    setUsersList(users);
+                });
+            } catch(e) {
+                dispatch(disableLoading());
+                console.log('User filter error: ', e);
+            }
+        }
+    }
+
+
     return (
         <div className="adminPanelSection">
             {
@@ -297,8 +342,14 @@ export default function UsersInfo() {
             <div className={`competition-bo-wrap clearfix ${(isAdminLoggedIn || checkAdminLogIn) && 'loggedInAdmin usersListBox'}`}>
                 {
                     isAdminLoggedIn || checkAdminLogIn ?
+                    <p className="logOutIconWrap filterIconWrap" title="Open Filter" onClick={(e) => toggleOtherFilters(e, true)}>
+                        <FaFilter />
+                    </p> : ''
+                }
+                {
+                    isAdminLoggedIn || checkAdminLogIn ?
                         <p className="logOutIconWrap" title="logout" onClick={(e) => tiggerAdminLogout(e, false)}>
-                            <img src={logOutIcon} alt="logout" />
+                            <FaPowerOff />
                         </p> : ''
                 }
                 {
@@ -331,43 +382,62 @@ export default function UsersInfo() {
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Phone</th>
-                                        <th>Gender</th>
+                                        <th>Subscription</th>
                                         <th>State</th>
                                         <th>Country</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    {
-                                        userListData && userListData.length &&
-                                        // eslint-disable-next-line array-callback-return
-                                        userListData.map((item, index) => {
-                                            if (item?.role !== 'admin') {
-                                                return (
-                                                    <tr key={`user-item-${index}`}>
-                                                        <td>{index + 1}</td>
-                                                        <td>{item.name}</td>
-                                                        <td>{item.email || 'N/A'}</td>
-                                                        <td>{item.phone || 'N/A'}</td>
-                                                        <td>{item.gender || 'N/A'}</td>
-                                                        <td>{item.state || 'N/A'}</td>
-                                                        <td>{item.country || 'N/A'}</td>
-                                                        <td>
-                                                            <div className="actionBlock">
-                                                                <p className="viewUserIcon" title="View users videos" onClick={(e) => fetchUsersVideoDetails(e, item.key)}>
-                                                                    <MdRemoveRedEye />
-                                                                </p>
-                                                                <p className="blockUserIcon" title="De-activate user" onClick={(e) => deactivateUser(e, item.key)}>
-                                                                    <MdBlock />
-                                                                </p>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            }
-                                        })
-                                    }
-                                </tbody>
+                                {
+                                    userListData && userListData.length ?
+                                    <tbody className="dataTbody">
+                                        {
+                                            // eslint-disable-next-line array-callback-return
+                                            userListData.map((item, index) => {
+                                                if (item?.role !== 'admin') {
+                                                    return (
+                                                        <tr key={`user-item-${index}`}>
+                                                            <td>{index + 1}</td>
+                                                            <td>{item.name}</td>
+                                                            <td>{item.email || 'N/A'}</td>
+                                                            <td>{item.phone || 'N/A'}</td>
+                                                            <td>{item.planType || 'N/A'}</td>
+                                                            <td>{item.state || 'N/A'}</td>
+                                                            <td>{item.country || 'N/A'}</td>
+                                                            <td>
+                                                                <div className="actionBlock">
+                                                                    <p className="viewUserIcon" title="View users videos" onClick={(e) => fetchUsersVideoDetails(e, item.key)}>
+                                                                        <MdRemoveRedEye />
+                                                                    </p>
+                                                                    <p className="blockUserIcon" title="De-activate user" onClick={(e) => deactivateUser(e, item.key)}>
+                                                                        <MdBlock />
+                                                                    </p>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                }
+                                            })
+                                        }
+                                    </tbody>
+                                        : 
+                                    filterType && filterType.length ?
+                                    <tbody className="filterTbody">
+                                        <tr>
+                                            <td>
+                                                <p>No user available with the selected filter, try applying different filters!</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                        : 
+                                    <tbody className="emptyTbody">
+                                        <tr>
+                                            <td>
+                                                <p>It seems Boogalu doesn't have any users at this moment!</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                }
                             </table>
                         </div>
                         :
@@ -401,6 +471,64 @@ export default function UsersInfo() {
             <div className="footerBox">
                 &copy; 2021 Box Puppet Ent. Pvt. Ltd., All rights reserved.
             </div>
+            {
+                    isUserFilterOpen ?
+                    <div className="otherFiltersWrap userFilterWrap">
+                        <div className="innerBox">
+                            <p className="close-modal-icon dark" onClick={(e) => toggleOtherFilters(e, false)} title="close filter"></p>
+                            <h3>Filter by</h3>
+                            <div className="filterInnerWrap">
+                                {
+                                    eventsList?.events && eventsList?.events.length ?
+                                    <div className="filterItem">
+                                        <p className="filterTitle">Events registration</p>
+                                        <div className="optionsWrap">
+                                            <RadioGroup 
+                                                className="radioGroupControls"
+                                                aria-label="aria label for events type" 
+                                                name="filterType" 
+                                                value={userFilterValue}
+                                                onChange={(e) => handleUsersFilter(e, 'event')}>
+                                                    {
+                                                        eventsList?.events.map( event => {
+                                                            return (
+                                                                <FormControlLabel
+                                                                key={event?.id} 
+                                                                value={event?.id} control={<Radio />} label={event?.name} />
+                                                            )
+                                                        })
+                                                    }
+                                            </RadioGroup>
+                                        </div>
+                                    </div> :''
+                                }
+                                <div className="filterItem">
+                                    <p className="filterTitle">User Subscription</p>
+                                    <div className="optionsWrap">
+                                        <RadioGroup 
+                                            className="radioGroupControls"
+                                            aria-label="aria label for subscription type" 
+                                            name="filterType" 
+                                            value={userFilterValue}
+                                            onChange={(e) => handleUsersFilter(e, 'planType')}>
+                                                <FormControlLabel
+                                                value='startup' control={<Radio />} label='Start-up' />
+                                                <FormControlLabel
+                                                value='pro' control={<Radio />} label='Pro' />
+                                                <FormControlLabel
+                                                value='premium' control={<Radio />} label='Premium' />
+                                        </RadioGroup>
+                                    </div>
+                                </div> 
+                            </div>
+                            <div className="filterActionWrap">
+                                <button className="btn primary-light" onClick={(e) => resetAppliedFilters(e, false)}>Reset &amp; cancel</button>
+                                <button className="btn primary-dark" onClick={(e) => applyUserFilter(e, false)}>Apply</button>
+                            </div>
+                        </div>
+                    </div>
+                    : ''
+                }
         </div>
     )
 }

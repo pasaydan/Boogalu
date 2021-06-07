@@ -6,7 +6,7 @@
             "name": "Hip-hop international dance competition",
             "imgUrl": "https://i.imgur.com/7dzYFKS.jpg",
             "imgUrlMobile": "https://i.imgur.com/Mf66SeA.jpeg",
-            "amount": 1280,
+            "fees": 1280,
             "info": {
                 "eventDate": "9/29/2021",
                 "registrationLastDate": "8/20/2021",
@@ -33,7 +33,7 @@
             "name": "Find new stars",
             "imgUrl": "https://i.imgur.com/zOHB88w.jpeg",
             "imgUrlMobile": "https://i.imgur.com/nFQgzwS.jpeg",
-            "amount": 1000,
+            "fees": 1000,
             "info": {
                 "eventDate": "12/14/2021",
                 "registrationLastDate": "11/20/2021",

@@ -54,7 +54,7 @@ export default function BuySubsription({
                 desc: competitionDetails.selectedVideo.desc,
             },
             ageGroup: competitionDetails.ageGroup,
-            status: 'Submited'
+            status: 'Submitted'
         }
         console.log(competitionObj)
         saveCompetition(competitionObj).subscribe((response) => {

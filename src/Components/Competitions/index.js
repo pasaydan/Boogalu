@@ -11,6 +11,7 @@ import { disableLoginFlow, enableLoginFlow } from "../../Actions/LoginFlow";
 import { loginUser } from "../../Actions/User";
 import * as $ from 'jquery';
 import { updateUser } from "../../Services/User.service";
+// eslint-disable-next-line no-unused-vars
 import { postOrder, updatePayment } from "./../../Services/Razorpay.service";
 import Button from '@material-ui/core/Button';
 import { isObjectEmpty } from '../../helpers';
@@ -19,6 +20,7 @@ import { displayNotification } from "../../Actions/Notification";
 import { NOTIFICATION_SUCCCESS } from "../../Constants";
 import { EmailTemplate } from "../EmailTemplate/Emailer";
 import { sendEmail } from "../../Services/Email.service";
+
 const eventsList = require('../../Data/events.json');
 
 function Competitions() {
@@ -93,9 +95,9 @@ function Competitions() {
         if (!isObjectEmpty(loggedInUser)) {
             if (loggedInUser?.events) {
                 const eventsDataCopy = [...eventsData];
-                eventsDataCopy.map((event) => {
-                    let isEventAlreadyRegistered = loggedInUser?.events?.filter((data) => data.type == event.type);
-                    if (isEventAlreadyRegistered && isEventAlreadyRegistered?.length != 0) event.isRegistered = true;
+                eventsDataCopy.forEach((event) => {
+                    let isEventAlreadyRegistered = loggedInUser?.events?.filter((data) => data.type === event.type);
+                    if (isEventAlreadyRegistered && isEventAlreadyRegistered?.length !== 0) event.isRegistered = true;
                 })
                 setEventsData(eventsDataCopy);
             }
@@ -159,35 +161,34 @@ function Competitions() {
     }
     const afterPaymentResponse = (response) => {
         // console.log("response", response);
+        let updatedEvent = {
+            id: clickedEventData.id,
+            type: clickedEventData.type,
+            name: clickedEventData.name,
+            fees: clickedEventData.fees,
+            paymentDate: new Date()
+        }
+        const updatedUserData = { ...loggedInUser };
+        if ('events' in loggedInUser) {
+            updatedUserData.events.push(updatedEvent);
+        } else {
+            updatedUserData.events = [updatedEvent];
+        }
         try {
-            updatePayment(response).subscribe((res) => {
-                let updatedEvent = {
-                    id: clickedEventData.id,
-                    type: clickedEventData.type,
-                    name: clickedEventData.name,
-                    paymentDate: new Date()
-                }
-                const updatedUserData = { ...loggedInUser };
-                if ('events' in loggedInUser) {
-                    updatedUserData.events.push(updatedEvent);
-                } else {
-                    updatedUserData.events = [updatedEvent];
-                }
-                updateUser(updatedUserData.key, updatedUserData).subscribe(() => {
-                    dispatch(loginUser(updatedUserData));
-                    toggleEventModal(false);
-                    setEventData(null);
-                    setOpenPaymentSuccessModal(true);
-                    sendEmailAfterEventRegSuccess();
-                    dispatch(displayNotification({
-                        msg: `${clickedEventData.name} Event Registration successfully`,
-                        type: NOTIFICATION_SUCCCESS,
-                        time: 4000
-                    }));
-                    // console.log('updateUser updatedUserData>>>>>> ', updatedUserData);
+            updateUser(updatedUserData.key, updatedUserData).subscribe(() => {
+                dispatch(loginUser(updatedUserData));
+                toggleEventModal(false);
+                setEventData(null);
+                setOpenPaymentSuccessModal(true);
+                sendEmailAfterEventRegSuccess();
+                dispatch(displayNotification({
+                    msg: `${clickedEventData.name} Event Registration successfully`,
+                    type: NOTIFICATION_SUCCCESS,
+                    time: 4000
+                }));
+                // console.log('updateUser updatedUserData>>>>>> ', updatedUserData);
 
-                })
-            })
+            });
         } catch (e) {
             console.log('Error: ', e);
         }
@@ -197,7 +198,7 @@ function Competitions() {
         if (!isObjectEmpty(loggedInUser)) {
             toggleButtonLoading('loading');
             const userData = {
-                "amount": clickedEventData.amount * 100,
+                "amount": clickedEventData.fees * 100,
                 "currency": "INR",
                 "receipt": loggedInUser.key
             };
@@ -271,10 +272,10 @@ function Competitions() {
                                     </div> : ''
                             }
                             {
-                                clickedEventData?.amount ?
+                                clickedEventData?.fees ?
                                     <div className="eventDate registrationFees">
                                         <span>Registration fee: </span>
-                                        <span className="value"><i>&#8377;</i> {`${clickedEventData.amount}/-`} only</span>
+                                        <span className="value"><i>&#8377;</i> {`${clickedEventData.fees}/-`} only</span>
                                     </div>
                                     : ''
                             }
@@ -323,7 +324,7 @@ function Competitions() {
                                 clickedEventData.isRegistered ?
                                     <p className="btn primary-light registeredInfoBtn">You have already registered</p>
                                     :
-                                    <button className={buttonLoadingClass ? `${buttonLoadingClass} btn primary-dark` : 'btn primary-dark'} onClick={proceedForPayment}>Register &amp; pay {clickedEventData?.amount}/-</button>
+                                    <button className={buttonLoadingClass ? `${buttonLoadingClass} btn primary-dark` : 'btn primary-dark'} onClick={proceedForPayment}>Register &amp; pay {clickedEventData?.fees}/-</button>
                             }
                         </div>
                     </div> : ''

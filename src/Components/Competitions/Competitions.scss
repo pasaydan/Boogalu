@@ -87,6 +87,16 @@
             filter: none;
             color: var(--primary-white);
             opacity: 0.8;
+            &:before {
+                display: none;
+            }
+            &.loading {
+                &:before {
+                    display: block;
+                    width: 18px;
+                    height: 18px;
+                }
+            }
             &.registeredInfoBtn {
                 margin: 10px 0 0 0;
                 box-sizing: border-box;
