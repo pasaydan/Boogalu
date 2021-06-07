@@ -124,8 +124,7 @@ exports.updatePayment = functions.https.onRequest((request, response) => {
   });
 });
 // send email
-// new implementation is below :
-exports.sendEmail = functions.https.onRequest((request, response) => {
+async function sendMailToReceiptent(to, subject, html) {
   const oAuth2Client = new google.auth.OAuth2(
     clientid,
     clientsecret,
@@ -134,40 +133,40 @@ exports.sendEmail = functions.https.onRequest((request, response) => {
   oAuth2Client.setCredentials({
     refresh_token: refreshtoken,
   });
+  try {
+    const accessToken = await oAuth2Client.getAccessToken();
+    const transport = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        type: "OAuth2",
+        user: sendemailfrom,
+        clientId: clientid,
+        clientSecret: clientsecret,
+        refreshToken: refreshtoken,
+        accessToken: accessToken,
+      },
+    });
+
+    var mailOptions = {
+      from: '"Boogalu" <' + sendemailfrom + ">",
+      to: to,
+      subject: subject,
+      html: html,
+    };
+
+    const result = await transport.sendMail(mailOptions);
+    return result;
+  } catch (error) {
+    return error;
+  }
+}
+// new implementation is below :
+exports.sendEmail = functions.https.onRequest((request, response) => {
   return cors(request, response, () => {
     var to = request.body.mailTo;
     var subject = request.body.title;
     var html = request.body.content;
-
-    async function sendMail() {
-      try {
-        const accessToken = await oAuth2Client.getAccessToken();
-        const transport = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            type: "OAuth2",
-            user: sendemailfrom,
-            clientId: clientid,
-            clientSecret: clientsecret,
-            refreshToken: refreshtoken,
-            accessToken: accessToken,
-          },
-        });
-
-        var mailOptions = {
-          from: '"Boogalu" <' + sendemailfrom + ">",
-          to: to,
-          subject: subject,
-          html: html,
-        };
-
-        const result = await transport.sendMail(mailOptions);
-        return result;
-      } catch (error) {
-        return error;
-      }
-    }
-    sendMail()
+    sendMailToReceiptent(to, subject, html)
       .then((result) => {
         console.log("Email Sent", result);
         if (result && result.code && result.code === "400") {
@@ -189,5 +188,82 @@ exports.sendEmail = functions.https.onRequest((request, response) => {
           error: error,
         });
       });
+  });
+});
+
+
+//send subscriptions End reminder emails
+exports.subEndReminder = functions.https.onRequest((request, response) => {
+  return cors(request, response, () => {
+    console.log('inside subEndReminder')
+    const getActiveSubscriptionUsers = async () => {
+      return new Promise((res, rej) => {
+        const paymentRef = db
+          .collection("users")
+          .where('subscribed', '==', true).get().then((querySnapshot) => {
+            let users = []
+            querySnapshot.forEach(function (doc) {
+              let data = doc.data();
+              const { email, subscriptions } = data;
+              users.push({ email, subscriptions });
+            })
+            res(users);
+          })
+      })
+    };
+
+    getActiveSubscriptionUsers().then((usersList) => {
+      // console.log('active subscriptions users list: ', usersList);
+      const timeStampToNewDate = (timeStamp) => {
+        return new Date(timeStamp.seconds * 1000 + Math.round(timeStamp.nanoseconds / 1000000));
+      }
+      //get users list whose subscription end in 2 days
+      let twoDaysAfterCurrentDate = new Date();
+      twoDaysAfterCurrentDate.setDate(new Date().getDate() + 2);
+      let expiringSubscriptions = [];
+      usersList.map((userData) => {
+        if (userData.subscriptions) {
+          userData.subscriptions.map((subData) => {
+            if (!expiringSubscriptions.includes(userData.email)) {//check any user whose subscription is in expiring plans list then do not check further plans
+              let subscriptionDate = new Date(timeStampToNewDate(subData.subscribedOn));//original subscription date
+              let subDateAfter1Month = new Date(subscriptionDate.setDate(subscriptionDate.getDate() + 2));
+              // subDateAfter1Month.setMonth(subDateAfter1Month.getMonth() + 1);//subscription date after 1 month 
+              if (subDateAfter1Month > new Date() && subDateAfter1Month <= twoDaysAfterCurrentDate) {
+                //it means subscription plan is currently active && it means subscription ends after two days
+                expiringSubscriptions.push(userData.email);
+              }
+            }
+          })
+        }
+      })
+      console.log('expiringSubscriptions users list: ', expiringSubscriptions, new Date());
+      if (expiringSubscriptions.length != 0 && false) {
+        let emailBody = `<div>
+          <h3>Just 2 days left to end your subscription</h3>
+          <h6 style="font-size: 17px;margin-bottom: 26px;">Hi dear subscriber,</h6>
+          <div> Your Boogalu subscription ends in 2 days, for more subscription details click the link bellow</div>
+          <a href="https://boogalusite.web.app/subscription">My Subscriptions</a>
+          </div>`;
+        const title = `2 days left - Boogalu Subscription`;
+        sendMailToReceiptent(expiringSubscriptions, title, emailBody).then((result) => {
+          console.log("email sending result: ", result)
+          response.status(200).send({
+            status: 200,
+            data: { expiringSubscriptions, result },
+          })
+        }).catch((err) => {
+          response.status(400).send({
+            status: 400,
+            data: 'Email sending failed',
+          })
+        })
+      } else {
+        response.status(200).send({
+          status: 200,
+          data: 'No expiring subscriptions',
+        })
+      }
+    })
+    return;
   });
 });

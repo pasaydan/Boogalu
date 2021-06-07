@@ -86,9 +86,17 @@ export default function BuySubsription({
                 const userDetails = {
                     ...loggedInUser,
                     subscribed: true,
-                    subscribedOn: new Date(),
                     planType: planType[0]
                 };
+                let userSub = {
+                    id: state?.activeSubscription?.key,
+                    name: state?.activeSubscription?.name,
+                    planType: planType[0],
+                    validity: state?.activeSubscription?.plans,
+                    subscribedOn: new Date()
+                }
+                if ('subscriptions' in userDetails) userDetails.subscriptions.push(userSub);
+                else userDetails.subscriptions = [userSub];
                 updateUser(userDetails.key, userDetails).subscribe(() => {
                     dispatch(loginUser(userDetails));
                     console.log('updateUser userDetails>>>>>> ', userDetails);

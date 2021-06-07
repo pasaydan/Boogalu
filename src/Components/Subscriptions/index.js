@@ -83,47 +83,10 @@ function Subscriptions(props) {
                         }
                     }
                 }
-                if (history.location.search && history.location.search.includes('status')) {
-                    let paymentStatus = history.location.search.split('status=')[1];
-                    if (paymentStatus === 'success') {
-                        const subscriptionSuccessObj = {
-                            subId: state.activeSubscription.key,
-                            type: state.activeSubscription.type,
-                            status: SUBSCRIPTION_ACTIVE_STATUS, // current subscription status Active or Ended
-                            subscribedAt: new Date()
-                        }
-                        let loggedInUserData = { ...loggedInUser };
-                        if (loggedInUserData.subscriptions) loggedInUserData.subscriptions.push(subscriptionSuccessObj)
-                        else (loggedInUserData.subscriptions = [subscriptionSuccessObj]);
-
-                        dispatch(enableLoading());
-                        saveUserSubscription(state.activeSubscription.key, loggedInUserData).subscribe((response) => {
-                            sendEmailToAdmin();
-                            sendEmailToUser();
-                            dispatch(loginUser(loggedInUserData));
-                            setShowSubscriptionDetails(true);
-                            dispatch(disableLoading());
-                            setActiveStep(2);
-                        });
-                    } else {
-                        // payment failure
-                        setShowSubscriptionDetails(true);
-                        setActiveStep(3)
-                    }
-                    history.push('/subscription');
-                } else {
-                    //if user come from competition details 
-                    // if (state.currentLoginFlow === 'competition-subscription') {
-                    //     let subscriptionForCompetition = subscriptionsList.filter((data) => data.type === 'competition-enrollment');
-                    //     dispatch(setActiveSubscription(subscriptionForCompetition[0]));
-                    //     setActiveStep(activeStepCount);
-                    //     setShowSubscriptionDetails(true);
-                    // }
-                    //is user go to login flow from itself(current page)
-                    if (state.currentLoginFlow === 'subscription') {
-                        dispatch(disableLoginFlow());
-                        setShowSubscriptionDetails(true);
-                    }
+                if (state.currentLoginFlow === 'subscription') {
+                    dispatch(disableLoginFlow());
+                    setActiveStep(1);
+                    setShowSubscriptionDetails(true);
                 }
                 console.log(subscriptionsList);
             });
@@ -134,7 +97,6 @@ function Subscriptions(props) {
     }, [])
 
     useEffect(() => {
-        // let isSubscribed = loggedInUser?.subscriptions?.filter((data) => data.type === 'competition-enrollment');
         let loggedInUser = state.loggedInUser && state.loggedInUser.subscribed ? true : false
         setAlreadySubscribed(loggedInUser);
     }, [state.loggedInUser])
