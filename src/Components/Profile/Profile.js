@@ -421,8 +421,8 @@ function Profile() {
         dispatch(disableLoading());
         setUserCompetitionsList(list);
       });
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
 
   useEffect(() => {
@@ -647,7 +647,7 @@ function Profile() {
       toggleInfoModal(true);
     } else {
       dispatch(setActiveVideoForCompetition(openUploadCompModalFor));
-      dispatch(enableLoginFlow("profile-competition"));
+      dispatch(enableLoginFlow({type:"profile-competition"}));
       history.push("/competitions");
       setShowProfileTab(false);
     }

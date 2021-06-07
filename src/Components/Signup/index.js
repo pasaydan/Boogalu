@@ -202,7 +202,7 @@ export default function Signup(props) {
             res(data.key);
           });
         }
-      } catch(e) {
+      } catch (e) {
         dispatch(disableLoading());
         console.log('save user registration error: ', e);
       }
@@ -221,7 +221,7 @@ export default function Signup(props) {
             res(true);
           }
         });
-      } catch(e) {
+      } catch (e) {
         dispatch(disableLoading());
         console.log('check for used phone error: ', e);
       }
@@ -650,9 +650,8 @@ export default function Signup(props) {
                                 </div> : ''
                         } */}
                 <div
-                  className={`next-prev-actions ${
-                    activeStep !== "stepOne" ? "next-step-active" : ""
-                  } `}
+                  className={`next-prev-actions ${activeStep !== "stepOne" ? "next-step-active" : ""
+                    } `}
                 >
                   {activeStep !== "stepOne" && (
                     <Button

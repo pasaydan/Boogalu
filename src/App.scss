@@ -560,6 +560,13 @@ button:focus {
       height: 20px;
     }
   }
+  .tabination-wrap {
+    .tab-btn-section {
+      .tab-links {
+        font-size: 12px;
+      }
+    }
+  }
 }
 
 // Ripple Loading spinner

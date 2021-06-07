@@ -72,6 +72,20 @@ export function getCompetitionByUserId(userId) {
     })
 }
 
+export function getCompetitionsByFilter(filter) {
+    return new Observable((observer) => {
+        competitionRef.where('status', '==', filter).get().then((querySnapshot) => {
+            let videos = []
+            querySnapshot.forEach(function (doc) {
+                let data = doc.data();
+                data.key = doc.id;
+                videos.push(data);
+            })
+            observer.next(videos);
+        })
+    })
+}
+
 export function saveCompetition(data) {
     data.createdOn = new Date();
     data.modifiedOn = new Date();

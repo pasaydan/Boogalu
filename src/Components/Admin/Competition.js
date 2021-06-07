@@ -9,7 +9,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import ImageUploader from 'react-images-upload';
 import Button from '@material-ui/core/Button';
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
-import logOutIcon from '../../Images/logout-icon.png';
+import { FaPowerOff } from "react-icons/fa";
 import { saveCompetition } from "../../Services/Competition.service";
 import { uploadImage } from "../../Services/Upload.service";
 import { Link } from 'react-router-dom';
@@ -343,7 +343,7 @@ export default function Competition() {
                 {
                     isAdminLoggedIn || checkAdminLogIn ?
                     <p className="logOutIconWrap" title="logout" onClick={(e) => tiggerAdminLogout(e, false)}>
-                        <img src={logOutIcon} alt="logout" />
+                        <FaPowerOff />
                     </p> : ''
                 }
                 {

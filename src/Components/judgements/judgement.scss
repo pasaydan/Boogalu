@@ -9,7 +9,7 @@
     justify-content: center;
     align-items: center;
     h1 {
-        margin: 0 0 30px 0;
+        margin: 0 0 20px 0;
         font-size: 22px;
         line-height: 26px;
         text-align: center;
@@ -68,6 +68,37 @@
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
+            .filters {
+                flex: 1;
+                width: 100%;
+                flex-basis: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-bottom: 20px;
+                .filtersBtn {
+                    margin-left: 10px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    .btn {
+                        margin: 0 0 0 10px;
+                        font-size: 12px;
+                        border: 1px solid var(--primary-white);
+                        background: transparent;
+                        color: var(--primary-white);
+                        opacity: 1;
+                        &:hover, &.active {
+                            background: var(--primary-white);
+                            color: var(--grey-to-blue-bg);
+                            opacity: 0.8;
+                        }
+                        &:first-child {
+                            margin-left: 0;
+                        }
+                    }
+                }
+            }
             .competitionBox {
                 flex-basis: calc(100% / 4 - 20px);
                 min-width: 300px;
@@ -84,6 +115,16 @@
                     &.compTitle {
                         display: flex;
                         justify-content: space-between;
+                        &.rejected {
+                            .status {
+                                color: var(--error-red-opaque);
+                            }
+                        }
+                        &.selected {
+                            .status {
+                                color: var(--success-green-opaque);
+                            }
+                        }
                         span:first-child {
                             margin-right: 10px;
                         }
@@ -499,11 +540,43 @@
 @media screen and (max-width: 767px) {
     .judgementWrap {
         min-height: calc(100vh - 60px);
+        h1 {
+            padding: 0 10px;
+            box-sizing: border-box;
+            font-size: 20px;
+            line-height: 22px;
+        }
     }
     .judgesModalBox {
         width: 95%;
         min-width: 300px;
         padding: 20px 10px;
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .judgementWrap {
+        .compeitionsVideoAndRules {
+            .videoListBox {
+                .filters {
+                    display: block;
+                    padding: 0 10px;
+                    box-sizing: border-box;
+                    .filterTitle {
+                        width: 100%;
+                        text-align: center;
+                        margin: 0 0 5px;
+                    }
+                    .filtersBtn {
+                        margin-left: 0;
+                        .btn {
+                            font-size: 10px;
+                            padding: 5px 8px;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

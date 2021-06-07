@@ -73,7 +73,7 @@ function Subscriptions(props) {
                 if (history.location.search && history.location.search.includes('planType')) {
                     const filterParam = getParameterByName('planType', window.location.href);
                     if (subscriptionsList.length) {
-                        const matchedSubscription = subscriptionsList.filter( item => {
+                        const matchedSubscription = subscriptionsList.filter(item => {
                             return (item.planType === filterParam);
                         });
                         if (matchedSubscription.length) {
@@ -95,7 +95,7 @@ function Subscriptions(props) {
                         let loggedInUserData = { ...loggedInUser };
                         if (loggedInUserData.subscriptions) loggedInUserData.subscriptions.push(subscriptionSuccessObj)
                         else (loggedInUserData.subscriptions = [subscriptionSuccessObj]);
-        
+
                         dispatch(enableLoading());
                         saveUserSubscription(state.activeSubscription.key, loggedInUserData).subscribe((response) => {
                             sendEmailToAdmin();
@@ -130,7 +130,7 @@ function Subscriptions(props) {
         } catch (e) {
             console.log('Fetching subscription error: ', e);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
@@ -152,7 +152,7 @@ function Subscriptions(props) {
                 setShowSubscriptionDetails(true);
             }
         } else {
-            dispatch(enableLoginFlow('subscription'));
+            dispatch(enableLoginFlow({ type: 'subscription' }));
             history.push({
                 pathname: '/login',
                 state: null
@@ -193,15 +193,15 @@ function Subscriptions(props) {
                     <div className="flex-3 heading-content">
                         {
                             pageTitle ?
-                                <h1>{ pageTitle }</h1>
-                            : 
+                                <h1>{pageTitle}</h1>
+                                :
                                 <h1>Unlimited Classes For The Price Of One</h1>
                         }
 
                         {
                             pageTitle ?
                                 <div className="line1">Multiple Pricing with multiple features.</div>
-                            :
+                                :
                                 <div className="line1">Subscribe to our features at your ease and choice .</div>
                         }
                     </div>
@@ -214,37 +214,37 @@ function Subscriptions(props) {
                                     {/* <p>Multiple <strong>Videos</strong> upload</p> */}
                                     {
                                         subscription.isCompetitionAccess ?
-                                        <p>Enrollment in all the active <strong>Competitions</strong></p>
-                                        : ''
+                                            <p>Enrollment in all the active <strong>Competitions</strong></p>
+                                            : ''
                                     }
                                     {
-                                        subscription.isLessonAccess ? 
-                                        <p>Access to all <strong>Lessons</strong> videos</p>
-                                        : ''
+                                        subscription.isLessonAccess ?
+                                            <p>Access to all <strong>Lessons</strong> videos</p>
+                                            : ''
                                     }
                                     {
                                         subscription.isHHIAccess ?
-                                        <p>Access to <strong>Hip-hop International Championship</strong> registration</p>
-                                        : ''
+                                            <p>Access to <strong>Hip-hop International Championship</strong> registration</p>
+                                            : ''
                                     }
                                     {
                                         subscription.desc.length ?
-                                        <p>{subscription.desc}</p>
-                                        : ''
+                                            <p>{subscription.desc}</p>
+                                            : ''
                                     }
                                 </div>
                                 {
                                     !alreadySubscribed ?
-                                    <p className="expireWrap">
-                                        Offer valid till <strong>{subscription.endingDate}</strong>
-                                    </p>
-                                    : 
-                                    <p className="expireWrap">
-                                        Subscription valid till <strong>{subscription.endingDate}</strong>
-                                    </p>
+                                        <p className="expireWrap">
+                                            Offer valid till <strong>{subscription.endingDate}</strong>
+                                        </p>
+                                        :
+                                        <p className="expireWrap">
+                                            Subscription valid till <strong>{subscription.endingDate}</strong>
+                                        </p>
                                 }
                                 <div className={`btn primary-light ${isValidSubscriptionBox(subscription) ? 'subscribed' : ''}`}>
-                                    {isValidSubscriptionBox(subscription) ? 
+                                    {isValidSubscriptionBox(subscription) ?
                                         'Already subscribed'
                                         : 'Buy subscription'
                                     }
@@ -254,11 +254,11 @@ function Subscriptions(props) {
                     </div>
                 </div>
             </div>
-            {showSubscriptionDetails && <BuySubscription 
-                handleClose={() => setShowSubscriptionDetails(false)} 
-                activeStep={activeStep} 
-                alreadySubscribed={alreadySubscribed} 
-                fnCallback={fnCallbackFromBuySubscription}/>
+            {showSubscriptionDetails && <BuySubscription
+                handleClose={() => setShowSubscriptionDetails(false)}
+                activeStep={activeStep}
+                alreadySubscribed={alreadySubscribed}
+                fnCallback={fnCallbackFromBuySubscription} />
             }
         </div>
     )

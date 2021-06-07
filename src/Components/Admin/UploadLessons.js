@@ -11,7 +11,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Select from '@material-ui/core/Select';
 import { FaCloudUploadAlt, FaInfoCircle } from 'react-icons/fa';
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
-import logOutIcon from '../../Images/logout-icon.png';
+import { FaPowerOff } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import { ADMIN_USER, ADMIN_PWD } from '../../Constants';
 import championIcon from '../../Images/champion-box-icon.png';
@@ -482,7 +482,7 @@ export default function UploadLessons() {
                 {
                     isAdminLoggedIn || checkAdminLogIn ?
                         <p className="logOutIconWrap" title="logout" onClick={(e) => tiggerAdminLogout(e, false)}>
-                            <img src={logOutIcon} alt="logout" />
+                            <FaPowerOff />
                         </p> : ''
                 }
                 {

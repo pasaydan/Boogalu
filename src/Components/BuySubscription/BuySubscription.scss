@@ -5,6 +5,7 @@
         left: 50%;
         transform: translate(-50%, -50%);
         width: 50%;
+        min-width: 490px;
         padding: 20px;
         background: var(--primary-white);
         box-sizing: border-box;
@@ -87,8 +88,21 @@
         .subscription-inner-modal {
             width: 90%;
             height: 50%;
+            min-width: unset;
             .subs-details-wrap {
                 margin-bottom: 50px;
+            }
+            .actionWrap {
+                flex-wrap: nowrap;
+                &.success {
+                    button {
+                        padding: 7px 8px 6px;
+                        .MuiButton-label {
+                            font-size: 10px;
+                            line-height: 14px;
+                        }
+                    }
+                }
             }
         }
     }

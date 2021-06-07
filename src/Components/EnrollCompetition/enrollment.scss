@@ -1,11 +1,23 @@
 .final-enrollment-wrap {
-    width: 300px;
-    margin: 30px auto 0;
+    width: 80%;
+    margin: 20px auto 0;
     h2#title {
         font-size: 16px;
+        font-weight: 600;
         line-height: 22px;
         margin-bottom: 30px;
-        text-align: left;
+        text-align: center;
+    }
+    .detailsWrapOuter {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .basicDetailsWrapper, .selected-vdo {
+            flex-basis: 45%;
+        }
+        .selected-vdo {
+            margin-left: 20px;
+        }
     }
     .userdata {
         margin-bottom: 20px;
@@ -25,7 +37,6 @@
         }
     }
     .selected-vdo {
-        margin: 20px 0;
         .sub-title {
             font-size: 14px;
             color: var(--footer-text-grey);
@@ -36,6 +47,23 @@
             color: var(--secondary-color);
             margin-bottom: 10px;
             cursor: pointer;
+        }
+        .vdo-wrap {
+            .imgWrap {
+                width: 70%;
+                img {
+                    width: 100%;
+                }
+            }
+            .videoTitle {
+                font-size: 14px;
+                color: var(--footer-text-grey);
+                margin-bottom: 10px;
+                span {
+                    color: var(--footer-text-grey);
+                    font-weight: 600;
+                }
+            }
         }
     }
     .age-group-dropdown {
@@ -51,6 +79,69 @@
         }
         .MuiSelect-outlined.MuiSelect-outlined {
             padding: 10px;
+        }
+    }
+    .continueButtonWrap {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+}
+
+@media screen and (max-width: 1023px) {
+    .final-enrollment-wrap {
+        width: 100%;
+        .selected-vdo {
+            .vdo-wrap {
+                .imgWrap {
+                    width: 90%;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .final-enrollment-wrap {
+        h2#title {
+            margin-bottom: 10px;
+        }
+        .detailsWrapOuter {
+            flex-direction: column;
+            .basicDetailsWrapper {
+                .userdata {
+                    margin-bottom: 10px;
+                    .user-info {
+                        margin-bottom: 5px;
+                        label, span {
+                            font-size: 12px;
+                        }
+                    }
+                }
+            }
+            .selected-vdo {
+                margin: 10px auto 0;
+                max-width: 320px;
+                .videoTitle {
+                    font-size: 12px;
+                    text-align: center;
+                    span {
+                        font-size: 12px;
+                    }
+                }
+                .vdo-wrap {
+                    .imgWrap {
+                        width: 60%;
+                        margin: 0 auto;
+                    }
+                }
+                .change-link {
+                    text-align: center;
+                }
+            }
+        }
+        .age-group-dropdown {
+            margin-bottom: 10px;
         }
     }
 }

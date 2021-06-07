@@ -28,15 +28,17 @@ let { clientsecret, clientid, redirecturi, refreshtoken, sendemailfrom } =
 
 // post order to razorpay
 exports.postOrder = functions.https.onRequest((request, response) => {
+  // console.log(' post order to razorpay', request.body)
   return cors(request, response, () => {
     var instance = new Razorpay({
       key_id: razorpayconfig.key,
       key_secret: razorpayconfig.secret,
     });
     var options = request.body;
-    const identifier = Object.keys(options)[0];
-    const data = options[identifier];
+    const identifier = Object.keys(options)[0];  //order type -- "startup" Subscription / "premium" Subscription / "event" Competition
+    const data = options[identifier];            //{ "amount": 19900-- order amount, "currency": "INR", "receipt": "EM9ronoBLk2Q70OMk2wg-- user id" }
     let paymentDetails = null;
+
 
     const getPaymentByUserKey = async (options) => {
       const paymentRef = db
@@ -53,52 +55,49 @@ exports.postOrder = functions.https.onRequest((request, response) => {
 
     getPaymentByUserKey(data)
       .then(() => {
-        if (
-          paymentDetails &&
-          paymentDetails[identifier] === identifier &&
-          paymentDetails[identifier].id !==
-            paymentDetails[identifier].razorpay_payment_id
-        ) {
-          response.send(paymentDetails);
-          return paymentDetails;
-        } else {
-          if (paymentDetails) {
-            console.log("if paymentDetails available ", data);
+        // console.log("if existing paymentDetails data: ", data);
+        if (paymentDetails) {
+          if (paymentDetails[identifier] === identifier && paymentDetails[identifier].id !== paymentDetails[identifier].razorpay_payment_id) {
+            response.send(paymentDetails);
+            return paymentDetails;
+          } else {
             instance.orders.create(data, function (err, order) {
               if (err) {
                 response.send(err);
-                console.error("err >>>>>", err);
+                console.log('post order to razorpay err: ', err);
                 return err;
               } else {
                 const paymentRef = db.collection("payments");
                 let newOrderdata = {};
                 newOrderdata[identifier] = order;
                 let mergedData = { ...paymentDetails, ...newOrderdata };
-                console.log("merged data", mergedData);
+                // console.log("post order to razorpay new payment collection doc data:", mergedData);
                 paymentRef.doc(order.receipt).set(mergedData);
                 response.send(mergedData);
                 return mergedData;
               }
             });
-          } else {
-            console.log("inside then else >>>>> else");
-            instance.orders.create(data, function (err, order) {
-              if (err) {
-                response.send(err);
-                console.error("err >>>>>", err);
-                return err;
-              } else {
-                const paymentRef = db.collection("payments");
-                let newOrderdata = {};
-                newOrderdata[identifier] = order;
-                paymentRef
-                  .doc(newOrderdata[identifier].receipt.toString())
-                  .set(newOrderdata);
-                response.send(newOrderdata);
-                return newOrderdata;
-              }
-            });
           }
+        } else {
+          console.log("if existing paymentDetails not available ");
+          instance.orders.create(data, function (err, order) {
+            if (err) {
+              console.log('post order to razorpay err: ', err);
+              response.send(err);
+              return err;
+            } else {
+              // console.log('post order to razorpay response: ', order);
+              const paymentRef = db.collection("payments");
+              let newOrderdata = {};
+              newOrderdata[identifier] = order;
+              paymentRef
+                .doc(newOrderdata[identifier].receipt.toString())
+                .set(newOrderdata);
+              // console.log("post order to razorpay new payment collection doc data:", newOrderdata);
+              response.send(newOrderdata);
+              return newOrderdata;
+            }
+          });
         }
         return paymentDetails;
       })

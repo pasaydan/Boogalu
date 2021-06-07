@@ -19,31 +19,19 @@ import Fade from '@material-ui/core/Fade';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 
-export default function BuySubsription({ 
-        handleClose, 
-        activeStep, 
-        alreadySubscribed, 
-        fnCallback 
-    }) {
+export default function BuySubsription({
+    handleClose,
+    activeStep,
+    alreadySubscribed,
+    fnCallback
+}) {
     const history = useHistory();
     const { state, dispatch } = useStoreConsumer();
     const loggedInUser = state.loggedInUser;
     const [openDetailsModal, setOpenDetailsModal] = useState(true);
     const subscriptionDetails = state.activeSubscription;
-    // eslint-disable-next-line no-unused-vars
-    const [subsciptionValidity, setsubsciptionValidity] = useState(null);
-    // eslint-disable-next-line no-unused-vars
-    const [subscription, setSubscription] = useState(null);
     const [buttonLoadingClass, toggleButtonLoading] = useState('');
     const competitionDetails = state.activeCompetition;
-    // eslint-disable-next-line no-unused-vars
-    const RAZORPAY_TEST_KEY = process.env.REACT_APP_RAZORPAY_KEY;
-    useEffect(() => {
-        let validUpto = new Date();
-        new Date(validUpto.setDate(validUpto.getDate() + 30));
-        let displayDate = formatDate(validUpto, 3);
-        setsubsciptionValidity(displayDate);
-    }, [subscriptionDetails])
 
     const handleModalClose = () => {
         setOpenDetailsModal(false);
@@ -66,26 +54,25 @@ export default function BuySubsription({
                 desc: competitionDetails.selectedVideo.desc,
             },
             ageGroup: competitionDetails.ageGroup,
-            status: 'Submited'
+            status: 'Submitted'
         }
         console.log(competitionObj)
         saveCompetition(competitionObj).subscribe((response) => {
             dispatch(disableLoading());
             console.log('vdo uploaded for competition suceess');
-            dispatch(enableLoginFlow('profile-competition'));
+            dispatch(enableLoginFlow({ type: 'profile-competition' }));
             history.push('/profile');
         })
     }
 
     const proceedForCompetition = () => {
-        // if (state.loggedInUser && state.loggedInUser.subscribed) {
         if (state.currentLoginFlow === 'competition-subscription') {
             submitForCompetition();
         } else {
             history.push('/competitions');
         }
     }
-    
+
     const proceedForLessons = () => {
         history.push('/lessons');
     }
@@ -95,7 +82,6 @@ export default function BuySubsription({
         try {
             updatePayment(response).subscribe((res) => {
                 // const responseData = res.data;
-                // setSubscription(responseData);
                 console.log('postOrder response >>>>>', response);
                 const userDetails = {
                     ...loggedInUser,
@@ -104,7 +90,6 @@ export default function BuySubsription({
                     planType: planType[0]
                 };
                 updateUser(userDetails.key, userDetails).subscribe(() => {
-    
                     dispatch(loginUser(userDetails));
                     console.log('updateUser userDetails>>>>>> ', userDetails);
                     fnCallback(userDetails)
@@ -127,10 +112,8 @@ export default function BuySubsription({
         let orderObj = {};
         orderObj[subscriptionDetails?.planType] = userData;
         try {
-            postOrder(orderObj, [subscriptionDetails?.planType], loggedInUser, handlerFn)
+            postOrder(orderObj, [subscriptionDetails?.planType], 'Monthly Subscription', loggedInUser, handlerFn)
                 .subscribe((response) => {
-                    const responseData = response.data;
-                    setSubscription(responseData);
                     console.log('postOrder response >>>>>', response);
                     toggleButtonLoading('');
                 });
@@ -167,20 +150,16 @@ export default function BuySubsription({
                                     &npbsp;{SUBSCIPTION_PLANS_MAP[subscriptionDetails?.planType]?.modalMessage}
                                 </p>
                                 <p className={`planValue ${subscriptionDetails?.planType}`}> Just <i className="rupeeSign"><FaRupeeSign /></i>{subscriptionDetails?.amount} {subscriptionDetails?.plans}</p>
-                                {/* <div>{subscriptionDetails.name}</div> */}
-                                {/* <div>{subscriptionDetails.desc}</div> */}
-                                {/* <div>{subscriptionDetails.amount} / {subscriptionDetails.plans}</div> */}
-                                {/* <div>Valid Upto- {subsciptionValidity}</div> */}
                             </div>
-                            {alreadySubscribed ? 
-                                <Button variant="contained" color="secondary" onClick={(e) => proceedForCompetition()}>Continue</Button> : 
+                            {alreadySubscribed ?
+                                <Button variant="contained" color="secondary" onClick={(e) => proceedForCompetition()}>Continue</Button> :
                                 <Button variant="contained" color="secondary" className={buttonLoadingClass} onClick={(e) => proceedForPayment(e)}>Subscribe</Button>
                                 // <a href="#" onClick={(e) => proceedForPayment(e)}> Subscribe </a>
                             }
                         </div>}
                         {activeStep === 2 && <div>
                             <p className="subscriptionMessage success">Subscription Payment Recieved Successfully</p>
-                            <div className="actionWrap">
+                            <div className="actionWrap success">
                                 <Button variant="contained" color="secondary" onClick={(e) => proceedForLessons()}>Continue to Lessons</Button>
                                 <Button variant="contained" color="secondary" onClick={(e) => proceedForCompetition()}>Continue to competition</Button>
                             </div>
