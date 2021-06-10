@@ -455,6 +455,26 @@ function Profile() {
       getUploadedVideosByUserId(profileUser.key).subscribe((list) => {
         dispatch(disableLoading());
         setUserUploadedVideoList(list);
+        dispatch(enableLoading());
+        try {
+          getCompetitionByUserId(profileUser.key).subscribe( resp => {
+            dispatch(disableLoading());
+            if (resp.length && list.length) {
+              list.forEach( item => {
+                resp.forEach( item2 => {
+                  if (item2.compId === item?.enrolledCompetition) {
+                    item['compName'] = item2.compName;
+                  }
+                });
+              });
+              setUserUploadedVideoList(list);
+              dispatch(getUploadedVideosByUser(list));
+            }
+          });
+        } catch(e) {
+          dispatch(disableLoading());
+          console.log('user competition fetch error: ', e);
+        }
         dispatch(getUploadedVideosByUser(list));
       });
     } catch (e) {

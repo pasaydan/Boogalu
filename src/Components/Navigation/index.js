@@ -26,12 +26,15 @@ import {
   getNotifications,
   updateNotification,
 } from "../../Services/Notifications.service";
+import { getUploadedVideosByUserId } from '../../Services/UploadedVideo.service';
+import { getUploadedVideosByUser } from "../../Actions/User";
 import {
   acceptFollowRequest,
   rejectFollowRequest,
   blockUser,
   unFollowUser,
 } from "../../Services/Friendship.service";
+import Loader from '../Loader';
 import GenericInfoModal from '../genericInfoModal';
 
 const SCROLL_TOP_LIMIT = 200;
@@ -67,6 +70,7 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
   const { state, dispatch } = useStoreConsumer();
   const loggedInUser = state.loggedInUser;
   const [openVdoUploadModal, setOpenVdoUploadModal] = useState(false);
+  const [isPageLoaderActive, togglePageLoader] = useState(false);
   const [activeRoute, setActiveRoute] = useState("");
   const [isNavHidden, toggleNavHidden] = useState(false);
   const [animateNavClass, toggleNavAnimation] = useState("animate");
@@ -382,10 +386,26 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
     return null;
   }
 
-  const uploadVdo = (e) => {
+    function getUsersVideoList(userKey) {
+      if (userKey) {
+          togglePageLoader(true);
+          try {
+              getUploadedVideosByUserId(userKey).subscribe(list => {
+                togglePageLoader(false);
+                dispatch(getUploadedVideosByUser(list));
+              });
+          } catch (e) {
+              togglePageLoader(false);
+              console.log('Video fetch error: ', e);
+          }
+      }
+  }
+
+  async function uploadVdo(e) {
     e.stopPropagation();
     e.preventDefault();
-    if (loggedInUser && loggedInUser.email && loggedInUser.phone) {
+    if (loggedInUser?.key) {
+      await getUsersVideoList(loggedInUser.key);
       if (state.userVideosList && state.userVideosList.length < VIDEO_LIMIT_COUNT.monthly) {
         setOpenVdoUploadModal(true);
       } else {
@@ -750,6 +770,10 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
   };
   return (
     <>
+      {
+        isPageLoaderActive ?
+        <Loader /> : ''
+      }
       <nav
         ref={mainNavRef}
         onClick={(e) => navBoxClick(e)}
