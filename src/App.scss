@@ -591,6 +591,13 @@ button:focus {
     }
   }
 }
+// Disabled style for React buttons
+.MuiButton-contained {
+  .Mui-disabled {
+    color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+} 
 
 // Ripple Loading spinner
 .lds-ripple {

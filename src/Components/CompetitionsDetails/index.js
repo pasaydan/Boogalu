@@ -9,6 +9,7 @@ import { FaCloudUploadAlt } from 'react-icons/fa';
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { THUMBNAIL_URL } from '../../Constants';
+import VideoPlayer from "../Vedio/Video";
 import "./CompetitionsDetails.scss";
 import EnrollCompetition from "../EnrollCompetition";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -213,24 +214,29 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
     const handleVdoUploadResponse = (value) => {
         if (value) {
             dispatch(enableLoading());
-            getUploadedVideosByUserId(loggedInUser.key).subscribe((vdoList) => {
-                if (vdoList) {
-                    setActiveTabInVdoSelection(1);
-                    vdoList.forEach((uploadedVdo) => {
-                        if (competitionDetails.isUserEnrolled) {
-                            if (uploadedVdo.key === competitionDetails.userSubmitedDetails.vdo.key) {
-                                uploadedVdo.isSelected = true;
-                                let updatedCompetition = competitionDetails;
-                                updatedCompetition.selectedVideo = uploadedVdo;
-                                dispatch(setActiveCompetition(updatedCompetition));
-                                setDisableSubmitVdoButton(true);
+            try {
+                getUploadedVideosByUserId(loggedInUser.key).subscribe((vdoList) => {
+                    if (vdoList) {
+                        setActiveTabInVdoSelection(1);
+                        vdoList.forEach((uploadedVdo) => {
+                            if (competitionDetails.isUserEnrolled) {
+                                if (uploadedVdo.key === competitionDetails.userSubmitedDetails.vdo.key) {
+                                    uploadedVdo.isSelected = true;
+                                    let updatedCompetition = competitionDetails;
+                                    updatedCompetition.selectedVideo = uploadedVdo;
+                                    dispatch(setActiveCompetition(updatedCompetition));
+                                    setDisableSubmitVdoButton(true);
+                                }
                             }
-                        }
-                    })
-                    dispatch(disableLoading());
-                    setUserUploadedVideoList(vdoList)
-                }
-            });
+                        })
+                        dispatch(disableLoading());
+                        setUserUploadedVideoList(vdoList)
+                    }
+                });
+            } catch(e) {
+                dispatch(disableLoading());
+                console.log('Error in get uploaded video: ', e);
+            }
         }
     }
 
@@ -274,9 +280,9 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                 <Fade in={open}>
                     <div className="outer-modal-wrap">
                         {<div className="inner-modal-wrap">
-                            {(ActiveStep === 1 || ActiveStep === 2) && <IconButton className="close-modal-btn" onClick={() => { handleClose(); (state.activeCompetition && !state.currentLoginFlow) && dispatch(setActiveCompetition(null)) }}>
+                            <IconButton className="close-modal-btn" onClick={() => { handleClose(); (state.activeCompetition && !state.currentLoginFlow) && dispatch(setActiveCompetition(null)) }}>
                                 <CloseIcon />
-                            </IconButton>}
+                            </IconButton>
                             {(ActiveStep === 3 || ActiveStep === 4) && <IconButton className="close-modal-btn back-step-btn" onClick={() => setActiveStep(ActiveStep - 1)}>
                                 <ArrowBackIcon />
                             </IconButton>}
@@ -408,7 +414,7 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                                 {userUploadedVdos.length !== 0 && userUploadedVdos.map((item, index) => {
                                                     return <div className={item.isSelected ? 'vdo-outer selected-vdo' : 'vdo-outer'} key={index} onClick={(e) => selectVdo(e, item)}>
                                                         <div className="vdo-wrap" >
-                                                            <img src={item.thumbnail ? item.thumbnail : THUMBNAIL_URL} alt="video-url" />
+                                                            <VideoPlayer vdoObj={item} />
                                                         </div>
                                                         <div className="video-title">{item.title}</div>
                                                     </div>
@@ -427,7 +433,11 @@ export default function CompetitionsDetails({ open, handleClose, initialStep }) 
                                         </div>
                                     </div>
                                 </div>
-                                {!disableSubmitVdoButton && <Button variant="contained" color="primary" onClick={() => setActiveVideoActiveStep(4)}>Upload</Button>}
+                                {!disableSubmitVdoButton ? 
+                                    <Button variant="contained" color="primary" onClick={() => setActiveVideoActiveStep(4)}>Upload video</Button>
+                                    : 
+                                    <Button variant="contained" disabled color="primary">Already selected</Button>
+                                }
                                 {
                                     isVideoSelected ?
                                         <p className="error_message">Please select a video from top list or upload a new</p> : ''

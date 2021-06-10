@@ -252,7 +252,7 @@ function Competitions() {
                                 <span className="otherInfo">
                                     Enrollment open: {competition.startingDate} to {competition.endingDate}<br />
                                 </span>
-                                {competition.isUserEnrolled ? <span className="enrolledMessage">Already Enrolled</span> : ''}
+                                {competition.isUserEnrolled ? <span className="enrolledMessage">Already Enrolled - Choose another video</span> : ''}
                             </h2>
                         </li>
                     })}
