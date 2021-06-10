@@ -386,37 +386,42 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
     return null;
   }
 
-    function getUsersVideoList(userKey) {
+  function getUsersVideoList(userKey) {
+    return new Promise ((res, rej) => {
       if (userKey) {
-          togglePageLoader(true);
-          try {
-              getUploadedVideosByUserId(userKey).subscribe(list => {
-                togglePageLoader(false);
-                dispatch(getUploadedVideosByUser(list));
-              });
-          } catch (e) {
-              togglePageLoader(false);
-              console.log('Video fetch error: ', e);
-          }
+        togglePageLoader(true);
+        try {
+          getUploadedVideosByUserId(userKey).subscribe(list => {
+            togglePageLoader(false);
+            res(list);
+            dispatch(getUploadedVideosByUser(list));
+          });
+        } catch (e) {
+          rej(e);
+          togglePageLoader(false);
+          console.log('Video fetch error: ', e);
+        }
       }
+    });
   }
 
-  async function uploadVdo(e) {
+  function uploadVdo(e) {
     e.stopPropagation();
     e.preventDefault();
     if (loggedInUser?.key) {
-      await getUsersVideoList(loggedInUser.key);
-      if (state.userVideosList && state.userVideosList.length < VIDEO_LIMIT_COUNT.monthly) {
-        setOpenVdoUploadModal(true);
-      } else {
-        const pathName = history?.location?.pathname.split('/')[1];
-        if (!pathName.includes('profile')) {
-          setInfoModalNavigateLink('/profile');
+      getUsersVideoList(loggedInUser.key).then(res => {
+        if (res && res.length < VIDEO_LIMIT_COUNT.monthly) {
+          setOpenVdoUploadModal(true);
+        } else {
+          const pathName = history?.location?.pathname.split('/')[1];
+          if (!pathName.includes('profile')) {
+            setInfoModalNavigateLink('/profile');
+          }
+          setInfoModalMessage(`You have reached your maximum video upload limit of ${state?.userVideosList?.length || VIDEO_LIMIT_COUNT.monthly}, please delete some videos to upload another one!`);
+          setInfoModalStatus('error');
+          toggleInfoModal(true);
         }
-        setInfoModalMessage(`You have reached your maximum video upload limit of ${state?.userVideosList?.length || VIDEO_LIMIT_COUNT.monthly}, please delete some videos to upload another one!`);
-        setInfoModalStatus('error');
-        toggleInfoModal(true);
-      }
+      });
     } else {
       dispatch(enableLoginFlow({ type: "upload-video" }));
       history.push({
