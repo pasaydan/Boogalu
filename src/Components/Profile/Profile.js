@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from "../../Providers/StateProvider";
-import AccountCircleOutlinedIcon from "@material-ui/icons/AccountCircleOutlined";
-import LoyaltyOutlinedIcon from "@material-ui/icons/LoyaltyOutlined";
-import CollectionsOutlinedIcon from "@material-ui/icons/CollectionsOutlined";
+import { MdFace, MdVideoLibrary } from "react-icons/md";
+import { AiTwotoneTrophy } from "react-icons/ai";
 import PropTypes from "prop-types";
 import { useTheme } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
@@ -332,10 +331,6 @@ function Profile() {
                   user?.followedBy.filter(
                     (followedByUserId) => followedByUserId === loggedInUser.key
                   );
-                console.log(
-                  "checkIfUserFollowingVideoCreator",
-                  checkIfUserFollowingVideoCreator
-                );
                 if (
                   checkIfUserFollowingVideoCreator &&
                   checkIfUserFollowingVideoCreator.length > 0
@@ -373,7 +368,6 @@ function Profile() {
               }
             });
             dispatch(disableLoading());
-            console.log("userVdoCopy", userVdoCopy);
             setUserUploadedVideoList(userVdoCopy);
           });
         } else {
@@ -485,13 +479,13 @@ function Profile() {
 
   function onWindowScroll(event) {
     if (window.outerWidth > 1023) {
-      if (window.scrollY >= 240) {
+      if (window.scrollY >= 220) {
         toggleStickyHeader("add");
       } else {
         toggleStickyHeader("remove");
       }
     } else {
-      if (window.scrollY >= 310) {
+      if (window.scrollY >= 277) {
         toggleStickyHeader("add");
       } else {
         toggleStickyHeader("remove");
@@ -660,6 +654,7 @@ function Profile() {
     });
   };
 
+  // eslint-disable-next-line no-unused-vars
   const handleCommentClick = (video) => {
     setFollowButtonText(video.following ? "Following" : "Follow");
     setCommentModal(true);
@@ -853,7 +848,7 @@ function Profile() {
           {userData.profileImage ? (
             <img src={userData.profileImage} alt={userData.name} />
           ) : (
-            <AccountCircleOutlinedIcon />
+            <MdFace />
           )}
         </div>
         <div className="profile-details clearfix">
@@ -924,13 +919,13 @@ function Profile() {
               aria-label="full width tabs example"
             >
               <Tab
-                label="Posts"
-                icon={<CollectionsOutlinedIcon />}
+                label="My posts"
+                icon={<MdVideoLibrary />}
                 {...a11yProps(0)}
               />
               <Tab
                 label="My Competitions"
-                icon={<LoyaltyOutlinedIcon />}
+                icon={<AiTwotoneTrophy />}
                 {...a11yProps(1)}
               />
             </Tabs>
