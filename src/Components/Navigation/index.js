@@ -409,6 +409,10 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
     e.stopPropagation();
     e.preventDefault();
     if (loggedInUser?.key) {
+      /**
+       * NOTE: this function need to call to fetch the users video list,
+       * so that we can put a check of video upload count to user. Currently, limit is 4.
+       */
       getUsersVideoList(loggedInUser.key).then(res => {
         if (res && res.length < VIDEO_LIMIT_COUNT.monthly) {
           setOpenVdoUploadModal(true);
