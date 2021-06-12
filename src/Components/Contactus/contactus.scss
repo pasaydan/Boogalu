@@ -57,10 +57,19 @@
         padding: 0 10px;
     }
 }
-  .confirmation-content{
-        padding: 10px;
-        margin-bottom: 10px;
+.confirmation-content{
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+@media screen and (max-width: 1023px) {
+    .contact-us-wrap {
+        h1 {
+            margin: 0 0 20px;
+        }
     }
+}
+
 @media screen and (max-width: 767px) {
     .contact-us-wrap {
         padding: 20px 10px;

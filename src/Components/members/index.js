@@ -195,7 +195,7 @@ function ViewAllMembers() {
   };
 
   return (
-    <div className="userDashBoardAfterLogin viewAllMemberDashBoard">
+    <div className="userDashBoardAfterLogin viewAllMemberDashBoard paddingTop90">
       <div className="user-dashboard-wrap">
         <h2>Our members</h2>
         <div className="user-list-wrap">

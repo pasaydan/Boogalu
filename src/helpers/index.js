@@ -32,3 +32,14 @@ export const getYearDifferenceInTwoDates = (dt1, dt2) => {
     diff /= (60 * 60 * 24);
     return Math.abs(Math.round(diff / 365.25));
 }
+
+export const isElementInViewport = (el) => {
+    const rect = el.getBoundingClientRect();
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+
+    );
+}

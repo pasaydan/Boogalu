@@ -149,7 +149,7 @@ function Subscriptions(props) {
     }
 
     return (
-        <div className="subscription subscription-outer charcoal-bg">
+        <div className="subscription subscriptionMainWrap subscription-outer charcoal-bg">
             <div id="Subscription" className="charcoal-bg">
                 <div className="subscription-wrap charcoal-bg">
                     <div className="flex-3 heading-content">

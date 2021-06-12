@@ -117,7 +117,9 @@ function App() {
                   <RefundPolicy />
                 </Route>
                 <Route exact path="/login:plan">
-                  <Login />
+                  <Login 
+                    backToHome={callbackHomeFunction}
+                  />
                 </Route>
                 <Route exact path="/login">
                   <Login 

@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { getUploadedVideosList } from "../../Services/UploadedVideo.service";
 import VideoPlayer from "../Vedio/Video";
 import Favorite from '@material-ui/icons/Favorite';
 import Loader from '../Loader';
+import ShowcaseImg from '../../Images/home-page/lesson-2.jpg';
+import LessonsImg from '../../Images/home-page/lesson-1.jpg';
+import CompImg from '../../Images/home-page/comp-1.jpg';
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { displayNotification, removeNotification } from "../../Actions/Notification";
 import { NOTIFICATION_ERROR } from "../../Constants";
+import { isElementInViewport } from '../../helpers';
 
 const isAppAlreadyLoaded = JSON.parse(localStorage.getItem('isAppLoaded'));
 
@@ -29,6 +33,12 @@ export default function Homepage() {
     const [videoAnimateClass, animateVideoContainer] = useState('');
     const [firstVideoAnimateLoaded, toggleVideoAnimateLoad] = useState('');
     const [isLoaderActive, toggleLoading] = useState(false);
+    const [visibleClass, toggleVisibleClass] = useState('');
+
+    const sectionServiceRef = useRef(null);
+    const sectionLessonRef = useRef(null);
+    const sectionCompetitionRef = useRef(null);
+    const sectionFeatureRef = useRef(null);
 
     useEffect(() => {
         toggleLoading(true);
@@ -85,6 +95,10 @@ export default function Homepage() {
                 localStorage.setItem('isAppLoaded', true);
             }, 500);
         }
+
+        window.addEventListener('scroll', onWindowScroll);
+
+        return () => window.removeEventListener('scroll', onWindowScroll);
         // let windowViewPortWidth = window.innerWidth;
         // if (windowViewPortWidth > 1023) {
         //     toggleMobile(false);
@@ -94,6 +108,66 @@ export default function Homepage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    function onWindowScroll(event) {
+        event.stopPropagation();
+        if (window.scrollY > 100) {
+            toggleVisibleClass('active');
+            if (
+                (sectionServiceRef.current && !sectionServiceRef.current.classList.contains('animateContent'))
+                || (sectionLessonRef.current && !sectionLessonRef.current.classList.contains('animateContent'))
+                || (sectionCompetitionRef.current && !sectionCompetitionRef.current.classList.contains('animateContent'))
+                || (sectionFeatureRef.current && !sectionFeatureRef.current.classList.contains('animateContent'))
+            ) {
+                setTimeout(() => {
+                    if (sectionServiceRef.current) {
+                        const headingEle = sectionServiceRef.current.querySelectorAll('h2')[0];
+                        if (isElementInViewport(headingEle)) {
+                            sectionServiceRef.current.classList.add('animateContent');
+                        }
+                    }
+                    if (sectionLessonRef.current) {
+                        const headingEle = sectionLessonRef.current.querySelectorAll('h2')[0];
+                        if (isElementInViewport(headingEle)) {
+                            sectionLessonRef.current.classList.add('animateContent');
+                        }
+                    }
+                    if (sectionCompetitionRef.current) {
+                        const headingEle = sectionCompetitionRef.current.querySelectorAll('h2')[0];
+                        if (isElementInViewport(headingEle)) {
+                            sectionCompetitionRef.current.classList.add('animateContent');
+                        }
+                    }
+                    if (sectionFeatureRef.current) {
+                        const headingEle = sectionFeatureRef.current.querySelectorAll('h2')[0];
+                        if (isElementInViewport(headingEle)) {
+                            sectionFeatureRef.current.classList.add('animateContent');
+                        }
+                    }
+                }, 300);
+            }
+        } else {
+            toggleVisibleClass('');
+        }
+    }
+
+    function scrollToTop(event) {
+        event.stopPropagation();
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+    
+    function scrollToNextSection(event, nextSection) {
+        event.stopPropagation();
+        if (nextSection.current) {
+            window.scrollTo({
+                top: nextSection.current.offsetTop - 45,
+                behavior: 'smooth'
+            });
+        }
+    }
+
     return (
         <div className="homepage clearfix">
             {
@@ -101,8 +175,13 @@ export default function Homepage() {
                 <Loader /> : ''
             }
             <div className={`homepage-display-1 ${firstImageLoaded} ${loadImageClass} ${!UserUploadedVideoList.length ? 'no-video': ''}`}>
-                <div className={`main-bg-message ${defaultFirstMessageLoaded} ${firstMessageLoaded} ${loadMessageBox}`}>
-                    <h4 className={`${firstHeadingLoaded} ${headingAnimateClass1}`}>
+                <section className={`main-bg-message ${defaultFirstMessageLoaded} ${firstMessageLoaded} ${loadMessageBox}`}>
+                    <div className="boxContent">
+                        <h2>Compete, learn &amp; perform</h2>
+                        <p>Innovative and comprehensive learning to enlighten your journey of dance and fitness to make your dream come true.</p>
+                        <button className={`btn primary-light get_started ${firstStartButtonLoaded} ${startButtonAnimateClass}`} onClick={(e) => scrollToNextSection(e, sectionServiceRef)}>Learn more</button>
+                    </div>
+                    {/* <h4 className={`${firstHeadingLoaded} ${headingAnimateClass1}`}>
                         The world’s best <span className="color-text-yellow">Dance</span> learning tools,
                     </h4>
                     <h5 className={`${firstHeadingLoaded} ${headingAnimateClass2}`}>
@@ -111,8 +190,8 @@ export default function Homepage() {
                     <button className={`btn primary-light get_started ${firstStartButtonLoaded} ${startButtonAnimateClass}`} onClick={() => {
                         history.push('/login');
                     }}>Get Started</button>
-                    <div className={`flex-container video-main-wrap ${firstVideoAnimateLoaded} ${videoAnimateClass}`}>
-                        {UserUploadedVideoList.length !== 0 ?
+                    <div className={`flex-container video-main-wrap ${firstVideoAnimateLoaded} ${videoAnimateClass}`}> */}
+                        {/* {UserUploadedVideoList.length !== 0 ?
                             <div className="feed-wrap">
                                 {UserUploadedVideoList && UserUploadedVideoList.map((vdo) => {
                                     return <div key={vdo.key} className="vdo-card">
@@ -132,8 +211,129 @@ export default function Homepage() {
                             </div>
                             :
                             ''}
+                    </div> */}
+                    <div 
+                        className="scrollToNexBtn" 
+                        title="Scroll to Showcase"
+                        onClick={(e) => scrollToNextSection(e, sectionServiceRef)}
+                    >
+                        <p className="mouseBtnWrap">
+                            <span className="mouse">
+                                <span>
+                                </span>
+                            </span>
+                        </p>
+                        <p className="text">next</p>
                     </div>
-                </div>
+                </section>
+                <section className="otherSections sectionServices" ref={sectionServiceRef}>
+                    <h2>What you can expect from Boogaluu</h2>
+                    <div className="othersInnerSection">
+                        <div className="childs">
+                            <p>
+                                <strong>showcase: </strong>
+                                An opportunity to showcase your talent and get visibility and fame by uploading your dance videos.
+                            </p>
+                            <p>
+                                <strong>competition: </strong>
+                                A platform to compete in different dance styles and win exciting prizes under the guidance of international and celebrity judges.
+                            </p>
+                            <p>
+                                <strong>lessons: </strong>
+                                Learn different dance styles by Masters and with the help of the modern technologies for adequate learning experience.
+                            </p>
+                        </div>
+                        <div className="childs">
+                            <div className="imgWrap">
+                                <img src={ShowcaseImg} alt="showcase"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="scrollToNexBtn" title="Scroll to lessons" onClick={(e) => scrollToNextSection(e, sectionLessonRef)}>
+                        <p className="mouseBtnWrap">
+                            <span className="mouse">
+                                <span>
+                                </span>
+                            </span>
+                        </p>
+                        <p className="text">next</p>
+                    </div>
+                </section>
+                <section className="otherSections sectionLessons" ref={sectionLessonRef}>
+                    <h2>Know about lessons</h2>
+                    <div className="othersInnerSection">
+                        <div className="childs">
+                            <div className="imgWrap">
+                                <img src={LessonsImg} alt="lessons"/>
+                            </div>
+                        </div>
+                        <div className="childs">
+                            <p>
+                                Now you can learn different dance styles anywhere anytime at your fingertips directly from the dance Gurus;
+                            </p>
+                            <ul>
+                                <li>Three-dimensional video (VR) - Learn from an advance artificial three dimensional videos.</li>
+                                <li>Mirror View- Mirror view feature to get rid of left and right puzzlement.</li>
+                                <li>Front and Back View- Flip the view from front to back or from back to front for efficient and hassle-free understanding.</li>
+                            </ul>
+                            <p>You will get this experiential and fun learning experience at very nominal charges.</p>
+                            <button className="btn primary-dark" onClick={(e) => history.push('/lessons')}>Let's Learn</button>
+                        </div>
+                    </div>
+                    <div className="scrollToNexBtn" title="Scroll to competition" onClick={(e) => scrollToNextSection(e, sectionCompetitionRef)}>
+                        <p className="mouseBtnWrap">
+                            <span className="mouse">
+                                <span>
+                                </span>
+                            </span>
+                        </p>
+                        <p className="text">next</p>
+                    </div>
+                </section>
+                <section className="otherSections sectionCompetition" ref={sectionCompetitionRef}>
+                    <h2>Know about competitions</h2>
+                    <div className="othersInnerSection">
+                        <div className="childs">
+                            <p>
+                                Boogaluu hosts monthly competitions of different dance styles for every age group.
+                            </p>
+                            <ul>
+                                <li>You can compete with your peers.</li>
+                                <li>These competitions will be guided by international and celebrity judges.</li>
+                                <li>It will allow you to present your talent and enhance your skills</li>
+                                <li>Give you visibility and fame along with the exciting prizes.</li>
+                            </ul>
+                            <button className="btn primary-dark" onClick={(e) => history.push('/competitions')}>Participate</button>
+                        </div>
+                        <div className="childs">
+                            <div className="imgWrap">
+                                <img src={CompImg} alt="competition"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="scrollToNexBtn" title="Scroll to features" onClick={(e) => scrollToNextSection(e, sectionFeatureRef)}>
+                        <p className="mouseBtnWrap">
+                            <span className="mouse">
+                                <span>
+                                </span>
+                            </span>
+                        </p>
+                        <p className="text">next</p>
+                    </div>
+                </section>
+                <section className="otherSections featureSection" ref={sectionFeatureRef}>
+                    <h2>More features of Boogaluu</h2>
+                    <div className="othersInnerSection">
+                        <div className="childs">
+                            <p>Available in mobile, tablets, desktop, laptop, etc.</p>
+                            <p>
+                                Boogaluu is a complete solution for dance and fitness for those who have a wish to become a dancer or fitness instructor to enlighten their journey of dance and fitness from learning to compete with their peers and exhibit their talent to create the milestone.
+                            </p>
+                            <button className="btn primary-dark" onClick={(e) => history.push('/login')}>Let's explore</button>
+                        </div>
+                    </div>
+                </section>
+                <p className={`backToTopBtn ${visibleClass}`} title="back to top" onClick={(e) => scrollToTop(e)}></p>
             </div>
         </div>
     );

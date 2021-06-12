@@ -842,7 +842,7 @@ function Profile() {
     });
   };
   return (
-    <div className="profile-outer" ref={profileOuterRef}>
+    <div className="profile-outer paddingTop90" ref={profileOuterRef}>
       <div className="profile-details-wrap clearfix">
         <div className="profile-img">
           {userData.profileImage ? (

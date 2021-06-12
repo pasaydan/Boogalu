@@ -2,7 +2,7 @@ import React from "react";
 
 export default function PrivacyPolicy() {
     return (
-        <div className="privacy-policy-page charcoal-bg">
+        <div className="privacy-policy-page paddingTop90 charcoal-bg">
             <div className="container">
                 <h1>Privacy Statement</h1>
                 SECTION 1 - WHAT DO WE DO WITH YOUR INFORMATION?<br />
