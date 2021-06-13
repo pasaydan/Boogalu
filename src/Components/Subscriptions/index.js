@@ -105,36 +105,38 @@ function Subscriptions(props) {
 
     const filterSubacriptionsWRTUser = (subscriptionsList) => {//filter subscriptions with respect to user
         if (!isObjectEmpty(loggedInUser)) {
-            let twoDaysAfterCurrentDate = new Date();
-            twoDaysAfterCurrentDate.setDate(new Date().getDate() + 2);
-            subscriptionsList.map((subDetails, index) => {
-                let isAlreadySub = loggedInUser.subscriptions.filter((data) => data.id == subDetails.key && !data.isExpired);
-                if (isAlreadySub.length != 0) {
-                    let subscriptionDate = new Date(timeStampToNewDate(isAlreadySub[0].subscribedOn));//original subscription date
-                    // let subDateAfter1Month = new Date(subscriptionDate.setDate(subscriptionDate.getDate() + 2));//subscription date after 2 days =>> for testing 
-                    let subDateAfter1Month = new Date(subscriptionDate.setMonth(subscriptionDate.getMonth() + 1));//subscription date after 1 month 
+            if (loggedInUser.subscriptions) {
+                let twoDaysAfterCurrentDate = new Date();
+                twoDaysAfterCurrentDate.setDate(new Date().getDate() + 2);
+                subscriptionsList.map((subDetails, index) => {
+                    let isAlreadySub = loggedInUser.subscriptions.filter((data) => data.id == subDetails.key && !data.isExpired);
+                    if (isAlreadySub.length != 0) {
+                        let subscriptionDate = new Date(timeStampToNewDate(isAlreadySub[0].subscribedOn));//original subscription date
+                        // let subDateAfter1Month = new Date(subscriptionDate.setDate(subscriptionDate.getDate() + 2));//subscription date after 2 days =>> for testing 
+                        let subDateAfter1Month = new Date(subscriptionDate.setMonth(subscriptionDate.getMonth() + 1));//subscription date after 1 month 
 
-                    if (subDateAfter1Month.getDate() >= new Date().getDate() && //if plan date is grater than today
-                        subDateAfter1Month.getMonth() == twoDaysAfterCurrentDate.getMonth() ?
-                        subDateAfter1Month.getDate() <= twoDaysAfterCurrentDate.getDate() : subDateAfter1Month <= twoDaysAfterCurrentDate) {//if same month then check only dayes other wise check full date month (check is runs only in 2 days condition for testing)
-                        //it means subscription plan is currently active && subscription ends in two days
-                        var daydiff = subDateAfter1Month.getDate() - new Date().getDate();
-                        switch (daydiff) {
-                            case 0: subDetails.endsIn2Days = 'End today';
-                            case 1: subDetails.endsIn2Days = 'End in 1 day';
-                            case 2: subDetails.endsIn2Days = 'End in 2 days';
-                        }
-                        if (state.activeSubscription && subDetails.key == state.activeSubscription.key) {
-                            const stateSubCopy = { ...subDetails };
-                            dispatch(setActiveSubscription(stateSubCopy));
-                        }
-                    } else subDetails.endsIn2Days = null;
-                }
-                subDetails.isSubscribed = isValidSubscriptionBox(subDetails);
-                if (index == subscriptionsList.length - 1) {
-                    setAvailableSubscriptions([...subscriptionsList]);
-                }
-            })
+                        if (subDateAfter1Month.getDate() >= new Date().getDate() && //if plan date is grater than today
+                            subDateAfter1Month.getMonth() == twoDaysAfterCurrentDate.getMonth() ?
+                            subDateAfter1Month.getDate() <= twoDaysAfterCurrentDate.getDate() : subDateAfter1Month <= twoDaysAfterCurrentDate) {//if same month then check only dayes other wise check full date month (check is runs only in 2 days condition for testing)
+                            //it means subscription plan is currently active && subscription ends in two days
+                            var daydiff = subDateAfter1Month.getDate() - new Date().getDate();
+                            switch (daydiff) {
+                                case 0: subDetails.endsIn2Days = 'End today';
+                                case 1: subDetails.endsIn2Days = 'End in 1 day';
+                                case 2: subDetails.endsIn2Days = 'End in 2 days';
+                            }
+                            if (state.activeSubscription && subDetails.key == state.activeSubscription.key) {
+                                const stateSubCopy = { ...subDetails };
+                                dispatch(setActiveSubscription(stateSubCopy));
+                            }
+                        } else subDetails.endsIn2Days = null;
+                    }
+                    subDetails.isSubscribed = isValidSubscriptionBox(subDetails);
+                    if (index == subscriptionsList.length - 1) {
+                        setAvailableSubscriptions([...subscriptionsList]);
+                    }
+                })
+            } else setAvailableSubscriptions(subscriptionsList)
         } else setAvailableSubscriptions(subscriptionsList)
     }
 
