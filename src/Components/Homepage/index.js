@@ -3,8 +3,8 @@ import { useHistory } from "react-router-dom";
 import { getUploadedVideosList } from "../../Services/UploadedVideo.service";
 import VideoPlayer from "../Vedio/Video";
 import Favorite from '@material-ui/icons/Favorite';
+import { BsArrowRight, BsCameraVideo, BsBook, BsAward } from "react-icons/bs";
 import Loader from '../Loader';
-import ShowcaseImg from '../../Images/home-page/lesson-2.jpg';
 import LessonsImg from '../../Images/home-page/lesson-1.jpg';
 import CompImg from '../../Images/home-page/comp-1.jpg';
 import { useStoreConsumer } from '../../Providers/StateProvider';
@@ -39,6 +39,9 @@ export default function Homepage() {
     const sectionLessonRef = useRef(null);
     const sectionCompetitionRef = useRef(null);
     const sectionFeatureRef = useRef(null);
+    const cardShowcaseRef = useRef(null);
+    const cardCompRef = useRef(null);
+    const cardLessonRef = useRef(null);
 
     useEffect(() => {
         toggleLoading(true);
@@ -123,6 +126,21 @@ export default function Homepage() {
                         const headingEle = sectionServiceRef.current.querySelectorAll('h2')[0];
                         if (isElementInViewport(headingEle)) {
                             sectionServiceRef.current.classList.add('animateContent');
+                            setTimeout(() => {
+                                if (cardShowcaseRef.current) {
+                                    cardShowcaseRef.current.classList.add('show');
+                                }
+                            }, 350);
+                            setTimeout(() => {
+                                if (cardCompRef.current) {
+                                    cardCompRef.current.classList.add('show');
+                                }
+                            }, 400);
+                            setTimeout(() => {
+                                if (cardLessonRef.current) {
+                                    cardLessonRef.current.classList.add('show');
+                                }
+                            }, 450);
                         }
                     }
                     if (sectionLessonRef.current) {
@@ -229,24 +247,38 @@ export default function Homepage() {
                 <section className="otherSections sectionServices" ref={sectionServiceRef}>
                     <h2>What you can expect from Boogaluu</h2>
                     <div className="othersInnerSection">
-                        <div className="childs">
-                            <p>
-                                <strong>showcase: </strong>
-                                An opportunity to showcase your talent and get visibility and fame by uploading your dance videos.
-                            </p>
-                            <p>
-                                <strong>competition: </strong>
-                                A platform to compete in different dance styles and win exciting prizes under the guidance of international and celebrity judges.
-                            </p>
-                            <p>
-                                <strong>lessons: </strong>
-                                Learn different dance styles by Masters and with the help of the modern technologies for adequate learning experience.
-                            </p>
-                        </div>
-                        <div className="childs">
-                            <div className="imgWrap">
-                                <img src={ShowcaseImg} alt="showcase"/>
+                        <div className="cards cardShowcase" ref={cardShowcaseRef}>
+                            <div className="cardIcon">
+                                <BsCameraVideo />
                             </div>
+                            <p className="title">Showcase</p>
+                            <p className="para">An opportunity to showcase your talent and get visibility and fame by uploading your dance videos.</p>
+                            <button title="login and explore" onClick={(e) => history.push('/login')}>
+                                Let's explore 
+                                <i><BsArrowRight /></i>
+                            </button>
+                        </div>
+                        <div className="cards cardCompetition" ref={cardCompRef}>
+                            <div className="cardIcon">
+                                <BsAward />
+                            </div>
+                            <p className="title">Competition</p>
+                            <p className="para">A platform to compete in different dance styles and win exciting prizes under the guidance of international and celebrity judges.</p>
+                            <button title="enroll in competition" onClick={(e) => history.push('/competitions')}>
+                                Let's enroll
+                                <i><BsArrowRight /></i>
+                            </button>
+                        </div>
+                        <div className="cards cardLessons" ref={cardLessonRef}>
+                            <div className="cardIcon">
+                                <BsBook />
+                            </div>
+                            <p className="title">Lessons</p>
+                            <p className="para">Learn different dance styles by Masters and with the help of the modern technologies for adequate learning experience.</p>
+                            <button title="learn lessons" onClick={(e) => history.push('/lessons')}>
+                                Let's learn
+                                <i><BsArrowRight /></i>
+                            </button>
                         </div>
                     </div>
                     <div className="scrollToNexBtn" title="Scroll to lessons" onClick={(e) => scrollToNextSection(e, sectionLessonRef)}>
