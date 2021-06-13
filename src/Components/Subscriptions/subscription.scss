@@ -1,3 +1,6 @@
+.subscriptionMainWrap {
+  padding-top: 73px;
+}
 .subscription-wrap {
   padding: 40px;
   min-height: calc(100vh - 80px);
@@ -157,6 +160,9 @@
 }
 
 @media screen and (max-width: 1023px) {
+  .subscriptionMainWrap {
+    padding-top: 0;
+  }
   .plan {
     .featuresBox {
       p {

@@ -27,8 +27,24 @@ export const validateEmailId = (email) => {
     return regex.test(String(email).toLowerCase());
 }
 
+export const validatePhoneNumber = (phone) => {
+    const regex = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/;
+    return regex.test(phone);
+}
+
 export const getYearDifferenceInTwoDates = (dt1, dt2) => {
     let diff = (dt2.getTime() - dt1.getTime()) / 1000;
     diff /= (60 * 60 * 24);
     return Math.abs(Math.round(diff / 365.25));
+}
+
+export const isElementInViewport = (el) => {
+    const rect = el.getBoundingClientRect();
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+
+    );
 }

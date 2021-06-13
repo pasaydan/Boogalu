@@ -428,12 +428,12 @@ function Profile() {
 
 
     return (
-        <div className="profile-outer" ref={profileOuterRef}>
+        <div className="profile-outer paddingTop90" ref={profileOuterRef}>
             <div className="profile-details-wrap clearfix">
                 <div className="profile-img">
                     {
                         loggedInUser.profileImage ?
-                            <img src={loggedInUser.profileImage} />
+                            <img src={loggedInUser.profileImage} alt="profile" />
                             :
                             <AccountCircleOutlinedIcon />
                     }
@@ -482,7 +482,7 @@ function Profile() {
                             aria-label="full width tabs example"
                         >
                             <Tab label="Posts" icon={<CollectionsOutlinedIcon />} {...a11yProps(0)} />
-                            <Tab label="Competitions" icon={<LoyaltyOutlinedIcon />} {...a11yProps(1)} />
+                            <Tab label="My Competitions" icon={<LoyaltyOutlinedIcon />} {...a11yProps(1)} />
                             {/* <Tab label="Liked" icon={<FavoriteBorderOutlinedIcon />}{...a11yProps(1)} /> */}
                         </Tabs>
                     </div>

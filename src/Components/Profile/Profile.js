@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from "../../Providers/StateProvider";
-import AccountCircleOutlinedIcon from "@material-ui/icons/AccountCircleOutlined";
-import LoyaltyOutlinedIcon from "@material-ui/icons/LoyaltyOutlined";
-import CollectionsOutlinedIcon from "@material-ui/icons/CollectionsOutlined";
+import { MdFace, MdVideoLibrary } from "react-icons/md";
+import { AiTwotoneTrophy } from "react-icons/ai";
 import PropTypes from "prop-types";
 import { useTheme } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
@@ -332,10 +331,6 @@ function Profile() {
                   user?.followedBy.filter(
                     (followedByUserId) => followedByUserId === loggedInUser.key
                   );
-                console.log(
-                  "checkIfUserFollowingVideoCreator",
-                  checkIfUserFollowingVideoCreator
-                );
                 if (
                   checkIfUserFollowingVideoCreator &&
                   checkIfUserFollowingVideoCreator.length > 0
@@ -373,7 +368,6 @@ function Profile() {
               }
             });
             dispatch(disableLoading());
-            console.log("userVdoCopy", userVdoCopy);
             setUserUploadedVideoList(userVdoCopy);
           });
         } else {
@@ -416,10 +410,20 @@ function Profile() {
           }
           dispatch(disableLoading());
         }
-      });
-      getCompetitionByUserId(profileUser.key).subscribe((list) => {
-        dispatch(disableLoading());
-        setUserCompetitionsList(list);
+        getCompetitionByUserId(profileUser.key).subscribe( resp => {
+          dispatch(disableLoading());
+          if (resp.length && list.length) {
+            list.forEach( item => {
+              resp.forEach( item2 => {
+                if (item2.compId === item?.enrolledCompetition) {
+                  item['compName'] = item2.compName;
+                }
+              });
+            });
+            setUserUploadedVideoList(list);
+          }  
+          setUserCompetitionsList(resp);
+        });
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -445,6 +449,26 @@ function Profile() {
       getUploadedVideosByUserId(profileUser.key).subscribe((list) => {
         dispatch(disableLoading());
         setUserUploadedVideoList(list);
+        dispatch(enableLoading());
+        try {
+          getCompetitionByUserId(profileUser.key).subscribe( resp => {
+            dispatch(disableLoading());
+            if (resp.length && list.length) {
+              list.forEach( item => {
+                resp.forEach( item2 => {
+                  if (item2.compId === item?.enrolledCompetition) {
+                    item['compName'] = item2.compName;
+                  }
+                });
+              });
+              setUserUploadedVideoList(list);
+              dispatch(getUploadedVideosByUser(list));
+            }
+          });
+        } catch(e) {
+          dispatch(disableLoading());
+          console.log('user competition fetch error: ', e);
+        }
         dispatch(getUploadedVideosByUser(list));
       });
     } catch (e) {
@@ -455,13 +479,13 @@ function Profile() {
 
   function onWindowScroll(event) {
     if (window.outerWidth > 1023) {
-      if (window.scrollY >= 240) {
+      if (window.scrollY >= 220) {
         toggleStickyHeader("add");
       } else {
         toggleStickyHeader("remove");
       }
     } else {
-      if (window.scrollY >= 310) {
+      if (window.scrollY >= 277) {
         toggleStickyHeader("add");
       } else {
         toggleStickyHeader("remove");
@@ -630,6 +654,7 @@ function Profile() {
     });
   };
 
+  // eslint-disable-next-line no-unused-vars
   const handleCommentClick = (video) => {
     setFollowButtonText(video.following ? "Following" : "Follow");
     setCommentModal(true);
@@ -638,20 +663,41 @@ function Profile() {
 
   const redirectToCompetition = (event, videoObj) => {
     event.stopPropagation();
+    
     if (videoObj && videoObj?.enrolledCompetition) {
-      setInfoModalMessage(
-        "This video you have already submitted for a Competition, please select another video!"
-      );
-      setInfoModalStatus("info");
-      setInfoModalAction(false);
-      toggleInfoModal(true);
-    } else {
-      dispatch(setActiveVideoForCompetition(openUploadCompModalFor));
+      // NOTE: below commented code is for showing Modal message if comp present 
+      // setInfoModalMessage(
+      //   "This video you have already submitted for a Competition, please select another video!"
+      //   );
+      //   setInfoModalStatus("info");
+      //   setInfoModalAction(false);
+      //   toggleInfoModal(true);
+        if (UserCompetitionsList && UserCompetitionsList.length) {
+          let compData = null;
+          UserCompetitionsList.forEach( comp => {
+            if (videoObj.enrolledCompetition === comp.compId) {
+              compData = comp;
+            }
+          });
+          if (compData) {
+            openCompetitionDetailsModal(compData);
+          } else {
+            triggerCompetitionRedirection();
+          }
+        } else {
+          triggerCompetitionRedirection();
+        }
+      } else {
+        triggerCompetitionRedirection();
+      }
+    };
+    
+    function triggerCompetitionRedirection() {
+      // dispatch(setActiveVideoForCompetition(openUploadCompModalFor));
       dispatch(enableLoginFlow({ type: "profile-competition" }));
       history.push("/competitions");
       setShowProfileTab(false);
     }
-  };
 
   function deleteSelectedVideo(event, videoToDelete) {
     event.stopPropagation();
@@ -796,13 +842,13 @@ function Profile() {
     });
   };
   return (
-    <div className="profile-outer" ref={profileOuterRef}>
+    <div className="profile-outer paddingTop90" ref={profileOuterRef}>
       <div className="profile-details-wrap clearfix">
         <div className="profile-img">
           {userData.profileImage ? (
             <img src={userData.profileImage} alt={userData.name} />
           ) : (
-            <AccountCircleOutlinedIcon />
+            <MdFace />
           )}
         </div>
         <div className="profile-details clearfix">
@@ -857,14 +903,7 @@ function Profile() {
             <div className="fullname">{userData.name}</div>
             {userData.bio ? (
               <div className="bio">{userData.bio}</div>
-            ) : (
-              <div className="bio">
-                Older dancers (especially from the SoCal dance community) – even
-                if you can appreciate and welcome the ways dance has evolved,
-                you’ll still feel pangs of nostalgia when going through this
-                list.
-              </div>
-            )}
+            ) : ''}
           </div>
         </div>
       </div>
@@ -880,13 +919,13 @@ function Profile() {
               aria-label="full width tabs example"
             >
               <Tab
-                label="Posts"
-                icon={<CollectionsOutlinedIcon />}
+                label="My posts"
+                icon={<MdVideoLibrary />}
                 {...a11yProps(0)}
               />
               <Tab
-                label="Competitions"
-                icon={<LoyaltyOutlinedIcon />}
+                label="My Competitions"
+                icon={<AiTwotoneTrophy />}
                 {...a11yProps(1)}
               />
             </Tabs>
@@ -950,7 +989,7 @@ function Profile() {
                                     }
                                   >
                                     {vdo?.enrolledCompetition
-                                      ? "Enrolled for competition"
+                                      ? "Choose another video"
                                       : "Upload for competition"}
                                   </div>
                                   <div
@@ -962,8 +1001,20 @@ function Profile() {
                                   </div>
                                 </div>
                               )}
+                            {
+                              vdo?.compName ?
+                              <p className="compLabel">
+                                <span>{vdo?.compName}</span>
+                                <label
+                                  title="Upload another video"
+                                  onClick={(e) =>
+                                    redirectToCompetition(e, vdo)
+                                  }
+                                >Change video</label>
+                              </p> : ''
+                            }
                             <div className="vdo-card">
-                              <div>
+                              <div className="videoCardInner">
                                 <VideoPlayer vdoObj={vdo} />
                               </div>
                               <div className="video-title-like-wrap profile-mode">
@@ -975,7 +1026,7 @@ function Profile() {
                                       {vdo.likes.length > 1 ? "Likes" : "Like"}
                                     </div>
                                   )}
-                                  {!vdo.isLiked && (
+                                  {/* {!vdo.isLiked && (
                                     <FavoriteBorder
                                       title="Unlike"
                                       onClick={() => handleLikes(vdo, "liked")}
@@ -992,7 +1043,7 @@ function Profile() {
                                   <CommentOutlined
                                     title="comment"
                                     onClick={() => handleCommentClick(vdo)}
-                                  />
+                                  /> */}
                                 </div>
                               </div>
                             </div>
@@ -1029,15 +1080,20 @@ function Profile() {
                   UserCompetitionsList.map((competition) => {
                     return (
                       <div
-                        className="flex-basis-3 competition-tab"
+                        className="competition-tab"
                         key={competition.key}
                         onClick={() => openCompetitionDetailsModal(competition)}
                       >
-                        <div className="compTitle">{competition.compName}</div>
-                        <img
-                          src={competition.compImg}
-                          alt={competition.compName}
-                        />
+                        <div className="compTitle">
+                          {competition.compName}
+                          <span>(Click to change video)</span>
+                        </div>
+                        <div className="imgWrap">
+                          <img
+                            src={competition.compImg}
+                            alt={competition.compName}
+                          />
+                        </div>
                       </div>
                     );
                   })

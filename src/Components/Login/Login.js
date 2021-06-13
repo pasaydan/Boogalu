@@ -650,9 +650,9 @@ export default function Login(props) {
             <div className={`inner-form-wrap ${componentShowClass}`}>
                 <form className="form-wrap clearfix" onSubmit={(e) => signinUser(e, 'cred')}>
                     <div className="heading-outer">
-                        <a href="#previousLink" onClick={(e) => goToPrevious(e)} className="arrow-back-home" title="Back">
+                        <p onClick={(e) => goToPrevious(e)} className="arrow-back-home" title="Back">
                             <ArrowBackIcon />
-                        </a>
+                        </p>
                         <a href="/" className="logo" title="Back to Home">
                             <img src={boogaluLogo} alt="Boogalu" />
                         </a>

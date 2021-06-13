@@ -10,6 +10,7 @@ import { getParameterByName, isObjectEmpty } from '../../helpers';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import * as $ from 'jquery';
 
 const FILTER_BY = require('../../Data/lessonFilters.json');
 
@@ -36,6 +37,9 @@ function Upcoming() {
     const premiumFilterBtnRef = useRef();
 
     useEffect(() => {
+        $('html,body').animate({
+            scrollTop: 0
+        }, 700);
         let planFilterParam = getParameterByName('pricing', window.location.href);
         let levelFilterParam = getParameterByName('el', window.location.href);
         let styleFilterParam = getParameterByName('ds', window.location.href);

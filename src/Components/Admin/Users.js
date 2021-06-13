@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import boogaluLogo from '../../Images/Boogalu-logo.svg';
-import { FaFilter, FaPowerOff } from "react-icons/fa";
+import { FaFilter, FaPowerOff, FaSearch, FaTimes } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -13,13 +13,14 @@ import lessonsIcon from '../../Images/lessons-icon.png';
 import subscribeIcon from '../../Images/subscribe-icon.png';
 import usersIcon from '../../Images/users-icon.png';
 import { useStoreConsumer } from '../../Providers/StateProvider';
-import { getAllUser, getUserById, getUsersByFilter } from "../../Services/User.service";
+import { getAllUser, getUserById, getUsersByFilter, getUserByPhone, getUserByEmail } from "../../Services/User.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
-import { MdRemoveRedEye, MdBlock, MdDeleteForever } from 'react-icons/md';
+import { MdRemoveRedEye, MdBlock, MdDeleteForever, MdSearch, MdRefresh } from 'react-icons/md';
 import { getUploadedVideosByUserId, deleteUploadedVideoByVideoKey } from "../../Services/UploadedVideo.service";
 import ConfirmationModal from '../ConfirmationModal';
 import { deleteImage, deleteVideo } from "../../Services/Upload.service";
 import { sendEmail } from "../../Services/Email.service";
+import { validateEmailId, validatePhoneNumber } from '../../helpers';
 
 const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
 const eventsList = require('../../Data/events.json');
@@ -47,6 +48,11 @@ export default function UsersInfo() {
     const [isUserFilterOpen, toggleUserFilterModal] = useState(false);
     const [userFilterValue, setUserFilter] = useState(null);
     const [filterType, setFilterType] = useState(null);
+    const [isUserSearchOpen, toggleUserSearchOpen] = useState(false);
+    const [userSearchErrorMessage, setUserSearchError] = useState('');
+    const [searchedUserData, toggleSearchedUserData] = useState('');
+
+    const userSearchInputRef = useRef(null);
 
     useEffect(() => {
         if (checkAdminLogIn) {
@@ -91,6 +97,9 @@ export default function UsersInfo() {
     }
 
     const getUsersList = () => {
+        if (searchedUserData) {
+            toggleSearchedUserData('');
+        }
         try {
             dispatch(enableLoading());
             getAllUser('admin').subscribe(users => {
@@ -241,6 +250,71 @@ export default function UsersInfo() {
         }
     }
 
+    function toggleSearchInput(event, action) {
+        event.stopPropagation();
+        toggleUserSearchOpen(!action);
+        if (!action && userSearchInputRef.current) {
+            userSearchInputRef.current.focus();
+        } else {
+            setUserSearchError('');
+            userSearchInputRef.current.value = '';
+            if (searchedUserData) {
+                getUsersList();
+            }
+        }
+    }
+    
+    function inputSearchClick(event) {
+        event.stopPropagation();
+    }
+    
+    function searchUser(event) {
+        event.stopPropagation();
+        const userInputData = userSearchInputRef.current ? userSearchInputRef.current.value : '';
+        if (userInputData) {
+            if (validateEmailId(userInputData)) {
+                setUserSearchError('');
+                dispatch(enableLoading());
+                try {
+                    getUserByEmail(userInputData).subscribe( users => {
+                        dispatch(disableLoading());
+                        toggleSearchedUserData(userInputData);
+                        setUsersList(users);
+                    });
+                } catch(e) {
+                    dispatch(disableLoading());
+                    console.log('User email searh error: ', e);
+                }
+            } else if(validatePhoneNumber(userInputData)) {
+                setUserSearchError('');
+                dispatch(enableLoading());
+                try {
+                    getUserByPhone(userInputData).subscribe( users => {
+                        dispatch(disableLoading());
+                        toggleSearchedUserData(userInputData);
+                        setUsersList(users);
+                    });
+                } catch(e) {
+                    dispatch(disableLoading());
+                    console.log('User phone searh error: ', e);
+                }
+            } else {
+                setUserSearchError('Enter valid email id or phone number!');
+            }
+        }
+    }
+    
+    function resetUserSearch(event) {
+        event.stopPropagation();
+        setUserSearchError('');
+        if (userSearchInputRef.current) {
+            userSearchInputRef.current.value = '';
+            userSearchInputRef.current.focus();
+        }
+        if (searchedUserData) {
+            getUsersList();
+        }
+    }
 
     return (
         <div className="adminPanelSection">
@@ -340,6 +414,45 @@ export default function UsersInfo() {
                 </a>
             </div>
             <div className={`competition-bo-wrap clearfix ${(isAdminLoggedIn || checkAdminLogIn) && 'loggedInAdmin usersListBox'}`}>
+                {
+                    isAdminLoggedIn || checkAdminLogIn ?
+                    <div className="logOutIconWrap filterIconWrap searchIconWrap" title="search user by email/phone" onClick={(e) => toggleSearchInput(e, isUserSearchOpen)}>
+                        <p className={`searchInputWrap ${isUserSearchOpen ? 'open' : ''}`}>
+                            <input 
+                                ref={userSearchInputRef}
+                                type="text" 
+                                id="userSearchInput" 
+                                placeholder="Search by Email/Phone" 
+                                aria-placeholder="Email or phone"
+                                onClick={(e) => inputSearchClick(e)}
+                            />
+                            <button 
+                                title="search user" 
+                                className="search"
+                                onClick={(e) => searchUser(e)}
+                            >
+                                <MdSearch />
+                            </button>
+                            <button 
+                                title="reset search" 
+                                className="reset"
+                                onClick={(e) => resetUserSearch(e)}
+                            >
+                                <MdRefresh />
+                            </button>
+                        </p>
+                        {
+                            userSearchErrorMessage && isUserSearchOpen ?
+                            <span className="userSearchError">{userSearchErrorMessage}</span>
+                            : ''
+                        }
+                        {
+                            isUserSearchOpen ?
+                            <FaTimes /> :
+                            <FaSearch />
+                        }
+                    </div> : ''
+                }
                 {
                     isAdminLoggedIn || checkAdminLogIn ?
                     <p className="logOutIconWrap filterIconWrap" title="Open Filter" onClick={(e) => toggleOtherFilters(e, true)}>
