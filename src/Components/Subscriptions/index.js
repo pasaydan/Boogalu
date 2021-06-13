@@ -5,12 +5,14 @@ import { getActiveSubscriptionsList } from "../../Services/Subscription.service"
 import { setActiveSubscription } from "../../Actions/Subscription";
 import BuySubscription from "../BuySubscription";
 import { enableLoginFlow, disableLoginFlow } from "../../Actions/LoginFlow";
-import { saveUserSubscription } from "../../Services/User.service";
-import { loginUser } from "../../Actions/User";
-import { SUBSCRIPTION_ACTIVE_STATUS, ADMIN_EMAIL_STAGING } from "../../Constants";
+import { ADMIN_EMAIL_STAGING } from "../../Constants";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { sendEmail } from "../../Services/Email.service";
 import { isObjectEmpty, getParameterByName } from '../../helpers';
+import { timeStampToNewDate } from '../../Services/Utils';
+import { postOrder, updatePayment } from "./../../Services/Razorpay.service";
+import { updateUser } from "../../Services/User.service";
+import { loginUser } from '../../Actions/User/index';
 import * as $ from 'jquery';
 
 function Subscriptions(props) {
@@ -18,11 +20,10 @@ function Subscriptions(props) {
     const { state, dispatch } = useStoreConsumer();
     const history = useHistory();
     const loggedInUser = state.loggedInUser;
-    const activeStepCount = loggedInUser && loggedInUser.subscribed ? 2 : 1;
     const [AvailableSubscriptions, setAvailableSubscriptions] = useState([]);
     const [showSubscriptionDetails, setShowSubscriptionDetails] = useState(false);
-    const [activeStep, setActiveStep] = useState(activeStepCount);
-    const [alreadySubscribed, setAlreadySubscribed] = useState(false)
+    const [buttonLoadingClass, toggleButtonLoading] = useState('');
+    const [activeStep, setActiveStep] = useState(1);
     console.log(" loggedInUser >>>>>", loggedInUser)
     const sendEmailToAdmin = () => {
         let emailBody = `<div>
@@ -68,9 +69,9 @@ function Subscriptions(props) {
         }, 700);
         try {
             getActiveSubscriptionsList().subscribe((subscriptionsList) => {
-                setAvailableSubscriptions(subscriptionsList.reverse());
+                filterSubacriptionsWRTUser(subscriptionsList.reverse());
                 dispatch(disableLoading());
-                if (history.location.search && history.location.search.includes('planType')) {
+                if (history.location.search && history.location.search.includes('planType')) {//if any plan type in url
                     const filterParam = getParameterByName('planType', window.location.href);
                     if (subscriptionsList.length) {
                         const matchedSubscription = subscriptionsList.filter(item => {
@@ -87,8 +88,8 @@ function Subscriptions(props) {
                     dispatch(disableLoginFlow());
                     setActiveStep(1);
                     setShowSubscriptionDetails(true);
+                    console.log(subscriptionsList);
                 }
-                console.log(subscriptionsList);
             });
         } catch (e) {
             console.log('Fetching subscription error: ', e);
@@ -97,21 +98,121 @@ function Subscriptions(props) {
     }, [])
 
     useEffect(() => {
-        let loggedInUser = state.loggedInUser && state.loggedInUser.subscribed ? true : false
-        setAlreadySubscribed(loggedInUser);
+        if (!isObjectEmpty(loggedInUser)) {
+            loggedInUser.subscribed && filterSubacriptionsWRTUser(AvailableSubscriptions);
+        } else setAvailableSubscriptions(AvailableSubscriptions)
     }, [state.loggedInUser])
 
-    const setSubscription = (subscription) => {
+    const filterSubacriptionsWRTUser = (subscriptionsList) => {//filter subscriptions with respect to user
         if (!isObjectEmpty(loggedInUser)) {
-            if (isValidSubscriptionBox(subscription)) {
-                dispatch(setActiveSubscription(subscription));
-                setActiveStep(activeStepCount);
-                setShowSubscriptionDetails(true);
+            let twoDaysAfterCurrentDate = new Date();
+            twoDaysAfterCurrentDate.setDate(new Date().getDate() + 2);
+            subscriptionsList.map((subDetails, index) => {
+                let isAlreadySub = loggedInUser.subscriptions.filter((data) => data.id == subDetails.key && !data.isExpired);
+                if (isAlreadySub.length != 0) {
+                    let subscriptionDate = new Date(timeStampToNewDate(isAlreadySub[0].subscribedOn));//original subscription date
+                    // let subDateAfter1Month = new Date(subscriptionDate.setDate(subscriptionDate.getDate() + 2));//subscription date after 2 days =>> for testing 
+                    let subDateAfter1Month = new Date(subscriptionDate.setMonth(subscriptionDate.getMonth() + 1));//subscription date after 1 month 
+
+                    if (subDateAfter1Month.getDate() >= new Date().getDate() && //if plan date is grater than today
+                        subDateAfter1Month.getMonth() == twoDaysAfterCurrentDate.getMonth() ?
+                        subDateAfter1Month.getDate() <= twoDaysAfterCurrentDate.getDate() : subDateAfter1Month <= twoDaysAfterCurrentDate) {//if same month then check only dayes other wise check full date month (check is runs only in 2 days condition for testing)
+                        //it means subscription plan is currently active && subscription ends in two days
+                        var daydiff = subDateAfter1Month.getDate() - new Date().getDate();
+                        switch (daydiff) {
+                            case 0: subDetails.endsIn2Days = 'End today';
+                            case 1: subDetails.endsIn2Days = 'End in 1 day';
+                            case 2: subDetails.endsIn2Days = 'End in 2 days';
+                        }
+                        if (state.activeSubscription && subDetails.key == state.activeSubscription.key) {
+                            const stateSubCopy = { ...subDetails };
+                            dispatch(setActiveSubscription(stateSubCopy));
+                        }
+                    } else subDetails.endsIn2Days = null;
+                }
+                subDetails.isSubscribed = isValidSubscriptionBox(subDetails);
+                if (index == subscriptionsList.length - 1) {
+                    setAvailableSubscriptions([...subscriptionsList]);
+                }
+            })
+        } else setAvailableSubscriptions(subscriptionsList)
+    }
+
+    const handlerFn = (response, planType, isRenew) => {
+        console.log("response", response);
+        try {
+            updatePayment(response).subscribe((res) => {
+                // const responseData = res.data;
+                console.log('postOrder response >>>>>', response);
+                const userDetails = {
+                    ...loggedInUser,
+                    subscribed: true,
+                    subEndingReminderSend: false,
+                    subEndedReminderSend: false,
+                    planType: planType[0]
+                };
+                let userSub = {
+                    id: state?.activeSubscription?.key,
+                    name: state?.activeSubscription?.name,
+                    planType: planType[0],
+                    validity: state?.activeSubscription?.plans,
+                    subscribedOn: new Date(),
+                    isExpired: false,
+                    isRenewed: isRenew ? true : false
+                }
+                if ('subscriptions' in userDetails) {
+                    userDetails.subscriptions.map((data, index) => {
+                        data.isExpired = true;//mark expired to all previous subscriptions
+                        if (index == userDetails.subscriptions.length - 1) userDetails.subscriptions.push(userSub);
+                    });
+                } else userDetails.subscriptions = [userSub];
+                updateUser(userDetails.key, userDetails).subscribe(() => {
+                    dispatch(loginUser(userDetails));
+                    console.log('updateUser userDetails>>>>>> ', userDetails);
+                    if (userDetails.subscribed) {
+                        setActiveStep(2);
+                        setShowSubscriptionDetails(true);
+                        sendEmailToAdmin();
+                        sendEmailToUser();
+                    }
+                })
+            });
+        } catch (e) {
+            console.log('Error: ', e);
+        }
+    }
+
+    const proceedForPayment = (subscriptionDetails, isRenew) => {
+        toggleButtonLoading('loading');
+        const userData = {
+            "amount": subscriptionDetails.amount * 100,
+            "currency": "INR",
+            "receipt": loggedInUser.key
+        };
+
+        let orderObj = {};
+        orderObj[subscriptionDetails?.planType] = userData;
+        try {
+            postOrder(orderObj, [subscriptionDetails?.planType], 'Monthly Subscription', loggedInUser, handlerFn, isRenew)
+                .subscribe((response) => {
+                    console.log('postOrder response >>>>>', response);
+                    toggleButtonLoading('');
+                });
+        } catch (e) {
+            console.log('Error: ', e);
+        }
+    }
+
+    const setSubscription = (subscription) => {
+        dispatch(setActiveSubscription(subscription));
+        if (!isObjectEmpty(loggedInUser)) {
+            if (subscription.endsIn2Days) {
+                proceedForPayment(subscription, true)//second param true is for if user click to renew subscription
             } else {
-                setAlreadySubscribed(false);
-                dispatch(setActiveSubscription(subscription));
                 setActiveStep(1);
                 setShowSubscriptionDetails(true);
+                if (subscription.isSubscribed) setActiveStep(4);
+                else setActiveStep(1);
             }
         } else {
             dispatch(enableLoginFlow({ type: 'subscription' }));
@@ -119,15 +220,6 @@ function Subscriptions(props) {
                 pathname: '/login',
                 state: null
             });
-        }
-    }
-
-    const fnCallbackFromBuySubscription = (userDetails) => {
-        if (userDetails.subscribed) {
-            setActiveStep(2);
-            setAlreadySubscribed(true);
-            sendEmailToAdmin();
-            sendEmailToUser();
         }
     }
 
@@ -144,7 +236,6 @@ function Subscriptions(props) {
                 isSubscribed = false;
             }
         }
-
         return isSubscribed;
     }
 
@@ -169,7 +260,10 @@ function Subscriptions(props) {
                     </div>
                     <div className="inner-plans-wrap">
                         {AvailableSubscriptions && AvailableSubscriptions.map((subscription) => {
-                            return <div className={`flex-2 plan ${subscription.planType} ${isValidSubscriptionBox(subscription) ? 'alreadySubscribed' : ''}`} onClick={() => setSubscription(subscription)} key={subscription.key}>
+                            return <div className={`flex-2 plan ${subscription.planType} ${subscription.isSubscribed ? 'alreadySubscribed' : ''}`} onClick={() => setSubscription(subscription)} key={subscription.key}>
+                                {subscription.endsIn2Days && <div className="ending-label-wrapper">
+                                    <div className="ending-label">{subscription.endsIn2Days}</div>
+                                </div>}
                                 <div className="plan_tag">{subscription.name}</div>
                                 <div className="plan_price">@{subscription.amount}<span>{subscription.plans}</span></div>
                                 <div className="featuresBox">
@@ -196,7 +290,7 @@ function Subscriptions(props) {
                                     }
                                 </div>
                                 {
-                                    !alreadySubscribed ?
+                                    !subscription.isSubscribed ?
                                         <p className="expireWrap">
                                             Offer valid till <strong>{subscription.endingDate}</strong>
                                         </p>
@@ -205,12 +299,16 @@ function Subscriptions(props) {
                                             Subscription valid till <strong>{subscription.endingDate}</strong>
                                         </p>
                                 }
-                                <div className={`btn primary-light ${isValidSubscriptionBox(subscription) ? 'subscribed' : ''}`}>
-                                    {isValidSubscriptionBox(subscription) ?
-                                        'Already subscribed'
-                                        : 'Buy subscription'
-                                    }
-                                </div>
+                                {subscription.endsIn2Days ?
+                                    <div className={`btn primary-light subscribed`}>
+                                        Renew
+                                    </div>
+                                    : <div className={`btn primary-light ${subscription.isSubscribed ? 'subscribed' : ''}`}>
+                                        {subscription.isSubscribed ?
+                                            'Already subscribed'
+                                            : 'Buy subscription'
+                                        }
+                                    </div>}
                             </div>
                         })}
                     </div>
@@ -219,8 +317,8 @@ function Subscriptions(props) {
             {showSubscriptionDetails && <BuySubscription
                 handleClose={() => setShowSubscriptionDetails(false)}
                 activeStep={activeStep}
-                alreadySubscribed={alreadySubscribed}
-                fnCallback={fnCallbackFromBuySubscription} />
+                buttonLoadingClass={buttonLoadingClass}
+                proceedForPayment={(subDetails, isRenew) => proceedForPayment(subDetails, isRenew)} />
             }
         </div>
     )
