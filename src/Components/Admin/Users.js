@@ -273,6 +273,7 @@ export default function UsersInfo() {
         const userInputData = userSearchInputRef.current ? userSearchInputRef.current.value : '';
         if (userInputData) {
             if (validateEmailId(userInputData)) {
+                setUserSearchError('');
                 dispatch(enableLoading());
                 try {
                     getUserByEmail(userInputData).subscribe( users => {
@@ -285,6 +286,7 @@ export default function UsersInfo() {
                     console.log('User email searh error: ', e);
                 }
             } else if(validatePhoneNumber(userInputData)) {
+                setUserSearchError('');
                 dispatch(enableLoading());
                 try {
                     getUserByPhone(userInputData).subscribe( users => {
