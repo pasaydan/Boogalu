@@ -27,6 +27,11 @@ export const validateEmailId = (email) => {
     return regex.test(String(email).toLowerCase());
 }
 
+export const validatePhoneNumber = (phone) => {
+    const regex = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/;
+    return regex.test(phone);
+}
+
 export const getYearDifferenceInTwoDates = (dt1, dt2) => {
     let diff = (dt2.getTime() - dt1.getTime()) / 1000;
     diff /= (60 * 60 * 24);

@@ -241,6 +241,79 @@
                 color: var(--secondary-bg-blue);
             }
         }
+        &.searchIconWrap {
+            right: 87px;
+            top: 11px;
+            .searchInputWrap {
+                margin: 0;
+                position: absolute;
+                right: 32px;
+                top: -4px;
+                width: 0;
+                border: none;
+                border-radius: 5px;
+                text-align: left;
+                overflow: hidden;
+                white-space: nowrap;
+                transition: all 0.3s ease-in-out;
+                input, button {
+                    vertical-align: middle;
+                    display: inline-block;
+                    opacity: 0;
+                }
+                input {
+                    border: none;
+                    outline: none;
+                    background: transparent;
+                    font-size: 12px;
+                    padding: 5px 10px;
+                    width: 75%;
+                    margin-right: 10px;
+                    box-sizing: border-box;
+                }
+                button {
+                    width: 26px;
+                    height: 26px;
+                    cursor: pointer;
+                    border-radius: 3px;
+                    border: 1px solid var(--copyright-grey);
+                    box-shadow: none;
+                    outline: none;
+                    color: var(--primary-white);
+                    padding: 0;
+                    text-align: center;
+                    svg {
+                        margin-top: 2px;
+                        font-size: 20px;
+                        color: var(--primary-white);
+                    }
+                    &.search {
+                        background: var(--success-green-opaque);
+                        margin-right: 5px;
+                    }
+                    &.reset {
+                        background: var(--red-text-color);
+                    }
+                }
+                &.open {
+                    width: 290px;
+                    border: 1px solid var(--footer-list-text-grey);
+                    input, button {
+                        opacity: 1;
+                    }
+                }
+            }
+            .userSearchError {
+                display: block;
+                font-size: 12px;
+                position: absolute;
+                width: 290px;
+                text-align: left;
+                right: 32px;
+                top: 30px;
+                color: var(--red-text-color);
+            }
+        }
     }
     &.loggedInAdmin {
         width: 80%;
@@ -1057,6 +1130,12 @@
     }
     .competition-bo-wrap.usersListBox {
         margin: 20px auto 0;
+        h1 {
+            margin-top: 50px;
+        }
+        .logOutIconWrap.searchIconWrap {
+            top: 10px;
+        }
     }
     .optionsTab {
         width: 100%;
@@ -1132,6 +1211,16 @@
         .logOutIconWrap {
             top: 6px;
             right: 6px;
+            &.searchIconWrap {
+                top: 7px;
+            }
+        }
+        &.usersListBox {
+            .logOutIconWrap {
+                &.searchIconWrap {
+                    top: 7px;
+                }
+            }
         }
         h1 {
             font-size: 16px;
@@ -1340,6 +1429,26 @@
                 }
             }
         }
+        &.usersListBox {
+            .logOutIconWrap.searchIconWrap {
+                .searchInputWrap {
+                    top: 28px;
+                    padding: 7px 5px;
+                    background: var(--primary-white);
+                    right: -80px;
+                    input {
+                        width: 81%;
+                    }
+                    &.open {
+                        width: 360px;
+                    }
+                }
+                .userSearchError {
+                    right: 9px;
+                    top: 73px;
+                }
+            }
+        }
     }
     .usersListWrap {
         .uploadContainer {
@@ -1366,6 +1475,25 @@
     }
 }
 
+@media screen and (max-width: 416px) {
+    .competition-bo-wrap.usersListBox, 
+    .subscription-bo-wrap.usersListBox {
+        .logOutIconWrap.searchIconWrap {
+            .searchInputWrap {
+                &.open {
+                    width: 310px;
+                }
+                input {
+                    width: 77%;
+                }
+            }
+            .userSearchError {
+                right: -49px;
+            }
+        }
+    } 
+}
+
 @media screen and (max-width: 360px) {
     .competition-bo-wrap, .subscription-bo-wrap {
         .inner-form-wrap {
@@ -1382,4 +1510,23 @@
             }
         }
     }
+}
+
+@media screen and (max-width: 320px) {
+    .competition-bo-wrap.usersListBox, 
+    .subscription-bo-wrap.usersListBox {
+        .logOutIconWrap.searchIconWrap {
+            .searchInputWrap {
+                &.open {
+                    width: 276px;
+                }
+                input {
+                    width: 75%;
+                }
+            }
+            .userSearchError {
+                right: -85px;
+            }
+        }
+    } 
 }
