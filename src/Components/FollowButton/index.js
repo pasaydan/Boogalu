@@ -16,6 +16,7 @@ const FollowButton = (props) => {
   const anchorRef = React.useRef(null);
 
   const handleToggle = (event, identifier) => {
+    event.stopPropagation();
     if (!identifier) {
       setOpen((prevOpen) => !prevOpen);
     } else {

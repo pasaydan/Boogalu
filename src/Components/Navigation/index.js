@@ -983,13 +983,13 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
               onClick={(e) => headerMenusClicked(e)}
             >
               <div className="innerMenuWrap">
-                <div
+                <a
+                  href="/profile"
+                  onClick={(e) => e.stopPropagation()}
                   className="linkMenu profileLink"
-                  data-url="profile"
-                  onClick={(e) => topRightNavigation(e, "profile")}
                 >
                   My account
-                </div>
+                </a>
                 <div
                   className="linkMenu"
                   data-url="profile/edit"
