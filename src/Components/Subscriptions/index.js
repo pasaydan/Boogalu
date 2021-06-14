@@ -316,7 +316,7 @@ function Subscriptions(props) {
                     </div>
                 </div>
             </div>
-            {showSubscriptionDetails && <BuySubscription
+            {showSubscriptionDetails && loggedInUser.key && <BuySubscription
                 handleClose={() => setShowSubscriptionDetails(false)}
                 activeStep={activeStep}
                 buttonLoadingClass={buttonLoadingClass}
