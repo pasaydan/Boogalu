@@ -1,11 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import Vedio from "../Vedio/Video";
-import { enableLoading, disableLoading } from "../../Actions/Loader";
-import { sendEmail } from "../../Services/Email.service";
-import { Link } from '@material-ui/core';
+import React, { useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 import JudgesLogin from './judgeslogin';
-import JudgesPrivacyPolicy from './judgesPrivacyPolicy';
 
 function FinalRound() {
     const history = useHistory();
@@ -13,6 +8,11 @@ function FinalRound() {
     const {REACT_APP_URL} = process.env;
     // eslint-disable-next-line no-unused-vars
     
+    useEffect(() => {
+        console.log('history: ', history);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     return (
         <div className="judgementWrap">
             {/* <h1>This is Finals</h1> */}

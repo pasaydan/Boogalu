@@ -31,8 +31,11 @@ import { getUploadedVideosByUser } from "../../Actions/User";
 import VideoPlayer from "../Vedio/Video";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { removeDataRefetchModuleName } from "../../Actions/Utility";
+// eslint-disable-next-line no-unused-vars
 import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
+// eslint-disable-next-line no-unused-vars
 import Favorite from "@material-ui/icons/Favorite";
+// eslint-disable-next-line no-unused-vars
 import CommentOutlined from "@material-ui/icons/CommentOutlined";
 import VideoDetails from "../VideoDetails";
 import {

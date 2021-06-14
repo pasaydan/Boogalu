@@ -8,7 +8,6 @@ import IconButton from '@material-ui/core/IconButton';
 import { FaCloudUploadAlt } from 'react-icons/fa';
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from '../../Providers/StateProvider';
-import { THUMBNAIL_URL } from '../../Constants';
 import VideoPlayer from "../Vedio/Video";
 import "./CompetitionsDetails.scss";
 import EnrollCompetition from "../EnrollCompetition";

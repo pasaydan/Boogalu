@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { getUploadedVideosList } from "../../Services/UploadedVideo.service";
+// eslint-disable-next-line no-unused-vars
 import VideoPlayer from "../Vedio/Video";
+// eslint-disable-next-line no-unused-vars
 import Favorite from '@material-ui/icons/Favorite';
 import { BsArrowRight, BsCameraVideo, BsBook, BsAward } from "react-icons/bs";
 import Loader from '../Loader';
@@ -25,12 +27,17 @@ export default function Homepage() {
     const [loadMessageBox, toggleMessageClass] = useState('');
     const [firstMessageLoaded, toggleFirstMessageLoad] = useState('');
     const [defaultFirstMessageLoaded, toggleDefaultMessageLoad] = useState('');
+    // eslint-disable-next-line no-unused-vars
     const [headingAnimateClass1, toggleHeadingClass] = useState('');
+    // eslint-disable-next-line no-unused-vars
     const [headingAnimateClass2, toggleHeadingClassNew] = useState('');
+    // eslint-disable-next-line no-unused-vars
     const [firstHeadingLoaded, toggleFirstHeadingLoad] = useState('');
     const [startButtonAnimateClass, animateStartButton] = useState('');
     const [firstStartButtonLoaded, toggleFirstStartButtonLoad] = useState('');
+    // eslint-disable-next-line no-unused-vars
     const [videoAnimateClass, animateVideoContainer] = useState('');
+    // eslint-disable-next-line no-unused-vars
     const [firstVideoAnimateLoaded, toggleVideoAnimateLoad] = useState('');
     const [isLoaderActive, toggleLoading] = useState(false);
     const [visibleClass, toggleVisibleClass] = useState('');

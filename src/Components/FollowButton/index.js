@@ -1,24 +1,16 @@
 import {
   Button,
   ClickAwayListener,
-  FormControl,
   Grow,
-  InputLabel,
   MenuItem,
   MenuList,
   Paper,
   Popper,
-  Select,
 } from "@material-ui/core";
 import React from "react";
 
 const FollowButton = (props) => {
   const { status, onClickHandler, user, loggedInUser } = props;
-
-  const handleChange = (event) => {
-    let value = event.target.value;
-    console.log("value ", value);
-  };
 
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
@@ -32,7 +24,6 @@ const FollowButton = (props) => {
   };
 
   const handleClose = (event) => {
-    const value = event.currentTarget.id;
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }

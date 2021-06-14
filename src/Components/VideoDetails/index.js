@@ -26,18 +26,21 @@ function Comments({
 }) {
   const history = useHistory();
   const followMessage = "It's a private account, follow to see the posts!";
+  // eslint-disable-next-line no-unused-vars
   const [followButtonText, setFollowButtonText] = useState(
     clickedUser && clickedUser.actionBtnText
       ? clickedUser.actionBtnText
       : "Follow"
   );
   const [followStatus, setFollowStatus] = useState("");
+  // eslint-disable-next-line no-unused-vars
   const [messageForUser, setMessageForUser] = useState(followMessage);
   // eslint-disable-next-line no-unused-vars
   const [openDetailsModal, setOpenDetailsModal] = useState(true);
   const [commentText, setCommentText] = useState("");
   // eslint-disable-next-line no-unused-vars
   const [userDetails, setUserDetails] = useState();
+  // eslint-disable-next-line no-unused-vars
   const [privacyToggle, setPrivacyToggle] = useState(false);
   const { privacy } = videoObj || "public";
 
