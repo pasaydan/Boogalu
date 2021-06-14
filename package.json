@@ -42,6 +42,7 @@
     "build:production": "env-cmd -f .env.staging react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "emulator":"firebase emulators:start --inspect-functions",
     "deploy-stage": "env-cmd -f .env.staging react-scripts build && firebase deploy --except functions"
   },
   "eslintConfig": {

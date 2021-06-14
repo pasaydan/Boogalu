@@ -1,167 +1,208 @@
 .subscriptionMainWrap {
-    padding-top: 73px;
+  padding-top: 73px;
 }
 .subscription-wrap {
-    padding: 40px;
-    min-height: calc(100vh - 80px);
-    h1 {
-        margin: 0;
-        text-align: center;
-    }
-    .line1 {
-        text-align: center;
-    }
+  padding: 40px;
+  min-height: calc(100vh - 80px);
+  h1 {
+    margin: 0;
+    text-align: center;
+  }
+  .line1 {
+    text-align: center;
+  }
 }
 
 .inner-plans-wrap {
-    display: flex;
-    justify-content: center;
-    margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
 }
 .plan {
-    display: flex;
-    box-sizing: border-box;
-    justify-content: flex-start;
-    align-items: center;
-    flex-direction: column;
-    max-width: 300px;
-    padding: 20px;
-    background: var(--footer-background-grey);
-    border-radius: 5px;
-    color: var(--primary-white);
-    transition: all 0.3s ease-in-out;
-    cursor: pointer;
+  display: flex;
+  box-sizing: border-box;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+  max-width: 300px;
+  padding: 20px;
+  background: var(--footer-background-grey);
+  border-radius: 5px;
+  color: var(--primary-white);
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  position: relative;
+  &:hover {
+    transform: scale(1.06);
+    z-index: 10;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  }
+
+  //sub expiring label
+  .ending-label-wrapper {
+    width: 85px;
+    height: 88px;
+    overflow: hidden;
+    position: absolute;
+    top: -3px;
+    right: -3px;
+  }
+  .ending-label {
+    font-size: 10px;
+    color: var(--primary-dark-grey);
     text-align: center;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    transform: rotate(45deg);
+    position: relative;
+    padding: 7px 0;
+    left: -5px;
+    top: 15px;
+    width: 120px;
+    background-color: var(--primary-white);
+    color: var(--btn-primary-dark-bg);
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
+  }
+  .ending-label:before,
+  .ending-label:after {
+    content: "";
+    border-top: 3px solid var(--primary-white);
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    position: absolute;
+    bottom: -3px;
+  }
+  .ending-label:before {
+    left: 0;
+  }
+  .ending-label:after {
+    right: 0;
+  }
+
+  .plan_tag {
+    width: 100%;
+    font-size: 26px;
+    line-height: 30px;
+    margin: 0 0 5px 0;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--white-opaque-bg);
+  }
+  &.pro {
+    background: var(--mui-button-hover);
+  }
+  &.premium {
+    background: var(--dark-pink-bg);
+    transform: scale(1.06);
     &:hover {
-        transform: scale(1.06);
-        z-index: 10;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+      transform: scale(1.1);
     }
-    .plan_tag {
-        width: 100%;
-        font-size: 26px;
-        line-height: 30px;
-        margin: 0 0 5px 0;
-        font-weight: 500;
-        letter-spacing: 1.5px;
-        text-align: center;
-        padding-bottom: 10px;
-        border-bottom: 1px solid var(--white-opaque-bg);
-    }
-    &.pro {
-        background: var(--mui-button-hover);    
-    }
-    &.premium {
-        background: var(--dark-pink-bg);
-        transform: scale(1.06);
-        &:hover {
-            transform: scale(1.1);
-        }    
-    }
-    .plan_price {
-        font-size: 42px;
-        line-height: 44px;
-        font-weight: 500;
-    }
-    
-    .plan_price span {
-        font-size: 24px;
-        line-height: 26px;
-        font-weight: 600;
-    }
-    
-    .featuresBox {
-        margin: 5px 0 10px;
-        padding: 10px 0 0 0;
-        width: 100%;
-        border-top: 1px solid var(--btn-primary-light-bg);
-        p {
-            margin: 10px 0 0 0;
-            position: relative;
-            padding-left: 20px;
-            font-size: 12px;
-            line-height: 18px;
-            text-align: left;
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            &:before {
-                content:'\2713';
-                position: absolute;
-                left: 0;
-                top: 1px;
-                color:var(--success-green);
-                padding: 0 6px 0 0;
-            }
-            &:first-child {
-                margin-top: 0;
-            }
-            strong {
-                font-weight: 500;
-            }
-        }
-    }
+  }
+  .plan_price {
+    font-size: 42px;
+    line-height: 44px;
+    font-weight: 500;
+  }
 
-    .expireWrap {
-        font-size: 14px;
-        line-height: 18px;
-        margin: 5px 0 20px;
-    }
+  .plan_price span {
+    font-size: 24px;
+    line-height: 26px;
+    font-weight: 600;
+  }
 
-    .btn {
-        margin-top: auto;
-        padding: 10px 20px;
-        &.subscribed {
-            color: var(--primary-white);
-            background: var(--success-green);
-        }
+  .featuresBox {
+    margin: 5px 0 10px;
+    padding: 10px 0 0 0;
+    width: 100%;
+    border-top: 1px solid var(--btn-primary-light-bg);
+    p {
+      margin: 10px 0 0 0;
+      position: relative;
+      padding-left: 20px;
+      font-size: 12px;
+      line-height: 18px;
+      text-align: left;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      &:before {
+        content: "\2713";
+        position: absolute;
+        left: 0;
+        top: 1px;
+        color: var(--success-green);
+        padding: 0 6px 0 0;
+      }
+      &:first-child {
+        margin-top: 0;
+      }
+      strong {
+        font-weight: 500;
+      }
     }
+  }
+
+  .expireWrap {
+    font-size: 14px;
+    line-height: 18px;
+    margin: 5px 0 20px;
+  }
+
+  .btn {
+    margin-top: auto;
+    padding: 10px 20px;
+    &.subscribed {
+      color: var(--primary-white);
+      background: var(--success-green);
+    }
+  }
 }
 
 @media screen and (max-width: 1023px) {
-    .subscriptionMainWrap {
-        padding-top: 0;
+  .subscriptionMainWrap {
+    padding-top: 0;
+  }
+  .plan {
+    .featuresBox {
+      p {
+        margin: 5px 0 0 0;
+        font-size: 10px;
+        line-height: 16px;
+      }
     }
-    .plan {
-        .featuresBox {
-            p {
-                margin: 5px 0 0 0;
-                font-size: 10px;
-                line-height: 16px;
-            }
-        }
-        .expireWrap {
-            font-size: 12px;
-            line-height: 16px;
-            margin-bottom: 10px;
-        }
+    .expireWrap {
+      font-size: 12px;
+      line-height: 16px;
+      margin-bottom: 10px;
     }
+  }
 }
 
 @media screen and (max-width: 767px) {
-    .subscription-wrap {
-        padding: 40px 20px 20px;
-        h1 {
-            font-size: 20px;
-            line-height: 24px;
-            margin-bottom: 10px;
-        }
-        .inner-plans-wrap {
-            margin-top: 20px;
-            flex-direction: column;
-            align-items: center;
-            .plan {
-                margin-bottom: 20px;
-                &.premium {
-                    transform: scale(1);
-                    &:hover {
-                        transform: scale(1);
-                    }
-                }
-                &:hover {
-                    transform: scale(1);
-                }
-            }
-        }
+  .subscription-wrap {
+    padding: 40px 20px 20px;
+    h1 {
+      font-size: 20px;
+      line-height: 24px;
+      margin-bottom: 10px;
     }
+    .inner-plans-wrap {
+      margin-top: 20px;
+      flex-direction: column;
+      align-items: center;
+      .plan {
+        margin-bottom: 20px;
+        &.premium {
+          transform: scale(1);
+          &:hover {
+            transform: scale(1);
+          }
+        }
+        &:hover {
+          transform: scale(1);
+        }
+      }
+    }
+  }
 }
