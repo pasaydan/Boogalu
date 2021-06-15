@@ -101,6 +101,7 @@ function Subscriptions(props) {
         if (!isObjectEmpty(loggedInUser)) {
             loggedInUser.subscribed && filterSubacriptionsWRTUser(AvailableSubscriptions);
         } else setAvailableSubscriptions(AvailableSubscriptions)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [state.loggedInUser])
 
     const filterSubacriptionsWRTUser = (subscriptionsList) => {//filter subscriptions with respect to user
@@ -108,31 +109,35 @@ function Subscriptions(props) {
             if (loggedInUser.subscriptions) {
                 let twoDaysAfterCurrentDate = new Date();
                 twoDaysAfterCurrentDate.setDate(new Date().getDate() + 2);
-                subscriptionsList.map((subDetails, index) => {
-                    let isAlreadySub = loggedInUser.subscriptions.filter((data) => data.id == subDetails.key && !data.isExpired);
-                    if (isAlreadySub.length != 0) {
+                subscriptionsList.forEach((subDetails, index) => {
+                    let isAlreadySub = loggedInUser.subscriptions.filter((data) => data.id === subDetails.key && !data.isExpired);
+                    if (isAlreadySub.length !== 0) {
                         let subscriptionDate = new Date(timeStampToNewDate(isAlreadySub[0].subscribedOn));//original subscription date
                         // let subDateAfter1Month = new Date(subscriptionDate.setDate(subscriptionDate.getDate() + 2));//subscription date after 2 days =>> for testing 
                         let subDateAfter1Month = new Date(subscriptionDate.setMonth(subscriptionDate.getMonth() + 1));//subscription date after 1 month 
 
                         if (subDateAfter1Month.getDate() >= new Date().getDate() && //if plan date is grater than today
-                            subDateAfter1Month.getMonth() == twoDaysAfterCurrentDate.getMonth() ?
+                            subDateAfter1Month.getMonth() === twoDaysAfterCurrentDate.getMonth() ?
                             subDateAfter1Month.getDate() <= twoDaysAfterCurrentDate.getDate() : subDateAfter1Month <= twoDaysAfterCurrentDate) {//if same month then check only dayes other wise check full date month (check is runs only in 2 days condition for testing)
                             //it means subscription plan is currently active && subscription ends in two days
                             var daydiff = subDateAfter1Month.getDate() - new Date().getDate();
                             switch (daydiff) {
                                 case 0: subDetails.endsIn2Days = 'End today';
+                                        break;
                                 case 1: subDetails.endsIn2Days = 'End in 1 day';
+                                        break;
                                 case 2: subDetails.endsIn2Days = 'End in 2 days';
+                                        break;
+                                default: break;
                             }
-                            if (state.activeSubscription && subDetails.key == state.activeSubscription.key) {
+                            if (state.activeSubscription && subDetails.key === state.activeSubscription.key) {
                                 const stateSubCopy = { ...subDetails };
                                 dispatch(setActiveSubscription(stateSubCopy));
                             }
                         } else subDetails.endsIn2Days = null;
                     }
                     subDetails.isSubscribed = isValidSubscriptionBox(subDetails);
-                    if (index == subscriptionsList.length - 1) {
+                    if (index === subscriptionsList.length - 1) {
                         setAvailableSubscriptions([...subscriptionsList]);
                     }
                 })
@@ -163,9 +168,9 @@ function Subscriptions(props) {
                     isRenewed: isRenew ? true : false
                 }
                 if ('subscriptions' in userDetails) {
-                    userDetails.subscriptions.map((data, index) => {
+                    userDetails.subscriptions.forEach((data, index) => {
                         data.isExpired = true;//mark expired to all previous subscriptions
-                        if (index == userDetails.subscriptions.length - 1) userDetails.subscriptions.push(userSub);
+                        if (index === userDetails.subscriptions.length - 1) userDetails.subscriptions.push(userSub);
                     });
                 } else userDetails.subscriptions = [userSub];
                 updateUser(userDetails.key, userDetails).subscribe(() => {
@@ -316,7 +321,7 @@ function Subscriptions(props) {
                     </div>
                 </div>
             </div>
-            {showSubscriptionDetails && <BuySubscription
+            {showSubscriptionDetails && loggedInUser.key && <BuySubscription
                 handleClose={() => setShowSubscriptionDetails(false)}
                 activeStep={activeStep}
                 buttonLoadingClass={buttonLoadingClass}

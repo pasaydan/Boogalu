@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { useHistory } from "react-router-dom";
-import { formatDate } from "../../Services/Utils";
 import { disableLoginFlow, enableLoginFlow } from "../../Actions/LoginFlow";
 import { saveCompetition } from "../../Services/EnrollCompetition.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { SUBSCIPTION_PLANS_MAP } from '../../Constants';
 import { FaRupeeSign } from 'react-icons/fa';
-import { setActiveSubscription } from "../../Actions/Subscription";
 
 // modal imports
 import Modal from '@material-ui/core/Modal';

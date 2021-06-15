@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from "../../Providers/StateProvider";
 import { MdFace, MdVideoLibrary } from "react-icons/md";
-import { AiTwotoneTrophy } from "react-icons/ai";
+import { AiTwotoneTrophy, AiOutlineArrowLeft } from "react-icons/ai";
 import PropTypes from "prop-types";
 import { useTheme } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
@@ -31,8 +31,11 @@ import { getUploadedVideosByUser } from "../../Actions/User";
 import VideoPlayer from "../Vedio/Video";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { removeDataRefetchModuleName } from "../../Actions/Utility";
+// eslint-disable-next-line no-unused-vars
 import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
+// eslint-disable-next-line no-unused-vars
 import Favorite from "@material-ui/icons/Favorite";
+// eslint-disable-next-line no-unused-vars
 import CommentOutlined from "@material-ui/icons/CommentOutlined";
 import VideoDetails from "../VideoDetails";
 import {
@@ -115,6 +118,7 @@ function Profile() {
   const [infoModalMessage, setInfoModalMessage] = useState("");
   const [infoModalStatus, setInfoModalStatus] = useState("");
   const [genericInforModalAction, setInfoModalAction] = useState(false);
+  const [isChangeVideoLinkVisible, shouldShowChangeVideoLink] = useState(true);
   const [userDeleteVideoSelection, setUserVideoSelectionForRemove] =
     useState(null);
   const [followStatus, setFollowStatus] = useState("");
@@ -200,7 +204,6 @@ function Profile() {
     if (!loggedInUser || !loggedInUser.email) history.push("/login");
     if (loggedInUser && loggedInUser.email) {
       fetchUserDetailsByEmail(loggedInUser.email);
-
       const loggedInUserName = loggedInUser.email.split("@")[0];
       if (history.location && history.location.pathname) {
         const userNameFromPath =
@@ -218,6 +221,7 @@ function Profile() {
             emailFromPath.length &&
             emailFromPath.includes("@")
           ) {
+            shouldShowChangeVideoLink(false);
             getUserPublicProfile(emailFromPath).subscribe((response) => {
               if (response && response.length > 0) {
                 const tempProfileData = response[0];
@@ -844,6 +848,13 @@ function Profile() {
   return (
     <div className="profile-outer paddingTop90" ref={profileOuterRef}>
       <div className="profile-details-wrap clearfix">
+        {
+          !isChangeVideoLinkVisible ?
+          <label className="goBackLink" title="back to members" onClick={() => history.goBack()}>
+            <span className="icon"><AiOutlineArrowLeft /></span>
+            Back to members
+          </label> : ''
+        }
         <div className="profile-img">
           {userData.profileImage ? (
             <img src={userData.profileImage} alt={userData.name} />
@@ -1005,12 +1016,15 @@ function Profile() {
                               vdo?.compName ?
                               <p className="compLabel">
                                 <span>{vdo?.compName}</span>
-                                <label
-                                  title="Upload another video"
-                                  onClick={(e) =>
-                                    redirectToCompetition(e, vdo)
-                                  }
-                                >Change video</label>
+                                {
+                                  isChangeVideoLinkVisible ?
+                                    <label
+                                      title="Upload another video"
+                                      onClick={(e) =>
+                                        redirectToCompetition(e, vdo)
+                                      }
+                                    >Change video</label> : ''
+                                }
                               </p> : ''
                             }
                             <div className="vdo-card">

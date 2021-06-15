@@ -695,6 +695,11 @@
                 &:hover, &:focus {
                     color: var(--btn-primary-light-bg);
                 }
+                &.resetInput {
+                    &.error {
+                        border: 1px solid var(--error-red-opaque);
+                    }
+                }
             }
             .emailLinkBtn {
                 background: -webkit-linear-gradient(#c063fb, #128ae7);
