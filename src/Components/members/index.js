@@ -152,6 +152,8 @@ function ViewAllMembers() {
     }
   }
 
+  const callbackHandler = () => {};
+
   function handleFollowBtnClick(event, toFollowUser, followByUser) {
     event.preventDefault();
     // eslint-disable-next-line no-unused-vars

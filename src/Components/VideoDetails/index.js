@@ -20,7 +20,7 @@ function Comments({
   handleLikes,
   handleComments,
   loggedInUser,
-  followToggle,
+  callbackHandler,
   BtnText,
   clickedUser,
 }) {
@@ -48,10 +48,10 @@ function Comments({
     }
   };
 
-  const handleFollowBtnClick = (event, toFollow, followBy) => {
-    event.preventDefault();
-    const action = event.currentTarget.dataset.action.toLowerCase();
-    followToggle(toFollow, followBy, action, clickedUser);
+  const handleFollowBtnClick = () => {
+    // event.preventDefault();
+    // const action = event.currentTarget.dataset.action.toLowerCase();
+    callbackHandler(clickedUser);
   };
 
   const redirectToProfile = (path) => {
@@ -98,10 +98,28 @@ function Comments({
   useEffect(() => {
     if (
       clickedUser &&
-      (clickedUser.iRequestedFollow || clickedUser.imFollowing) &&
-      clickedUser.actionBtnText
+      clickedUser.followRequestedBy &&
+      clickedUser.followRequestedBy.length > 0
     ) {
-      setFollowButtonText(clickedUser.actionBtnText);
+      const iRequestedFollow = clickedUser.followRequestedBy.filter(
+        (requestUserId) => requestUserId === loggedInUser.key
+      );
+      if (iRequestedFollow) {
+        setFollowStatus("requested");
+      }
+    } else if (
+      clickedUser &&
+      clickedUser.following &&
+      clickedUser.following.length > 0
+    ) {
+      const iAmFollowing = clickedUser.following.filter(
+        (followUserId) => followUserId === loggedInUser.key
+      );
+      if (iAmFollowing) {
+        setFollowStatus("following");
+      }
+    } else {
+      setFollowStatus("");
     }
   }, [clickedUser]);
 
@@ -154,7 +172,7 @@ function Comments({
                   <FollowButton
                     status={followStatus}
                     onClickHandler={handleFollowBtnClick}
-                    user={videoObj || clickedUser}
+                    user={clickedUser}
                     loggedInUser={loggedInUser}
                   />
                   {/* {loggedInUser &&

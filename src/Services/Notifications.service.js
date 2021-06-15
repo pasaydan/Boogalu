@@ -91,6 +91,17 @@ export const updateNotification = (notificationData) => {
             data.followedBy = tempData;
           }
         }
+        if (action === "cancelled") {
+          if (data && data.followRequestedBy) {
+            let tempData = data.followRequestedBy;
+            tempData.forEach((item, index) => {
+              if (item.userKey === updateData.userKey) {
+                tempData.splice(index);
+              }
+            });
+            data.followRequestedBy = tempData;
+          }
+        }
         notificationsRef
           .doc(notify.key)
           .set(data)

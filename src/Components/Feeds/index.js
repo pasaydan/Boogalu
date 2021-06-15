@@ -4,7 +4,10 @@ import {
   updateVideoLikes,
   updateVideoComments,
 } from "../../Services/UploadedVideo.service";
-import { getLimitedUser } from "../../Services/User.service";
+import {
+  getLimitedUser,
+  getUserPublicProfile,
+} from "../../Services/User.service";
 import { updateFollowUnfollow } from "../../Services/Friendship.service";
 import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
 import Favorite from "@material-ui/icons/Favorite";
@@ -178,7 +181,7 @@ function Feeds() {
                       user = {
                         ...user,
                         iRequestedFollow: true,
-                        actionBtnText: "Requested",
+                        actionBtnText: "requested",
                       };
                     }
                   });
@@ -192,7 +195,7 @@ function Feeds() {
                       user = {
                         ...user,
                         imFollowing: true,
-                        actionBtnText: "Following",
+                        actionBtnText: "following",
                       };
                     }
                   });
@@ -255,7 +258,7 @@ function Feeds() {
             currentuser = {
               ...currentuser,
               iRequestedFollow: true,
-              actionBtnText: "Requested",
+              actionBtnText: "requested",
             };
           }
         });
@@ -266,7 +269,7 @@ function Feeds() {
             currentuser = {
               ...currentuser,
               imFollowing: true,
-              actionBtnText: "Following",
+              actionBtnText: "following",
             };
           }
         });
@@ -281,11 +284,21 @@ function Feeds() {
     setCommentModal(true);
   }
 
-  const handleFollowToggle = (toFollow, followBy, action, user) => {
+  const getUserData = (user) => {
+    getUserPublicProfile(user.email).subscribe((response) => {
+      if (response && response.length > 0) {
+        const tempProfileData = response[0];
+        setClickedUserDetails(tempProfileData);
+        toggleLoading(false);
+      }
+    });
+  };
+
+  const handleFollowToggle = (action, toFollow, followBy, user) => {
     let currentuser = user;
     toggleLoading(true);
     try {
-      updateFollowUnfollow(toFollow, followBy, action).subscribe((response) => {
+      updateFollowUnfollow(action, toFollow, followBy).subscribe((response) => {
         toggleLoading(false);
         if (response) {
           const { name, email } = response;
@@ -295,9 +308,10 @@ function Feeds() {
             currentuser = {
               ...currentuser,
               imFollowing: true,
-              actionBtnText: "Following",
+              actionBtnText: "following",
             };
-            setClickedUserDetails(currentuser);
+            getUserData(currentuser);
+            // setClickedUserDetails(currentuser);
             // const message = `${loggedInUser.name} started following`;
             // const subject = `${loggedInUser.name} started following`;
             // sendFollowNotificationEmail(name, email, subject, message);
@@ -306,16 +320,17 @@ function Feeds() {
             currentuser = {
               ...currentuser,
               iRequestedFollow: true,
-              actionBtnText: "Requested",
+              actionBtnText: "requested",
             };
-            setClickedUserDetails(currentuser);
+            getUserData(currentuser);
+            // setClickedUserDetails(currentuser);
             // const acceptLink = `${REACT_APP_URL}profile?followrequest=accept&requestBy=${encodeURIComponent(loggedInUser.email)}`
             // const declineLink = `${REACT_APP_URL}profile?followrequest=decline&requestBy=${encodeURIComponent(loggedInUser.email)}`
             // const message = `${loggedInUser.name} requested to follow you.<br /><br />You can <a href="${acceptLink}">Accept</a> or <a href="${declineLink}">Decline</a>`;
             // const subject = `${loggedInUser.name} requested to follow you`;
             // sendFollowNotificationEmail(name, email, subject, message);
           }
-          toggleLoading(false);
+          // toggleLoading(false);
         }
       });
     } catch (e) {
@@ -366,7 +381,9 @@ function Feeds() {
       }, 5000);
     }
   };
-
+  useEffect(() => {
+    console.log("clickedUserDetails", clickedUserDetails);
+  }, [clickedUserDetails]);
   return (
     <div className="userDashBoardAfterLogin">
       {isLoaderActive ? <Loader /> : ""}
@@ -463,7 +480,7 @@ function Feeds() {
           handleComments={handleComments}
           videoObj={activeVideoObj}
           loggedInUser={loggedInUser}
-          followToggle={handleFollowToggle}
+          callbackHandler={getUserData}
           BtnText={followButtonText}
           clickedUser={clickedUserDetails}
         />
