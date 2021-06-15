@@ -137,17 +137,17 @@ export default function Homepage() {
                                 if (cardShowcaseRef.current) {
                                     cardShowcaseRef.current.classList.add('show');
                                 }
-                            }, 350);
+                            }, 50);
                             setTimeout(() => {
                                 if (cardCompRef.current) {
                                     cardCompRef.current.classList.add('show');
                                 }
-                            }, 400);
+                            }, 150);
                             setTimeout(() => {
                                 if (cardLessonRef.current) {
                                     cardLessonRef.current.classList.add('show');
                                 }
-                            }, 450);
+                            }, 200);
                         }
                     }
                     if (sectionLessonRef.current) {
