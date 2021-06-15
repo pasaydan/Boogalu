@@ -2,7 +2,7 @@ import React from "react";
 
 export default function AboutUs() {
     return (
-        <div className="about-us-page charcoal-bg">
+        <div className="about-us-page charcoal-bg paddingTop90">
             <div className="container">
                 <h1>About us</h1>
                 <p>

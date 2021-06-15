@@ -25,7 +25,7 @@ import GenericInfoModal from '../genericInfoModal';
 import { displayNotification, removeNotification } from "../../Actions/Notification";
 import { getUploadedVideosByUser } from "../../Actions/User";
 import { NOTIFICATION_ERROR, NOTIFICATION_SUCCCESS, VIDEO_LIMIT_COUNT } from "../../Constants";
-// import { validateEmailId } from '../../helpers';
+import { validateEmailId } from '../../helpers';
 import { useCookies } from "react-cookie";
 import { sendEmail } from "../../Services/Email.service";
 import { EmailTemplate } from "../EmailTemplate/Emailer";
@@ -487,73 +487,78 @@ export default function Login(props) {
         }
     }
 
+    function onResetInputChange(event) {
+        event.stopPropagation();
+        setEmailVerificationMessage('');
+        toggleEmailVerifyClass('');
+        setResetEmail(event.target.value);
+    }
+
     function sendResetEmailLink() {
-        togglePageLoader(true);
-        if (!resetEmail) {
-            togglePageLoader(false);
-            dispatch(displayNotification({
-                msg: "Please enter valid email",
-                type: NOTIFICATION_ERROR,
-                time: 3000
-            }));
-            return;
-        }
-        try {
-            checkForUserEmail(resetEmail).then((isRegisteredUser) => {
-                if (isRegisteredUser && isRegisteredUser.length !== 0) {
-                    const resetLinkCode = Math.random().toString(36).substring(2);//generate dynamic string for link identification
-                    const resetLink = window.location.href + restLinkUrlQuery + resetLinkCode;
-                    try {
-                        sendEmailBeforePasswordChange(isRegisteredUser[0], resetLink).then(() => {
+        if (!validateEmailId(resetEmail)) {
+            setEmailVerificationMessage('Enter valid email id!');
+            toggleEmailVerifyClass('error');
+        } else {
+            setEmailVerificationMessage('');
+            toggleEmailVerifyClass('');
+            try {
+                togglePageLoader(true);
+                checkForUserEmail(resetEmail).then((isRegisteredUser) => {
+                    if (isRegisteredUser && isRegisteredUser.length !== 0) {
+                        const resetLinkCode = Math.random().toString(36).substring(2);//generate dynamic string for link identification
+                        const resetLink = window.location.href + restLinkUrlQuery + resetLinkCode;
+                        try {
+                            sendEmailBeforePasswordChange(isRegisteredUser[0], resetLink).then(() => {
+                                togglePageLoader(false);
+                                // email send successfully now set reset data to cookie
+                                const cookieData = {
+                                    email: resetEmail,
+                                    id: isRegisteredUser[0].key,
+                                    code: resetLinkCode
+                                }
+                                setCookie("_rst_bgl_", cookieData, {
+                                    path: "/",
+                                    expires: new Date(new Date().setMinutes(new Date().getMinutes() + 30)),//remove cookies after 30 min
+                                    sameSite: true,
+                                })
+                                dispatch(displayNotification({
+                                    msg: `Reset link send to ${resetEmail}`,
+                                    type: NOTIFICATION_SUCCCESS,
+                                    time: 3000
+                                }));
+                            }).catch(() => {
+                                //email sending failed so do nothing
+                                togglePageLoader(false);
+                                dispatch(displayNotification({
+                                    msg: "Reset link sending failed",
+                                    type: NOTIFICATION_ERROR,
+                                    time: 3000
+                                }));
+                            });
+                        } catch (e) {
                             togglePageLoader(false);
-                            // email send successfully now set reset data to cookie
-                            const cookieData = {
-                                email: resetEmail,
-                                id: isRegisteredUser[0].key,
-                                code: resetLinkCode
-                            }
-                            setCookie("_rst_bgl_", cookieData, {
-                                path: "/",
-                                expires: new Date(new Date().setMinutes(new Date().getMinutes() + 30)),//remove cookies after 30 min
-                                sameSite: true,
-                            })
                             dispatch(displayNotification({
-                                msg: `Reset link send to ${resetEmail}`,
-                                type: NOTIFICATION_SUCCCESS,
-                                time: 3000
-                            }));
-                        }).catch(() => {
-                            //email sending failed so do nothing
-                            togglePageLoader(false);
-                            dispatch(displayNotification({
-                                msg: "Reset link sending failed",
+                                msg: "Something went wrong with the network, please try in sometime!",
                                 type: NOTIFICATION_ERROR,
-                                time: 3000
+                                time: 5000
                             }));
-                        });
-                    } catch (e) {
+                            console.log('send reset email error: ', e);
+                        }
+                    } else {
+                        //user not registered
                         togglePageLoader(false);
                         dispatch(displayNotification({
-                            msg: "Something went wrong with the network, please try in sometime!",
+                            msg: "Seems like you not registered yet, please register!",
                             type: NOTIFICATION_ERROR,
-                            time: 5000
+                            time: 3000
                         }));
-                        console.log('send reset email error: ', e);
+                        history.push('register');
                     }
-                } else {
-                    //user not registered
-                    togglePageLoader(false);
-                    dispatch(displayNotification({
-                        msg: "Seems like you not registered yet, please register!",
-                        type: NOTIFICATION_ERROR,
-                        time: 3000
-                    }));
-                    history.push('register');
-                }
-            });
-        } catch (e) {
-            togglePageLoader(false);
-            console.log('Error in sending reset link: ', e);
+                });
+            } catch (e) {
+                togglePageLoader(false);
+                console.log('Error in sending reset link: ', e);
+            }
         }
     }
 
@@ -650,9 +655,9 @@ export default function Login(props) {
             <div className={`inner-form-wrap ${componentShowClass}`}>
                 <form className="form-wrap clearfix" onSubmit={(e) => signinUser(e, 'cred')}>
                     <div className="heading-outer">
-                        <a href="#previousLink" onClick={(e) => goToPrevious(e)} className="arrow-back-home" title="Back">
+                        <p onClick={(e) => goToPrevious(e)} className="arrow-back-home" title="Back">
                             <ArrowBackIcon />
-                        </a>
+                        </p>
                         <a href="/" className="logo" title="Back to Home">
                             <img src={boogaluLogo} alt="Boogalu" />
                         </a>
@@ -774,10 +779,11 @@ export default function Login(props) {
                             <h2>Enter email for reset link</h2>
                             <div className="inputWrap">
                                 <input
+                                    className={`resetInput ${emailVerifyClass}`}
                                     type="email"
                                     placeholder="Enter valid email id"
                                     value={resetEmail}
-                                    onChange={(e) => setResetEmail(e.target.value)}
+                                    onChange={(e) => onResetInputChange(e)}
                                     title="Email" />
                                 <p className="emailLinkBtn" onClick={() => sendResetEmailLink()} title="send link to email">
                                     <label>

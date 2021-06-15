@@ -6,7 +6,7 @@ nav {
     color: var(--primary-white);
     &.home-nav-style {
         box-shadow: none;
-        background-color: var(--default-dark-blue-bg);
+        background-color: transparent;
         background-image: none;
     }
     transition: all 0.5s ease-in-out;
@@ -246,6 +246,8 @@ nav img {
         width: 100%;
         padding: 20px 0;
         .linkMenu {
+            display: block;
+            text-decoration: none;
             padding: 10px 15px;
             font-size: 16px;
             line-height: 20px;

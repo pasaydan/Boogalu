@@ -149,7 +149,7 @@ export default function EditProfile() {
     }
 
     return (
-        <div className="logout-wrap edit-page-wrap clearfix">
+        <div className="logout-wrap edit-page-wrap paddingTop90 clearfix">
             <form className="form-wrap clearfix" onSubmit={setSignupUserCred}>
                 <div className="heading-outer">
                     <div className="heading1">Update Profile</div>

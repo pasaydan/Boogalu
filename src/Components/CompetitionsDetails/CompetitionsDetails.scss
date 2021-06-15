@@ -141,16 +141,29 @@
                         .vdo-outer {
                             border-radius: 5px;
                             width: calc(100% / 4);
-                            min-height: 150px;
-                            max-height: 152px;
+                            min-height: 180px;
+                            max-height: 180px;
                             box-sizing: border-box;
                             height: auto;
                             cursor: pointer;
                             position: relative;
-                            border: 2px solid var(--footer-list-text-grey);
+                            border: 1px solid var(--footer-list-text-grey);
                             .vdo-wrap {
                                 position: relative;
-                                height: 94px;
+                                height: 130px;
+                                .vdo-outer {
+                                    width: 100%;
+                                    display: block;
+                                    height: 100%;
+                                    border: none;
+                                    border-radius: 5px 5px 0 0;
+                                    video {
+                                        border-radius: 5px 5px 0 0;
+                                        width: 100%;
+                                        height: 100%;
+                                        object-fit: cover;        
+                                    }
+                                }
                             }
                             img {
                                 width: 100%;
@@ -160,8 +173,8 @@
                             .video-title {
                                 color: var(--footer-list-text-grey);
                                 font-size: 12px;
-                                line-height: 16px;
-                                padding: 10px 10px 0;
+                                line-height: 14px;
+                                padding: 4px 10px 0;
                                 min-height: calc(139px - 94px);
                                 display: flex;
                                 align-items: center;

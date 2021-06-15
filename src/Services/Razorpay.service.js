@@ -11,7 +11,7 @@ header.append('Access-Control-Allow-Origin', '*');
 header.append('Content-Type', 'application/json');
 header.append('mode', 'cors');
 
-export function postOrder(data, planType, planDescription, loggedInUser, handlerFn) {
+export function postOrder(data, planType, planDescription, loggedInUser, handlerFn, isRenew) {
     return new Observable((observer) => {
         axios.post(RAZORPAY_ORDERS_API_URL, data)
             .then((response) => {
@@ -32,7 +32,7 @@ export function postOrder(data, planType, planDescription, loggedInUser, handler
                             ...successResponse
                         }
                         responseData[planType] = data;
-                        handlerFn(responseData, planType);
+                        handlerFn(responseData, planType, isRenew);
                     },
                     prefill: {
                         name: loggedInUser.name,

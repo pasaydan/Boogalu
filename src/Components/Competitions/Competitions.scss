@@ -1,6 +1,7 @@
 .competition-wrap {
     color: var(--primary-white);
     min-height: calc(100vh - 80px);
+    padding-top: 73px;
     background-image: linear-gradient(to top, #29323c 0%, #485563 100%);
     position: relative;
     .competition-inner {
@@ -285,6 +286,7 @@
     .competition-wrap {
         background-position: right -39px;
         background-size: 50%;
+        padding-top: 0;
         h1 {
             font-size: 26px;
             line-height: 30px;

@@ -2,7 +2,7 @@ import React from "react";
 
 export default function RefundPolicy() {
     return (
-        <div className="terms-page charcoal-bg">
+        <div className="terms-page charcoal-bg paddingTop90">
             <div className="container">
                 <h1>Cancellation/Refund Policy</h1>
 

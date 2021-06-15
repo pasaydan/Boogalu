@@ -64,7 +64,7 @@ function ContactUs() {
     }
 
     return (
-        !enquirySubmitted ? <div className="contact-us-wrap charcoal-bg" id="contactUsPage">
+        !enquirySubmitted ? <div className="contact-us-wrap charcoal-bg paddingTop90" id="contactUsPage">
             <div className="inner-page">
                 <h1>Reach us with your queries or concerns, &amp; we'll help you with that.</h1>
                 <form className="contact-form" onSubmit={submitForm}>

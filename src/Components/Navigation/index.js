@@ -26,12 +26,15 @@ import {
   getNotifications,
   updateNotification,
 } from "../../Services/Notifications.service";
+import { getUploadedVideosByUserId } from '../../Services/UploadedVideo.service';
+import { getUploadedVideosByUser } from "../../Actions/User";
 import {
   acceptFollowRequest,
   rejectFollowRequest,
   blockUser,
   unFollowUser,
 } from "../../Services/Friendship.service";
+import Loader from '../Loader';
 import GenericInfoModal from '../genericInfoModal';
 
 const SCROLL_TOP_LIMIT = 200;
@@ -67,6 +70,7 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
   const { state, dispatch } = useStoreConsumer();
   const loggedInUser = state.loggedInUser;
   const [openVdoUploadModal, setOpenVdoUploadModal] = useState(false);
+  const [isPageLoaderActive, togglePageLoader] = useState(false);
   const [activeRoute, setActiveRoute] = useState("");
   const [isNavHidden, toggleNavHidden] = useState(false);
   const [animateNavClass, toggleNavAnimation] = useState("animate");
@@ -382,21 +386,46 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
     return null;
   }
 
-  const uploadVdo = (e) => {
+  function getUsersVideoList(userKey) {
+    return new Promise ((res, rej) => {
+      if (userKey) {
+        togglePageLoader(true);
+        try {
+          getUploadedVideosByUserId(userKey).subscribe(list => {
+            togglePageLoader(false);
+            res(list);
+            dispatch(getUploadedVideosByUser(list));
+          });
+        } catch (e) {
+          rej(e);
+          togglePageLoader(false);
+          console.log('Video fetch error: ', e);
+        }
+      }
+    });
+  }
+
+  function uploadVdo(e) {
     e.stopPropagation();
     e.preventDefault();
-    if (loggedInUser && loggedInUser.email && loggedInUser.phone) {
-      if (state.userVideosList && state.userVideosList.length < VIDEO_LIMIT_COUNT.monthly) {
-        setOpenVdoUploadModal(true);
-      } else {
-        const pathName = history?.location?.pathname.split('/')[1];
-        if (!pathName.includes('profile')) {
-          setInfoModalNavigateLink('/profile');
+    if (loggedInUser?.key) {
+      /**
+       * NOTE: this function need to call to fetch the users video list,
+       * so that we can put a check of video upload count to user. Currently, limit is 4.
+       */
+      getUsersVideoList(loggedInUser.key).then(res => {
+        if (res && res.length < VIDEO_LIMIT_COUNT.monthly) {
+          setOpenVdoUploadModal(true);
+        } else {
+          const pathName = history?.location?.pathname.split('/')[1];
+          if (!pathName.includes('profile')) {
+            setInfoModalNavigateLink('/profile');
+          }
+          setInfoModalMessage(`You have reached your maximum video upload limit of ${state?.userVideosList?.length || VIDEO_LIMIT_COUNT.monthly}, please delete some videos to upload another one!`);
+          setInfoModalStatus('error');
+          toggleInfoModal(true);
         }
-        setInfoModalMessage(`You have reached your maximum video upload limit of ${state?.userVideosList?.length || VIDEO_LIMIT_COUNT.monthly}, please delete some videos to upload another one!`);
-        setInfoModalStatus('error');
-        toggleInfoModal(true);
-      }
+      });
     } else {
       dispatch(enableLoginFlow({ type: "upload-video" }));
       history.push({
@@ -750,6 +779,10 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
   };
   return (
     <>
+      {
+        isPageLoaderActive ?
+        <Loader /> : ''
+      }
       <nav
         ref={mainNavRef}
         onClick={(e) => navBoxClick(e)}
@@ -950,13 +983,13 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
               onClick={(e) => headerMenusClicked(e)}
             >
               <div className="innerMenuWrap">
-                <div
+                <a
+                  href="/profile"
+                  onClick={(e) => e.stopPropagation()}
                   className="linkMenu profileLink"
-                  data-url="profile"
-                  onClick={(e) => topRightNavigation(e, "profile")}
                 >
                   My account
-                </div>
+                </a>
                 <div
                   className="linkMenu"
                   data-url="profile/edit"

@@ -2,7 +2,7 @@ import React from "react";
 
 export default function TermsConditions() {
     return (
-        <div className="terms-page charcoal-bg">
+        <div className="terms-page charcoal-bg paddingTop90">
             <div className="container">
                 <h1>Terms of Service</h1>
                 OVERVIEW<br/>

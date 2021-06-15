@@ -447,7 +447,7 @@ button:focus {
 
 /* Main app custom style */
 .App {
-  padding-top: 73px;
+  padding-top: 0;
   &.top-padding0,
   &.adminPanel {
     padding-top: 0;
@@ -457,6 +457,10 @@ button:focus {
       display: none;
     }
   }
+}
+
+.paddingTop90 {
+  padding-top: 90px !important;
 }
 
 .main-content-wrapper {
@@ -563,6 +567,9 @@ button:focus {
   .App {
     padding-top: 58px;
   }
+  .paddingTop90 {
+    padding-top: 30px !important;
+  }
   .privacy-policy-page,
   .terms-page {
     padding: 20px 10px !important;
@@ -591,6 +598,13 @@ button:focus {
     }
   }
 }
+// Disabled style for React buttons
+.MuiButton-contained {
+  .Mui-disabled {
+    color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+} 
 
 // Ripple Loading spinner
 .lds-ripple {

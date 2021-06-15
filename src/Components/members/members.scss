@@ -55,9 +55,20 @@
             padding: 0;
             .user-list-wrap {
                 .userMemberListing {
-                    padding: 8px 5px;
+                    padding: 8px 0;
                     .profile-image-wrap {
                         margin-right: 10px;
+                        min-width: 50px;
+                        width: 50px;
+                        height: 50px;
+                    }
+                    .input-wrap {
+                        max-width: 105px;
+                        button {
+                            .MuiButton-label {
+                                font-size: 12px;
+                            }
+                        }
                     }
                     .userNameWrap {
                         padding-right: 5px;

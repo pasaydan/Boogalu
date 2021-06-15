@@ -74,11 +74,6 @@ function Competitions() {
         if (state.currentLoginFlow === 'competition') {
             dispatch(disableLoginFlow());
             setIsOpenDetailsModal(true);
-            if (loggedInUser.subscriptions) {
-                let isSubscribed = loggedInUser.subscriptions.filter((data) => data.type === 'competition-enrollment');
-                if (isSubscribed.length) setInitialStep(3);
-                else setInitialStep(1);
-            } else setInitialStep(1);
         } else if (state.currentLoginFlow === 'competition-subscription') {
             // if user come from subscription page
             dispatch(disableLoginFlow());
@@ -257,7 +252,7 @@ function Competitions() {
                                 <span className="otherInfo">
                                     Enrollment open: {competition.startingDate} to {competition.endingDate}<br />
                                 </span>
-                                {competition.isUserEnrolled ? <span className="enrolledMessage">Already Enrolled</span> : ''}
+                                {competition.isUserEnrolled ? <span className="enrolledMessage">Already Enrolled - Choose another video</span> : ''}
                             </h2>
                         </li>
                     })}

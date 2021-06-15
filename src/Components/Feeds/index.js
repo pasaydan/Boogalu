@@ -385,7 +385,7 @@ function Feeds() {
     console.log("clickedUserDetails", clickedUserDetails);
   }, [clickedUserDetails]);
   return (
-    <div className="userDashBoardAfterLogin">
+    <div className="userDashBoardAfterLogin paddingTop90">
       {isLoaderActive ? <Loader /> : ""}
       <div className="user-dashboard-wrap">
         {userList && userList.length ? (
