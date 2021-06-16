@@ -52,8 +52,6 @@ function Comments({
   };
 
   const handleFollowBtnClick = () => {
-    // event.preventDefault();
-    // const action = event.currentTarget.dataset.action.toLowerCase();
     callbackHandler(clickedUser);
   };
 

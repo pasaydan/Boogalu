@@ -37,100 +37,102 @@ export const updateNotification = (notificationData) => {
       .get()
       .then((doc) => {
         let data = doc.data();
-        if (action === "requested") {
-          if (!data || !data.followRequestedBy) {
-            data = { ...data, followRequestedBy: [updateData] };
-          } else {
-            data.followRequestedBy.push(updateData);
+        if (data) {
+          if (action === "requested") {
+            if (!data || !data.followRequestedBy) {
+              data = { ...data, followRequestedBy: [updateData] };
+            } else {
+              data.followRequestedBy.push(updateData);
+            }
           }
-        }
-        if (action === "following") {
-          if (!data || !data.followedBy) {
-            data = { ...data, followedBy: [updateData] };
-          } else {
-            data.followedBy.push(updateData);
+          if (action === "following") {
+            if (!data || !data.followedBy) {
+              data = { ...data, followedBy: [updateData] };
+            } else {
+              data.followedBy.push(updateData);
+            }
           }
-        }
-        if (action === "accepted") {
-          if (!data || !data.accepted) {
-            data = { ...data, accepted: [updateData] };
-          } else {
-            data.accepted.push(updateData);
+          if (action === "accepted") {
+            if (!data || !data.accepted) {
+              data = { ...data, accepted: [updateData] };
+            } else {
+              data.accepted.push(updateData);
+            }
           }
-        }
-        if (action === true) {
-          if (data && data.followRequestedBy) {
-            let tempData = data.followRequestedBy;
-            tempData.forEach((item, index) => {
-              if (item.userKey === updateData.userKey) {
-                tempData.splice(index);
-              }
+          if (action === true) {
+            if (data && data.followRequestedBy) {
+              let tempData = data.followRequestedBy;
+              tempData.forEach((item, index) => {
+                if (item.userKey === updateData.userKey) {
+                  tempData.splice(index);
+                }
+              });
+              data.followRequestedBy = tempData;
+            }
+          }
+          if (action === "rejected") {
+            if (data && data.followRequestedBy) {
+              let tempData = data.followRequestedBy;
+              tempData.forEach((item, index) => {
+                if (item.userKey === updateData.userKey) {
+                  tempData.splice(index);
+                }
+              });
+              data.followRequestedBy = tempData;
+            }
+          }
+          if (action === "blocked") {
+            if (data && data.followedBy) {
+              let tempData = data.followedBy;
+              tempData.forEach((item, index) => {
+                if (item.userKey === updateData.userKey) {
+                  tempData.splice(index);
+                }
+              });
+              data.followedBy = tempData;
+            }
+          }
+          if (action === "unfollowed") {
+            if (data && data.followedBy) {
+              let tempData = data.followedBy;
+              tempData.forEach((item, index) => {
+                if (item.userKey === updateData.userKey) {
+                  tempData.splice(index);
+                }
+              });
+              data.followedBy = tempData;
+            }
+            if (data && data.accepted) {
+              let tempData = data.accepted;
+              tempData.forEach((item, index) => {
+                if (item.userKey === updateData.userKey) {
+                  tempData.splice(index);
+                }
+              });
+              data.accepted = tempData;
+            }
+          }
+          if (action === "cancelled") {
+            if (data && data.followRequestedBy) {
+              let tempData = data.followRequestedBy;
+              tempData.forEach((item, index) => {
+                if (item.userKey === updateData.userKey) {
+                  tempData.splice(index);
+                }
+              });
+              data.followRequestedBy = tempData;
+            }
+          }
+          notificationsRef
+            .doc(notify.key)
+            .set(data)
+            .then(() => {
+              observer.next({
+                name: notify.name,
+                notified: true,
+              });
             });
-            data.followRequestedBy = tempData;
-          }
         }
-        if (action === "rejected") {
-          if (data && data.followRequestedBy) {
-            let tempData = data.followRequestedBy;
-            tempData.forEach((item, index) => {
-              if (item.userKey === updateData.userKey) {
-                tempData.splice(index);
-              }
-            });
-            data.followRequestedBy = tempData;
-          }
-        }
-        if (action === "blocked") {
-          if (data && data.followedBy) {
-            let tempData = data.followedBy;
-            tempData.forEach((item, index) => {
-              if (item.userKey === updateData.userKey) {
-                tempData.splice(index);
-              }
-            });
-            data.followedBy = tempData;
-          }
-        }
-        if (action === "unfollowed") {
-          if (data && data.followedBy) {
-            let tempData = data.followedBy;
-            tempData.forEach((item, index) => {
-              if (item.userKey === updateData.userKey) {
-                tempData.splice(index);
-              }
-            });
-            data.followedBy = tempData;
-          }
-          if (data && data.accepted) {
-            let tempData = data.accepted;
-            tempData.forEach((item, index) => {
-              if (item.userKey === updateData.userKey) {
-                tempData.splice(index);
-              }
-            });
-            data.accepted = tempData;
-          }
-        }
-        if (action === "cancelled") {
-          if (data && data.followRequestedBy) {
-            let tempData = data.followRequestedBy;
-            tempData.forEach((item, index) => {
-              if (item.userKey === updateData.userKey) {
-                tempData.splice(index);
-              }
-            });
-            data.followRequestedBy = tempData;
-          }
-        }
-        notificationsRef
-          .doc(notify.key)
-          .set(data)
-          .then(() => {
-            observer.next({
-              name: notify.name,
-              notified: true,
-            });
-          });
       });
   });
 };

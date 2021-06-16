@@ -25,7 +25,7 @@ import {
   removeNotification,
 } from "../../Actions/Notification";
 import { NOTIFICATION_ERROR } from "../../Constants";
-
+import { disableLoading } from "../../Actions/Loader";
 function Feeds() {
   const history = useHistory();
   // eslint-disable-next-line no-unused-vars
@@ -292,6 +292,7 @@ function Feeds() {
         const tempProfileData = response[0];
         setClickedUserDetails(tempProfileData);
         toggleLoading(false);
+        dispatch(disableLoading());
       }
     });
   };

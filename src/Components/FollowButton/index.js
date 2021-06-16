@@ -171,9 +171,9 @@ const FollowButton = (props) => {
         let notificationData = {};
         if (response && response.cancelled) {
           notificationData = {
-            notify: loggedInUser,
+            notify: user,
             action: response.cancelled ? "cancelled" : null,
-            user: user,
+            user: loggedInUser,
             createdAt: new Date(),
           };
         }
