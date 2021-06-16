@@ -269,9 +269,9 @@ export default function Homepage() {
                             <div className="cardIcon">
                                 <BsAward />
                             </div>
-                            <p className="title">Competition</p>
+                            <p className="title">Events</p>
                             <p className="para">A platform to compete in different dance styles and win exciting prizes under the guidance of international and celebrity judges.</p>
-                            <button title="enroll in competition" onClick={(e) => history.push('/competitions')}>
+                            <button title="enroll in competition" onClick={(e) => history.push('/events')}>
                                 Let's enroll
                                 <i><BsArrowRight /></i>
                             </button>
@@ -330,19 +330,19 @@ export default function Homepage() {
                     </div>
                 </section>
                 <section className="otherSections sectionCompetition" ref={sectionCompetitionRef}>
-                    <h2>Know about competitions</h2>
+                    <h2>Know about events</h2>
                     <div className="othersInnerSection">
                         <div className="childs">
                             <p>
-                                Boogaluu hosts monthly competitions of different dance styles for every age group.
+                                Boogaluu hosts monthly events of different dance styles for every age group.
                             </p>
                             <ul>
                                 <li>You can compete with your peers.</li>
-                                <li>These competitions will be guided by international and celebrity judges.</li>
+                                <li>These events will be guided by international and celebrity judges.</li>
                                 <li>It will allow you to present your talent and enhance your skills</li>
                                 <li>Give you visibility and fame along with the exciting prizes.</li>
                             </ul>
-                            <button className="btn primary-dark" onClick={(e) => history.push('/competitions')}>Participate</button>
+                            <button className="btn primary-dark" onClick={(e) => history.push('/events')}>Participate</button>
                         </div>
                         <div className="childs">
                             <div className="imgWrap">

@@ -4,6 +4,7 @@ import { getActiveCompetitionsList } from "../../Services/Competition.service";
 import { useStoreConsumer } from '../../Providers/StateProvider';
 import { setActiveCompetition } from "../../Actions/Competition";
 import { getCompetitionByUserId } from "../../Services/EnrollCompetition.service";
+import { getActiveSubscriptionsList } from "../../Services/Subscription.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import ImageCarousel from '../ImageCarousel';
 import { truncateLargeText } from '../../helpers';
@@ -17,7 +18,7 @@ import Button from '@material-ui/core/Button';
 import { isObjectEmpty } from '../../helpers';
 import { useHistory } from "react-router-dom";
 import { displayNotification } from "../../Actions/Notification";
-import { NOTIFICATION_SUCCCESS } from "../../Constants";
+import { NOTIFICATION_INFO, NOTIFICATION_SUCCCESS } from "../../Constants";
 import { EmailTemplate } from "../EmailTemplate/Emailer";
 import { sendEmail } from "../../Services/Email.service";
 
@@ -35,6 +36,7 @@ function Competitions() {
     const loggedInUser = state.loggedInUser;
     const [buttonLoadingClass, toggleButtonLoading] = useState('');
     const [openPaymentSuccessModal, setOpenPaymentSuccessModal] = useState(false);
+    const [subscriptionsList, setSubscriptionList] = useState([]);
 
     const prepareUserCompData = (allCompList) => {
         return new Promise((res, rej) => {
@@ -70,6 +72,16 @@ function Competitions() {
                 setCompletitionList(allCompList);
             }
         });
+        try {
+            dispatch(enableLoading());
+            getActiveSubscriptionsList().subscribe( subscriptionsList => {
+                dispatch(disableLoading());
+                setSubscriptionList(subscriptionsList)
+            });
+        } catch (e) {
+            dispatch(disableLoading());
+            console.log('Fetching subscription error: ', e);
+        }
         // if user come from login page
         if (state.currentLoginFlow === 'competition') {
             dispatch(disableLoginFlow());
@@ -111,10 +123,13 @@ function Competitions() {
         setIsOpenDetailsModal(true);
     }
 
-    function eventImageClicked(event) {
+    function eventImageClicked(data, event) {
+        if (event) {
+            event.stopPropagation();
+        }
         // console.log('event data: ', event);
-        if (event?.id) {
-            setEventData(event);
+        if (data?.id) {
+            setEventData(data);
             toggleEventModal(true);
         }
     }
@@ -133,9 +148,14 @@ function Competitions() {
                     heading: `Hi ${loggedInUser.name},`,
                     content: `<div>
                     <p>Thanks for registering for ${clickedEventData.name} You’re all set.</p>
+                    ${
+                        clickedEventData.offers ?
+                        `<p>By registerging you will get ${clickedEventData.offers}.`
+                        : ''
+                    }
                     <p>To know more about event just click the link bellow.</p>
                     <div class="action-btn-wrap">
-                        <a class="action" href=${window.location.href}>Login</a> 
+                        <a class="action" href=${window.location.href}>Events</a> 
                     </div>
                 </div>`,
                     bodyFooterText: `<div>See you soon!</div>`
@@ -168,11 +188,44 @@ function Competitions() {
             fees: clickedEventData.fees,
             paymentDate: new Date()
         }
-        const updatedUserData = { ...loggedInUser };
+        if (clickedEventData.offers) {
+            updatedEvent['offer'] = clickedEventData.offers; 
+        }
+        let offerSub = subscriptionsList.filter(subData => subData.planType === clickedEventData?.subscription || 'startup');
+        const updatedUserData = {
+            ...loggedInUser,
+            subscribed: true,
+            subEndingReminderSend: false,
+            subEndedReminderSend: false,
+            planType: offerSub[0].planType
+        };
         if ('events' in loggedInUser) {
             updatedUserData.events.push(updatedEvent);
         } else {
             updatedUserData.events = [updatedEvent];
+        }
+        if (updatedUserData && updatedUserData?.subscribed && updatedUserData?.planType === offerSub[0].planType) {
+            updatedUserData.subscriptions.forEach( subData => {
+                if (subData.planType === offerSub[0].planType && !subData.isExpired) {
+                    subData.validity += clickedEventData?.offerValidity; 
+                }
+            });
+        } else {
+            let userSub = {
+                id: offerSub[0]?.key,
+                name: offerSub[0]?.name,
+                planType: offerSub[0].planType,
+                validity: clickedEventData?.offerValidity || 1,
+                subscribedOn: new Date(),
+                isExpired: false,
+                isRenewed: false
+            }
+            if ('subscriptions' in updatedUserData) {
+                updatedUserData.subscriptions.forEach((data, index) => {
+                    data.isExpired = true; //mark expired to all previous subscriptions
+                    if (index === updatedUserData.subscriptions.length - 1) updatedUserData.subscriptions.push(userSub);
+                });
+            } else updatedUserData.subscriptions = [userSub];
         }
         try {
             updateUser(updatedUserData.key, updatedUserData).subscribe(() => {
@@ -196,23 +249,31 @@ function Competitions() {
 
     const proceedForPayment = () => {
         if (!isObjectEmpty(loggedInUser)) {
-            toggleButtonLoading('loading');
-            const userData = {
-                "amount": clickedEventData.fees * 100,
-                "currency": "INR",
-                "receipt": loggedInUser.key
-            };
-
-            let orderObj = {};
-            orderObj[clickedEventData?.type] = userData;
-            try {
-                postOrder(orderObj, [clickedEventData?.type], 'Monthly Subscription', loggedInUser, afterPaymentResponse)
-                    .subscribe((response) => {
-                        // console.log('postOrder response >>>>>', response);
-                        toggleButtonLoading('');
-                    });
-            } catch (e) {
-                console.log('Error: ', e);
+            if (clickedEventData && new Date(clickedEventData?.info?.registrationLastDate).toDateString() === new Date().toDateString()) {
+                dispatch(displayNotification({
+                    msg: `${clickedEventData.name} registration has been closed!`,
+                    type: NOTIFICATION_INFO,
+                    time: 6000
+                }));
+            } else {
+                toggleButtonLoading('loading');
+                const userData = {
+                    "amount": clickedEventData.fees * 100,
+                    "currency": "INR",
+                    "receipt": loggedInUser.key
+                };
+    
+                let orderObj = {};
+                orderObj[clickedEventData?.type] = userData;
+                try {
+                    postOrder(orderObj, [clickedEventData?.type], 'Monthly Subscription', loggedInUser, afterPaymentResponse)
+                        .subscribe((response) => {
+                            // console.log('postOrder response >>>>>', response);
+                            toggleButtonLoading('');
+                        });
+                } catch (e) {
+                    console.log('Error: ', e);
+                }
             }
         } else {
             dispatch(enableLoginFlow({ type: 'competition-event', data: clickedEventData }));
@@ -231,10 +292,30 @@ function Competitions() {
             />
             <div className="competition-inner">
                 <div className="title-wrap">
-                    <h1>Our Active Competition</h1>
+                    <h1>Events</h1>
                     <div className="competition-desc">Participate in different competitions &amp; win exciting prizes.</div>
                 </div>
                 <ul className="competition-list" >
+                    {
+                        eventsData && eventsData.length ?
+                        eventsData.map( event => {
+                            return <li key={event.id} onClick={(e) => eventImageClicked(event, e)}>
+                                <img src={event.imgUrlMobile} alt={event.name} />
+                                <h2>
+                                    <span className="title">
+                                        {event.name}
+                                    </span>
+                                    <span className="otherInfo">
+                                        Registration fees: <i>&#8377;</i>{event.fees}/- only<br />
+                                    </span>
+                                    <span className="otherInfo">
+                                        Offer: {event.offers}<br />
+                                    </span>
+                                    {(clickedEventData && (event.id === clickedEventData?.id && clickedEventData?.isRegistered)) ? <span className="enrolledMessage">Already registered</span> : ''}
+                                </h2>
+                            </li>
+                        }) : ''
+                    }
                     {CompletitionList && CompletitionList.map((competition) => {
                         return <li key={competition.name + '-id'} onClick={() => openDetailsModal(competition)}>
                             {
@@ -280,6 +361,14 @@ function Competitions() {
                                     : ''
                             }
                             {
+                                clickedEventData?.offers ?
+                                    <div className="eventDate registrationFees">
+                                        <span>Offer: </span>
+                                        <span className="value">{clickedEventData.offers}</span>
+                                    </div>
+                                    : ''
+                            }
+                            {
                                 clickedEventData?.info?.eventDate ?
                                     <div className="eventDate">
                                         <span>Event date: </span>
@@ -321,6 +410,8 @@ function Competitions() {
                                     </div> : ''
                             }
                             {
+                                new Date(clickedEventData.info.registrationLastDate).toDateString() === new Date().toDateString() ?
+                                <p className="btn primary-light registeredInfoBtn disabled">Registration closed</p> :
                                 clickedEventData.isRegistered ?
                                     <p className="btn primary-light registeredInfoBtn">You have already registered</p>
                                     :

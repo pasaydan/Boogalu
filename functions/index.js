@@ -1,3 +1,5 @@
+/* eslint-disable promise/always-return */
+/* eslint-disable promise/catch-or-return */
 /* eslint-disable handle-callback-err */
 /* eslint-disable prefer-arrow-callback */
 const functions = require("firebase-functions");
@@ -256,16 +258,19 @@ function sendEmailToEndedSubUser(userList) {
       let emailList = userList.map((data) => data.email);
       console.log('Subscription Ended emailList :', emailList);
       //send email to users
-      sendMailToReceiptent(emailList, title, emailBody).then((result) => {
-        userList.map((user, index) => {
+      sendMailToReceiptent(emailList, title, emailBody).then(() => {
+        userList.forEach((user, index) => {
           //update user subEndedReminderSend key in user obj saying that sub end notification email send to user successfully
           //update user subscribed key to false
+          // eslint-disable-next-line promise/always-return
+          // eslint-disable-next-line promise/no-nesting
           userRef.doc(user.id).update({ 'subEndedReminderSend': true, 'subscribed': false }).then(() => {
             console.log('Sub ended email send to: ', user.email);
           }).catch(() => { });
-          if (index == userList.length - 1) res({ result: "Subscription ended notification emails send successfully" });
+          if (index === userList.length - 1) res({ result: "Subscription ended notification emails send successfully" });
         })
       }).catch((err) => {
+        // eslint-disable-next-line prefer-promise-reject-errors
         rej({ result: "Subscription ended notification emails sending failed" })
       })
     } else res({ result: "No user available to send subscription ended notification emails" });
@@ -286,16 +291,16 @@ exports.subEndReminder = functions.https.onRequest((request, response) => {
       twoDaysAfterCurrentDate.setDate(new Date().getDate() + 2);
       let usersWithSubEnding = [];
       let usersWithSubEnded = [];
-      usersList.map((userData) => {
+      usersList.forEach((userData) => {
         //subEndingReminderSend == true means reminder email already send
         if (!userData.subEndingReminderSend) {
-          userData.subscriptions.map((subData) => {
+          userData.subscriptions.forEach((subData) => {
             if (!subData.isExpired && !usersWithSubEnding.includes(userData.email)) {
               //ignore all expired subscriptions
               //check any user whose subscription is in expiring plans list then do not check further plans
               let subscriptionDate = new Date(timeStampToNewDate(subData.subscribedOn));//original subscription date
               // let subDateAfter1Month = new Date(subscriptionDate.setDate(subscriptionDate.getDate() + 2));
-              let subDateAfter1Month = new Date(subscriptionDate.setMonth(subscriptionDate.getMonth() + 1));//subscription date after 1 month 
+              let subDateAfter1Month = new Date(subscriptionDate.setMonth(subscriptionDate.getMonth() + (subData.validity || 1)));//subscription date after 1 month 
               if (subDateAfter1Month > new Date() && subDateAfter1Month <= twoDaysAfterCurrentDate) {
                 //it means subscription plan is currently active && it means subscription ends after two days
                 usersWithSubEnding.push(userData);
@@ -305,13 +310,13 @@ exports.subEndReminder = functions.https.onRequest((request, response) => {
         }
         //subEndedReminderSend == true means sub ended notification email already send
         if (!userData.subEndedReminderSend && userData.subEndingReminderSend) {
-          userData.subscriptions.map((subData) => {
+          userData.subscriptions.forEach((subData) => {
             if (!subData.isExpired && !usersWithSubEnded.includes(userData.email)) {
               //ignore all expired subscriptions
               //check any user whose subscription is in ended plans list then do not check further plans
               let subscriptionDate = new Date(timeStampToNewDate(subData.subscribedOn));//original subscription date
               // let subDateAfter1Month = new Date(subscriptionDate.setDate(subscriptionDate.getDate() + 2));
-              let subDateAfter1Month = new Date(subscriptionDate.setMonth(subscriptionDate.getMonth() + 1));//subscription date after 1 month 
+              let subDateAfter1Month = new Date(subscriptionDate.setMonth(subscriptionDate.getMonth() + (subData.validity || 1)));//subscription date after 1 month 
               if (subDateAfter1Month <= new Date()) {
                 //it means subscription plan ended before current time
                 subData.isExpired = true;
@@ -323,8 +328,10 @@ exports.subEndReminder = functions.https.onRequest((request, response) => {
       })
       console.log('usersWithSubEnding users list: ', usersWithSubEnding, new Date());
       console.log('usersWithSubEnded users list: ', usersWithSubEnded, new Date());
-      if (usersWithSubEnding.length !== 0 || usersWithSubEnded.length != 0) {
+      if (usersWithSubEnding.length !== 0 || usersWithSubEnded.length !== 0) {
+        // eslint-disable-next-line promise/no-nesting
         Promise.all([sendEmailToEndingSubUser(usersWithSubEnding), sendEmailToEndedSubUser(usersWithSubEnded)])
+          // eslint-disable-next-line promise/always-return
           .then((result) => {
             console.log('email sending response result', result)
             response.status(200).send({

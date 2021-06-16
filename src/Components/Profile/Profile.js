@@ -691,8 +691,13 @@ function Profile() {
       } else {
         triggerCompetitionRedirection();
       }
-    } else {
-      triggerCompetitionRedirection();
+    }
+
+    function triggerCompetitionRedirection() {
+      // dispatch(setActiveVideoForCompetition(openUploadCompModalFor));
+      dispatch(enableLoginFlow({ type: "profile-competition" }));
+      history.push("/events");
+      setShowProfileTab(false);
     }
   };
 
