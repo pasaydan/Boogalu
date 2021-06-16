@@ -76,35 +76,33 @@ const FollowButton = (props) => {
     prevOpen.current = open;
   }, [open]);
 
-  const followHandler = (action, toFollowUser, followByUser) => {
+  const followHandler = (action, user, loggedInUser) => {
     dispatch(enableLoading());
-    updateFollowUnfollow(action, toFollowUser, followByUser).subscribe(
-      (response) => {
+    updateFollowUnfollow(action, user, loggedInUser).subscribe((response) => {
+      if (response) {
+        const { name, email } = response;
+        console.log("Name: ", name);
+        console.log("Email: ", email);
         if (response) {
-          const { name, email } = response;
-          console.log("Name: ", name);
-          console.log("Email: ", email);
-          if (response) {
-            let notificationData = {};
-            if (response.followed || response.requested) {
-              notificationData = {
-                notify: toFollowUser,
-                action: response.followed ? "following" : "requested",
-                user: followByUser,
-                createdAt: new Date(),
-              };
-            }
-            if (notificationData && Object.keys(notificationData).length > 0) {
-              updateNotification(notificationData).subscribe((reponse) => {
-                console.log("reponse", reponse);
-                // callback here
-                onClickHandler();
-              });
-            }
+          let notificationData = {};
+          if (response.followed || response.requested) {
+            notificationData = {
+              notify: user,
+              action: response.followed ? "following" : "requested",
+              user: loggedInUser,
+              createdAt: new Date(),
+            };
+          }
+          if (notificationData && Object.keys(notificationData).length > 0) {
+            updateNotification(notificationData).subscribe((reponse) => {
+              console.log("reponse", reponse);
+              // callback here
+              onClickHandler();
+            });
           }
         }
       }
-    );
+    });
   };
 
   const blockUserHandler = (user) => {
@@ -144,9 +142,9 @@ const FollowButton = (props) => {
         let notificationData = {};
         if (response && response.unfollowed) {
           notificationData = {
-            notify: loggedInUser,
+            notify: user,
             action: response.unfollowed ? "unfollowed" : null,
-            user: user,
+            user: loggedInUser,
             createdAt: new Date(),
           };
         }
