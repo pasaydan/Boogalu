@@ -67,6 +67,7 @@
     flex-basis: 90%;
     .username-wrap {
       padding-bottom: 5px;
+      display: flex;
       .username {
         font-size: 30px;
         font-family: "Bold";
@@ -266,7 +267,8 @@
     border-radius: 0 3px 3px 0;
     line-height: 14px;
     max-width: calc(100% - 70px);
-    span, label {
+    span,
+    label {
       font-size: 12px;
       line-height: 14px;
     }

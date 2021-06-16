@@ -414,18 +414,18 @@ function Profile() {
           }
           dispatch(disableLoading());
         }
-        getCompetitionByUserId(profileUser.key).subscribe( resp => {
+        getCompetitionByUserId(profileUser.key).subscribe((resp) => {
           dispatch(disableLoading());
           if (resp.length && list.length) {
-            list.forEach( item => {
-              resp.forEach( item2 => {
+            list.forEach((item) => {
+              resp.forEach((item2) => {
                 if (item2.compId === item?.enrolledCompetition) {
-                  item['compName'] = item2.compName;
+                  item["compName"] = item2.compName;
                 }
               });
             });
             setUserUploadedVideoList(list);
-          }  
+          }
           setUserCompetitionsList(resp);
         });
       });
@@ -455,13 +455,13 @@ function Profile() {
         setUserUploadedVideoList(list);
         dispatch(enableLoading());
         try {
-          getCompetitionByUserId(profileUser.key).subscribe( resp => {
+          getCompetitionByUserId(profileUser.key).subscribe((resp) => {
             dispatch(disableLoading());
             if (resp.length && list.length) {
-              list.forEach( item => {
-                resp.forEach( item2 => {
+              list.forEach((item) => {
+                resp.forEach((item2) => {
                   if (item2.compId === item?.enrolledCompetition) {
-                    item['compName'] = item2.compName;
+                    item["compName"] = item2.compName;
                   }
                 });
               });
@@ -469,9 +469,9 @@ function Profile() {
               dispatch(getUploadedVideosByUser(list));
             }
           });
-        } catch(e) {
+        } catch (e) {
           dispatch(disableLoading());
-          console.log('user competition fetch error: ', e);
+          console.log("user competition fetch error: ", e);
         }
         dispatch(getUploadedVideosByUser(list));
       });
@@ -667,41 +667,41 @@ function Profile() {
 
   const redirectToCompetition = (event, videoObj) => {
     event.stopPropagation();
-    
+
     if (videoObj && videoObj?.enrolledCompetition) {
-      // NOTE: below commented code is for showing Modal message if comp present 
+      // NOTE: below commented code is for showing Modal message if comp present
       // setInfoModalMessage(
       //   "This video you have already submitted for a Competition, please select another video!"
       //   );
       //   setInfoModalStatus("info");
       //   setInfoModalAction(false);
       //   toggleInfoModal(true);
-        if (UserCompetitionsList && UserCompetitionsList.length) {
-          let compData = null;
-          UserCompetitionsList.forEach( comp => {
-            if (videoObj.enrolledCompetition === comp.compId) {
-              compData = comp;
-            }
-          });
-          if (compData) {
-            openCompetitionDetailsModal(compData);
-          } else {
-            triggerCompetitionRedirection();
+      if (UserCompetitionsList && UserCompetitionsList.length) {
+        let compData = null;
+        UserCompetitionsList.forEach((comp) => {
+          if (videoObj.enrolledCompetition === comp.compId) {
+            compData = comp;
           }
+        });
+        if (compData) {
+          openCompetitionDetailsModal(compData);
         } else {
           triggerCompetitionRedirection();
         }
       } else {
         triggerCompetitionRedirection();
       }
-    };
-    
-    function triggerCompetitionRedirection() {
-      // dispatch(setActiveVideoForCompetition(openUploadCompModalFor));
-      dispatch(enableLoginFlow({ type: "profile-competition" }));
-      history.push("/competitions");
-      setShowProfileTab(false);
+    } else {
+      triggerCompetitionRedirection();
     }
+  };
+
+  function triggerCompetitionRedirection() {
+    // dispatch(setActiveVideoForCompetition(openUploadCompModalFor));
+    dispatch(enableLoginFlow({ type: "profile-competition" }));
+    history.push("/competitions");
+    setShowProfileTab(false);
+  }
 
   function deleteSelectedVideo(event, videoToDelete) {
     event.stopPropagation();
@@ -791,6 +791,17 @@ function Profile() {
     }, [ref, handler]);
   }
 
+  const callbackHandler = () => {
+    dispatch(enableLoading());
+    getUserByEmail(userData.email).subscribe((response) => {
+      if (response && response.length > 0) {
+        const userResponse = response[0];
+        setUserData(userResponse);
+      }
+    });
+    dispatch(disableLoading());
+  };
+
   const handleFollowBtnClick = (action, toFollow, followBy) => {
     dispatch(enableLoading());
     updateFollowUnfollow(action, toFollow, followBy).subscribe((response) => {
@@ -848,13 +859,20 @@ function Profile() {
   return (
     <div className="profile-outer paddingTop90" ref={profileOuterRef}>
       <div className="profile-details-wrap clearfix">
-        {
-          !isChangeVideoLinkVisible ?
-          <label className="goBackLink" title="back to members" onClick={() => history.goBack()}>
-            <span className="icon"><AiOutlineArrowLeft /></span>
+        {!isChangeVideoLinkVisible ? (
+          <label
+            className="goBackLink"
+            title="back to members"
+            onClick={() => history.goBack()}
+          >
+            <span className="icon">
+              <AiOutlineArrowLeft />
+            </span>
             Back to members
-          </label> : ''
-        }
+          </label>
+        ) : (
+          ""
+        )}
         <div className="profile-img">
           {userData.profileImage ? (
             <img src={userData.profileImage} alt={userData.name} />
@@ -875,7 +893,7 @@ function Profile() {
             ) : (
               <FollowButton
                 status={followStatus}
-                onClickHandler={handleFollowBtnClick}
+                onClickHandler={callbackHandler}
                 user={userData}
                 loggedInUser={loggedInUser}
               />
@@ -912,212 +930,171 @@ function Profile() {
           </div>
           <div className="bio-wrap">
             <div className="fullname">{userData.name}</div>
-            {userData.bio ? (
-              <div className="bio">{userData.bio}</div>
-            ) : ''}
+            {userData.bio ? <div className="bio">{userData.bio}</div> : ""}
           </div>
         </div>
       </div>
       <div className="profile-content-wrap">
-        <div className="headers-wrap" ref={headerWrapRef}>
-          <div className="user-tabs-wrap" ref={userTabsRef}>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              indicatorColor="primary"
-              textColor="primary"
-              variant="fullWidth"
-              aria-label="full width tabs example"
-            >
-              <Tab
-                label="My posts"
-                icon={<MdVideoLibrary />}
-                {...a11yProps(0)}
-              />
-              <Tab
-                label="My Competitions"
-                icon={<AiTwotoneTrophy />}
-                {...a11yProps(1)}
-              />
-            </Tabs>
-          </div>
-          <div className="profileTabBoxContent">
-            <TabPanel value={value} index={0} dir={theme.direction}>
-              <div className="flex-container">
-                {UserUploadedVideoList.length !== 0 ? (
-                  <div className="feed-wrap">
-                    {UserUploadedVideoList &&
-                      UserUploadedVideoList.map((vdo) => {
-                        return (
-                          <div key={vdo.key} className="profile-vdo-wrap">
-                            {/* TODO: This badges code block will be dynamic once we have
-                                                        winners data and on the basis of their rank the respective 
-                                                        badge will apper on that video
-                                                    */}
-                            {/* {
-                                                        index === 0 ? 
-                                                        <div className="winners-badges">
-                                                            <img src={firstPrizeBadge} alt="first prize" />
-                                                        </div>: ''
-                                                    }
-
-                                                    {
-                                                        index === 2 ?
-                                                        <div className="winners-badges">
-                                                            <img src={secondPrizeBadge} alt="Second prize" />
-                                                        </div>: ''
-                                                    }
-
-    {
-                                                        index === 3 ?
-                                                        <div className="winners-badges">
-                                                            <img src={thirdPrizeBadge} alt="Third prize" />
-                                                        </div>: ''
-                                                    } */}
-                            {userData &&
-                              loggedInUser &&
-                              userData.key === loggedInUser.key && (
-                                <div
-                                  className="menu"
-                                  onClick={() => {
-                                    setOpenUploadCompModalFor(vdo.key);
-                                    setShowProfileTab(true);
-                                  }}
-                                >
-                                  <i>
-                                    <FaBars />
-                                  </i>
-                                </div>
-                              )}
-                            {showProfileTab &&
-                              openUploadCompModalFor === vdo.key && (
-                                <div className="videoUploadToolTip" ref={ref}>
+        {followStatus === "following" ||
+        userData.privacy === "public" ||
+        userData.privacy === "Public" ||
+        (userData && loggedInUser && userData.key === loggedInUser.key) ? (
+          <div className="headers-wrap" ref={headerWrapRef}>
+            <div className="user-tabs-wrap" ref={userTabsRef}>
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                indicatorColor="primary"
+                textColor="primary"
+                variant="fullWidth"
+                aria-label="full width tabs example"
+              >
+                <Tab
+                  label="My posts"
+                  icon={<MdVideoLibrary />}
+                  {...a11yProps(0)}
+                />
+                <Tab
+                  label="My Competitions"
+                  icon={<AiTwotoneTrophy />}
+                  {...a11yProps(1)}
+                />
+              </Tabs>
+            </div>
+            <div className="profileTabBoxContent">
+              <TabPanel value={value} index={0} dir={theme.direction}>
+                <div className="flex-container">
+                  {UserUploadedVideoList.length !== 0 ? (
+                    <div className="feed-wrap">
+                      {UserUploadedVideoList &&
+                        UserUploadedVideoList.map((vdo) => {
+                          return (
+                            <div key={vdo.key} className="profile-vdo-wrap">
+                              {userData &&
+                                loggedInUser &&
+                                userData.key === loggedInUser.key && (
                                   <div
-                                    className="profileItem"
-                                    title="Submit video for competition"
-                                    onClick={(e) =>
-                                      redirectToCompetition(e, vdo)
-                                    }
+                                    className="menu"
+                                    onClick={() => {
+                                      setOpenUploadCompModalFor(vdo.key);
+                                      setShowProfileTab(true);
+                                    }}
                                   >
-                                    {vdo?.enrolledCompetition
-                                      ? "Choose another video"
-                                      : "Upload for competition"}
+                                    <i>
+                                      <FaBars />
+                                    </i>
                                   </div>
-                                  <div
-                                    className="profileItem"
-                                    title="Delete the video"
-                                    onClick={(e) => deleteSelectedVideo(e, vdo)}
-                                  >
-                                    Delete this video
+                                )}
+                              {showProfileTab &&
+                                openUploadCompModalFor === vdo.key && (
+                                  <div className="videoUploadToolTip" ref={ref}>
+                                    <div
+                                      className="profileItem"
+                                      title="Submit video for competition"
+                                      onClick={(e) =>
+                                        redirectToCompetition(e, vdo)
+                                      }
+                                    >
+                                      {vdo?.enrolledCompetition
+                                        ? "Choose another video"
+                                        : "Upload for competition"}
+                                    </div>
+                                    <div
+                                      className="profileItem"
+                                      title="Delete the video"
+                                      onClick={(e) =>
+                                        deleteSelectedVideo(e, vdo)
+                                      }
+                                    >
+                                      Delete this video
+                                    </div>
                                   </div>
-                                </div>
-                              )}
-                            {
-                              vdo?.compName ?
-                              <p className="compLabel">
-                                <span>{vdo?.compName}</span>
-                                {
-                                  isChangeVideoLinkVisible ?
+                                )}
+                              {vdo?.compName ? (
+                                <p className="compLabel">
+                                  <span>{vdo?.compName}</span>
+                                  {isChangeVideoLinkVisible ? (
                                     <label
                                       title="Upload another video"
                                       onClick={(e) =>
                                         redirectToCompetition(e, vdo)
                                       }
-                                    >Change video</label> : ''
-                                }
-                              </p> : ''
-                            }
-                            <div className="vdo-card">
-                              <div className="videoCardInner">
-                                <VideoPlayer vdoObj={vdo} />
-                              </div>
-                              <div className="video-title-like-wrap profile-mode">
-                                <div className="title">{vdo.title}</div>
-                                <div className="like-comment">
-                                  {vdo.likes && vdo.likes.length > 0 && (
-                                    <div className="likes-count">
-                                      {vdo.likes.length}{" "}
-                                      {vdo.likes.length > 1 ? "Likes" : "Like"}
-                                    </div>
+                                    >
+                                      Change video
+                                    </label>
+                                  ) : (
+                                    ""
                                   )}
-                                  {/* {!vdo.isLiked && (
-                                    <FavoriteBorder
-                                      title="Unlike"
-                                      onClick={() => handleLikes(vdo, "liked")}
-                                    />
-                                  )}
-                                  {vdo.isLiked && (
-                                    <Favorite
-                                      title="Like"
-                                      onClick={() =>
-                                        handleLikes(vdo, "unliked")
-                                      }
-                                    />
-                                  )}
-                                  <CommentOutlined
-                                    title="comment"
-                                    onClick={() => handleCommentClick(vdo)}
-                                  /> */}
+                                </p>
+                              ) : (
+                                ""
+                              )}
+                              <div className="vdo-card">
+                                <div className="videoCardInner">
+                                  <VideoPlayer vdoObj={vdo} />
+                                </div>
+                                <div className="video-title-like-wrap profile-mode">
+                                  <div className="title">{vdo.title}</div>
+                                  <div className="like-comment">
+                                    {vdo.likes && vdo.likes.length > 0 && (
+                                      <div className="likes-count">
+                                        {vdo.likes.length}{" "}
+                                        {vdo.likes.length > 1
+                                          ? "Likes"
+                                          : "Like"}
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                             </div>
+                          );
+                        })}
+                    </div>
+                  ) : (
+                    <div>No video posted yet !</div>
+                  )}
+                </div>
+              </TabPanel>
+              <TabPanel value={value} index={1} dir={theme.direction}>
+                <div className="flex-container">
+                  {UserCompetitionsList.length !== 0 ? (
+                    UserCompetitionsList.map((competition) => {
+                      return (
+                        <div
+                          className="competition-tab"
+                          key={competition.key}
+                          onClick={() =>
+                            openCompetitionDetailsModal(competition)
+                          }
+                        >
+                          <div className="compTitle">
+                            {competition.compName}
+                            <span>(Click to change video)</span>
                           </div>
-                        );
-                      })}
-                  </div>
-                ) : (
-                  <div>No video posted yet !</div>
-                )}
-              </div>
-            </TabPanel>
-            {/* <TabPanel value={value} index={1} dir={theme.direction}>
-                                <div className="flex-container" >
-                                    {UserLikedVideoList.length !== 0 ? UserLikedVideoList.map((vdoObj) => {
-                                        return <div className="flex-basis-3 like-tab" key={vdoObj.key}>
-                                            <div>
-                                                <VideoPlayer vdoObj={vdoObj} />
-                                            </div>
-                                            <div className="video-title-like-wrap">
-                                                <div className="title">{vdoObj.title}</div>
-                                                <div className="like-comment">
-                                                    {vdoObj.likes && vdoObj.likes.length > 0 && <div className="likes-count">{vdoObj.likes.length} Likes</div>}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }) :
-                                        <div>No video liked yet !</div>}
-                                </div>
-                            </TabPanel> */}
-            <TabPanel value={value} index={1} dir={theme.direction}>
-              <div className="flex-container">
-                {UserCompetitionsList.length !== 0 ? (
-                  UserCompetitionsList.map((competition) => {
-                    return (
-                      <div
-                        className="competition-tab"
-                        key={competition.key}
-                        onClick={() => openCompetitionDetailsModal(competition)}
-                      >
-                        <div className="compTitle">
-                          {competition.compName}
-                          <span>(Click to change video)</span>
+                          <div className="imgWrap">
+                            <img
+                              src={competition.compImg}
+                              alt={competition.compName}
+                            />
+                          </div>
                         </div>
-                        <div className="imgWrap">
-                          <img
-                            src={competition.compImg}
-                            alt={competition.compName}
-                          />
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div>You haven't enrolled in any competition yet!</div>
-                )}
-              </div>
-            </TabPanel>
+                      );
+                    })
+                  ) : (
+                    <div>You haven't enrolled in any competition yet!</div>
+                  )}
+                </div>
+              </TabPanel>
+            </div>
           </div>
-        </div>
+        ) : followStatus === "requested" ? (
+          `We notified ${userData.name}, let them accept your request`
+        ) : userData.privacy === "private" || userData.privacy === "Private" ? (
+          `Please follow ${userData.name} to see their posts and activities.`
+        ) : (
+          ""
+        )}
       </div>
       {commentModal && (
         <VideoDetails

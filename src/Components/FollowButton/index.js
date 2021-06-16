@@ -43,6 +43,7 @@ const FollowButton = (props) => {
     }
 
     setOpen(false);
+    let value = event.currentTarget.id;
     if (value && value.length) {
       console.log("value", value);
       // followHandler(value, user, loggedInUser);
@@ -106,7 +107,6 @@ const FollowButton = (props) => {
             }
           }
         }
-        dispatch(disableLoading());
       }
     );
   };
@@ -114,6 +114,7 @@ const FollowButton = (props) => {
   const blockUserHandler = (user) => {
     // user.key = user.userKey;
     // user.name = user.username;
+    dispatch(enableLoading());
     blockUser(loggedInUser, user).subscribe((response) => {
       console.log("response", response);
       if (response) {
@@ -140,6 +141,7 @@ const FollowButton = (props) => {
   const unFollowkUserHandler = (user) => {
     // user.key = user.userKey;
     // user.name = user.username;
+    dispatch(enableLoading());
     unFollowUser(loggedInUser, user).subscribe((response) => {
       console.log("response", response);
       if (response) {
@@ -166,6 +168,7 @@ const FollowButton = (props) => {
   const cancelFollowRequestHandler = (user) => {
     // user.key = user.userKey;
     // user.name = user.username;
+    dispatch(enableLoading());
     cancelFollowRequest(loggedInUser, user).subscribe((response) => {
       console.log("response", response);
       if (response) {
@@ -217,6 +220,7 @@ const FollowButton = (props) => {
             role={undefined}
             transition
             disablePortal
+            style={{ zIndex: 15 }}
           >
             {({ TransitionProps, placement }) => (
               <Grow
@@ -255,49 +259,6 @@ const FollowButton = (props) => {
           </Popper>
         </div>
       )}
-      {/* {status === "requested" && (
-        <div className="input-wrap">
-          <Button
-            ref={anchorRef}
-            aria-controls={open ? "menu-list-grow" : undefined}
-            aria-haspopup="true"
-            onClick={handleToggle}
-            className="btn primary-light followBtn"
-          >
-            Requested
-          </Button>
-          <Popper
-            open={open}
-            anchorEl={anchorRef.current}
-            role={undefined}
-            transition
-            disablePortal
-          >
-            {({ TransitionProps, placement }) => (
-              <Grow
-                {...TransitionProps}
-                style={{
-                  transformOrigin:
-                    placement === "bottom" ? "center top" : "center bottom",
-                }}
-              >
-                <Paper>
-                  <ClickAwayListener onClickAway={handleClose}>
-                    <MenuList
-                      autoFocusItem={open}
-                      id="menu-list-grow"
-                      onKeyDown={handleListKeyDown}
-                    >
-                      <MenuItem onClick={handleClose}>Cancel Request</MenuItem>
-                      <MenuItem onClick={handleClose}>Block</MenuItem>
-                    </MenuList>
-                  </ClickAwayListener>
-                </Paper>
-              </Grow>
-            )}
-          </Popper>
-        </div>
-      )} */}
     </>
   );
 };

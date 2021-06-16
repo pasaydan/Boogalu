@@ -146,13 +146,17 @@ function ViewAllMembers() {
           setUserList(updatedUserList);
         }
       });
+      dispatch(disableLoading());
     } catch (e) {
       dispatch(disableLoading());
       console.log("Users fetch error: ", e);
     }
   }
 
-  const callbackHandler = () => {};
+  const callbackHandler = () => {
+    setUserList([]);
+    getAllUserList(loggedInUser.key);
+  };
 
   function handleFollowBtnClick(event, toFollowUser, followByUser) {
     event.preventDefault();
@@ -228,9 +232,9 @@ function ViewAllMembers() {
 
                   <FollowButton
                     status={user.followButtonStatus}
-                    onClickHandler={handleFollowBtnClick}
-                    user
-                    loggedInUser
+                    onClickHandler={callbackHandler}
+                    user={user}
+                    loggedInUser={loggedInUser}
                   />
                   {/* <button
                     onClick={(event) =>

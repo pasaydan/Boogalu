@@ -91,6 +91,26 @@ export const updateNotification = (notificationData) => {
             data.followedBy = tempData;
           }
         }
+        if (action === "unfollowed") {
+          if (data && data.followedBy) {
+            let tempData = data.followedBy;
+            tempData.forEach((item, index) => {
+              if (item.userKey === updateData.userKey) {
+                tempData.splice(index);
+              }
+            });
+            data.followedBy = tempData;
+          }
+          if (data && data.accepted) {
+            let tempData = data.accepted;
+            tempData.forEach((item, index) => {
+              if (item.userKey === updateData.userKey) {
+                tempData.splice(index);
+              }
+            });
+            data.accepted = tempData;
+          }
+        }
         if (action === "cancelled") {
           if (data && data.followRequestedBy) {
             let tempData = data.followRequestedBy;
