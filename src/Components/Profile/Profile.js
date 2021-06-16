@@ -290,6 +290,7 @@ function Profile() {
     // if (selfProfile)
     const profileUser = !selfProfile ? userData : loggedInUser;
     if (profileUser && Object.keys(profileUser).length > 0) {
+      setFollowStatus("");
       getUploadedVideosByUserId(profileUser.key).subscribe((list) => {
         setUserUploadedVideoList(list);
         if (list.length !== 0) {
@@ -368,8 +369,6 @@ function Profile() {
                   vdoObj.requested = false;
                   setFollowStatus("");
                 }
-              } else {
-                setFollowStatus("");
               }
             });
             dispatch(disableLoading());
