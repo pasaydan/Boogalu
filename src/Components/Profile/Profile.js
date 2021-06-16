@@ -345,8 +345,7 @@ function Profile() {
                   vdoObj.following = false;
                   setFollowStatus("");
                 }
-              }
-              if (
+              } else if (
                 user?.followRequestedBy &&
                 user?.followRequestedBy.length > 0
               ) {
@@ -369,6 +368,8 @@ function Profile() {
                   vdoObj.requested = false;
                   setFollowStatus("");
                 }
+              } else {
+                setFollowStatus("");
               }
             });
             dispatch(disableLoading());
