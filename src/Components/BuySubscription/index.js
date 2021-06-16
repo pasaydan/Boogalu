@@ -65,7 +65,7 @@ export default function BuySubsription({
         if (state.currentLoginFlow === 'competition-subscription') {
             submitForCompetition();
         } else {
-            history.push('/competitions');
+            history.push('/events');
         }
     }
 

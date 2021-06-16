@@ -114,7 +114,7 @@ function Subscriptions(props) {
                     if (isAlreadySub.length !== 0) {
                         let subscriptionDate = new Date(timeStampToNewDate(isAlreadySub[0].subscribedOn));//original subscription date
                         // let subDateAfter1Month = new Date(subscriptionDate.setDate(subscriptionDate.getDate() + 2));//subscription date after 2 days =>> for testing 
-                        let subDateAfter1Month = new Date(subscriptionDate.setMonth(subscriptionDate.getMonth() + 1));//subscription date after 1 month 
+                        let subDateAfter1Month = new Date(subscriptionDate.setMonth(subscriptionDate.getMonth() + (isAlreadySub[0].validity || 1)));//subscription date after 1 month 
 
                         if (subDateAfter1Month.getDate() >= new Date().getDate() && //if plan date is grater than today
                             subDateAfter1Month.getMonth() === twoDaysAfterCurrentDate.getMonth() ?

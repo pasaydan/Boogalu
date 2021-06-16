@@ -142,7 +142,7 @@ function App() {
                 <Route exact path="/lessons">
                   <Upcoming />
                 </Route>
-                <Route exact path="/competitions">
+                <Route exact path="/events">
                   <Competitions />
                 </Route>
                 <Route exact path="/subscription">

@@ -256,7 +256,7 @@ export default function Signup(props) {
         time: 3000,
       })
     );
-    if (state.currentLoginFlow === "competition") history.push("/competitions");
+    if (state.currentLoginFlow === "competition") history.push("/events");
     else if (state.currentLoginFlow === "subscription")
       history.push("/subscription");
     if (state.currentLoginFlow === "upload-video")

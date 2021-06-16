@@ -21,8 +21,8 @@
         color: var(--error-red-dark);
     }
     &.NOTIFICATION_INFO {
-        background-color: var(--info-blue-opaque);
-        color: var(--info-blue-dark);
+        background-color: var(--secondary-bg-blue);
+        color: var(--primary-white);
     }
     &.NOTIFICATION_WARNING {
         background-color: var(--warning-yellow-opaque);

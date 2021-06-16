@@ -6,37 +6,14 @@
             "name": "Hip-hop international dance competition",
             "imgUrl": "https://i.imgur.com/7dzYFKS.jpg",
             "imgUrlMobile": "https://i.imgur.com/Mf66SeA.jpeg",
-            "fees": 1280,
+            "fees": 1000,
+            "offers": "Free 2 months Boogaluu startup subscription",
+            "subscription": "startup",
+            "offerValidity": 2, 
             "info": {
                 "eventDate": "9/29/2021",
-                "registrationLastDate": "8/20/2021",
-                "rules": "http://www.hiphopinternational.com/officialrules/",
-                "judges": [
-                    {
-                        "name": "Ian Levia",
-                        "place": "Trinidad & Tobago"
-                    },
-                    {
-                        "name": "Diego Matias Rossi aka Poleo",
-                        "place": "Argentina"
-                    },
-                    {
-                        "name": "Yeika Diaz",
-                        "place": "Argentina"
-                    }
-                ]
-            }
-        },
-        {
-            "id": "ev-1",
-            "type":"event_02",
-            "name": "Find new stars",
-            "imgUrl": "https://i.imgur.com/zOHB88w.jpeg",
-            "imgUrlMobile": "https://i.imgur.com/nFQgzwS.jpeg",
-            "fees": 1000,
-            "info": {
-                "eventDate": "12/14/2021",
-                "registrationLastDate": "11/20/2021",
+                "registrationLastDate": "07/25/2021",
+                "inquiry": "9028922045",
                 "rules": "http://www.hiphopinternational.com/officialrules/",
                 "judges": [
                     {

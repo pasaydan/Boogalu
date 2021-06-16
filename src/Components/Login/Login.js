@@ -304,7 +304,7 @@ export default function Login(props) {
                             time: 3000
                         }));
                         if (state.currentLoginFlow === 'competition' || state.currentLoginFlow === 'competition-event') {//event-competition ==> event click from compitition page
-                            history.push('/competitions');
+                            history.push('/events');
                         } else if (state.currentLoginFlow === 'subscription') {
                             history.push('/subscription');
                         } else if (state.currentLoginFlow === 'lessons') {
@@ -348,7 +348,7 @@ export default function Login(props) {
                             time: 3000
                         }));
                         if (state.currentLoginFlow === 'competition' || state.currentLoginFlow === 'competition-event') {
-                            history.push('/competitions');
+                            history.push('/events');
                         } else if (state.currentLoginFlow === 'subscription') {
                             history.push('/subscription');
                         } else if (state.currentLoginFlow === 'lessons') {

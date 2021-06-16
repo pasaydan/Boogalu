@@ -699,7 +699,7 @@ function Profile() {
     function triggerCompetitionRedirection() {
       // dispatch(setActiveVideoForCompetition(openUploadCompModalFor));
       dispatch(enableLoginFlow({ type: "profile-competition" }));
-      history.push("/competitions");
+      history.push("/events");
       setShowProfileTab(false);
     }
 
@@ -935,7 +935,7 @@ function Profile() {
                 {...a11yProps(0)}
               />
               <Tab
-                label="My Competitions"
+                label="My Events"
                 icon={<AiTwotoneTrophy />}
                 {...a11yProps(1)}
               />

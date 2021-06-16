@@ -168,7 +168,7 @@ export const EmailTemplate = (emailConfig) => {
                         <a href=${window.location.origin + '/lessons'}>LESSONS</a>
                     </div>
                     <div class="link">
-                        <a href=${window.location.origin + '/competitions'}>COMPETITIONS</a>
+                        <a href=${window.location.origin + '/events'}>EVENTS</a>
                     </div>
                     <div class="link">
                         <a href=${window.location.origin + '/subscription'}>SUBSCRIPTIONS</a>

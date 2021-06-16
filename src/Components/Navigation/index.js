@@ -195,7 +195,7 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
       }
       if (
         (state.currentLoginFlow === "upload-video" &&
-          pathName.includes("competitions")) ||
+          pathName.includes("events")) ||
         pathName.includes("lessons")
       )
         dispatch(disableLoginFlow());
@@ -811,11 +811,11 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
               )}
               <li>
                 <a
-                  href="#Competitions"
-                  title="Competitions"
-                  onClick={(e) => onClickNav(e, "competitions")}
+                  href="#Events"
+                  title="Events"
+                  onClick={(e) => onClickNav(e, "events")}
                 >
-                  Competitions
+                  Events
                 </a>
               </li>
               <li>
@@ -1142,8 +1142,8 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
               <li>
                 <a
                   href="#upload"
-                  onClick={(e) => onClickNav(e, "competitions")}
-                  className={activeRoute === "competitions" ? "active" : ""}
+                  onClick={(e) => onClickNav(e, "events")}
+                  className={activeRoute === "events" ? "active" : ""}
                 >
                   <i>
                     <FaTrophy />
