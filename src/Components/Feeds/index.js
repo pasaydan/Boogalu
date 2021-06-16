@@ -13,7 +13,7 @@ import { useStoreConsumer } from "../../Providers/StateProvider";
 import VideoDetails from "../VideoDetails";
 import ProfileImage from "../ProfileImage";
 import VideoPlayer from "../Vedio/Video";
-// import { getUserById, updateUser, updateFollowUnfollow } from "../../Services/User.service";
+import { getUserById } from "../../Services/User.service";
 import { sendEmail } from "../../Services/Email.service";
 import { Link } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
@@ -123,8 +123,11 @@ function Feeds() {
   };
 
   const handleCommentClick = (video) => {
-    setCommentModal(true);
-    setActiveVideoObj(video);
+    getUserById(video.userId).subscribe((userData) => {
+      setClickedUserDetails(userData);
+      setCommentModal(true);
+      setActiveVideoObj(video);
+    })
   };
 
   const addUserDetailsToFeed = (feed, allUser) => {
@@ -413,45 +416,45 @@ function Feeds() {
           <div className="feed-wrap">
             {feedList && feedList.length
               ? feedList.map((feed) => {
-                  return (
-                    <div key={feed.key} className="feed-card">
-                      <div>
-                        <VideoPlayer vdoObj={feed} />
-                      </div>
-                      <div className="username">
-                        <ProfileImage src={feed.profileImage} />
-                        <span className="name">{feed.username}</span>
-                      </div>
-                      <div className="video-title-like-wrap">
-                        <div className="title">{feed.title}</div>
-                        <div className="like-comment">
-                          {feed.likes && feed.likes.length > 0 && (
-                            <div className="likes-count">
-                              {feed.likes.length}{" "}
-                              {feed.likes.length > 1 ? "Likes" : "Like"}
-                            </div>
-                          )}
-                          {!feed.isLiked && (
-                            <FavoriteBorder
-                              title="Unlike"
-                              onClick={() => handleLikes(feed, "liked")}
-                            />
-                          )}
-                          {feed.isLiked && (
-                            <Favorite
-                              title="Like"
-                              onClick={() => handleLikes(feed, "unliked")}
-                            />
-                          )}
-                          <CommentOutlined
-                            title="comment"
-                            onClick={() => handleCommentClick(feed)}
+                return (
+                  <div key={feed.key} className="feed-card">
+                    <div>
+                      <VideoPlayer vdoObj={feed} />
+                    </div>
+                    <div className="username">
+                      <ProfileImage src={feed.profileImage} />
+                      <span className="name">{feed.username}</span>
+                    </div>
+                    <div className="video-title-like-wrap">
+                      <div className="title">{feed.title}</div>
+                      <div className="like-comment">
+                        {feed.likes && feed.likes.length > 0 && (
+                          <div className="likes-count">
+                            {feed.likes.length}{" "}
+                            {feed.likes.length > 1 ? "Likes" : "Like"}
+                          </div>
+                        )}
+                        {!feed.isLiked && (
+                          <FavoriteBorder
+                            title="Unlike"
+                            onClick={() => handleLikes(feed, "liked")}
                           />
-                        </div>
+                        )}
+                        {feed.isLiked && (
+                          <Favorite
+                            title="Like"
+                            onClick={() => handleLikes(feed, "unliked")}
+                          />
+                        )}
+                        <CommentOutlined
+                          title="comment"
+                          onClick={() => handleCommentClick(feed)}
+                        />
                       </div>
                     </div>
-                  );
-                })
+                  </div>
+                );
+              })
               : ""}
           </div>
         </div>
