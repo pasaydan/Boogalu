@@ -8,7 +8,6 @@ import {
   getLimitedUser,
   getUserPublicProfile,
 } from "../../Services/User.service";
-import { updateFollowUnfollow } from "../../Services/Friendship.service";
 import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
 import Favorite from "@material-ui/icons/Favorite";
 import CommentOutlined from "@material-ui/icons/CommentOutlined";
@@ -130,7 +129,7 @@ function Feeds() {
       setClickedUserDetails(userData);
       setCommentModal(true);
       setActiveVideoObj(video);
-    })
+    });
   };
 
   const addUserDetailsToFeed = (feed, allUser) => {
@@ -297,51 +296,6 @@ function Feeds() {
     });
   };
 
-  const handleFollowToggle = (action, toFollow, followBy, user) => {
-    let currentuser = user;
-    toggleLoading(true);
-    try {
-      updateFollowUnfollow(action, toFollow, followBy).subscribe((response) => {
-        toggleLoading(false);
-        if (response) {
-          const { name, email } = response;
-          console.log("Name: ", name);
-          console.log("Email: ", email);
-          if (response.followed) {
-            currentuser = {
-              ...currentuser,
-              imFollowing: true,
-              actionBtnText: "following",
-            };
-            getUserData(currentuser);
-            // setClickedUserDetails(currentuser);
-            // const message = `${loggedInUser.name} started following`;
-            // const subject = `${loggedInUser.name} started following`;
-            // sendFollowNotificationEmail(name, email, subject, message);
-          }
-          if (response.requested) {
-            currentuser = {
-              ...currentuser,
-              iRequestedFollow: true,
-              actionBtnText: "requested",
-            };
-            getUserData(currentuser);
-            // setClickedUserDetails(currentuser);
-            // const acceptLink = `${REACT_APP_URL}profile?followrequest=accept&requestBy=${encodeURIComponent(loggedInUser.email)}`
-            // const declineLink = `${REACT_APP_URL}profile?followrequest=decline&requestBy=${encodeURIComponent(loggedInUser.email)}`
-            // const message = `${loggedInUser.name} requested to follow you.<br /><br />You can <a href="${acceptLink}">Accept</a> or <a href="${declineLink}">Decline</a>`;
-            // const subject = `${loggedInUser.name} requested to follow you`;
-            // sendFollowNotificationEmail(name, email, subject, message);
-          }
-          // toggleLoading(false);
-        }
-      });
-    } catch (e) {
-      console.log("Follow related error: ", e);
-      toggleLoading(false);
-    }
-  };
-
   // eslint-disable-next-line no-unused-vars
   const sendFollowNotificationEmail = (name, email, subject, message) => {
     let emailBody = `<div>
@@ -433,45 +387,45 @@ function Feeds() {
           <div className="feed-wrap">
             {feedList && feedList.length
               ? feedList.map((feed) => {
-                return (
-                  <div key={feed.key} className="feed-card">
-                    <div>
-                      <VideoPlayer vdoObj={feed} />
-                    </div>
-                    <div className="username">
-                      <ProfileImage src={feed.profileImage} />
-                      <span className="name">{feed.username}</span>
-                    </div>
-                    <div className="video-title-like-wrap">
-                      <div className="title">{feed.title}</div>
-                      <div className="like-comment">
-                        {feed.likes && feed.likes.length > 0 && (
-                          <div className="likes-count">
-                            {feed.likes.length}{" "}
-                            {feed.likes.length > 1 ? "Likes" : "Like"}
-                          </div>
-                        )}
-                        {!feed.isLiked && (
-                          <FavoriteBorder
-                            title="Unlike"
-                            onClick={() => handleLikes(feed, "liked")}
+                  return (
+                    <div key={feed.key} className="feed-card">
+                      <div>
+                        <VideoPlayer vdoObj={feed} />
+                      </div>
+                      <div className="username">
+                        <ProfileImage src={feed.profileImage} />
+                        <span className="name">{feed.username}</span>
+                      </div>
+                      <div className="video-title-like-wrap">
+                        <div className="title">{feed.title}</div>
+                        <div className="like-comment">
+                          {feed.likes && feed.likes.length > 0 && (
+                            <div className="likes-count">
+                              {feed.likes.length}{" "}
+                              {feed.likes.length > 1 ? "Likes" : "Like"}
+                            </div>
+                          )}
+                          {!feed.isLiked && (
+                            <FavoriteBorder
+                              title="Unlike"
+                              onClick={() => handleLikes(feed, "liked")}
+                            />
+                          )}
+                          {feed.isLiked && (
+                            <Favorite
+                              title="Like"
+                              onClick={() => handleLikes(feed, "unliked")}
+                            />
+                          )}
+                          <CommentOutlined
+                            title="comment"
+                            onClick={() => handleCommentClick(feed)}
                           />
-                        )}
-                        {feed.isLiked && (
-                          <Favorite
-                            title="Like"
-                            onClick={() => handleLikes(feed, "unliked")}
-                          />
-                        )}
-                        <CommentOutlined
-                          title="comment"
-                          onClick={() => handleCommentClick(feed)}
-                        />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })
+                  );
+                })
               : ""}
           </div>
         </div>

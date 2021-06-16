@@ -16,14 +16,10 @@ import {
 } from "../../Services/Friendship.service";
 import { updateNotification } from "../../Services/Notifications.service";
 import { useStoreConsumer } from "../../Providers/StateProvider";
-import { enableLoading, disableLoading } from "../../Actions/Loader";
+import { enableLoading } from "../../Actions/Loader";
 const FollowButton = (props) => {
   const { status, onClickHandler, user, loggedInUser } = props;
-  const { state, dispatch } = useStoreConsumer();
-  const handleChange = (event) => {
-    let value = event.target.value;
-    console.log("value ", value);
-  };
+  const { dispatch } = useStoreConsumer();
 
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);

@@ -124,7 +124,7 @@ function Comments({
     } else {
       setFollowStatus("");
     }
-  }, [clickedUser]);
+  }, [clickedUser, loggedInUser]);
 
   return (
     <div className="subscription-modal-wrap">

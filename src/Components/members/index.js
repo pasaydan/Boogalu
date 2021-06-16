@@ -3,8 +3,6 @@ import { useStoreConsumer } from "../../Providers/StateProvider";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import ProfileImage from "../ProfileImage";
 import { getAllUser } from "../../Services/User.service";
-import { updateFollowUnfollow } from "../../Services/Friendship.service";
-import { updateNotification } from "../../Services/Notifications.service";
 import { useHistory } from "react-router-dom";
 import FollowButton from "../FollowButton";
 // import { getUserById, updateUser, updateFollowUnfollow } from "../../Services/User.service";
@@ -158,44 +156,6 @@ function ViewAllMembers() {
     getAllUserList(loggedInUser.key);
   };
 
-  function handleFollowBtnClick(event, toFollowUser, followByUser) {
-    event.preventDefault();
-    // eslint-disable-next-line no-unused-vars
-    const action = event?.currentTarget?.dataset?.action?.toLowerCase();
-    console.log("action ", action);
-
-    dispatch(enableLoading());
-    updateFollowUnfollow(toFollowUser, followByUser, action).subscribe(
-      (response) => {
-        if (response) {
-          const { name, email } = response;
-          console.log("Name: ", name);
-          console.log("Email: ", email);
-          if (response) {
-            let notificationData = {};
-            if (response.followed || response.requested) {
-              notificationData = {
-                notify: toFollowUser,
-                action: response.followed ? "following" : "requested",
-                user: followByUser,
-                createdAt: new Date(),
-              };
-            }
-            if (notificationData && Object.keys(notificationData).length > 0) {
-              updateNotification(notificationData).subscribe((reponse) => {
-                console.log("reponse", reponse);
-              });
-            }
-          }
-          //   updateNotification(toFollowUser);
-          setUserList([]);
-          getAllUserList(loggedInUser.key);
-        }
-        dispatch(disableLoading());
-      }
-    );
-  }
-
   const redirectToUserProfile = (event, user) => {
     history.push(`/profile/${window.btoa(user.email)}`);
   };
@@ -236,15 +196,6 @@ function ViewAllMembers() {
                     user={user}
                     loggedInUser={loggedInUser}
                   />
-                  {/* <button
-                    onClick={(event) =>
-                      handleFollowBtnClick(event, user, loggedInUser)
-                    }
-                    className="btn primary-light followBtn"
-                    data-action={user.followButtonStatus}
-                  >
-                    {user.followButtonStatus}
-                  </button> */}
                 </div>
               );
             })}
