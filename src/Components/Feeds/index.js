@@ -4,8 +4,10 @@ import {
   updateVideoLikes,
   updateVideoComments,
 } from "../../Services/UploadedVideo.service";
-import { getLimitedUser } from "../../Services/User.service";
-import { updateFollowUnfollow } from "../../Services/Friendship.service";
+import {
+  getLimitedUser,
+  getUserPublicProfile,
+} from "../../Services/User.service";
 import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
 import Favorite from "@material-ui/icons/Favorite";
 import CommentOutlined from "@material-ui/icons/CommentOutlined";
@@ -23,7 +25,7 @@ import {
   removeNotification,
 } from "../../Actions/Notification";
 import { NOTIFICATION_ERROR } from "../../Constants";
-
+import { disableLoading } from "../../Actions/Loader";
 function Feeds() {
   const history = useHistory();
   // eslint-disable-next-line no-unused-vars
@@ -127,7 +129,7 @@ function Feeds() {
       setClickedUserDetails(userData);
       setCommentModal(true);
       setActiveVideoObj(video);
-    })
+    });
   };
 
   const addUserDetailsToFeed = (feed, allUser) => {
@@ -181,7 +183,7 @@ function Feeds() {
                       user = {
                         ...user,
                         iRequestedFollow: true,
-                        actionBtnText: "Requested",
+                        actionBtnText: "requested",
                       };
                     }
                   });
@@ -195,7 +197,7 @@ function Feeds() {
                       user = {
                         ...user,
                         imFollowing: true,
-                        actionBtnText: "Following",
+                        actionBtnText: "following",
                       };
                     }
                   });
@@ -258,7 +260,7 @@ function Feeds() {
             currentuser = {
               ...currentuser,
               iRequestedFollow: true,
-              actionBtnText: "Requested",
+              actionBtnText: "requested",
             };
           }
         });
@@ -269,7 +271,7 @@ function Feeds() {
             currentuser = {
               ...currentuser,
               imFollowing: true,
-              actionBtnText: "Following",
+              actionBtnText: "following",
             };
           }
         });
@@ -284,47 +286,15 @@ function Feeds() {
     setCommentModal(true);
   }
 
-  const handleFollowToggle = (toFollow, followBy, action, user) => {
-    let currentuser = user;
-    toggleLoading(true);
-    try {
-      updateFollowUnfollow(toFollow, followBy, action).subscribe((response) => {
+  const getUserData = (user) => {
+    getUserPublicProfile(user.email).subscribe((response) => {
+      if (response && response.length > 0) {
+        const tempProfileData = response[0];
+        setClickedUserDetails(tempProfileData);
         toggleLoading(false);
-        if (response) {
-          const { name, email } = response;
-          console.log("Name: ", name);
-          console.log("Email: ", email);
-          if (response.followed) {
-            currentuser = {
-              ...currentuser,
-              imFollowing: true,
-              actionBtnText: "Following",
-            };
-            setClickedUserDetails(currentuser);
-            // const message = `${loggedInUser.name} started following`;
-            // const subject = `${loggedInUser.name} started following`;
-            // sendFollowNotificationEmail(name, email, subject, message);
-          }
-          if (response.requested) {
-            currentuser = {
-              ...currentuser,
-              iRequestedFollow: true,
-              actionBtnText: "Requested",
-            };
-            setClickedUserDetails(currentuser);
-            // const acceptLink = `${REACT_APP_URL}profile?followrequest=accept&requestBy=${encodeURIComponent(loggedInUser.email)}`
-            // const declineLink = `${REACT_APP_URL}profile?followrequest=decline&requestBy=${encodeURIComponent(loggedInUser.email)}`
-            // const message = `${loggedInUser.name} requested to follow you.<br /><br />You can <a href="${acceptLink}">Accept</a> or <a href="${declineLink}">Decline</a>`;
-            // const subject = `${loggedInUser.name} requested to follow you`;
-            // sendFollowNotificationEmail(name, email, subject, message);
-          }
-          toggleLoading(false);
-        }
-      });
-    } catch (e) {
-      console.log("Follow related error: ", e);
-      toggleLoading(false);
-    }
+        dispatch(disableLoading());
+      }
+    });
   };
 
   // eslint-disable-next-line no-unused-vars
@@ -369,7 +339,9 @@ function Feeds() {
       }, 5000);
     }
   };
-
+  useEffect(() => {
+    console.log("clickedUserDetails", clickedUserDetails);
+  }, [clickedUserDetails]);
   return (
     <div className="userDashBoardAfterLogin paddingTop90">
       {isLoaderActive ? <Loader /> : ""}
@@ -416,45 +388,45 @@ function Feeds() {
           <div className="feed-wrap">
             {feedList && feedList.length
               ? feedList.map((feed) => {
-                return (
-                  <div key={feed.key} className="feed-card">
-                    <div>
-                      <VideoPlayer vdoObj={feed} />
-                    </div>
-                    <div className="username">
-                      <ProfileImage src={feed.profileImage} />
-                      <span className="name">{feed.username}</span>
-                    </div>
-                    <div className="video-title-like-wrap">
-                      <div className="title">{feed.title}</div>
-                      <div className="like-comment">
-                        {feed.likes && feed.likes.length > 0 && (
-                          <div className="likes-count">
-                            {feed.likes.length}{" "}
-                            {feed.likes.length > 1 ? "Likes" : "Like"}
-                          </div>
-                        )}
-                        {!feed.isLiked && (
-                          <FavoriteBorder
-                            title="Unlike"
-                            onClick={() => handleLikes(feed, "liked")}
+                  return (
+                    <div key={feed.key} className="feed-card">
+                      <div>
+                        <VideoPlayer vdoObj={feed} />
+                      </div>
+                      <div className="username">
+                        <ProfileImage src={feed.profileImage} />
+                        <span className="name">{feed.username}</span>
+                      </div>
+                      <div className="video-title-like-wrap">
+                        <div className="title">{feed.title}</div>
+                        <div className="like-comment">
+                          {feed.likes && feed.likes.length > 0 && (
+                            <div className="likes-count">
+                              {feed.likes.length}{" "}
+                              {feed.likes.length > 1 ? "Likes" : "Like"}
+                            </div>
+                          )}
+                          {!feed.isLiked && (
+                            <FavoriteBorder
+                              title="Unlike"
+                              onClick={() => handleLikes(feed, "liked")}
+                            />
+                          )}
+                          {feed.isLiked && (
+                            <Favorite
+                              title="Like"
+                              onClick={() => handleLikes(feed, "unliked")}
+                            />
+                          )}
+                          <CommentOutlined
+                            title="comment"
+                            onClick={() => handleCommentClick(feed)}
                           />
-                        )}
-                        {feed.isLiked && (
-                          <Favorite
-                            title="Like"
-                            onClick={() => handleLikes(feed, "unliked")}
-                          />
-                        )}
-                        <CommentOutlined
-                          title="comment"
-                          onClick={() => handleCommentClick(feed)}
-                        />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })
+                  );
+                })
               : ""}
           </div>
         </div>
@@ -466,7 +438,7 @@ function Feeds() {
           handleComments={handleComments}
           videoObj={activeVideoObj}
           loggedInUser={loggedInUser}
-          followToggle={handleFollowToggle}
+          callbackHandler={getUserData}
           BtnText={followButtonText}
           clickedUser={clickedUserDetails}
         />

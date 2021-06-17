@@ -37,10 +37,9 @@ exports.postOrder = functions.https.onRequest((request, response) => {
       key_secret: razorpayconfig.secret,
     });
     var options = request.body;
-    const identifier = Object.keys(options)[0];  //order type -- "startup" Subscription / "premium" Subscription / "event" Competition
-    const data = options[identifier];            //{ "amount": 19900-- order amount, "currency": "INR", "receipt": "EM9ronoBLk2Q70OMk2wg-- user id" }
+    const identifier = Object.keys(options)[0]; //order type -- "startup" Subscription / "premium" Subscription / "event" Competition
+    const data = options[identifier]; //{ "amount": 19900-- order amount, "currency": "INR", "receipt": "EM9ronoBLk2Q70OMk2wg-- user id" }
     let paymentDetails = null;
-
 
     const getPaymentByUserKey = async (options) => {
       const paymentRef = db
@@ -59,14 +58,18 @@ exports.postOrder = functions.https.onRequest((request, response) => {
       .then(() => {
         // console.log("if existing paymentDetails data: ", data);
         if (paymentDetails) {
-          if (paymentDetails[identifier] === identifier && paymentDetails[identifier].id !== paymentDetails[identifier].razorpay_payment_id) {
+          if (
+            paymentDetails[identifier] === identifier &&
+            paymentDetails[identifier].id !==
+              paymentDetails[identifier].razorpay_payment_id
+          ) {
             response.send(paymentDetails);
             return paymentDetails;
           } else {
             instance.orders.create(data, function (err, order) {
               if (err) {
                 response.send(err);
-                console.log('post order to razorpay err: ', err);
+                console.log("post order to razorpay err: ", err);
                 return err;
               } else {
                 const paymentRef = db.collection("payments");
@@ -84,7 +87,7 @@ exports.postOrder = functions.https.onRequest((request, response) => {
           console.log("if existing paymentDetails not available ");
           instance.orders.create(data, function (err, order) {
             if (err) {
-              console.log('post order to razorpay err: ', err);
+              console.log("post order to razorpay err: ", err);
               response.send(err);
               return err;
             } else {
@@ -192,26 +195,40 @@ exports.sendEmail = functions.https.onRequest((request, response) => {
   });
 });
 
-
 async function getActiveSubscriptionUsers() {
   return new Promise((res, rej) => {
-    const userRef = db.collection("users").where('subscribed', '==', true).get();
+    const userRef = db
+      .collection("users")
+      .where("subscribed", "==", true)
+      .get();
     userRef.then((querySnapshot) => {
-      let users = []
+      let users = [];
       querySnapshot.forEach(function (doc) {
         let data = doc.data();
         if (data.subscriptions && data.subscribed) {
           //data.subscriptions means user is subscribed for one or more subscription plan
           //subscribed means user with currently active subscription plan
           data.id = doc.id;
-          const { email, subscriptions, id, subEndingReminderSend, subEndedReminderSend } = data;
-          users.push({ email, subscriptions, id, subEndingReminderSend, subEndedReminderSend });
+          const {
+            email,
+            subscriptions,
+            id,
+            subEndingReminderSend,
+            subEndedReminderSend,
+          } = data;
+          users.push({
+            email,
+            subscriptions,
+            id,
+            subEndingReminderSend,
+            subEndedReminderSend,
+          });
         }
-      })
+      });
       res(users);
       return;
-    })
-  })
+    });
+  });
 }
 
 function sendEmailToEndingSubUser(userList) {
@@ -224,30 +241,37 @@ function sendEmailToEndingSubUser(userList) {
         <a href="https://boogalusite.web.app/subscription">My Subscriptions</a>
         </div>`;
       const title = `2 days left - Boogalu Subscription`;
-      const userRef = db.collection("users")
+      const userRef = db.collection("users");
       let emailList = userList.map((data) => data.email);
-      console.log('Subscription Ending emailList :', emailList);
+      console.log("Subscription Ending emailList :", emailList);
       //send email to users
-      sendMailToReceiptent(emailList, title, emailBody).then((result) => {
-        userList.forEach((user, index) => {
-          //update user subEndingReminderSend key in user obj saying that reminder send to user successfully
-          // eslint-disable-next-line promise/no-nesting
-          userRef.doc(user.id).update({ 'subEndingReminderSend': true }).then(() => {
-            console.log('Reminder send to: ', user.email);
-          }).catch(() => { });
-          if (index === userList.length - 1) res({ result: "Reminder Emails send Successfully" });
+      sendMailToReceiptent(emailList, title, emailBody)
+        .then((result) => {
+          userList.forEach((user, index) => {
+            //update user subEndingReminderSend key in user obj saying that reminder send to user successfully
+            // eslint-disable-next-line promise/no-nesting
+            userRef
+              .doc(user.id)
+              .update({ subEndingReminderSend: true })
+              .then(() => {
+                console.log("Reminder send to: ", user.email);
+              })
+              .catch(() => {});
+            if (index === userList.length - 1)
+              res({ result: "Reminder Emails send Successfully" });
+          });
         })
-      }).catch((err) => {
-        // eslint-disable-next-line prefer-promise-reject-errors
-        rej({ result: "Reminder Emails sending failed" })
-      })
+        .catch((err) => {
+          // rej({ result: "Reminder Emails sending failed" });
+          rej(new Error("Reminder Emails sending failed"));
+        });
     } else res({ result: "No user available to send reminder email" });
-  })
+  });
 }
 
 function sendEmailToEndedSubUser(userList) {
   return new Promise((res, rej) => {
-    res({ "sendEmailToEndedSubUser:": userList })
+    res({ "sendEmailToEndedSubUser:": userList });
     if (userList.length !== 0) {
       let emailBody = `<div>
         <h3>Your subscription ended</h3>
@@ -256,99 +280,155 @@ function sendEmailToEndedSubUser(userList) {
         <a href="https://boogalusite.web.app/subscription">Subscriptions</a>
         </div>`;
       const title = `Boogalu Subscription Ended`;
-      const userRef = db.collection("users")
+      const userRef = db.collection("users");
       let emailList = userList.map((data) => data.email);
-      console.log('Subscription Ended emailList :', emailList);
+      console.log("Subscription Ended emailList :", emailList);
       //send email to users
-      sendMailToReceiptent(emailList, title, emailBody).then(() => {
-        userList.forEach((user, index) => {
-          //update user subEndedReminderSend key in user obj saying that sub end notification email send to user successfully
-          //update user subscribed key to false
-          // eslint-disable-next-line promise/always-return
-          // eslint-disable-next-line promise/no-nesting
-          userRef.doc(user.id).update({ 'subEndedReminderSend': true, 'subscribed': false }).then(() => {
-            console.log('Sub ended email send to: ', user.email);
-          }).catch(() => { });
-          if (index === userList.length - 1) res({ result: "Subscription ended notification emails send successfully" });
+      sendMailToReceiptent(emailList, title, emailBody)
+        .then(() => {
+          userList.forEach((user, index) => {
+            //update user subEndedReminderSend key in user obj saying that sub end notification email send to user successfully
+            //update user subscribed key to false
+            // eslint-disable-next-line promise/always-return
+            // eslint-disable-next-line promise/no-nesting
+            userRef
+              .doc(user.id)
+              .update({ subEndedReminderSend: true, subscribed: false })
+              .then(() => {
+                console.log("Sub ended email send to: ", user.email);
+              })
+              .catch(() => {});
+            if (index === userList.length - 1)
+              res({
+                result:
+                  "Subscription ended notification emails send successfully",
+              });
+          });
         })
-      }).catch((err) => {
-        // eslint-disable-next-line prefer-promise-reject-errors
-        rej({ result: "Subscription ended notification emails sending failed" })
-      })
-    } else res({ result: "No user available to send subscription ended notification emails" });
-  })
+        .catch((err) => {
+          // eslint-disable-next-line prefer-promise-reject-errors
+          rej({
+            result: "Subscription ended notification emails sending failed",
+          });
+        });
+    } else
+      res({
+        result:
+          "No user available to send subscription ended notification emails",
+      });
+  });
 }
 
 //send subscriptions End reminder emails
 exports.subEndReminder = functions.https.onRequest((request, response) => {
   return cors(request, response, () => {
-    console.log('inside subEndReminder')
-    getActiveSubscriptionUsers().then((usersList) => {
-      console.log('active subscriptions users list: ', usersList);
-      const timeStampToNewDate = (timeStamp) => {
-        return new Date(timeStamp.seconds * 1000 + Math.round(timeStamp.nanoseconds / 1000000));
-      }
-      //get users list whose subscription end in 2 days
-      let twoDaysAfterCurrentDate = new Date();
-      twoDaysAfterCurrentDate.setDate(new Date().getDate() + 2);
-      let usersWithSubEnding = [];
-      let usersWithSubEnded = [];
-      usersList.forEach((userData) => {
-        //subEndingReminderSend == true means reminder email already send
-        if (!userData.subEndingReminderSend) {
-          userData.subscriptions.forEach((subData) => {
-            if (!subData.isExpired && !usersWithSubEnding.includes(userData.email)) {
-              //ignore all expired subscriptions
-              //check any user whose subscription is in expiring plans list then do not check further plans
-              let subscriptionDate = new Date(timeStampToNewDate(subData.subscribedOn));//original subscription date
-              // let subDateAfter1Month = new Date(subscriptionDate.setDate(subscriptionDate.getDate() + 2));
-              let subDateAfter1Month = new Date(subscriptionDate.setMonth(subscriptionDate.getMonth() + (subData.validity || 1)));//subscription date after 1 month 
-              if (subDateAfter1Month > new Date() && subDateAfter1Month <= twoDaysAfterCurrentDate) {
-                //it means subscription plan is currently active && it means subscription ends after two days
-                usersWithSubEnding.push(userData);
+    console.log("inside subEndReminder");
+    getActiveSubscriptionUsers()
+      .then((usersList) => {
+        console.log("active subscriptions users list: ", usersList);
+        const timeStampToNewDate = (timeStamp) => {
+          return new Date(
+            timeStamp.seconds * 1000 +
+              Math.round(timeStamp.nanoseconds / 1000000)
+          );
+        };
+        //get users list whose subscription end in 2 days
+        let twoDaysAfterCurrentDate = new Date();
+        twoDaysAfterCurrentDate.setDate(new Date().getDate() + 2);
+        let usersWithSubEnding = [];
+        let usersWithSubEnded = [];
+        usersList.forEach((userData) => {
+          //subEndingReminderSend == true means reminder email already send
+          if (!userData.subEndingReminderSend) {
+            userData.subscriptions.forEach((subData) => {
+              if (
+                !subData.isExpired &&
+                !usersWithSubEnding.includes(userData.email)
+              ) {
+                //ignore all expired subscriptions
+                //check any user whose subscription is in expiring plans list then do not check further plans
+                let subscriptionDate = new Date(
+                  timeStampToNewDate(subData.subscribedOn)
+                ); //original subscription date
+                // let subDateAfter1Month = new Date(subscriptionDate.setDate(subscriptionDate.getDate() + 2));
+                let subDateAfter1Month = new Date(
+                  subscriptionDate.setMonth(
+                    subscriptionDate.getMonth() + (subData.validity || 1)
+                  )
+                ); //subscription date after 1 month
+                if (
+                  subDateAfter1Month > new Date() &&
+                  subDateAfter1Month <= twoDaysAfterCurrentDate
+                ) {
+                  //it means subscription plan is currently active && it means subscription ends after two days
+                  usersWithSubEnding.push(userData);
+                }
               }
-            }
-          })
-        }
-        //subEndedReminderSend == true means sub ended notification email already send
-        if (!userData.subEndedReminderSend && userData.subEndingReminderSend) {
-          userData.subscriptions.forEach((subData) => {
-            if (!subData.isExpired && !usersWithSubEnded.includes(userData.email)) {
-              //ignore all expired subscriptions
-              //check any user whose subscription is in ended plans list then do not check further plans
-              let subscriptionDate = new Date(timeStampToNewDate(subData.subscribedOn));//original subscription date
-              // let subDateAfter1Month = new Date(subscriptionDate.setDate(subscriptionDate.getDate() + 2));
-              let subDateAfter1Month = new Date(subscriptionDate.setMonth(subscriptionDate.getMonth() + (subData.validity || 1)));//subscription date after 1 month 
-              if (subDateAfter1Month <= new Date()) {
-                //it means subscription plan ended before current time
-                subData.isExpired = true;
-                usersWithSubEnded.push(userData);
+            });
+          }
+          //subEndedReminderSend == true means sub ended notification email already send
+          if (
+            !userData.subEndedReminderSend &&
+            userData.subEndingReminderSend
+          ) {
+            userData.subscriptions.forEach((subData) => {
+              if (
+                !subData.isExpired &&
+                !usersWithSubEnded.includes(userData.email)
+              ) {
+                //ignore all expired subscriptions
+                //check any user whose subscription is in ended plans list then do not check further plans
+                let subscriptionDate = new Date(
+                  timeStampToNewDate(subData.subscribedOn)
+                ); //original subscription date
+                // let subDateAfter1Month = new Date(subscriptionDate.setDate(subscriptionDate.getDate() + 2));
+                let subDateAfter1Month = new Date(
+                  subscriptionDate.setMonth(
+                    subscriptionDate.getMonth() + (subData.validity || 1)
+                  )
+                ); //subscription date after 1 month
+                if (subDateAfter1Month <= new Date()) {
+                  //it means subscription plan ended before current time
+                  subData.isExpired = true;
+                  usersWithSubEnded.push(userData);
+                }
               }
-            }
-          })
+            });
+          }
+        });
+        console.log(
+          "usersWithSubEnding users list: ",
+          usersWithSubEnding,
+          new Date()
+        );
+        console.log(
+          "usersWithSubEnded users list: ",
+          usersWithSubEnded,
+          new Date()
+        );
+        if (usersWithSubEnding.length !== 0 || usersWithSubEnded.length !== 0) {
+          // eslint-disable-next-line promise/no-nesting
+          Promise.all([
+            sendEmailToEndingSubUser(usersWithSubEnding),
+            sendEmailToEndedSubUser(usersWithSubEnded),
+          ])
+            // eslint-disable-next-line promise/always-return
+            .then((result) => {
+              console.log("email sending response result", result);
+              response.status(200).send({
+                status: 200,
+                data: result,
+              });
+            });
+        } else {
+          response.status(200).send({
+            status: 200,
+            data: "No expiring/ended subscriptions user for email sending",
+          });
         }
+        return;
       })
-      console.log('usersWithSubEnding users list: ', usersWithSubEnding, new Date());
-      console.log('usersWithSubEnded users list: ', usersWithSubEnded, new Date());
-      if (usersWithSubEnding.length !== 0 || usersWithSubEnded.length !== 0) {
-        // eslint-disable-next-line promise/no-nesting
-        Promise.all([sendEmailToEndingSubUser(usersWithSubEnding), sendEmailToEndedSubUser(usersWithSubEnded)])
-          // eslint-disable-next-line promise/always-return
-          .then((result) => {
-            console.log('email sending response result', result)
-            response.status(200).send({
-              status: 200,
-              data: result,
-            })
-          })
-      } else {
-        response.status(200).send({
-          status: 200,
-          data: 'No expiring/ended subscriptions user for email sending',
-        })
-      }
-      return;
-    }).catch(() => { })
+      .catch(() => {});
     return;
   });
 });

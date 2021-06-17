@@ -195,6 +195,43 @@ export const rejectFollowRequest = (toFollowUser, followByUser) => {
   });
 };
 
+export const cancelFollowRequest = (toFollowUser, followByUser) => {
+  const followByUserKey = toFollowUser.key;
+  const toFollowUserKey = followByUser.key;
+  return new Observable((observer) => {
+    userRef
+      .doc(toFollowUserKey)
+      .get()
+      .then((doc) => {
+        let data = doc.data();
+        if (data) {
+          if (data.followRequestedBy) {
+            data.followRequestedBy.forEach((requestId) => {
+              if (requestId === followByUserKey) {
+                data.followRequestedBy.splice(followByUserKey);
+              }
+            });
+            userRef
+              .doc(toFollowUserKey)
+              .set(data)
+              .then(() => {
+                console.log(
+                  `Follow request to ${toFollowUserKey} cancelled by  ${followByUserKey}`
+                );
+                observer.next({
+                  cancelled: true,
+                  followedUser: toFollowUserKey,
+                  followedBy: followByUserKey,
+                  email: data.email,
+                  name: data.name,
+                });
+              });
+          }
+        }
+      });
+  });
+};
+
 export const blockUser = (toFollowUser, followByUser) => {
   const toFollowUserKey = toFollowUser.key;
   const followByUserKey = followByUser.key;
@@ -241,6 +278,7 @@ export const blockUser = (toFollowUser, followByUser) => {
 export const unFollowUser = (toFollowUser, followByUser) => {
   const toFollowUserKey = toFollowUser.key;
   const followByUserKey = followByUser.key;
+  let followedByUserData = {};
   return new Observable((observer) => {
     userRef
       .doc(toFollowUserKey)
@@ -248,34 +286,57 @@ export const unFollowUser = (toFollowUser, followByUser) => {
       .then((doc) => {
         let data = doc.data();
         if (data) {
-          if (data.following) {
-            data.following.forEach((requestId) => {
-              if (requestId === followByUserKey) {
-                data.following.splice(followByUserKey);
-                if (data.blockList) {
-                  data.blockList.push(followByUserKey);
-                } else {
-                  data = { ...data, blockList: [followByUserKey] };
+          userRef
+            .doc(followByUserKey)
+            .get()
+            .then((doc) => {
+              followedByUserData = doc.data();
+              if (followedByUserData.followedBy) {
+                followedByUserData.followedBy.forEach((requestId) => {
+                  if (requestId === toFollowUserKey) {
+                    followedByUserData.followedBy.splice(toFollowUserKey);
+                  }
+                });
+                if (data.following) {
+                  data.following.forEach((requestId) => {
+                    if (requestId === followByUserKey) {
+                      data.following.splice(followByUserKey);
+                    }
+                  });
+
+                  userRef
+                    .doc(followByUserKey)
+                    .set(followedByUserData)
+                    .then(() => {
+                      console.log(
+                        `${followByUserKey} unfollowed this user : ${toFollowUserKey}`
+                      );
+                      userRef
+                        .doc(toFollowUserKey)
+                        .set(data)
+                        .then(() => {
+                          console.log(
+                            `${toFollowUserKey} unfollowed this user : ${followByUserKey}`
+                          );
+                          observer.next({
+                            unfollowed: true,
+                            followedUser: toFollowUserKey,
+                            followedBy: followByUserKey,
+                            email: data.email,
+                            name: data.name,
+                          });
+                        });
+                      // observer.next({
+                      //   unfollowed: true,
+                      //   followedUser: toFollowUserKey,
+                      //   followedBy: followByUserKey,
+                      //   email: data.email,
+                      //   name: data.name,
+                      // });
+                    });
                 }
               }
             });
-
-            userRef
-              .doc(toFollowUserKey)
-              .set(data)
-              .then(() => {
-                console.log(
-                  `${toFollowUserKey} unfollowed this user : ${followByUserKey}`
-                );
-                observer.next({
-                  unfollowed: true,
-                  followedUser: toFollowUserKey,
-                  followedBy: followByUserKey,
-                  email: data.email,
-                  name: data.name,
-                });
-              });
-          }
         }
       });
   });
