@@ -181,6 +181,7 @@ function Competitions() {
     }
     const afterPaymentResponse = (response) => {
         // console.log("response", response);
+        let updatedUserData = {};
         let updatedEvent = {
             id: clickedEventData.id,
             type: clickedEventData.type,
@@ -188,44 +189,49 @@ function Competitions() {
             fees: clickedEventData.fees,
             paymentDate: new Date()
         }
+        updatedUserData = {
+            ...loggedInUser
+        }
         if (clickedEventData.offers) {
             updatedEvent['offer'] = clickedEventData.offers; 
         }
-        let offerSub = subscriptionsList.filter(subData => subData.planType === clickedEventData?.subscription || 'startup');
-        const updatedUserData = {
-            ...loggedInUser,
-            subscribed: true,
-            subEndingReminderSend: false,
-            subEndedReminderSend: false,
-            planType: offerSub[0].planType
-        };
         if ('events' in loggedInUser) {
             updatedUserData.events.push(updatedEvent);
         } else {
             updatedUserData.events = [updatedEvent];
         }
-        if (updatedUserData && updatedUserData?.subscribed && updatedUserData?.planType === offerSub[0].planType) {
-            updatedUserData.subscriptions.forEach( subData => {
-                if (subData.planType === offerSub[0].planType && !subData.isExpired) {
-                    subData.validity += clickedEventData?.offerValidity; 
-                }
-            });
-        } else {
-            let userSub = {
-                id: offerSub[0]?.key,
-                name: offerSub[0]?.name,
-                planType: offerSub[0].planType,
-                validity: clickedEventData?.offerValidity || 1,
-                subscribedOn: new Date(),
-                isExpired: false,
-                isRenewed: false
-            }
-            if ('subscriptions' in updatedUserData) {
-                updatedUserData.subscriptions.forEach((data, index) => {
-                    data.isExpired = true; //mark expired to all previous subscriptions
-                    if (index === updatedUserData.subscriptions.length - 1) updatedUserData.subscriptions.push(userSub);
+        if (!loggedInUser?.isSubscriptionOffer) {
+            let offerSub = subscriptionsList.filter(subData => subData.planType === clickedEventData?.subscription || 'startup');
+            updatedUserData = {
+                ...loggedInUser,
+                subscribed: true,
+                subEndingReminderSend: false,
+                subEndedReminderSend: false,
+                planType: offerSub[0].planType
+            };
+            if (updatedUserData && updatedUserData?.subscribed && updatedUserData?.planType === offerSub[0].planType) {
+                updatedUserData.subscriptions.forEach( subData => {
+                    if (subData.planType === offerSub[0].planType && !subData.isExpired) {
+                        subData.validity += clickedEventData?.offerValidity; 
+                    }
                 });
-            } else updatedUserData.subscriptions = [userSub];
+            } else {
+                let userSub = {
+                    id: offerSub[0]?.key,
+                    name: offerSub[0]?.name,
+                    planType: offerSub[0].planType,
+                    validity: clickedEventData?.offerValidity || 1,
+                    subscribedOn: new Date(),
+                    isExpired: false,
+                    isRenewed: false
+                }
+                if ('subscriptions' in updatedUserData) {
+                    updatedUserData.subscriptions.forEach((data, index) => {
+                        data.isExpired = true; //mark expired to all previous subscriptions
+                        if (index === updatedUserData.subscriptions.length - 1) updatedUserData.subscriptions.push(userSub);
+                    });
+                } else updatedUserData.subscriptions = [userSub];
+            }
         }
         try {
             updateUser(updatedUserData.key, updatedUserData).subscribe(() => {
@@ -361,7 +367,7 @@ function Competitions() {
                                     : ''
                             }
                             {
-                                clickedEventData?.offers ?
+                                clickedEventData?.offers && !loggedInUser?.isSubscriptionOffer ?
                                     <div className="eventDate registrationFees">
                                         <span>Offer: </span>
                                         <span className="value">{clickedEventData.offers}</span>
