@@ -212,11 +212,11 @@ async function getActiveSubscriptionUsers() {
       return;
     })
   })
-};
+}
 
 function sendEmailToEndingSubUser(userList) {
   return new Promise((res, rej) => {
-    if (userList.length != 0) {
+    if (userList.length !== 0) {
       let emailBody = `<div>
         <h3>Just 2 days left to end your subscription</h3>
         <h6 style="font-size: 17px;margin-bottom: 26px;">Hi dear subscriber,</h6>
@@ -229,14 +229,16 @@ function sendEmailToEndingSubUser(userList) {
       console.log('Subscription Ending emailList :', emailList);
       //send email to users
       sendMailToReceiptent(emailList, title, emailBody).then((result) => {
-        userList.map((user, index) => {
+        userList.forEach((user, index) => {
           //update user subEndingReminderSend key in user obj saying that reminder send to user successfully
+          // eslint-disable-next-line promise/no-nesting
           userRef.doc(user.id).update({ 'subEndingReminderSend': true }).then(() => {
             console.log('Reminder send to: ', user.email);
           }).catch(() => { });
-          if (index == userList.length - 1) res({ result: "Reminder Emails send Successfully" });
+          if (index === userList.length - 1) res({ result: "Reminder Emails send Successfully" });
         })
       }).catch((err) => {
+        // eslint-disable-next-line prefer-promise-reject-errors
         rej({ result: "Reminder Emails sending failed" })
       })
     } else res({ result: "No user available to send reminder email" });
@@ -246,7 +248,7 @@ function sendEmailToEndingSubUser(userList) {
 function sendEmailToEndedSubUser(userList) {
   return new Promise((res, rej) => {
     res({ "sendEmailToEndedSubUser:": userList })
-    if (userList.length != 0) {
+    if (userList.length !== 0) {
       let emailBody = `<div>
         <h3>Your subscription ended</h3>
         <h6 style="font-size: 17px;margin-bottom: 26px;">Hi dear subscriber,</h6>
