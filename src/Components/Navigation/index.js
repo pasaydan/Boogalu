@@ -1148,7 +1148,7 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
                   <i>
                     <FaTrophy />
                   </i>
-                  <span>Competition</span>
+                  <span>Events</span>
                 </a>
               </li>
               {loggedInUser.username && (
