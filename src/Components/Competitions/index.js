@@ -180,16 +180,15 @@ function Competitions() {
     }
     const afterPaymentResponse = (response) => {
         // console.log("response", response);
-        let updatedUserData = {};
+        let updatedUserData = {
+            ...loggedInUser
+        }
         let updatedEvent = {
             id: clickedEventData.id,
             type: clickedEventData.type,
             name: clickedEventData.name,
             fees: clickedEventData.fees,
             paymentDate: new Date()
-        }
-        updatedUserData = {
-            ...loggedInUser
         }
         if (clickedEventData.offers) {
             updatedEvent['offer'] = clickedEventData.offers;
@@ -203,12 +202,13 @@ function Competitions() {
             let offerSub = subscriptionsList.filter(subData => subData.planType === clickedEventData?.subscription || 'startup');
             updatedUserData = {
                 ...loggedInUser,
+                ...updatedUserData,
                 subscribed: true,
                 subEndingReminderSend: false,
                 subEndedReminderSend: false,
                 planType: offerSub[0].planType
             };
-            if (updatedUserData && updatedUserData?.subscribed && updatedUserData?.planType === offerSub[0].planType) {
+            if (loggedInUser && loggedInUser?.subscribed && loggedInUser?.planType === offerSub[0].planType) {
                 updatedUserData.subscriptions.forEach(subData => {
                     if (subData.planType === offerSub[0].planType && !subData.isExpired) {
                         subData.validity += clickedEventData?.offerValidity;
