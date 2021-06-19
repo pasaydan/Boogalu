@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import boogaluLogo from '../../Images/Boogalu-logo.svg';
+import boogaluLogo from '../../Images/Boogaluu-logo.png';
 import { FaFilter, FaPowerOff, FaSearch, FaTimes } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import Radio from '@material-ui/core/Radio';

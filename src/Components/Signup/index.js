@@ -4,7 +4,7 @@ import { useStoreConsumer } from "../../Providers/StateProvider";
 import { signupUser } from "../../Actions/User";
 import bgImg from "../../Images/bg1.svg";
 import Button from "@material-ui/core/Button";
-import boogaluLogo from "../../Images/Boogalu-logo.svg";
+import boogaluLogo from "../../Images/Boogaluu-logo.png";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import IconButton from "@material-ui/core/IconButton";
 import OutlinedInput from "@material-ui/core/OutlinedInput";

@@ -74,7 +74,7 @@ function Competitions() {
         });
         try {
             dispatch(enableLoading());
-            getActiveSubscriptionsList().subscribe( subscriptionsList => {
+            getActiveSubscriptionsList().subscribe(subscriptionsList => {
                 dispatch(disableLoading());
                 setSubscriptionList(subscriptionsList)
             });
@@ -148,11 +148,10 @@ function Competitions() {
                     heading: `Hi ${loggedInUser.name},`,
                     content: `<div>
                     <p>Thanks for registering for ${clickedEventData.name} You’re all set.</p>
-                    ${
-                        clickedEventData.offers ?
-                        `<p>By registerging you will get ${clickedEventData.offers}.`
-                        : ''
-                    }
+                    ${clickedEventData.offers ?
+                            `<p>By registerging you will get ${clickedEventData.offers}.`
+                            : ''
+                        }
                     <p>To know more about event just click the link bellow.</p>
                     <div class="action-btn-wrap">
                         <a class="action" href=${window.location.href}>Events</a> 
@@ -193,7 +192,7 @@ function Competitions() {
             ...loggedInUser
         }
         if (clickedEventData.offers) {
-            updatedEvent['offer'] = clickedEventData.offers; 
+            updatedEvent['offer'] = clickedEventData.offers;
         }
         if ('events' in loggedInUser) {
             updatedUserData.events.push(updatedEvent);
@@ -210,9 +209,9 @@ function Competitions() {
                 planType: offerSub[0].planType
             };
             if (updatedUserData && updatedUserData?.subscribed && updatedUserData?.planType === offerSub[0].planType) {
-                updatedUserData.subscriptions.forEach( subData => {
+                updatedUserData.subscriptions.forEach(subData => {
                     if (subData.planType === offerSub[0].planType && !subData.isExpired) {
-                        subData.validity += clickedEventData?.offerValidity; 
+                        subData.validity += clickedEventData?.offerValidity;
                     }
                 });
             } else {
@@ -268,7 +267,7 @@ function Competitions() {
                     "currency": "INR",
                     "receipt": loggedInUser.key
                 };
-    
+
                 let orderObj = {};
                 orderObj[clickedEventData?.type] = userData;
                 try {
@@ -290,6 +289,14 @@ function Competitions() {
         }
     }
 
+    function returnEventFormatedDate(eventInfo) {
+        return (
+            `
+            ${new Date(eventInfo?.from).toDateString()} to ${new Date(eventInfo?.to).toDateString()}
+            `
+        );
+    }
+
     return (
         <div className="competition-wrap">
             <ImageCarousel
@@ -304,23 +311,23 @@ function Competitions() {
                 <ul className="competition-list" >
                     {
                         eventsData && eventsData.length ?
-                        eventsData.map( event => {
-                            return <li key={event.id} onClick={(e) => eventImageClicked(event, e)}>
-                                <img src={event.imgUrlMobile} alt={event.name} />
-                                <h2>
-                                    <span className="title">
-                                        {event.name}
-                                    </span>
-                                    <span className="otherInfo">
-                                        Registration fees: <i>&#8377;</i>{event.fees}/- only<br />
-                                    </span>
-                                    <span className="otherInfo">
-                                        Offer: {event.offers}<br />
-                                    </span>
-                                    {(clickedEventData && (event.id === clickedEventData?.id && clickedEventData?.isRegistered)) ? <span className="enrolledMessage">Already registered</span> : ''}
-                                </h2>
-                            </li>
-                        }) : ''
+                            eventsData.map(event => {
+                                return <li key={event.id} onClick={(e) => eventImageClicked(event, e)}>
+                                    <img src={event.imgUrlForTiles} alt={event.name} />
+                                    <h2>
+                                        <span className="title">
+                                            {event.name}
+                                        </span>
+                                        <span className="otherInfo">
+                                            Registration fees: <i>&#8377;</i>{event.fees}/- only<br />
+                                        </span>
+                                        <span className="otherInfo">
+                                            Offer: {event.offers}<br />
+                                        </span>
+                                        {(clickedEventData && (event.id === clickedEventData?.id && clickedEventData?.isRegistered)) ? <span className="enrolledMessage">Already registered</span> : ''}
+                                    </h2>
+                                </li>
+                            }) : ''
                     }
                     {CompletitionList && CompletitionList.map((competition) => {
                         return <li key={competition.name + '-id'} onClick={() => openDetailsModal(competition)}>
@@ -352,76 +359,167 @@ function Competitions() {
                         <div className="eventDetailInner">
                             <p className="closeModal" onClick={(e) => closeEventModal(e)} />
                             <h3>{clickedEventData.name}</h3>
-                            {
-                                clickedEventData?.imgUrl ?
-                                    <div className="imgWrap">
-                                        <img src={clickedEventData.imgUrl} alt={`alt-${clickedEventData.id}`} />
-                                    </div> : ''
-                            }
-                            {
-                                clickedEventData?.fees ?
-                                    <div className="eventDate registrationFees">
-                                        <span>Registration fee: </span>
-                                        <span className="value"><i>&#8377;</i> {`${clickedEventData.fees}/-`} only</span>
-                                    </div>
-                                    : ''
-                            }
-                            {
-                                clickedEventData?.offers && !loggedInUser?.isSubscriptionOffer ?
-                                    <div className="eventDate registrationFees">
-                                        <span>Offer: </span>
-                                        <span className="value">{clickedEventData.offers}</span>
-                                    </div>
-                                    : ''
-                            }
-                            {
-                                clickedEventData?.info?.eventDate ?
-                                    <div className="eventDate">
-                                        <span>Event date: </span>
-                                        <span className="value">{new Date(clickedEventData.info.eventDate).toDateString()}</span>
-                                    </div>
-                                    : ''
-                            }
-                            {
-                                clickedEventData?.info?.registrationLastDate ?
-                                    <div className="eventDate">
-                                        <span>Registration till: </span>
-                                        <span className="value">{new Date(clickedEventData.info.registrationLastDate).toDateString()}</span>
-                                    </div>
-                                    : ''
-                            }
-                            {
-                                clickedEventData?.info?.rules ?
-                                    <div className="eventDate">
-                                        <a href={clickedEventData.info.rules} target="_blank" rel="noreferrer" title="Rules and regulations">Terms &amp; rules of event</a>
-                                    </div>
-                                    : ''
-                            }
-                            {
-                                clickedEventData?.info?.judges && clickedEventData?.info?.judges.length ?
-                                    <div className="judgesWrap">
-                                        <h3>Our Judges</h3>
+                            <div className="mainInnerConent">
+                                {
+                                    clickedEventData?.imgUrl ?
+                                        <div className="imgWrap">
+                                            <img src={clickedEventData.imgUrl} alt={`alt-${clickedEventData.id}`} />
+                                        </div> : ''
+                                }
+                                {
+                                    clickedEventData?.fees ?
+                                        <div className="eventDate registrationFees">
+                                            <span>Registration fee: </span>
+                                            <span className="value"><i>&#8377;</i> {`${clickedEventData.fees}/-`} only</span>
+                                        </div>
+                                        : ''
+                                }
+                                {
+                                    clickedEventData?.offers && !loggedInUser?.isSubscriptionOffer ?
+                                        <div className="eventDate registrationFees">
+                                            <span>Offer: </span>
+                                            <span className="value">{clickedEventData.offers}</span>
+                                        </div>
+                                        : ''
+                                }
+                                <div className="modalIfoWrap">
+                                    <h3>More Information</h3>
+                                    <div className="innerInformation">
                                         {
-                                            clickedEventData.info.judges.map((item, index) => {
-                                                return (
-                                                    <div className="judgesItem" key={`judge-id-${index}`}>
-                                                        <p className="name">
-                                                            {item.name},
-                                                    <span>{item.place}</span>
-                                                        </p>
-                                                    </div>
-                                                )
-                                            })
+                                            clickedEventData?.info?.registrationStartDate ?
+                                                <div className="eventDate">
+                                                    <span>Registration start date: </span>
+                                                    <span className="value">{new Date(clickedEventData.info.registrationStartDate).toDateString()}</span>
+                                                </div>
+                                                : ''
                                         }
-                                    </div> : ''
-                            }
+                                        {
+                                            clickedEventData?.info?.registrationLastDate ?
+                                                <div className="eventDate">
+                                                    <span>Registration last date: </span>
+                                                    <span className="value">{new Date(clickedEventData.info.registrationLastDate).toDateString()}</span>
+                                                </div>
+                                                : ''
+                                        }
+                                        {
+                                            clickedEventData?.info?.categories && clickedEventData?.info?.categories.length ?
+                                                <div className="eventInnerSection">
+                                                    <h4>Categories:</h4>
+                                                    {
+                                                        clickedEventData.info.categories.map((item, index) => {
+                                                            return (
+                                                                <p key={`category-item-${index}`}>
+                                                                    <span className="number strong">{index + 1}.&nbsp;</span>
+                                                                    <span className="division strong">{item.div}&nbsp;</span>
+                                                                    <span className="age light">[{item.age}]&nbsp;</span>
+                                                                    <span className="members light">({item.members})</span>
+                                                                </p>
+                                                            )
+                                                        })
+                                                    }
+                                                </div> : ''
+                                        }
+                                        {
+                                            clickedEventData?.info?.preVideoSubmisstionDate ?
+                                                <div className="eventInnerSection">
+                                                    <h4>Preliminary round:</h4>
+                                                    <p>
+                                                        <strong>Submission date:</strong>
+                                                        &nbsp;<span>{returnEventFormatedDate(clickedEventData?.info?.preVideoSubmisstionDate)}</span>
+                                                    </p>
+                                                    <p>
+                                                        <strong>Broadcasting date:</strong>
+                                                        &nbsp;<span>{new Date(clickedEventData?.info?.preVideoSubmisstionDate?.broadCastingDate).toDateString()}</span>
+                                                    </p>
+                                                    <p>
+                                                        <strong>Result date:</strong>
+                                                        &nbsp;<span>{new Date(clickedEventData?.info?.preRoundResultDate).toDateString()}</span>
+                                                    </p>
+                                                    <p>
+                                                        <strong>Late fee:</strong>
+                                                        &nbsp;<span><i>&#8377;</i> {clickedEventData?.info?.preVideoSubmisstionDate?.lateFee} /-</span>
+                                                    </p>
+                                                </div> : ''
+                                        }
+                                        {
+                                            clickedEventData?.info?.grandFinaleVideoSubmissionDate ?
+                                                <div className="eventInnerSection">
+                                                    <h4>Preliminary round:</h4>
+                                                    <p>
+                                                        <strong>Submission date:</strong>
+                                                        &nbsp;<span>{returnEventFormatedDate(clickedEventData?.info?.grandFinaleVideoSubmissionDate)}</span>
+                                                    </p>
+                                                    <p>
+                                                        <strong>Broadcasting date:</strong>
+                                                        &nbsp;<span>{new Date(clickedEventData?.info?.grandFinaleVideoSubmissionDate?.broadCastingDate).toDateString()}</span>
+                                                    </p>
+                                                    <p>
+                                                        <strong>Late fee:</strong>
+                                                        &nbsp;<span><i>&#8377;</i> {clickedEventData?.info?.grandFinaleVideoSubmissionDate?.lateFee} /-</span>
+                                                    </p>
+                                                </div> : ''
+                                        }
+                                        {
+                                            clickedEventData?.info?.followLinks ?
+                                                <div className="eventInnerSection">
+                                                    <h4>Follow us for updates:</h4>
+                                                    <p>
+                                                        <strong>Facebook:</strong>
+                                                        &nbsp;<a href={clickedEventData?.info?.followLinks?.facebook} rel="noreferrer" target="_blank">{clickedEventData?.info?.followLinks?.facebook}</a>
+                                                    </p>
+                                                    <p>
+                                                        <strong>Youtube:</strong>
+                                                        &nbsp;<a href={clickedEventData?.info?.followLinks?.youtube} rel="noreferrer" target="_blank">{clickedEventData?.info?.followLinks?.youtube}</a>
+                                                    </p>
+                                                    <p>
+                                                        <strong>Twitter:</strong>
+                                                        &nbsp;<a href={clickedEventData?.info?.followLinks?.twitter} rel="noreferrer" target="_blank">{clickedEventData?.info?.followLinks?.twitter}</a>
+                                                    </p>
+                                                    <p>
+                                                        <strong>Instagram:</strong>
+                                                        &nbsp;<a href={clickedEventData?.info?.followLinks?.instagram} rel="noreferrer" target="_blank">{clickedEventData?.info?.followLinks?.instagram}</a>
+                                                    </p>
+                                                    <p>
+                                                        <strong>HHI Website:</strong>
+                                                        &nbsp;<a href={clickedEventData?.info?.followLinks?.website} rel="noreferrer" target="_blank">{clickedEventData?.info?.followLinks?.website}</a>
+                                                    </p>
+                                                </div> : ''
+                                        }
+                                    </div>
+                                </div>
+                                {
+                                    clickedEventData?.info?.rules ?
+                                        <div className="eventDate">
+                                            <a href={clickedEventData.info.rules} target="_blank" rel="noreferrer" title="Rules and regulations">Terms &amp; rules of event</a>
+                                        </div>
+                                        : ''
+                                }
+                                {
+                                    clickedEventData?.info?.judges && clickedEventData?.info?.judges.length ?
+                                        <div className="judgesWrap modalIfoWrap">
+                                            <h3>Our Judges</h3>
+                                            {
+                                                clickedEventData.info.judges.map((item, index) => {
+                                                    return (
+                                                        <div className="judgesItem" key={`judge-id-${index}`}>
+                                                            <p className="name">
+                                                                {item.name},
+                                                                <span>{item.place}</span>
+                                                            </p>
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+                                        </div> : ''
+                                }
+                            </div>
                             {
                                 new Date(clickedEventData.info.registrationLastDate).toDateString() === new Date().toDateString() ?
-                                <p className="btn primary-light registeredInfoBtn disabled">Registration closed</p> :
-                                clickedEventData.isRegistered ?
-                                    <p className="btn primary-light registeredInfoBtn">You have already registered</p>
-                                    :
-                                    <button className={buttonLoadingClass ? `${buttonLoadingClass} btn primary-dark` : 'btn primary-dark'} onClick={proceedForPayment}>Register &amp; pay {clickedEventData?.fees}/-</button>
+                                    <p className="btn primary-light registeredInfoBtn disabled">Registration closed</p> :
+                                    clickedEventData.isRegistered ?
+                                        <p className="btn primary-light registeredInfoBtn">You have already registered</p>
+                                        :
+                                        <button className={buttonLoadingClass ? `${buttonLoadingClass} btn primary-dark` : 'btn primary-dark'} onClick={proceedForPayment}>Register &amp; pay {clickedEventData?.fees}/-</button>
                             }
                         </div>
                     </div> : ''
