@@ -412,7 +412,7 @@ function Competitions() {
                                                                     <span className="number strong">{index + 1}.&nbsp;</span>
                                                                     <span className="division strong">{item.div}&nbsp;</span>
                                                                     <span className="age light">[{item.age}]&nbsp;</span>
-                                                                    <span className="members light">({item.members})</span>
+                                                                    <span className="members light">({item.members}) members</span>
                                                                 </p>
                                                             )
                                                         })
@@ -444,7 +444,7 @@ function Competitions() {
                                         {
                                             clickedEventData?.info?.grandFinaleVideoSubmissionDate ?
                                                 <div className="eventInnerSection">
-                                                    <h4>Preliminary round:</h4>
+                                                    <h4>Grand Finale round:</h4>
                                                     <p>
                                                         <strong>Submission date:</strong>
                                                         &nbsp;<span>{returnEventFormatedDate(clickedEventData?.info?.grandFinaleVideoSubmissionDate)}</span>

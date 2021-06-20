@@ -377,6 +377,15 @@
         padding: 40px;
         position: relative;
         min-height: 85vh;
+        width: 100%;
+        box-sizing: border-box;
+        .scrollToNexBtn {
+            position: relative;
+            margin: 40px auto 0;
+            transform: none;
+            bottom: auto;
+            left: auto;
+        }
         h2 {
             font-size: 28px;
             line-height: 28px;
