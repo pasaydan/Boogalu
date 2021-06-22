@@ -7,7 +7,7 @@ import {
   FaUserAlt,
   FaRupeeSign,
 } from "react-icons/fa";
-import boogaluLogo from "../../Images/Boogalu-logo.svg";
+import boogaluLogo from "../../Images/Boogaluu-logo.png";
 import { useHistory } from "react-router-dom";
 import { useStoreConsumer } from "../../Providers/StateProvider";
 import { logoutUser } from "../../Actions/User";
@@ -1148,7 +1148,7 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
                   <i>
                     <FaTrophy />
                   </i>
-                  <span>Competition</span>
+                  <span>Events</span>
                 </a>
               </li>
               {loggedInUser.username && (

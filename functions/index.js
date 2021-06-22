@@ -247,8 +247,9 @@ function sendEmailToEndingSubUser(userList) {
       //send email to users
       sendMailToReceiptent(emailList, title, emailBody)
         .then((result) => {
-          userList.map((user, index) => {
+          userList.forEach((user, index) => {
             //update user subEndingReminderSend key in user obj saying that reminder send to user successfully
+            // eslint-disable-next-line promise/no-nesting
             userRef
               .doc(user.id)
               .update({ subEndingReminderSend: true })

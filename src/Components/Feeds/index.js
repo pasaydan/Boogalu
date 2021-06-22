@@ -351,22 +351,25 @@ function Feeds() {
         ) : (
           ""
         )}
-        <div className="user-list-wrap">
-          {userList &&
-            userList.map((user) => {
-              return (
-                <div
-                  key={user.key}
-                  className="user-icon-wrap"
-                  title={`View ${user.username}`}
-                  onClick={() => openUserStory(user)}
-                >
-                  <ProfileImage src={user.profileImage} size="medium" />
-                  <div className="userName">{user.username}</div>
-                </div>
-              );
-            })}
-        </div>
+        {
+          userList &&
+          userList.length ?
+          <div className="user-list-wrap">
+            {userList.map((user) => {
+                return (
+                  <div
+                    key={user.key}
+                    className="user-icon-wrap"
+                    title={`View ${user.username}`}
+                    onClick={() => openUserStory(user)}
+                  >
+                    <ProfileImage src={user.profileImage} size="medium" />
+                    <div className="userName">{user.username}</div>
+                  </div>
+                );
+              })}
+          </div> : ''
+        }
         <div className="feed-dashboard-wrap">
           {/* <div className="loggedin-user">
                         <div>

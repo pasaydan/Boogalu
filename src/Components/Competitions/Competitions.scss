@@ -39,10 +39,14 @@
             padding: 0 20px;
             font-weight: 600;
         }
+        .mainInnerConent {
+            max-height: 450px;
+            overflow-y: auto;
+        }
         p {
             color: var(--copyright-grey);
             margin: 0 0 15px 0;
-            padding: 0 20px;
+            padding: 0 5px 0 10px;
         }
         .imgWrap {
             width: 100%;
@@ -169,7 +173,7 @@
                 }
             }
         }
-        .judgesWrap {
+        .judgesWrap, .modalIfoWrap {
             margin-top: 10px;
             h3 {
                 font-size: 12px;
@@ -199,6 +203,37 @@
                     }
                 }
             }
+            .innerInformation {
+                h4 {
+                    font-size: 12px;
+                    color: var(--btn-primary-dark-bg);
+                    text-transform: uppercase;
+                    text-align: left;
+                    margin: 0 0 5px;
+                    font-weight: 600;
+                }
+                .eventInnerSection {
+                    margin-top: 10px;
+                    padding-left: 10px;
+                    text-align: left;
+                    word-break: break-all;
+                    p, span, strong, a {
+                        font-size: 12px;
+                        &.strong {
+                            font-weight: 600;
+                        }
+                    }
+                    strong {
+                        font-weight: 600;
+                    }
+                    p {
+                        margin: 5px 0 0 0;
+                        &:first-child {
+                            margin-top: 0;
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -216,11 +251,13 @@
     flex-wrap: wrap;
     margin-top: 30px;
     min-height: 250px;
+    justify-content: center;
+    margin-left: -20px;
     li {
         flex-basis: calc(100%/3 - 56px);
         min-height: 230px;
         max-height: 240px;
-        margin: 0 80px 20px 0;
+        margin: 0 0 20px 20px;
         border-radius: 10px;
         text-align: center;
         background-color: var(--primary-white);
@@ -317,6 +354,7 @@
 @media screen and (max-width: 700px) {
     .competition-wrap {
         .competition-list {
+            margin-left: 0;
             li {
                 flex-basis: 70%;
                 margin: 0 auto 20px;
@@ -326,7 +364,19 @@
     .eventDetailModal {
         .eventDetailInner {
             width: 95%;
+            padding: 15px 5px;
             max-width: none;
+            .eventDate {
+                padding-left: 0;
+            }
+            .modalIfoWrap .innerInformation .eventInnerSection {
+                padding-left: 0;
+                span {
+                    &.division, &.number {
+                        font-size: 10px;
+                    }
+                }
+            }
         }
     }
 }

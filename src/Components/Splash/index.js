@@ -1,5 +1,5 @@
 import React from 'react';
-import boogaluLogo from '../../Images/Boogalu-logo.svg';
+import boogaluLogo from '../../Images/Boogaluu-logo.png';
 
 function SplashScreen() {
     return (

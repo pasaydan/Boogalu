@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { sendEmail } from "../../Services/Email.service";
-import boogaluLogo from '../../Images/Boogalu-logo.svg';
+import boogaluLogo from '../../Images/Boogaluu-logo.png';
 import { useHistory } from "react-router-dom";
 import JudgesLogin from './judgeslogin';
 import JudgesPrivacyPolicy from './judgesPrivacyPolicy';

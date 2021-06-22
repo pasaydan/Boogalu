@@ -254,7 +254,7 @@ export default function Homepage() {
                 <section className="otherSections sectionServices" ref={sectionServiceRef}>
                     <h2>What you can expect from Boogaluu</h2>
                     <div className="othersInnerSection">
-                        <div className="cards cardShowcase" ref={cardShowcaseRef}>
+                        <div className="cards cardShowcase" title="login and explore" onClick={(e) => history.push('/login')} ref={cardShowcaseRef}>
                             <div className="cardIcon">
                                 <BsCameraVideo />
                             </div>
@@ -265,7 +265,7 @@ export default function Homepage() {
                                 <i><BsArrowRight /></i>
                             </button>
                         </div>
-                        <div className="cards cardCompetition" ref={cardCompRef}>
+                        <div className="cards cardCompetition" title="enroll in competition" onClick={(e) => history.push('/events')} ref={cardCompRef}>
                             <div className="cardIcon">
                                 <BsAward />
                             </div>
@@ -276,7 +276,7 @@ export default function Homepage() {
                                 <i><BsArrowRight /></i>
                             </button>
                         </div>
-                        <div className="cards cardLessons" ref={cardLessonRef}>
+                        <div className="cards cardLessons" title="learn lessons" onClick={(e) => history.push('/lessons')} ref={cardLessonRef}>
                             <div className="cardIcon">
                                 <BsBook />
                             </div>

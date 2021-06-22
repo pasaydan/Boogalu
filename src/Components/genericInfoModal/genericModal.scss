@@ -18,6 +18,7 @@
         max-width: 480px;
         text-align: center;
         h3 {
+            font-size: 16px;
             color: var(--copyright-grey);margin: 0 0 20px 0;
             padding: 0 10px;
         }
@@ -44,10 +45,40 @@
         }
         &.info {
             h3 {
-                color: var(--secondary-bg-blue);
+                color: var(--info-blue-dark);
             }
             p {
                 color: var(--secondary-bg-blue);
+            }
+            .btn {
+                padding: 5px 8px;
+                min-width: 80px;
+                filter: none;
+                margin-left: 20px;
+                color: var(--primary-white);
+                opacity: 0.8;
+                &:hover {
+                    opacity: 1;
+                    color: var(--primary-white);
+                }
+                &.primary-light {
+                    background: transparent;
+                    color: var(--light-pink-bg);
+                    border: 1px solid var(--light-pink-bg);
+                    &:hover {
+                        background: transparent;
+                        border-color: var(--light-pink-bg);
+                    }
+                }
+                &.primary-dark {
+                    background: var(--success-green-opaque);
+                    &:hover {
+                        background: var(--success-green-opaque);
+                    }   
+                }
+                &:first-child {
+                    margin: 0;
+                }
             }
         }
         .closeModal {
@@ -99,6 +130,17 @@
             }
             &:first-child {
                 margin: 0;
+            }
+            &.onlyClose {
+                &.primary-light, &.primary-dark {
+                    background: transparent;
+                    color: var(--light-pink-bg);
+                    border: 1px solid var(--light-pink-bg);
+                    &:hover {
+                        background: transparent;
+                        border-color: var(--light-pink-bg);
+                    }
+                }
             }
         }
         .navigateLink {

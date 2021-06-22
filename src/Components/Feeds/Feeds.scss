@@ -1,7 +1,8 @@
 .userDashBoardAfterLogin {
     padding: 20px 10px;
-    background: #ECE9E6;  /* fallback for old browsers */
-    background: linear-gradient(to bottom, #FFFFFF, #ECE9E6);    
+    background: var(--light-off-white-bg);  /* fallback for old browsers */
+    background: linear-gradient(to bottom, var(--primary-white), var(--light-off-white-bg));
+    min-height: calc(100vh - 233px);    
 }
 .user-dashboard-wrap {
     max-width: 970px;

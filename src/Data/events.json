@@ -3,32 +3,74 @@
         {
             "id": "ev-0",
             "type":"event_01",
-            "name": "Hip-hop international dance competition",
-            "imgUrl": "https://i.imgur.com/7dzYFKS.jpg",
-            "imgUrlMobile": "https://i.imgur.com/Mf66SeA.jpeg",
+            "name": "Online India Hip-Hop Dance Championship 2021 Season 9",
+            "imgUrl": "https://i.imgur.com/svarjqG.jpg",
+            "imgUrlMobile": "https://i.imgur.com/TtrFhzc.jpg",
+            "imgUrlForTiles": "https://i.imgur.com/UioO2np.jpg",
             "fees": 1000,
-            "offers": "Free 2 months Boogaluu startup subscription",
+            "offers": "Free 2 months Start-up subscription",
             "subscription": "startup",
             "offerValidity": 2, 
             "info": {
-                "eventDate": "9/29/2021",
+                "registrationStartDate": "06/25/2021",
                 "registrationLastDate": "07/25/2021",
-                "inquiry": "9028922045",
-                "rules": "http://www.hiphopinternational.com/officialrules/",
-                "judges": [
+                "categories": [
                     {
-                        "name": "Ian Levia",
-                        "place": "Trinidad & Tobago"
+                        "div": "JUNIOR CREW DIVISION",
+                        "age": "7yrs to 12yrs",
+                        "members": "5-9"
+
                     },
                     {
-                        "name": "Diego Matias Rossi aka Poleo",
-                        "place": "Argentina"
+                        "div": "VARSITY CREW DIVISION",
+                        "age": "13yrs to 17yrs",
+                        "members": "5-9"
+
                     },
                     {
-                        "name": "Yeika Diaz",
-                        "place": "Argentina"
+                        "div": "ADULT CREW DIVISION",
+                        "age": "18yrs & ABOVE",
+                        "members": "5-9"
+
+                    },
+                    {
+                        "div": "MINI CREW DIVISION",
+                        "age": "all ages",
+                        "members": "3"
+
+                    },
+                    {
+                        "div": "MEGA CREW DIVISION",
+                        "age": "all ages",
+                        "members": "10-40"
+
                     }
-                ]
+                ],
+                "preVideoSubmisstionDate": {
+                    "from": "06/25/2021",
+                    "to": "07/25/2021",
+                    "broadCastingDate": "08/14/2021",
+                    "lateFee": 2000
+                },
+                "preRoundResultDate": "07/30/2021",
+                "grandFinaleVideoSubmissionDate": {
+                    "from": "07/31/2021",
+                    "to": "08/08/2021",
+                    "broadCastingDate": "08/15/2021",
+                    "lateFee": 2000
+                },
+                "inquiry": {
+                    "phone": "+91-9884588775 | +91-9619828307",
+                    "email": "hiphopinternationalindiareg@gmail.com"
+                },
+                "rules": "http://www.hiphopinternational.com/officialrules/",
+                "followLinks": {
+                    "facebook": "https://www.facebook.com/hiphopinternationalindia",
+                    "youtube": "http://www.youtube.com/c/HIPHOPINTERNATIONALINDIA",
+                    "twitter": "https://twitter.com/HHIINDIA",
+                    "instagram": "https://www.instagram.com/indianhiphopdancechampionship/",
+                    "website": "http://www.hiphopinternationalindia.com/"
+                }
             }
         }
     ]

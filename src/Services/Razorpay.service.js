@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import axios from 'axios';
-import boogaluLogo from '../Images/Boogalu-logo.svg';
+import boogaluLogo from '../Images/Boogaluu-logo.png';
 const
     APP_API_URL = process.env.REACT_APP_API_URL,
     RAZORPAY_ORDERS_API_URL = process.env.REACT_APP_RAZORPAY_ORDERS_API_URL,

@@ -8,7 +8,7 @@ import Select from '@material-ui/core/Select';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import ImageUploader from 'react-images-upload';
 import Button from '@material-ui/core/Button';
-import boogaluLogo from '../../Images/Boogalu-logo.svg';
+import boogaluLogo from '../../Images/Boogaluu-logo.png';
 import { FaPowerOff } from "react-icons/fa";
 import { saveCompetition } from "../../Services/Competition.service";
 import { uploadImage } from "../../Services/Upload.service";

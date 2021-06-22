@@ -1,23 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import boogaluLogo from '../../Images/Boogalu-logo.svg';
+import boogaluLogo from '../../Images/Boogaluu-logo.png';
 import { FaFilter, FaPowerOff, FaSearch, FaTimes } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { ADMIN_USER, ADMIN_PWD } from '../../Constants';
+import { ADMIN_USER, ADMIN_PWD, NOTIFICATION_SUCCCESS, NOTIFICATION_ERROR } from '../../Constants';
 import championIcon from '../../Images/champion-box-icon.png';
 import lessonsIcon from '../../Images/lessons-icon.png';
 import subscribeIcon from '../../Images/subscribe-icon.png';
 import usersIcon from '../../Images/users-icon.png';
 import { useStoreConsumer } from '../../Providers/StateProvider';
-import { getAllUser, getUserById, getUsersByFilter, getUserByPhone, getUserByEmail } from "../../Services/User.service";
+import { getActiveSubscriptionsList } from "../../Services/Subscription.service";
+import { getAllUser, getUserById, getUsersByFilter, getUserByPhone, getUserByEmail, updateUser } from "../../Services/User.service";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
-import { MdRemoveRedEye, MdBlock, MdDeleteForever, MdSearch, MdRefresh } from 'react-icons/md';
+import { displayNotification } from "../../Actions/Notification";
+import { MdDeleteForever, MdSearch, MdRefresh } from 'react-icons/md';
+import { FiGift, FiEye, FiUserX } from "react-icons/fi";
 import { getUploadedVideosByUserId, deleteUploadedVideoByVideoKey } from "../../Services/UploadedVideo.service";
 import ConfirmationModal from '../ConfirmationModal';
+import GenericInfoModal from '../genericInfoModal';
 import { deleteImage, deleteVideo } from "../../Services/Upload.service";
 import { sendEmail } from "../../Services/Email.service";
 import { validateEmailId, validatePhoneNumber } from '../../helpers';
@@ -51,6 +55,13 @@ export default function UsersInfo() {
     const [isUserSearchOpen, toggleUserSearchOpen] = useState(false);
     const [userSearchErrorMessage, setUserSearchError] = useState('');
     const [searchedUserData, toggleSearchedUserData] = useState('');
+    const [isOfferModalOpen, toggleOfferModalBox] = useState(false);
+    const [infoModalTitle, setInfoModalTitle] = useState('');
+    const [infoModalMessage, setInfoModalMessage] = useState('');
+    const [infoModalStatus, setInfoModalStatus] = useState('');
+    const [userForOffer, setUserForOffer] = useState(null);
+    const [subscriptionsList, setSubscriptionList] = useState([]);
+    const [shoulGenericModalHasAction, toggleGenericModalAction] = useState(false);
 
     const userSearchInputRef = useRef(null);
 
@@ -58,6 +69,16 @@ export default function UsersInfo() {
         if (checkAdminLogIn) {
             toggleAdminLogin(checkAdminLogIn);
             getUsersList();
+            try {
+                dispatch(enableLoading());
+                getActiveSubscriptionsList().subscribe( subscriptionsList => {
+                    dispatch(disableLoading());
+                    setSubscriptionList(subscriptionsList)
+                });
+            } catch (e) {
+                dispatch(disableLoading());
+                console.log('Fetching subscription error: ', e);
+            }
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -316,6 +337,99 @@ export default function UsersInfo() {
         }
     }
 
+    function openOfferModalBox(event, user) {
+        event.stopPropagation();
+        let isUserOfferAvailed = false;
+        if (user?.isSubscriptionOffer) {
+            isUserOfferAvailed = true;
+        } else if (user && user?.events && user?.events.length) {
+            user?.events.forEach( item => {
+                if (item?.offer) {
+                    isUserOfferAvailed = true;            
+                }
+            });
+        }
+
+        if (isUserOfferAvailed) {
+            setInfoModalTitle('Offer already availed!');
+            setInfoModalMessage(`${user?.email} already availed this offer as a part of event registration!`);
+            setInfoModalStatus('info');
+            toggleGenericModalAction(false);
+            toggleOfferModalBox(true);
+        } else {
+            setUserForOffer(user);
+            setInfoModalTitle('2 months free Boogaluu subscription');
+            setInfoModalMessage(`Are you sure you want to give this offer to ${user?.email}`);
+            setInfoModalStatus('info');
+            toggleGenericModalAction(true);
+            toggleOfferModalBox(true);
+        }
+    }
+
+    function shouldCloseOfferModal() {
+        setUserForOffer(null);
+        setInfoModalTitle('');
+        setInfoModalMessage('');
+        setInfoModalStatus('');
+        toggleOfferModalBox(false);
+    }
+
+    function confirmedOfferYes(action) {
+        if (action) {
+            let offerSub = subscriptionsList.filter(subData => subData.planType === 'startup');
+            const updatedUserData = {
+                ...userForOffer,
+                subscribed: true,
+                isSubscriptionOffer: true,
+                subEndingReminderSend: false,
+                subEndedReminderSend: false,
+                planType: offerSub[0].planType
+            };
+            if (updatedUserData && updatedUserData?.subscribed && updatedUserData?.planType === offerSub[0].planType) {
+                updatedUserData.subscriptions.forEach( subData => {
+                    if (subData.planType === offerSub[0].planType && !subData.isExpired) {
+                        subData.validity += 2; 
+                    }
+                });
+            } else {
+                let userSub = {
+                    id: offerSub[0]?.key,
+                    name: offerSub[0]?.name,
+                    planType: offerSub[0].planType,
+                    validity: 2,
+                    subscribedOn: new Date(),
+                    isExpired: false,
+                    isRenewed: false
+                }
+                if ('subscriptions' in updatedUserData) {
+                    updatedUserData.subscriptions.forEach((data, index) => {
+                        data.isExpired = true; //mark expired to all previous subscriptions
+                        if (index === updatedUserData.subscriptions.length - 1) updatedUserData.subscriptions.push(userSub);
+                    });
+                } else updatedUserData.subscriptions = [userSub];
+            }
+            try {
+                dispatch(enableLoading());
+                updateUser(updatedUserData.key, updatedUserData).subscribe(() => {
+                    dispatch(disableLoading());
+                    dispatch(displayNotification({
+                        msg: `2 months free subscription offer applied to ${updatedUserData.email}`,
+                        type: NOTIFICATION_SUCCCESS,
+                        time: 6000
+                    }));
+                });
+            } catch (e) {
+                dispatch(disableLoading());
+                dispatch(displayNotification({
+                    msg: `Something went wrong, please try in sometime!`,
+                    type: NOTIFICATION_ERROR,
+                    time: 5000
+                }));
+                console.log('Error: ', e);
+            }
+        }
+    }
+
     return (
         <div className="adminPanelSection">
             {
@@ -374,6 +488,14 @@ export default function UsersInfo() {
                     </div>
                 </div> : ''
             }
+            {isOfferModalOpen ? <GenericInfoModal
+                title={infoModalTitle}
+                message={infoModalMessage}
+                status={infoModalStatus}
+                shouldHaveAction={shoulGenericModalHasAction}
+                closeInfoModal={shouldCloseOfferModal}
+                confirmUserAction={confirmedOfferYes}
+            /> : ''}
             <nav className="adminNavigation">
                 <Link to="/adminpanel/competition" title="create competitions" className="panelLink">
                     <span className="iconsWrap championIconWrap">
@@ -520,10 +642,13 @@ export default function UsersInfo() {
                                                             <td>
                                                                 <div className="actionBlock">
                                                                     <p className="viewUserIcon" title="View users videos" onClick={(e) => fetchUsersVideoDetails(e, item.key)}>
-                                                                        <MdRemoveRedEye />
+                                                                        <FiEye />
                                                                     </p>
                                                                     <p className="blockUserIcon" title="De-activate user" onClick={(e) => deactivateUser(e, item.key)}>
-                                                                        <MdBlock />
+                                                                        <FiUserX />
+                                                                    </p>
+                                                                    <p className="provideGift" title="Give offer to user" onClick={(e) => openOfferModalBox(e, item)}>
+                                                                        <FiGift />
                                                                     </p>
                                                                 </div>
                                                             </td>

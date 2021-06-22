@@ -41,7 +41,10 @@ export default function GenericInfoModal(props) {
                         <button className="btn primary-light" title="cancel and close" onClick={(e) => closeGenericModal(e)}>No</button>
                         <button className="btn primary-dark" title="yes proceed" onClick={(e) => confirmAction(e, true)}>Yes</button>
                     </div>
-                    : ''
+                    : 
+                    <div className="actionWrap">
+                        <button className="btn primary-light onlyClose" title="cancel and close" onClick={(e) => closeGenericModal(e)}>Close</button>
+                    </div>
                 }
             </div>
         </div>

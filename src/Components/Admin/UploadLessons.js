@@ -10,7 +10,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Select from '@material-ui/core/Select';
 import { FaCloudUploadAlt, FaInfoCircle } from 'react-icons/fa';
-import boogaluLogo from '../../Images/Boogalu-logo.svg';
+import boogaluLogo from '../../Images/Boogaluu-logo.png';
 import { FaPowerOff } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import { ADMIN_USER, ADMIN_PWD } from '../../Constants';

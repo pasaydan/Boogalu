@@ -101,7 +101,7 @@ function Subscriptions(props) {
         if (!isObjectEmpty(loggedInUser)) {
             loggedInUser.subscribed && filterSubacriptionsWRTUser(AvailableSubscriptions);
         } else setAvailableSubscriptions(AvailableSubscriptions)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [state.loggedInUser])
 
     const filterSubacriptionsWRTUser = (subscriptionsList) => {//filter subscriptions with respect to user
@@ -123,11 +123,11 @@ function Subscriptions(props) {
                             var daydiff = subDateAfter1Month.getDate() - new Date().getDate();
                             switch (daydiff) {
                                 case 0: subDetails.endsIn2Days = 'End today';
-                                        break;
+                                    break;
                                 case 1: subDetails.endsIn2Days = 'End in 1 day';
-                                        break;
+                                    break;
                                 case 2: subDetails.endsIn2Days = 'End in 2 days';
-                                        break;
+                                    break;
                                 default: break;
                             }
                             if (state.activeSubscription && subDetails.key === state.activeSubscription.key) {
@@ -272,7 +272,7 @@ function Subscriptions(props) {
                                     <div className="ending-label">{subscription.endsIn2Days}</div>
                                 </div>}
                                 <div className="plan_tag">{subscription.name}</div>
-                                <div className="plan_price">@{subscription.amount}<span>{subscription.plans}</span></div>
+                                <div className="plan_price">@{subscription.amount}<span>{subscription.plans == 1 ? 'Monthly' : ''}</span></div>
                                 <div className="featuresBox">
                                     {/* <p>Multiple <strong>Videos</strong> upload</p> */}
                                     {
