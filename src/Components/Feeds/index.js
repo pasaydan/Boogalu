@@ -173,35 +173,27 @@ function Feeds() {
               feed.profileImage = user.profileImage;
               feed.privacy = user.privacy || "Public";
               user.isAnyVideoSubmitted = true;
-              if (user.notification) {
-                if (
-                  user.notification.followRequestedBy &&
-                  user.notification.followRequestedBy.length > 0
-                ) {
-                  user.notification.followRequestedBy.forEach((requestId) => {
-                    if (requestId === loggedInUser.key) {
-                      user = {
-                        ...user,
-                        iRequestedFollow: true,
-                        actionBtnText: "requested",
-                      };
-                    }
-                  });
-                }
-                if (
-                  user.notification.followedBy &&
-                  user.notification.followedBy.length > 0
-                ) {
-                  user.notification.followedBy.forEach((requestId) => {
-                    if (requestId === loggedInUser.key) {
-                      user = {
-                        ...user,
-                        imFollowing: true,
-                        actionBtnText: "following",
-                      };
-                    }
-                  });
-                }
+              if (user.followRequestedBy && user.followRequestedBy.length > 0) {
+                user.followRequestedBy.forEach((requestId) => {
+                  if (requestId === loggedInUser.key) {
+                    user = {
+                      ...user,
+                      iRequestedFollow: true,
+                      actionBtnText: "requested",
+                    };
+                  }
+                });
+              }
+              if (user.followedBy && user.followedBy.length > 0) {
+                user.followedBy.forEach((requestId) => {
+                  if (requestId === loggedInUser.key) {
+                    user = {
+                      ...user,
+                      imFollowing: true,
+                      actionBtnText: "following",
+                    };
+                  }
+                });
               }
             }
             if (feed.likes && feed.likes.length) {
