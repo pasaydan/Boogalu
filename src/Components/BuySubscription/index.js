@@ -100,7 +100,7 @@ export default function BuySubsription({
                                     Welcome, we are glad to see you. Now, you can subscribe to our application, and
                                     &npbsp;{SUBSCIPTION_PLANS_MAP[subscriptionDetails?.planType]?.modalMessage}
                                 </p>
-                                <p className={`planValue ${subscriptionDetails?.planType}`}> Just <i className="rupeeSign"><FaRupeeSign /></i>{subscriptionDetails?.amount} {subscriptionDetails?.plans}</p>
+                                <p className={`planValue ${subscriptionDetails?.planType}`}> Just <i className="rupeeSign"><FaRupeeSign /></i>{subscriptionDetails?.amount} {subscriptionDetails?.planType}</p>
                             </div>
                             {subscriptionDetails.isSubscribed ?
                                 <Button variant="contained" color="secondary" onClick={(e) => proceedForCompetition()}>Continue</Button> :
