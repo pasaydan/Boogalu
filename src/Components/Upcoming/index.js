@@ -28,6 +28,8 @@ function Upcoming() {
     const [levelFilterValue, setLevelFilter] = useState('');
     const [styleFilterValue, setStyleFilter] = useState('');
     const [planTypeFilterValue, setPlanTypeFilter] = useState('');
+    // eslint-disable-next-line no-unused-vars
+    const [isFilterEnabled, shouldEnableFilters] = useState(false);
 
     const allFilterBtnRef = useRef();
     const proFilterBtnRef = useRef();
@@ -274,8 +276,16 @@ function Upcoming() {
                         <button ref={allFilterBtnRef} title="apply all filter" className="btn primary-dark active" onClick={(e) => filterLesson(e, 'all')}>All</button>
                         <button ref={freeFilterBtnRef} title="apply free filter" className="btn primary-dark" onClick={(e) => filterLesson(e, 'free')}>Free</button>
                         <button ref={paidFilterBtnRef} title="apply startup filter" className="btn primary-dark" onClick={(e) => filterLesson(e, 'startup')}>Startup</button>
-                        <button ref={proFilterBtnRef} title="apply pro filter" className="btn primary-dark" onClick={(e) => filterLesson(e, 'pro')}>Pro</button>
-                        <button ref={premiumFilterBtnRef} title="apply premium filter" className="btn primary-dark" onClick={(e) => filterLesson(e, 'premium')}>Premium</button>
+                        {
+                            isFilterEnabled ? 
+                            <button ref={proFilterBtnRef} title="apply pro filter" className="btn primary-dark" onClick={(e) => filterLesson(e, 'pro')}>Pro</button>
+                            : ''
+                        }
+                        {
+                            isFilterEnabled ? 
+                            <button ref={premiumFilterBtnRef} title="apply premium filter" className="btn primary-dark" onClick={(e) => filterLesson(e, 'premium')}>Premium</button>
+                            : ''
+                        }
                         <button ref={otherFiltersBtnRef} title="apply other filters" className="btn primary-dark otherFilterIcon js-otherFilterIcon" onClick={(e) => toggleOtherFilters(e, true)}>
                             <span><FaFilter /></span>
                         </button>

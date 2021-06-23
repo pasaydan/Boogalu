@@ -272,7 +272,7 @@ function Subscriptions(props) {
                                     <div className="ending-label">{subscription.endsIn2Days}</div>
                                 </div>}
                                 <div className="plan_tag">{subscription.name}</div>
-                                <div className="plan_price">@{subscription.amount}<span>{subscription.plans == 1 ? 'Monthly' : ''}</span></div>
+                                <div className="plan_price">@{subscription.amount}<span>{subscription.plans === 1 ? 'Monthly' : ''}</span></div>
                                 <div className="featuresBox">
                                     {/* <p>Multiple <strong>Videos</strong> upload</p> */}
                                     {
