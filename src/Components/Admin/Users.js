@@ -376,6 +376,7 @@ export default function UsersInfo() {
 
     function confirmedOfferYes(action) {
         if (action) {
+            dispatch(enableLoading());
             let offerSub = subscriptionsList.filter(subData => subData.planType === 'startup');
             const updatedUserData = {
                 ...userForOffer,
@@ -385,8 +386,8 @@ export default function UsersInfo() {
                 subEndedReminderSend: false,
                 planType: offerSub[0].planType
             };
-            if (updatedUserData && updatedUserData?.subscribed && updatedUserData?.planType === offerSub[0].planType) {
-                updatedUserData.subscriptions.forEach( subData => {
+            if (updatedUserData && updatedUserData?.subscribed && updatedUserData?.planType === offerSub[0].planType && updatedUserData?.subscriptions && updatedUserData?.subscriptions?.length) {
+                updatedUserData?.subscriptions && updatedUserData?.subscriptions.length && updatedUserData?.subscriptions.forEach( subData => {
                     if (subData.planType === offerSub[0].planType && !subData.isExpired) {
                         subData.validity += 2; 
                     }
@@ -409,14 +410,22 @@ export default function UsersInfo() {
                 } else updatedUserData.subscriptions = [userSub];
             }
             try {
-                dispatch(enableLoading());
-                updateUser(updatedUserData.key, updatedUserData).subscribe(() => {
-                    dispatch(disableLoading());
-                    dispatch(displayNotification({
-                        msg: `2 months free subscription offer applied to ${updatedUserData.email}`,
-                        type: NOTIFICATION_SUCCCESS,
-                        time: 6000
-                    }));
+                updateUser(updatedUserData.key, updatedUserData).subscribe((response) => {
+                    if (response?.updated) {
+                        dispatch(disableLoading());
+                        setInfoModalTitle('Congratulations!');
+                        setInfoModalMessage(`2 months free subscription offer applied to ${updatedUserData.email}`);
+                        setInfoModalStatus('success');
+                        toggleGenericModalAction(false);
+                        toggleOfferModalBox(true);
+                    } else {
+                        dispatch(disableLoading());
+                        setInfoModalTitle('ERROR...!');
+                        setInfoModalMessage(`Something went wrong, please try again!`);
+                        setInfoModalStatus('error');
+                        toggleGenericModalAction(false);
+                        toggleOfferModalBox(true);
+                    }
                 });
             } catch (e) {
                 dispatch(disableLoading());
