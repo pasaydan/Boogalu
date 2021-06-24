@@ -7,7 +7,7 @@ import {
   Paper,
   Popper,
 } from "@material-ui/core";
-import React from "react";
+import React, { useState } from "react";
 import {
   updateFollowUnfollow,
   blockUser,
@@ -15,12 +15,10 @@ import {
   cancelFollowRequest,
 } from "../../Services/Friendship.service";
 import { updateNotification } from "../../Services/Notifications.service";
-import { useStoreConsumer } from "../../Providers/StateProvider";
-import { enableLoading } from "../../Actions/Loader";
+import Loader from "../Loader";
 const FollowButton = (props) => {
   const { status, onClickHandler, user, loggedInUser } = props;
-  const { dispatch } = useStoreConsumer();
-
+  const [isLoaderActive, toggleLoading] = useState(false);
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
 
@@ -77,7 +75,7 @@ const FollowButton = (props) => {
   }, [open]);
 
   const followHandler = (action, user, loggedInUser) => {
-    dispatch(enableLoading());
+    toggleLoading(true);
     updateFollowUnfollow(action, user, loggedInUser).subscribe((response) => {
       if (response) {
         const { name, email } = response;
@@ -102,13 +100,14 @@ const FollowButton = (props) => {
           }
         }
       }
+      toggleLoading(false);
     });
   };
 
   const blockUserHandler = (user) => {
     // user.key = user.userKey;
     // user.name = user.username;
-    dispatch(enableLoading());
+    toggleLoading(true);
     blockUser(loggedInUser, user).subscribe((response) => {
       console.log("response", response);
       if (response) {
@@ -129,13 +128,14 @@ const FollowButton = (props) => {
           });
         }
       }
+      toggleLoading(false);
     });
   };
 
   const unFollowkUserHandler = (user) => {
     // user.key = user.userKey;
     // user.name = user.username;
-    dispatch(enableLoading());
+    toggleLoading(true);
     unFollowUser(loggedInUser, user).subscribe((response) => {
       console.log("response", response);
       if (response) {
@@ -156,13 +156,14 @@ const FollowButton = (props) => {
           });
         }
       }
+      toggleLoading(false);
     });
   };
 
   const cancelFollowRequestHandler = (user) => {
     // user.key = user.userKey;
     // user.name = user.username;
-    dispatch(enableLoading());
+    toggleLoading(true);
     cancelFollowRequest(loggedInUser, user).subscribe((response) => {
       console.log("response", response);
       if (response) {
@@ -183,10 +184,12 @@ const FollowButton = (props) => {
           });
         }
       }
+      toggleLoading(false);
     });
   };
   return (
     <>
+      <Loader value={isLoaderActive} />
       {!status && (
         <Button
           variant="contained"

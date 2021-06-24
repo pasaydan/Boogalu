@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useStoreConsumer } from "../../Providers/StateProvider";
-import { enableLoading, disableLoading } from "../../Actions/Loader";
 import ProfileImage from "../ProfileImage";
 import { getAllUser } from "../../Services/User.service";
 import { useHistory } from "react-router-dom";
 import FollowButton from "../FollowButton";
+import Loader from "../Loader";
 // import { getUserById, updateUser, updateFollowUnfollow } from "../../Services/User.service";
 
 function ViewAllMembers() {
@@ -13,9 +13,9 @@ function ViewAllMembers() {
   const [followButtonText, setFollowButtonText] = useState("Follow");
   // const [followStatus, setFollowStatus] = useState("");
   const [userList, setUserList] = useState([]);
-  const { state, dispatch } = useStoreConsumer();
+  const { state } = useStoreConsumer();
   const loggedInUser = state.loggedInUser;
-
+  const [isLoaderActive, toggleLoading] = useState(false);
   useEffect(() => {
     if (loggedInUser && loggedInUser.key) {
       setUserList([]);
@@ -31,12 +31,12 @@ function ViewAllMembers() {
   }
 
   function getAllUserList(userKey) {
-    dispatch(enableLoading());
+    toggleLoading(true);
     try {
       getAllUser(userKey).subscribe((users) => {
         setUserList([]);
         let updatedUserList = [];
-        dispatch(disableLoading());
+        toggleLoading(false);
         if (users && users.length) {
           users.forEach((user, userIndex) => {
             let currentuser = user;
@@ -144,9 +144,9 @@ function ViewAllMembers() {
           setUserList(updatedUserList);
         }
       });
-      dispatch(disableLoading());
+      toggleLoading(false);
     } catch (e) {
-      dispatch(disableLoading());
+      toggleLoading(false);
       console.log("Users fetch error: ", e);
     }
   }
@@ -162,6 +162,7 @@ function ViewAllMembers() {
 
   return (
     <div className="userDashBoardAfterLogin viewAllMemberDashBoard paddingTop90">
+      <Loader value={isLoaderActive} />
       <div className="user-dashboard-wrap">
         <h2>Our members</h2>
         <div className="user-list-wrap">

@@ -25,7 +25,6 @@ import {
   getUserByEmail,
   getUserByPhone,
 } from "../../Services/User.service";
-import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { displayNotification } from "../../Actions/Notification";
 import DateFnsUtils from "@date-io/date-fns";
 import {
@@ -44,6 +43,8 @@ import {
   Radio,
   RadioGroup,
 } from "@material-ui/core";
+import Loader from "../Loader";
+
 export default function Signup(props) {
   const { state, dispatch } = useStoreConsumer();
   const history = useHistory();
@@ -82,6 +83,7 @@ export default function Signup(props) {
   const [selectedOptionsList, setSelectedOptionsList] = useState([]);
   const [isUserPhotoUploaded, userPhotoUploadToggle] = useState(false);
   const uploaderRef = useRef(null);
+  const [isLoaderActive, toggleLoading] = useState(false);
 
   const handleChange = (prop) => (event) => {
     setUserDetails({ ...userDetails, [prop]: event.target.value });
@@ -177,7 +179,7 @@ export default function Signup(props) {
 
   const saveUserRegistrationDetails = () => {
     return new Promise((res, rej) => {
-      dispatch(enableLoading());
+      toggleLoading(true);
       try {
         let tempUserDetails = userDetails;
         if (tempUserDetails.profileImage) {
@@ -185,7 +187,7 @@ export default function Signup(props) {
             (downloadableUrl) => {
               tempUserDetails.profileImage = downloadableUrl;
               registerUser(tempUserDetails).subscribe((data) => {
-                dispatch(disableLoading());
+                toggleLoading(false);
                 console.log("user registered success", data);
                 res(data.key);
               });
@@ -197,14 +199,14 @@ export default function Signup(props) {
             profileImage: MALE_PROFILE_DEFAULT_IMAGE,
           };
           registerUser(tempUserDetails).subscribe((data) => {
-            dispatch(disableLoading());
+            toggleLoading(false);
             console.log("user registered success", data);
             res(data.key);
           });
         }
       } catch (e) {
-        dispatch(disableLoading());
-        console.log('save user registration error: ', e);
+        toggleLoading(false);
+        console.log("save user registration error: ", e);
       }
     });
   };
@@ -213,7 +215,7 @@ export default function Signup(props) {
     return new Promise((res, rej) => {
       try {
         getUserByPhone(userDetails.phone).subscribe((data) => {
-          dispatch(disableLoading());
+          toggleLoading(false);
           if (data && data.length) {
             setSignUpError("Phone already registered.");
             rej(false);
@@ -222,8 +224,8 @@ export default function Signup(props) {
           }
         });
       } catch (e) {
-        dispatch(disableLoading());
-        console.log('check for used phone error: ', e);
+        toggleLoading(false);
+        console.log("check for used phone error: ", e);
       }
     });
   };
@@ -232,7 +234,7 @@ export default function Signup(props) {
     return new Promise((res, rej) => {
       try {
         getUserByEmail(userDetails.email).subscribe((data) => {
-          dispatch(disableLoading());
+          toggleLoading(false);
           if (data && data.length) {
             setSignUpError("Email already registered.");
             rej(false);
@@ -241,8 +243,8 @@ export default function Signup(props) {
           }
         });
       } catch (e) {
-        dispatch(disableLoading());
-        console.log('check for used email error: ', e);
+        toggleLoading(false);
+        console.log("check for used email error: ", e);
       }
     });
   };
@@ -269,7 +271,7 @@ export default function Signup(props) {
   };
 
   const setSignupUserCred = (e) => {
-    dispatch(enableLoading());
+    toggleLoading(true);
     if (userDetails.password !== userDetails.confirmPassword) {
       setSignUpError("Password dose not match.");
       return;
@@ -280,7 +282,7 @@ export default function Signup(props) {
         saveUserRegistrationDetails()
           .then((userKey) => {
             userDetails.key = userKey;
-            dispatch(disableLoading());
+            toggleLoading(false);
             // dispatch(signupUser(userDetails));
             // dispatch(displayNotification({
             //     msg: "Registration successfully",
@@ -290,14 +292,14 @@ export default function Signup(props) {
             setActiveStep("stepOne");
           })
           .catch((error) => {
-            dispatch(disableLoading());
+            toggleLoading(false);
             // error in user registration
             if (error) {
             }
           });
       })
       .catch((error) => {
-        dispatch(disableLoading());
+        toggleLoading(false);
         console.error(error);
       });
     e.preventDefault();
@@ -411,6 +413,7 @@ export default function Signup(props) {
 
   return (
     <div className="logout-wrap new-login-signup-ui signup-wrap gradient-bg-animation clearfix">
+      <Loader value={isLoaderActive} />
       <div className="inner-signup-wrap">
         <div className="header-outer">
           <i
@@ -650,8 +653,9 @@ export default function Signup(props) {
                                 </div> : ''
                         } */}
                 <div
-                  className={`next-prev-actions ${activeStep !== "stepOne" ? "next-step-active" : ""
-                    } `}
+                  className={`next-prev-actions ${
+                    activeStep !== "stepOne" ? "next-step-active" : ""
+                  } `}
                 >
                   {activeStep !== "stepOne" && (
                     <Button

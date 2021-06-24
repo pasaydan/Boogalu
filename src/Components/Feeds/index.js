@@ -25,7 +25,6 @@ import {
   removeNotification,
 } from "../../Actions/Notification";
 import { NOTIFICATION_ERROR } from "../../Constants";
-import { disableLoading } from "../../Actions/Loader";
 function Feeds() {
   const history = useHistory();
   // eslint-disable-next-line no-unused-vars
@@ -284,7 +283,7 @@ function Feeds() {
         const tempProfileData = response[0];
         setClickedUserDetails(tempProfileData);
         toggleLoading(false);
-        dispatch(disableLoading());
+        toggleLoading(false);
       }
     });
   };
@@ -336,7 +335,7 @@ function Feeds() {
   }, [clickedUserDetails]);
   return (
     <div className="userDashBoardAfterLogin paddingTop90">
-      {isLoaderActive ? <Loader /> : ""}
+      <Loader value={isLoaderActive} />
       <div className="user-dashboard-wrap">
         {userList && userList.length ? (
           <div className="suggestViewAllWrap">
@@ -351,25 +350,25 @@ function Feeds() {
         ) : (
           ""
         )}
-        {
-          userList &&
-          userList.length ?
+        {userList && userList.length ? (
           <div className="user-list-wrap">
             {userList.map((user) => {
-                return (
-                  <div
-                    key={user.key}
-                    className="user-icon-wrap"
-                    title={`View ${user.username}`}
-                    onClick={() => openUserStory(user)}
-                  >
-                    <ProfileImage src={user.profileImage} size="medium" />
-                    <div className="userName">{user.username}</div>
-                  </div>
-                );
-              })}
-          </div> : ''
-        }
+              return (
+                <div
+                  key={user.key}
+                  className="user-icon-wrap"
+                  title={`View ${user.username}`}
+                  onClick={() => openUserStory(user)}
+                >
+                  <ProfileImage src={user.profileImage} size="medium" />
+                  <div className="userName">{user.username}</div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          ""
+        )}
         <div className="feed-dashboard-wrap">
           {/* <div className="loggedin-user">
                         <div>
