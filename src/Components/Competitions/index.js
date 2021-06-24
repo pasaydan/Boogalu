@@ -157,19 +157,16 @@ function Competitions() {
         const emailBodyConfig = {
           heading: `Hi ${loggedInUser.name},`,
           content: `<div>
-                    <p>Thanks for registering for ${
-                      clickedEventData.name
-                    } You’re all set.</p>
-                    ${
-                      clickedEventData.offers
-                        ? `<p>By registerging you will get ${clickedEventData.offers}.`
-                        : ""
-                    }
+                    <p>Thanks for registering for ${clickedEventData.name
+            } You’re all set.</p>
+                    ${clickedEventData.offers
+              ? `<p>By registerging you will get ${clickedEventData.offers}.`
+              : ""
+            }
                     <p>To know more about event just click the link bellow.</p>
                     <div class="action-btn-wrap">
-                        <a class="action" href=${
-                          window.location.href
-                        }>Events</a> 
+                        <a class="action" href=${window.location.href
+            }>Events</a> 
                     </div>
                 </div>`,
           bodyFooterText: `<div>See you soon!</div>`,
@@ -208,11 +205,6 @@ function Competitions() {
     if (clickedEventData.offers) {
       updatedEvent["offer"] = clickedEventData.offers;
     }
-    if ("events" in loggedInUser) {
-      updatedUserData.events.push(updatedEvent);
-    } else {
-      updatedUserData.events = [updatedEvent];
-    }
     if (!loggedInUser?.isSubscriptionOffer) {
       let offerSub = subscriptionsList.filter(
         (subData) =>
@@ -220,7 +212,6 @@ function Competitions() {
       );
       updatedUserData = {
         ...loggedInUser,
-        ...updatedUserData,
         subscribed: true,
         subEndingReminderSend: false,
         subEndedReminderSend: false,
@@ -256,6 +247,11 @@ function Competitions() {
       }
     }
     try {
+      if ("events" in loggedInUser) {
+        updatedUserData.events.push(updatedEvent);
+      } else {
+        updatedUserData.events = [updatedEvent];
+      }
       updateUser(updatedUserData.key, updatedUserData).subscribe(() => {
         dispatch(loginUser(updatedUserData));
         toggleEventModal(false);
@@ -352,36 +348,36 @@ function Competitions() {
         <ul className="competition-list">
           {eventsData && eventsData.length
             ? eventsData.map((event) => {
-                return (
-                  <li
-                    key={event.id}
-                    onClick={(e) => eventImageClicked(event, e)}
-                  >
-                    <img src={event.imgUrlForTiles} alt={event.name} />
-                    <h2>
-                      <span className="title">{event.name}</span>
-                      <span className="otherInfo">
-                        Registration fees: <i>&#8377;</i>
-                        {event.fees}/- only
-                        <br />
-                      </span>
-                      <span className="otherInfo">
-                        Offer: {event.offers}
-                        <br />
-                      </span>
-                      {clickedEventData &&
+              return (
+                <li
+                  key={event.id}
+                  onClick={(e) => eventImageClicked(event, e)}
+                >
+                  <img src={event.imgUrlForTiles} alt={event.name} />
+                  <h2>
+                    <span className="title">{event.name}</span>
+                    <span className="otherInfo">
+                      Registration fees: <i>&#8377;</i>
+                      {event.fees}/- only
+                      <br />
+                    </span>
+                    <span className="otherInfo">
+                      Offer: {event.offers}
+                      <br />
+                    </span>
+                    {clickedEventData &&
                       event.id === clickedEventData?.id &&
                       clickedEventData?.isRegistered ? (
-                        <span className="enrolledMessage">
-                          Already registered
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </h2>
-                  </li>
-                );
-              })
+                      <span className="enrolledMessage">
+                        Already registered
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </h2>
+                </li>
+              );
+            })
             : ""}
           {CompletitionList &&
             CompletitionList.map((competition) => {
@@ -454,7 +450,7 @@ function Competitions() {
                 ""
               )}
               {clickedEventData?.offers &&
-              !loggedInUser?.isSubscriptionOffer ? (
+                !loggedInUser?.isSubscriptionOffer ? (
                 <div className="eventDate registrationFees">
                   <span>Offer: </span>
                   <span className="value">{clickedEventData.offers}</span>
@@ -490,7 +486,7 @@ function Competitions() {
                     ""
                   )}
                   {clickedEventData?.info?.categories &&
-                  clickedEventData?.info?.categories.length ? (
+                    clickedEventData?.info?.categories.length ? (
                     <div className="eventInnerSection">
                       <h4>Categories:</h4>
                       {clickedEventData.info.categories.map((item, index) => {
@@ -629,11 +625,10 @@ function Competitions() {
                           &nbsp;
                           <a
                             title="Whatsapp for any query"
-                            href={`https://wa.me/${
-                              clickedEventData.info.inquiry.whatsapp
-                            }?text=${encodeURIComponent(
-                              clickedEventData.info.inquiry.whatsappMessage
-                            )}`}
+                            href={`https://wa.me/${clickedEventData.info.inquiry.whatsapp
+                              }?text=${encodeURIComponent(
+                                clickedEventData.info.inquiry.whatsappMessage
+                              )}`}
                           >{`+${clickedEventData.info.inquiry.whatsapp}`}</a>
                         </p>
                       ) : (
@@ -736,7 +731,7 @@ function Competitions() {
                 ""
               )}
               {clickedEventData?.info?.judges &&
-              clickedEventData?.info?.judges.length ? (
+                clickedEventData?.info?.judges.length ? (
                 <div className="judgesWrap modalIfoWrap">
                   <h3>Our Judges</h3>
                   {clickedEventData.info.judges.map((item, index) => {
