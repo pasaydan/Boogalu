@@ -29,7 +29,6 @@ import { setActiveCompetition } from "../../Actions/Competition";
 // eslint-disable-next-line no-unused-vars
 import { getUploadedVideosByUser } from "../../Actions/User";
 import VideoPlayer from "../Vedio/Video";
-import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { removeDataRefetchModuleName } from "../../Actions/Utility";
 // eslint-disable-next-line no-unused-vars
 import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
@@ -54,6 +53,7 @@ import { loginUser } from "../../Actions/User";
 import GenericInfoModal from "../genericInfoModal";
 import { deleteImage, deleteVideo } from "../../Services/Upload.service";
 import FollowButton from "../FollowButton";
+import Loader from "../Loader";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -122,6 +122,7 @@ function Profile() {
   const [userDeleteVideoSelection, setUserVideoSelectionForRemove] =
     useState(null);
   const [followStatus, setFollowStatus] = useState("");
+  const [isLoaderActive, toggleLoading] = useState(false);
 
   const profileOuterRef = useRef();
   const userTabsRef = useRef();
@@ -257,7 +258,7 @@ function Profile() {
     }
 
     document.addEventListener("scroll", onWindowScroll);
-    dispatch(enableLoading());
+    toggleLoading(true);
     if (history.location && history.location.search) {
       const searchObj = Object.fromEntries(
         new URLSearchParams(history.location.search)
@@ -371,7 +372,7 @@ function Profile() {
                 }
               }
             });
-            dispatch(disableLoading());
+            toggleLoading(false);
             setUserUploadedVideoList(userVdoCopy);
           });
         } else {
@@ -412,10 +413,10 @@ function Profile() {
               setFollowStatus("");
             }
           }
-          dispatch(disableLoading());
+          toggleLoading(false);
         }
         getCompetitionByUserId(profileUser.key).subscribe((resp) => {
-          dispatch(disableLoading());
+          toggleLoading(false);
           if (resp.length && list.length) {
             list.forEach((item) => {
               resp.forEach((item2) => {
@@ -446,17 +447,17 @@ function Profile() {
   }, [state]);
 
   function fetchUserUpdatedVideoList() {
-    dispatch(enableLoading());
+    toggleLoading(true);
     const profileUser =
       userData && Object.keys(userData).length > 0 ? userData : loggedInUser;
     try {
       getUploadedVideosByUserId(profileUser.key).subscribe((list) => {
-        dispatch(disableLoading());
+        toggleLoading(false);
         setUserUploadedVideoList(list);
-        dispatch(enableLoading());
+        toggleLoading(true);
         try {
           getCompetitionByUserId(profileUser.key).subscribe((resp) => {
-            dispatch(disableLoading());
+            toggleLoading(false);
             if (resp.length && list.length) {
               list.forEach((item) => {
                 resp.forEach((item2) => {
@@ -470,13 +471,13 @@ function Profile() {
             }
           });
         } catch (e) {
-          dispatch(disableLoading());
+          toggleLoading(false);
           console.log("user competition fetch error: ", e);
         }
         dispatch(getUploadedVideosByUser(list));
       });
     } catch (e) {
-      dispatch(disableLoading());
+      toggleLoading(false);
       console.log("video fetch error: ", e);
     }
   }
@@ -524,7 +525,7 @@ function Profile() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
     if (newValue === 1 && UserLikedVideoList.length === 0) {
-      dispatch(enableLoading());
+      toggleLoading(true);
       getAllUploadedVideos().then((feeds) => {
         if (feeds) {
           let userLikedVdos = [];
@@ -536,9 +537,9 @@ function Profile() {
               if (isAvail.length !== 0) userLikedVdos.push(feed);
             }
           });
-          dispatch(disableLoading());
+          toggleLoading(false);
           setUserLikedVideoList(userLikedVdos);
-        } else dispatch(disableLoading());
+        } else toggleLoading(false);
       });
     }
   };
@@ -721,7 +722,7 @@ function Profile() {
 
   function confirmUserActionSelected(action) {
     if (action) {
-      dispatch(enableLoading());
+      toggleLoading(true);
       // Delete Video Thumbnail
       try {
         deleteImage(userDeleteVideoSelection.thumbnail).subscribe(
@@ -738,7 +739,7 @@ function Profile() {
                         deleteUploadedVideoByVideoKey(
                           userDeleteVideoSelection.key
                         ).subscribe((response) => {
-                          dispatch(disableLoading());
+                          toggleLoading(false);
                           if (response && response.deleted) {
                             setInfoModalMessage(
                               "The video has been deleted successfully!"
@@ -750,21 +751,21 @@ function Profile() {
                           }
                         });
                       } catch (e) {
-                        dispatch(disableLoading());
+                        toggleLoading(false);
                         console.log("error deleting video data: ", e);
                       }
                     }
                   }
                 );
               } catch (e) {
-                dispatch(disableLoading());
+                toggleLoading(false);
                 console.log("error deleting video: ", e);
               }
             }
           }
         );
       } catch (e) {
-        dispatch(disableLoading());
+        toggleLoading(false);
         console.log("thumbnail delete error: ", e);
       }
     }
@@ -790,18 +791,18 @@ function Profile() {
   }
 
   const callbackHandler = () => {
-    dispatch(enableLoading());
+    toggleLoading(true);
     getUserByEmail(userData.email).subscribe((response) => {
       if (response && response.length > 0) {
         const userResponse = response[0];
         setUserData(userResponse);
       }
     });
-    dispatch(disableLoading());
+    toggleLoading(false);
   };
 
   const handleFollowBtnClick = (action, toFollow, followBy) => {
-    dispatch(enableLoading());
+    toggleLoading(true);
     updateFollowUnfollow(action, toFollow, followBy).subscribe((response) => {
       if (response) {
         // eslint-disable-next-line no-unused-vars
@@ -828,7 +829,7 @@ function Profile() {
           const subject = `${loggedInUser.name} requested to follow you`;
           // sendFollowNotificationEmail(name, email, subject, message);
         }
-        dispatch(disableLoading());
+        toggleLoading(false);
       }
     });
   };
@@ -846,9 +847,9 @@ function Profile() {
     sendEmail(payload).subscribe((res) => {
       if (!("error" in res)) {
         console.log("Follow request Send Successfully.");
-        dispatch(disableLoading());
+        toggleLoading(false);
       } else {
-        dispatch(disableLoading());
+        toggleLoading(false);
         console.log("User Email Send Failed.");
       }
       // fetchUsersVideoDetails(null, userKey);
@@ -856,6 +857,7 @@ function Profile() {
   };
   return (
     <div className="profile-outer paddingTop90" ref={profileOuterRef}>
+      <Loader value={isLoaderActive} />
       <div className="profile-details-wrap clearfix">
         {!isChangeVideoLinkVisible ? (
           <label
