@@ -467,8 +467,8 @@ export default function UploadLessons() {
                 </Link>
             </nav>
             <div className="logoWrap">
-                <a href="/" title="boogalu home">
-                    <img src={boogaluLogo} alt="Boogalu" />
+                <a href="/" title="boogaluu home">
+                    <img src={boogaluLogo} alt="Boogaluu" />
                 </a>
             </div>
             {
@@ -566,10 +566,13 @@ export default function UploadLessons() {
                                                 label="Styles"
                                             >
                                                 <MenuItem value="hip-hop">Hip Hop</MenuItem>
-                                                <MenuItem value="jazz">Jazz</MenuItem>
-                                                <MenuItem value="contemporary">Contemporary</MenuItem>
-                                                <MenuItem value="ballet">Ballet</MenuItem>
-                                                <MenuItem value="bharatnatyam">Bharatnatyam</MenuItem>
+                                                <MenuItem value="open-style">Open style</MenuItem>
+                                                <MenuItem value="locking">Locking</MenuItem>
+                                                <MenuItem value="popping">Popping</MenuItem>
+                                                <MenuItem value="house">House</MenuItem>
+                                                <MenuItem value="krump">Krump</MenuItem>
+                                                <MenuItem value="breaking">Breaking</MenuItem>
+                                                <MenuItem value="whacking">Whacking</MenuItem>
                                             </Select>
                                         </FormControl>
                                     </div>

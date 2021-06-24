@@ -140,7 +140,7 @@ export const EmailTemplate = (emailConfig) => {
             <div class="emailHead">
                 <img src="https://i.imgur.com/IBHgHPF.jpeg" alt="dance image" />
                 <div class="logoWrap">
-                    <img src="https://boogalusite.web.app/static/media/Boogalu-logo.cb3774a0.svg" alt="Boogalu" />
+                    <img src="https://boogalusite.web.app/static/media/Boogalu-logo.cb3774a0.svg" alt="Boogaluu" />
                 </div>
             </div>
             <div class="innerEmailWrap">
@@ -174,7 +174,7 @@ export const EmailTemplate = (emailConfig) => {
                         <a href=${window.location.origin + '/subscription'}>SUBSCRIPTIONS</a>
                     </div>
                 </div>
-                &copy; All right reserved. <a href="https://boogalusite.web.app/" target="_blank">Boogalu Pvt. Ltd.</a>
+                &copy; All right reserved. <a href="https://boogaluu.com/" target="_blank">Boogaluu.com</a>
             </div>
         </div>
     </body>

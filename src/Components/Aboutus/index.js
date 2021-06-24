@@ -6,7 +6,7 @@ export default function AboutUs() {
             <div className="container">
                 <h1>About us</h1>
                 <p>
-                    Founded in 2020 by Anjan Sivakumar, Boogalu embodies a one of its kind organization which aims to serve as an educational hub for those who aspire to religiously pursue dance as a career. The organization is associated with two of the renowned international dance syllabus boards - CSTD, Australia and iDance, UK.
+                    Founded in 2020 by Anjan Sivakumar, Boogaluu embodies a one of its kind organization which aims to serve as an educational hub for those who aspire to religiously pursue dance as a career. The organization is associated with two of the renowned international dance syllabus boards - CSTD, Australia and iDance, UK.
                 </p>
                 <p>
                     Choreo Culture is famed as the creator of 'Indian Hip Hop Dance Championship', the number one dance championship in India.Every year, the creative heads at the 'Indian Hip hop Dance Championship'  select the best dancers from across India and train them to further compete at the world's number 1 dance event 'World Hip Hop Dance Championship' hosted in Las Vegas, USA. 'World Hip Hop Dance Championship' is an internationally acclaimed dance event where more than 55 countries from around the world come to compete every year.

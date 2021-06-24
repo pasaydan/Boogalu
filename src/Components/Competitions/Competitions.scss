@@ -223,6 +223,10 @@
                             font-weight: 600;
                         }
                     }
+                    a {
+                        color: var(--secondary-bg-blue);
+                        text-decoration: none;
+                    }
                     strong {
                         font-weight: 600;
                     }

@@ -11,9 +11,9 @@ export default function AdminPanel() {
         <div className="adminPanelSection">
             <div className="container">
                 <div className="logoWrap">
-                    <img src={boogaluLogo} alt="Boogalu" />
+                    <img src={boogaluLogo} alt="Boogaluu" />
                 </div>
-                <h1>Welcome to Boogalu Admin Panel</h1>
+                <h1>Welcome to Boogaluu Admin Panel</h1>
                 <p className="subHeading">Here you can create Championships, Subscriptions or Lessons for our users</p>
 
                 <div className="optionsWrap">

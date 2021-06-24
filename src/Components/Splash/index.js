@@ -7,7 +7,7 @@ function SplashScreen() {
             <span id="splash-overlay" className="splash"></span>
             <span id="welcome" className="z-depth-4"></span>
             <div className="logo-wrap">
-                <img src={boogaluLogo} alt="Boogalu" />
+                <img src={boogaluLogo} alt="Boogaluu" />
             </div>
         </div>
     )

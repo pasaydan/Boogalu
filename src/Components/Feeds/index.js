@@ -340,7 +340,7 @@ function Feeds() {
       <div className="user-dashboard-wrap">
         {userList && userList.length ? (
           <div className="suggestViewAllWrap">
-            <span>Members of Boogalu family</span>&nbsp;
+            <span>Members of Boogaluu family</span>&nbsp;
             <Link
               onClick={() => redirectViewAllUsers()}
               className="viewAllLink"

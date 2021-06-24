@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { ADMIN_USER, ADMIN_PWD, NOTIFICATION_SUCCCESS, NOTIFICATION_ERROR } from '../../Constants';
+import { ADMIN_USER, ADMIN_PWD, NOTIFICATION_ERROR } from '../../Constants';
 import championIcon from '../../Images/champion-box-icon.png';
 import lessonsIcon from '../../Images/lessons-icon.png';
 import subscribeIcon from '../../Images/subscribe-icon.png';
@@ -25,6 +25,7 @@ import GenericInfoModal from '../genericInfoModal';
 import { deleteImage, deleteVideo } from "../../Services/Upload.service";
 import { sendEmail } from "../../Services/Email.service";
 import { validateEmailId, validatePhoneNumber } from '../../helpers';
+import Loader from '../Loader';
 
 const checkAdminLogIn = JSON.parse(localStorage.getItem('adminLoggedIn'));
 const eventsList = require('../../Data/events.json');
@@ -62,6 +63,7 @@ export default function UsersInfo() {
     const [userForOffer, setUserForOffer] = useState(null);
     const [subscriptionsList, setSubscriptionList] = useState([]);
     const [shoulGenericModalHasAction, toggleGenericModalAction] = useState(false);
+    const [isPageLoaderActive, togglePageLoader] = useState(false);
 
     const userSearchInputRef = useRef(null);
 
@@ -383,11 +385,11 @@ export default function UsersInfo() {
                 isSubscriptionOffer: true,
                 subEndingReminderSend: false,
                 subEndedReminderSend: false,
-                planType: offerSub[0].planType
+                planType: offerSub[0]?.planType || 'startup'
             };
-            if (updatedUserData && updatedUserData?.subscribed && updatedUserData?.planType === offerSub[0].planType) {
-                updatedUserData.subscriptions.forEach( subData => {
-                    if (subData.planType === offerSub[0].planType && !subData.isExpired) {
+            if (updatedUserData && updatedUserData?.subscribed && updatedUserData?.planType === (offerSub[0]?.planType || 'startup') && updatedUserData?.subscriptions && updatedUserData?.subscriptions?.length) {
+                updatedUserData?.subscriptions && updatedUserData?.subscriptions.length && updatedUserData?.subscriptions.forEach( subData => {
+                    if (subData?.planType === offerSub[0]?.planType && !subData.isExpired) {
                         subData.validity += 2; 
                     }
                 });
@@ -395,7 +397,7 @@ export default function UsersInfo() {
                 let userSub = {
                     id: offerSub[0]?.key,
                     name: offerSub[0]?.name,
-                    planType: offerSub[0].planType,
+                    planType: offerSub[0]?.planType || 'startup',
                     validity: 2,
                     subscribedOn: new Date(),
                     isExpired: false,
@@ -409,17 +411,25 @@ export default function UsersInfo() {
                 } else updatedUserData.subscriptions = [userSub];
             }
             try {
-                dispatch(enableLoading());
-                updateUser(updatedUserData.key, updatedUserData).subscribe(() => {
-                    dispatch(disableLoading());
-                    dispatch(displayNotification({
-                        msg: `2 months free subscription offer applied to ${updatedUserData.email}`,
-                        type: NOTIFICATION_SUCCCESS,
-                        time: 6000
-                    }));
+                togglePageLoader(true);
+                updateUser(updatedUserData.key, updatedUserData).subscribe((response) => {
+                    togglePageLoader(false);
+                    if (response?.updated) {
+                        setInfoModalTitle('Congratulations!');
+                        setInfoModalMessage(`2 months free subscription offer applied to ${updatedUserData.email}`);
+                        setInfoModalStatus('success');
+                        toggleGenericModalAction(false);
+                        toggleOfferModalBox(true);
+                    } else {
+                        setInfoModalTitle('ERROR...!');
+                        setInfoModalMessage(`Something went wrong, please try again!`);
+                        setInfoModalStatus('error');
+                        toggleGenericModalAction(false);
+                        toggleOfferModalBox(true);
+                    }
                 });
             } catch (e) {
-                dispatch(disableLoading());
+                togglePageLoader(false);
                 dispatch(displayNotification({
                     msg: `Something went wrong, please try in sometime!`,
                     type: NOTIFICATION_ERROR,
@@ -432,6 +442,10 @@ export default function UsersInfo() {
 
     return (
         <div className="adminPanelSection">
+            {
+                isPageLoaderActive ?
+                <Loader /> : ''
+            }
             {
                 isDeleteVideoClicked ?
                 <ConfirmationModal 
@@ -531,8 +545,8 @@ export default function UsersInfo() {
                 </Link>
             </nav>
             <div className="logoWrap">
-                <a href="/" title="boogalu home">
-                    <img src={boogaluLogo} alt="Boogalu" />
+                <a href="/" title="boogaluu home">
+                    <img src={boogaluLogo} alt="Boogaluu" />
                 </a>
             </div>
             <div className={`competition-bo-wrap clearfix ${(isAdminLoggedIn || checkAdminLogIn) && 'loggedInAdmin usersListBox'}`}>
@@ -595,7 +609,7 @@ export default function UsersInfo() {
                                     &#8592;
                                 </span>
                             </Link>
-                            List of Boogalu Users
+                            List of Boogaluu Users
                         </h1>
                         :
                         <h1>
@@ -604,7 +618,7 @@ export default function UsersInfo() {
                                     &#8592;
                                 </span>
                             </Link>
-                            Login to Manage Boogalu Users
+                            Login to Manage Boogaluu Users
                         </h1>
                 }
                 {
@@ -671,7 +685,7 @@ export default function UsersInfo() {
                                     <tbody className="emptyTbody">
                                         <tr>
                                             <td>
-                                                <p>It seems Boogalu doesn't have any users at this moment!</p>
+                                                <p>It seems Boogaluu doesn't have any users at this moment!</p>
                                             </td>
                                         </tr>
                                     </tbody>

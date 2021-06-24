@@ -38,6 +38,7 @@ import Loader from '../Loader';
 import GenericInfoModal from '../genericInfoModal';
 
 const SCROLL_TOP_LIMIT = 200;
+const defaultDocTitle = document.title;
 
 function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
   const [goingUpClass, setGoingUpClass] = useState("");
@@ -234,6 +235,7 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
     let followNotificationArray = [];
     if (loggedInUser.key) {
       setUserNotificationList([]);
+      changeTitle();
       getNotifications(loggedInUser.key).subscribe((response) => {
         const notifications =
           response && response.data && response.data ? response.data : [];
@@ -250,6 +252,7 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
                   followNotificationArray.length === flatValues.length
                 ) {
                   setUserNotificationList(followNotificationArray);
+                  changeTitle(followNotificationArray.length);
                 }
               });
             }
@@ -258,6 +261,10 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
       });
     }
   };
+
+  function changeTitle(notifications) {
+    document.title = notifications ? `(${notifications}) ${defaultDocTitle}` : defaultDocTitle;
+  }
 
   const logout = () => {
     dispatch(
@@ -793,7 +800,7 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
         <div className="flex-container desktop-navigation">
           <h1 title="home">
             <a href="/" onClick={(e) => onClickNav(e, "")}>
-              <img src={boogaluLogo} alt="Boogalu" />
+              <img src={boogaluLogo} alt="Boogaluu" />
             </a>
           </h1>
           {!isMobile ? (
@@ -877,7 +884,12 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
                   onClick={(e) => activateProfileIconMenu(e)}
                   className="profile-img-wrap userIcon"
                 >
-                  <MdAccountCircle />
+                  {
+                    loggedInUser?.profileImage ?
+                    <img src={loggedInUser.profileImage} alt="profile" />
+                    : 
+                    <MdAccountCircle />
+                  }
                 </div>
                 <div
                   onClick={(e) => activateNotificationMenu(e)}
@@ -1023,7 +1035,6 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
                 <div className="innerMenuWrap">
                   <ul className="notificationList">
                     {userNotificationList.map((user, index) => {
-                      console.log("user", user);
                       return (
                         <li key={index}>
                           {user.action === "requested" && (

@@ -198,7 +198,7 @@ const FollowButton = (props) => {
         </Button>
       )}
       {(status === "following" || status === "requested") && (
-        <div className="input-wrap">
+        <div className="input-wrap cardFollowBtd">
           <Button
             ref={anchorRef}
             aria-controls={open ? "menu-list-grow" : undefined}

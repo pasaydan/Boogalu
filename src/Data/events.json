@@ -4,9 +4,9 @@
             "id": "ev-0",
             "type":"event_01",
             "name": "Online India Hip-Hop Dance Championship 2021 Season 9",
-            "imgUrl": "https://i.imgur.com/svarjqG.jpg",
+            "imgUrl": "https://i.imgur.com/lI0XCJ6.jpg",
             "imgUrlMobile": "https://i.imgur.com/TtrFhzc.jpg",
-            "imgUrlForTiles": "https://i.imgur.com/UioO2np.jpg",
+            "imgUrlForTiles": "https://i.imgur.com/jP66tnE.jpg",
             "fees": 1000,
             "offers": "Free 2 months Start-up subscription",
             "subscription": "startup",
@@ -60,7 +60,10 @@
                     "lateFee": 2000
                 },
                 "inquiry": {
-                    "phone": "+91-9884588775 | +91-9619828307",
+                    "phone1": "+91-9884588775",
+                    "phone2": "+91-9619828307",
+                    "whatsapp": "919884588775",
+                    "whatsappMessage": "Hi, I have few queries about HHI",
                     "email": "hiphopinternationalindiareg@gmail.com"
                 },
                 "rules": "http://www.hiphopinternational.com/officialrules/",

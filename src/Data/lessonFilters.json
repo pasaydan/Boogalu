@@ -27,20 +27,32 @@
                     "label": "Hip hop"   
                 },
                 {
-                    "id": "jazz",
-                    "label": "Jazz"   
+                    "id": "open-style",
+                    "label": "Open style"   
                 },
                 {
-                    "id": "contemporary",
-                    "label": "Contemporary"   
+                    "id": "locking",
+                    "label": "Locking"   
                 },
                 {
-                    "id": "ballet",
-                    "label": "Ballet"   
+                    "id": "popping",
+                    "label": "Popping"   
                 },
                 {
-                    "id": "bharatnatyam",
-                    "label": "Bharatnatyam"   
+                    "id": "house",
+                    "label": "House"   
+                },
+                {
+                    "id": "krump",
+                    "label": "Krump"   
+                },
+                {
+                    "id": "breaking",
+                    "label": "Breaking"   
+                },
+                {
+                    "id": "whacking",
+                    "label": "Whacking"   
                 }
             ]
         }

@@ -4,4 +4,7 @@
 .input-wrap {
   text-align: right;
   z-index: 15;
+  &.cardFollowBtd {
+    margin-left: auto;
+  }
 }

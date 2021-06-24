@@ -248,7 +248,7 @@ function PreFinalRound() {
                 isJudgesLoggedIn ?
                 <div className="compeitionsVideoAndRules">
                     <a href="/" className="logo" title="Back to Home">
-                        <img src={boogaluLogo} alt="Boogalu" />
+                        <img src={boogaluLogo} alt="Boogaluu" />
                     </a>
                     <h1>Welcome to Competitions judgement Pre-final round</h1>
                     <div className={`innerContentBox ${shouldEnableVideoList ? 'videoListInnerContent' : ''}`}>
