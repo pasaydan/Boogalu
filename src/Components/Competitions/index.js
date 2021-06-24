@@ -478,7 +478,7 @@ function Competitions() {
                                                     clickedEventData?.info?.inquiry?.whatsapp ?
                                                     <p>
                                                         <strong>Whatsapp:</strong>
-                                                        &nbsp;<a  title="Whatsapp for any query" href={`https://wa.me/${clickedEventData.info.inquiry.whatsapp}?text=${clickedEventData.info.inquiry.whatsappMessage}`}>{`+${clickedEventData.info.inquiry.whatsapp}`}</a>
+                                                        &nbsp;<a  title="Whatsapp for any query" href={`https://wa.me/${clickedEventData.info.inquiry.whatsapp}?text=${encodeURIComponent(clickedEventData.info.inquiry.whatsappMessage)}`}>{`+${clickedEventData.info.inquiry.whatsapp}`}</a>
                                                     </p> : ''
                                                 }
                                                 {

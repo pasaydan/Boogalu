@@ -884,7 +884,12 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
                   onClick={(e) => activateProfileIconMenu(e)}
                   className="profile-img-wrap userIcon"
                 >
-                  <MdAccountCircle />
+                  {
+                    loggedInUser?.profileImage ?
+                    <img src={loggedInUser.profileImage} alt="profile" />
+                    : 
+                    <MdAccountCircle />
+                  }
                 </div>
                 <div
                   onClick={(e) => activateNotificationMenu(e)}
