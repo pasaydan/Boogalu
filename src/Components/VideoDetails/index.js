@@ -119,6 +119,17 @@ function Comments({
       if (iAmFollowing && iAmFollowing.length > 0) {
         setFollowStatus("following");
       }
+    } else if (
+      clickedUser &&
+      clickedUser.followedBy &&
+      clickedUser.followedBy.length > 0
+    ) {
+      const iAmFollowing = clickedUser.followedBy.filter(
+        (followUserId) => followUserId === loggedInUser.key
+      );
+      if (iAmFollowing && iAmFollowing.length > 0) {
+        setFollowStatus("following");
+      }
     } else {
       setFollowStatus("");
     }
