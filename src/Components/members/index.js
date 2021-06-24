@@ -177,12 +177,13 @@ function ViewAllMembers() {
         <h2>Our members</h2>
         <div className="user-list-wrap">
           {userList &&
-            userList.map((user) => {
+            userList.map((user, index) => {
               return (
                 <div
                   key={user.key}
                   className="user-icon-wrap userMemberListing"
                   title={`View ${user.username}`}
+                  style={{ 'zIndex': (userList.length - index) }}
                 >
                   <ProfileImage
                     src={user.profileImage}
