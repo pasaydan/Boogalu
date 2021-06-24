@@ -54,6 +54,7 @@ import GenericInfoModal from "../genericInfoModal";
 import { deleteImage, deleteVideo } from "../../Services/Upload.service";
 import FollowButton from "../FollowButton";
 import Loader from "../Loader";
+import { logAnalyticsEvent } from "../../Services/analytics.service";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -128,6 +129,14 @@ function Profile() {
   const userTabsRef = useRef();
   const ref = useRef();
   const headerWrapRef = useRef();
+
+  useEffect(() => {
+    logAnalyticsEvent('page_view', {
+      page_location: window.location.href,
+      page_path: 'profile',
+      page_title: 'HomePage' + '-' + window.location.href
+    });
+  }, [])
 
   function shouldCloseInfoModal(navigationValue) {
     setUserVideoSelectionForRemove({});
@@ -936,9 +945,9 @@ function Profile() {
       </div>
       <div className="profile-content-wrap">
         {followStatus === "following" ||
-        userData.privacy === "public" ||
-        userData.privacy === "Public" ||
-        (userData && loggedInUser && userData.key === loggedInUser.key) ? (
+          userData.privacy === "public" ||
+          userData.privacy === "Public" ||
+          (userData && loggedInUser && userData.key === loggedInUser.key) ? (
           <div className="headers-wrap" ref={headerWrapRef}>
             <div className="user-tabs-wrap" ref={userTabsRef}>
               <Tabs

@@ -46,6 +46,7 @@ import {
   RadioGroup,
 } from "@material-ui/core";
 import Loader from "../Loader";
+import { logAnalyticsEvent } from "../../Services/analytics.service";
 
 export default function Signup(props) {
   const { state, dispatch } = useStoreConsumer();
@@ -91,6 +92,13 @@ export default function Signup(props) {
     setUserDetails({ ...userDetails, [prop]: event.target.value });
   };
 
+  useEffect(() => {
+    logAnalyticsEvent('page_view', {
+      page_location: window.location.href,
+      page_path: '/',
+      page_title: 'HomePage' + '-' + window.location.href
+    });
+  }, [])
   function setDateOfBirth(date) {
     try {
       setUserDetails({ ...userDetails, dob: date });
@@ -692,9 +700,8 @@ export default function Signup(props) {
                                 </div> : ''
                         } */}
                 <div
-                  className={`next-prev-actions ${
-                    activeStep !== "stepOne" ? "next-step-active" : ""
-                  } `}
+                  className={`next-prev-actions ${activeStep !== "stepOne" ? "next-step-active" : ""
+                    } `}
                 >
                   {activeStep !== "stepOne" && (
                     <Button

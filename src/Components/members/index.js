@@ -5,6 +5,7 @@ import { getAllUser } from "../../Services/User.service";
 import { useHistory } from "react-router-dom";
 import FollowButton from "../FollowButton";
 import Loader from "../Loader";
+import { logAnalyticsEvent } from "../../Services/analytics.service";
 // import { getUserById, updateUser, updateFollowUnfollow } from "../../Services/User.service";
 
 function ViewAllMembers() {
@@ -16,6 +17,15 @@ function ViewAllMembers() {
   const { state } = useStoreConsumer();
   const loggedInUser = state.loggedInUser;
   const [isLoaderActive, toggleLoading] = useState(false);
+
+  useEffect(() => {
+    logAnalyticsEvent('page_view', {
+      page_location: window.location.href,
+      page_path: 'view-members',
+      page_title: 'HomePage' + '-' + window.location.href
+    });
+  }, [])
+
   useEffect(() => {
     if (loggedInUser && loggedInUser.key) {
       setUserList([]);
