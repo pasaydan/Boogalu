@@ -100,6 +100,7 @@ const FollowButton = (props) => {
           }
         }
       }
+      toggleLoading(false);
     });
   };
 
@@ -127,6 +128,7 @@ const FollowButton = (props) => {
           });
         }
       }
+      toggleLoading(false);
     });
   };
 
@@ -154,6 +156,7 @@ const FollowButton = (props) => {
           });
         }
       }
+      toggleLoading(false);
     });
   };
 
@@ -181,6 +184,7 @@ const FollowButton = (props) => {
           });
         }
       }
+      toggleLoading(false);
     });
   };
   return (
