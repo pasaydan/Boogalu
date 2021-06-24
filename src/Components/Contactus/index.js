@@ -92,7 +92,9 @@ function ContactUs() {
                     </div>
                 </form>
                 <div className="address-block">
-                    +91-9920518931 /  9619828307 / 9884588775<br />
+                    <a title="Call for any query" href="tel:+91-9920518931">+91-9920518931</a>&nbsp;/&nbsp; 
+                    <a title="Call for any query" href="tel:+91-9619828307">+91-9619828307</a>&nbsp;/&nbsp;
+                    <a title="Call for any query" href="tel:+91-9884588775">+91-9884588775</a><br/>
                     Mahaprgya Hights No. 49 Sector - 20, kharghar, Navi Mumbai Opposite Metro Bridge, Reliance fresh road
                 </div>
             </div>
