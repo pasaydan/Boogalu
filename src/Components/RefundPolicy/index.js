@@ -19,7 +19,7 @@ export default function RefundPolicy() {
                     Once your receipt is confirmed and valid and that is following the 10 days limit you are eligible for refund.
                 </p>
                 <p>
-                    If you’ve done all of this and you still have not received your refund yet, please contact us at <a href="mailto:b2b@boxpuppet.com">b2b@boxpuppet.com</a>.
+                    If you’ve done all of this and you still have not received your refund yet, please contact us at <a href="mailto:info@boogaluu.com">info@boogaluu.com</a>.
                 </p>
             </div>
         </div>
