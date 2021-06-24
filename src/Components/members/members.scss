@@ -7,6 +7,7 @@
     .user-list-wrap {
         flex-direction: column;
         border: none;
+        min-height: 100vh;
         .userMemberListing {
             width: 100%;
             display: flex;
@@ -55,7 +56,7 @@
             padding: 0;
             .user-list-wrap {
                 .userMemberListing {
-                    padding: 8px 0;
+                    padding: 8px 5px 8px 0;
                     .profile-image-wrap {
                         margin-right: 10px;
                         min-width: 50px;

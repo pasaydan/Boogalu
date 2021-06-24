@@ -8,3 +8,10 @@
     margin-left: auto;
   }
 }
+.boxPopper {
+  position: absolute;
+  background: var(--primary-white);
+  border-radius: 5px;
+  right: 0;
+  top: 36px;
+}

@@ -39,7 +39,6 @@ const FollowButton = (props) => {
     setOpen(false);
     let value = event.currentTarget.id;
     if (value && value.length) {
-      console.log("value", value);
       // followHandler(value, user, loggedInUser);
       switch (value) {
         case "cancelrequest":
@@ -78,9 +77,8 @@ const FollowButton = (props) => {
     toggleLoading(true);
     updateFollowUnfollow(action, user, loggedInUser).subscribe((response) => {
       if (response) {
+        // eslint-disable-next-line no-unused-vars
         const { name, email } = response;
-        console.log("Name: ", name);
-        console.log("Email: ", email);
         if (response) {
           let notificationData = {};
           if (response.followed || response.requested) {
@@ -123,7 +121,6 @@ const FollowButton = (props) => {
         if (notificationData && Object.keys(notificationData).length > 0) {
           // Updating Nofification for user who accepted request
           updateNotification(notificationData).subscribe((response) => {
-            console.log("response", response);
             onClickHandler();
           });
         }
@@ -211,20 +208,47 @@ const FollowButton = (props) => {
           >
             {status}
           </Button>
-          <Popper
+          {
+            open ?
+            <div className="boxPopper">
+              <ClickAwayListener onClickAway={handleClose}>
+                <MenuList
+                  autoFocusItem={open}
+                  id="menu-list-grow"
+                  onKeyDown={handleListKeyDown}
+                >
+                  {status === "requested" && (
+                    <MenuItem id="cancelrequest" onClick={handleClose}>
+                      Cancel Request
+                    </MenuItem>
+                  )}
+
+                  {status === "following" && (
+                    <MenuItem id="unfollow" onClick={handleClose}>
+                      Unfollow
+                    </MenuItem>
+                  )}
+                  <MenuItem id="block" onClick={handleClose}>
+                    Block
+                  </MenuItem>
+                </MenuList>
+              </ClickAwayListener>
+            </div> : ''
+          }
+          {/* <Popper
             open={open}
             anchorEl={anchorRef.current}
             role={undefined}
             transition
             disablePortal
+            placement='bottom'
             style={{ zIndex: 15 }}
           >
             {({ TransitionProps, placement }) => (
               <Grow
                 {...TransitionProps}
                 style={{
-                  transformOrigin:
-                    placement === "bottom" ? "center top" : "center bottom",
+                  transformOrigin: "center bottom"
                 }}
               >
                 <Paper>
@@ -253,7 +277,7 @@ const FollowButton = (props) => {
                 </Paper>
               </Grow>
             )}
-          </Popper>
+          </Popper> */}
         </div>
       )}
     </>
