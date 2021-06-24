@@ -460,30 +460,61 @@ function Competitions() {
                                                 </div> : ''
                                         }
                                         {
+                                            clickedEventData?.info?.inquiry ?
+                                            <div className="eventInnerSection">
+                                                <h4>Inquiry/Contact details:</h4>
+                                                <p>
+                                                    <strong>Phone:</strong>&nbsp;
+                                                    {
+                                                        clickedEventData?.info?.inquiry?.phone1 ?
+                                                        <a title="Call for any query" href={`tel:${clickedEventData.info.inquiry.phone1}`}>{clickedEventData.info.inquiry.phone1}</a> : ''
+                                                    }
+                                                    {
+                                                        clickedEventData?.info?.inquiry?.phone2 ?
+                                                        <a title="Call for any query" href={`tel:${clickedEventData.info.inquiry.phone2}`}>{` | ${clickedEventData.info.inquiry.phone2}`}</a> : ''
+                                                    }
+                                                </p>
+                                                {
+                                                    clickedEventData?.info?.inquiry?.whatsapp ?
+                                                    <p>
+                                                        <strong>Whatsapp:</strong>
+                                                        &nbsp;<a  title="Whatsapp for any query" href={`//api.whatsapp.com/send?phone=${clickedEventData.info.inquiry.whatsapp}&text=${clickedEventData.info.inquiry.whatsappMessage}`}>{`+${clickedEventData.info.inquiry.whatsapp}`}</a>
+                                                    </p> : ''
+                                                }
+                                                {
+                                                    clickedEventData?.info?.inquiry?.email ?
+                                                    <p>
+                                                        <strong>Email:</strong>
+                                                        &nbsp;<a  title="email for any query" href={`mailto:${clickedEventData.info.inquiry.email}`}>{clickedEventData.info.inquiry.email}</a>
+                                                    </p> : ''
+                                                }
+                                            </div> : ''
+                                        }
+                                        {
                                             clickedEventData?.info?.followLinks ?
-                                                <div className="eventInnerSection">
-                                                    <h4>Follow us for updates:</h4>
-                                                    <p>
-                                                        <strong>Facebook:</strong>
-                                                        &nbsp;<a href={clickedEventData?.info?.followLinks?.facebook} rel="noreferrer" target="_blank">{clickedEventData?.info?.followLinks?.facebook}</a>
-                                                    </p>
-                                                    <p>
-                                                        <strong>Youtube:</strong>
-                                                        &nbsp;<a href={clickedEventData?.info?.followLinks?.youtube} rel="noreferrer" target="_blank">{clickedEventData?.info?.followLinks?.youtube}</a>
-                                                    </p>
-                                                    <p>
-                                                        <strong>Twitter:</strong>
-                                                        &nbsp;<a href={clickedEventData?.info?.followLinks?.twitter} rel="noreferrer" target="_blank">{clickedEventData?.info?.followLinks?.twitter}</a>
-                                                    </p>
-                                                    <p>
-                                                        <strong>Instagram:</strong>
-                                                        &nbsp;<a href={clickedEventData?.info?.followLinks?.instagram} rel="noreferrer" target="_blank">{clickedEventData?.info?.followLinks?.instagram}</a>
-                                                    </p>
-                                                    <p>
-                                                        <strong>HHI Website:</strong>
-                                                        &nbsp;<a href={clickedEventData?.info?.followLinks?.website} rel="noreferrer" target="_blank">{clickedEventData?.info?.followLinks?.website}</a>
-                                                    </p>
-                                                </div> : ''
+                                            <div className="eventInnerSection">
+                                                <h4>Follow us for updates:</h4>
+                                                <p>
+                                                    <strong>Facebook:</strong><br/>
+                                                    <a href={clickedEventData?.info?.followLinks?.facebook} rel="noreferrer" target="_blank">{clickedEventData?.info?.followLinks?.facebook}</a>
+                                                </p>
+                                                <p>
+                                                    <strong>Youtube:</strong><br/>
+                                                    <a href={clickedEventData?.info?.followLinks?.youtube} rel="noreferrer" target="_blank">{clickedEventData?.info?.followLinks?.youtube}</a>
+                                                </p>
+                                                <p>
+                                                    <strong>Twitter:</strong><br/>
+                                                    <a href={clickedEventData?.info?.followLinks?.twitter} rel="noreferrer" target="_blank">{clickedEventData?.info?.followLinks?.twitter}</a>
+                                                </p>
+                                                <p>
+                                                    <strong>Instagram:</strong><br/>
+                                                    <a href={clickedEventData?.info?.followLinks?.instagram} rel="noreferrer" target="_blank">{clickedEventData?.info?.followLinks?.instagram}</a>
+                                                </p>
+                                                <p>
+                                                    <strong>HHI Website:</strong><br/>
+                                                    <a href={clickedEventData?.info?.followLinks?.website} rel="noreferrer" target="_blank">{clickedEventData?.info?.followLinks?.website}</a>
+                                                </p>
+                                            </div> : ''
                                         }
                                     </div>
                                 </div>
