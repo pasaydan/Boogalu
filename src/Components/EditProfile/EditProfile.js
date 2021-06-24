@@ -16,12 +16,13 @@ import Checkbox from '@material-ui/core/Checkbox';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
-import { updateUser } from "../../Services/User.service";
+import { getUserByPhone, updateUser } from "../../Services/User.service";
 import { uploadImage } from "../../Services/Upload.service";
 import { FaPlus, FaEdit } from 'react-icons/fa';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import { MALE_PROFILE_DEFAULT_IMAGE } from "../../Constants";
+import { displayNotification, removeNotification } from "../../Actions/Notification";
+import { MALE_PROFILE_DEFAULT_IMAGE, NOTIFICATION_ERROR, NOTIFICATION_SUCCCESS } from "../../Constants";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { FormControlLabel, FormLabel, Radio, RadioGroup } from '@material-ui/core';
 import { getUserByEmail } from "../../Services/User.service";
@@ -45,6 +46,7 @@ export default function EditProfile() {
     const [showHidePassword, setShowHidePassword] = useState({ showPassword: false, showConfirmPassword: false });
     const [IsProfileImageChanged, setIsProfileImageChanged] = useState(false);
     const [isUserPhotoUploaded, userPhotoUploadToggle] = useState(false);
+
     const handleChange = (prop) => (event) => {
         setUserDetails({ ...userDetails, [prop]: event.target.value });
         console.log(userDetails)
@@ -59,6 +61,7 @@ export default function EditProfile() {
     };
 
     useEffect(() => {
+        dispatch(disableLoading());
         $('html,body').animate({
             scrollTop: 0
         }, 500);
@@ -72,8 +75,24 @@ export default function EditProfile() {
                 }
             });
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    const validateNumber = () => {
+        return new Promise((res, rej) => {
+            if (loggedInUser.phone != userDetails.phone) {
+                getUserByPhone(userDetails.phone).subscribe((userData) => {
+                    if (userData?.length != 0 && userData[0].email != loggedInUser.email) {
+                        rej(false);
+                    } else {
+                        res(true);
+                    }
+                })
+            } else {
+                res(true);
+            }
+        })
+    }
 
     const setSignupUserCred = (e) => {
         if (userDetails.password !== userDetails.confirmPassword) {
@@ -81,9 +100,20 @@ export default function EditProfile() {
             return;
         }
         dispatch(enableLoading());
-        if (IsProfileImageChanged) {
-            uploadImage(userDetails.profileImage, 'user', 'small').subscribe((downloadableUrl) => {
-                userDetails.profileImage = downloadableUrl;
+        validateNumber().then((res) => {
+            if (IsProfileImageChanged) {
+                uploadImage(userDetails.profileImage, 'user', 'small').subscribe((downloadableUrl) => {
+                    userDetails.profileImage = downloadableUrl;
+                    updateUser(userDetails.key, userDetails).subscribe(() => {
+                        dispatch(disableLoading());
+                        dispatch(signupUser(userDetails));
+                        history.push(({
+                            pathname: '/profile',
+                            state: null
+                        }));
+                    })
+                })
+            } else {
                 updateUser(userDetails.key, userDetails).subscribe(() => {
                     dispatch(disableLoading());
                     dispatch(signupUser(userDetails));
@@ -92,17 +122,19 @@ export default function EditProfile() {
                         state: null
                     }));
                 })
-            })
-        } else {
-            updateUser(userDetails.key, userDetails).subscribe(() => {
-                dispatch(disableLoading());
-                dispatch(signupUser(userDetails));
-                history.push(({
-                    pathname: '/profile',
-                    state: null
-                }));
-            })
-        }
+            }
+        }).catch(() => {
+            //number already used
+            dispatch(displayNotification({
+                msg: "Phone number already used.",
+                type: NOTIFICATION_ERROR,
+                time: 3000
+            }));
+            dispatch(disableLoading());
+            setSignUpError('Phone number already used.');
+            return;
+        })
+
         e.preventDefault();
     }
 
@@ -121,7 +153,7 @@ export default function EditProfile() {
         const day = d.getDate();
         return (new Date(year - 50, month, day));
     }
-    
+
     function setMaxDateSelectionYear() {
         const d = new Date();
         const year = d.getFullYear();
@@ -201,7 +233,7 @@ export default function EditProfile() {
                             onChange={handleChange('phone')}
                             value={userDetails.phone}
                             variant="outlined"
-                            InputProps={{ readOnly: true }}
+                        // InputProps={{ readOnly: true }}
                         />
                     </div>
                     <div className="input-wrap">
@@ -288,23 +320,23 @@ export default function EditProfile() {
                     </div>
                     <div className="input-wrap">
                         <div className="dob-wrap">
-                        <MuiPickersUtilsProvider
-                            utils={DateFnsUtils}
-                        >
-                            <KeyboardDatePicker
-                                margin="normal"
-                                minDate={setMinDateSelectionYear()}
-                                maxDate={setMaxDateSelectionYear()}
-                                id="date"
-                                label="Your date of birth"
-                                format="MM/dd/yyyy"
-                                value={userDetails.dob}
-                                onChange={(e) => setDateOfBirth(e)}
-                                KeyboardButtonProps={{
-                                    'aria-label': 'change date',
-                                }}
-                            />
-                        </MuiPickersUtilsProvider>
+                            <MuiPickersUtilsProvider
+                                utils={DateFnsUtils}
+                            >
+                                <KeyboardDatePicker
+                                    margin="normal"
+                                    minDate={setMinDateSelectionYear()}
+                                    maxDate={setMaxDateSelectionYear()}
+                                    id="date"
+                                    label="Your date of birth"
+                                    format="MM/dd/yyyy"
+                                    value={userDetails.dob}
+                                    onChange={(e) => setDateOfBirth(e)}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                />
+                            </MuiPickersUtilsProvider>
                         </div>
                     </div>
                     <div className="input-wrap">
@@ -374,7 +406,7 @@ export default function EditProfile() {
                         </div>}
                         <div className="submit-btn clearfix">
                             <Button variant="contained" type="submit" color="primary" >Update
-                            <ArrowRightSharpIcon />
+                                <ArrowRightSharpIcon />
                             </Button>
                         </div>
                     </div>

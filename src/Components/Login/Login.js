@@ -672,7 +672,7 @@ export default function Login(props) {
                             <TextField className="input-field"
                                 required
                                 id="outlined-required-username"
-                                label="Username / Email / Phone"
+                                label="Email / Phone"
                                 onChange={handleChange('username')}
                                 value={loginCred.username}
                                 variant="outlined"
@@ -705,7 +705,7 @@ export default function Login(props) {
                         <div className="action-wrap">
                             <div className="submit-btn clearfix">
                                 <Button variant="contained" type="submit" color="primary">Sign In
-                                <ArrowRightSharpIcon />
+                                    <ArrowRightSharpIcon />
                                 </Button>
                             </div>
                             <div className="forgot-password clearfix" onClick={() => togglePwdResetLayer(true)}>

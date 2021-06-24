@@ -38,6 +38,8 @@ import {
 } from "../../Constants";
 import { uploadImage } from "../../Services/Upload.service";
 import * as $ from "jquery";
+import { sendEmail } from "../../Services/Email.service";
+import { EmailTemplate } from "../EmailTemplate/Emailer";
 import {
   FormControlLabel,
   FormLabel,
@@ -247,6 +249,40 @@ export default function Signup(props) {
     });
   };
 
+  const sendRegistrationEmail = () => {
+    try {
+      return new Promise((resolve, reject) => {
+        const emailBodyConfig = {
+          heading: `Hello, Boogaluu User we wanted to let you know that your account registered successfully with us.`,
+          content: `<div>
+                <p>Thank you for registering on Boogaluu. Now You can upload your dance video and to register for Online India Hip-Hop Dance Championship 2021 event click here</p>
+                <div class="action-btn-wrap">
+                    <a class="action" href=https://boogaluu.com/events>Register to Online India Hip-Hop Dance Championship 2021</a> 
+                </div>
+            </div>`,
+          // bodyFooterText: `<div>Please do not reply to this email with your password. We will never ask for your password, and we strongly discourage you from sharing it with anyone.</div>`
+        }
+        let payload = {
+          mailTo: userDetails.email,
+          title: 'Welcome to Boogaluu',
+          content: EmailTemplate(emailBodyConfig)
+        }
+        sendEmail(payload).subscribe((res) => {
+          if (!('error' in res)) {
+            console.log('User Email Send Successfully.');
+            resolve();
+          } else {
+            console.log('User Email Send Failed.');
+            reject();
+          }
+        })
+      });
+    } catch (e) {
+      // togglePageLoader(false);
+      console.log('email to user error: ', e);
+    }
+  }
+
   const redirection = () => {
     dispatch(signupUser(userDetails));
     dispatch(
@@ -266,6 +302,9 @@ export default function Signup(props) {
         pathname: "/",
         state: null,
       });
+    sendRegistrationEmail().then(() => {
+      console.log('email sent')
+    });
   };
 
   const setSignupUserCred = (e) => {
