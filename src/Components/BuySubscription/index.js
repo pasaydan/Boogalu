@@ -102,7 +102,7 @@ export default function BuySubsription({
                 <div className="subs-details-wrap">
                   <p>
                     Welcome, we are glad to see you. Now, you can subscribe to
-                    our application, and &npbsp;
+                    our application, and &nbsp;
                     {
                       SUBSCIPTION_PLANS_MAP[subscriptionDetails?.planType]
                         ?.modalMessage
