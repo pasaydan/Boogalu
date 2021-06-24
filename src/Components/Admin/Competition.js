@@ -328,8 +328,8 @@ export default function Competition() {
                 </Link>
             </nav>
             <div className="logoWrap">
-                <a href="/" title="boogalu home">
-                    <img src={boogaluLogo} alt="Boogalu" />
+                <a href="/" title="boogaluu home">
+                    <img src={boogaluLogo} alt="Boogaluu" />
                 </a>
             </div>
             {

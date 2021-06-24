@@ -93,7 +93,7 @@ export default function BuySubsription({
                         <IconButton className="close-modal-btn" onClick={() => handleModalClose(false)}>
                             <CloseIcon />
                         </IconButton>
-                        <h3>Boogalu Subscription</h3>
+                        <h3>Boogaluu Subscription</h3>
                         {activeStep === 1 && <div>
                             <div className="subs-details-wrap">
                                 <p>

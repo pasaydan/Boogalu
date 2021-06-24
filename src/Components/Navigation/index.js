@@ -800,7 +800,7 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
         <div className="flex-container desktop-navigation">
           <h1 title="home">
             <a href="/" onClick={(e) => onClickNav(e, "")}>
-              <img src={boogaluLogo} alt="Boogalu" />
+              <img src={boogaluLogo} alt="Boogaluu" />
             </a>
           </h1>
           {!isMobile ? (

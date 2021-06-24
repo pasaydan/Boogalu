@@ -44,7 +44,7 @@ function JudgesLogin(props) {
     return (
         <div className="judegesLoginBox">
             <a href="/" className="logo" title="Back to Home">
-                <img src={boogaluLogo} alt="Boogalu" />
+                <img src={boogaluLogo} alt="Boogaluu" />
             </a>
             <div className="loginForm">
                 <label htmlFor="judgeloginuser" className="loginLabels">

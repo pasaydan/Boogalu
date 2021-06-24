@@ -545,8 +545,8 @@ export default function UsersInfo() {
                 </Link>
             </nav>
             <div className="logoWrap">
-                <a href="/" title="boogalu home">
-                    <img src={boogaluLogo} alt="Boogalu" />
+                <a href="/" title="boogaluu home">
+                    <img src={boogaluLogo} alt="Boogaluu" />
                 </a>
             </div>
             <div className={`competition-bo-wrap clearfix ${(isAdminLoggedIn || checkAdminLogIn) && 'loggedInAdmin usersListBox'}`}>
@@ -609,7 +609,7 @@ export default function UsersInfo() {
                                     &#8592;
                                 </span>
                             </Link>
-                            List of Boogalu Users
+                            List of Boogaluu Users
                         </h1>
                         :
                         <h1>
@@ -618,7 +618,7 @@ export default function UsersInfo() {
                                     &#8592;
                                 </span>
                             </Link>
-                            Login to Manage Boogalu Users
+                            Login to Manage Boogaluu Users
                         </h1>
                 }
                 {
@@ -685,7 +685,7 @@ export default function UsersInfo() {
                                     <tbody className="emptyTbody">
                                         <tr>
                                             <td>
-                                                <p>It seems Boogalu doesn't have any users at this moment!</p>
+                                                <p>It seems Boogaluu doesn't have any users at this moment!</p>
                                             </td>
                                         </tr>
                                     </tbody>

@@ -116,7 +116,7 @@ export default function Login(props) {
     // eslint-disable-next-line no-unused-vars
     const testEmailTemplate = () => {
         const emailBodyConfig = {
-            heading: `Hello, Boogalu User we wanted to let you know that your password was changed.`,
+            heading: `Hello, Boogaluu User we wanted to let you know that your password was changed.`,
             content: `<div>
             <p>To access your account just click the link bellow and try to login using your new password.</p>
             <div class="action-btn-wrap">
@@ -430,7 +430,7 @@ export default function Login(props) {
                 }
                 let payload = {
                     mailTo: email,
-                    title: 'Boogalu- Reset Password',
+                    title: 'Boogaluu - Reset Password',
                     content: EmailTemplate(emailBodyConfig)
                 }
                 sendEmail(payload).subscribe((res) => {
@@ -457,7 +457,7 @@ export default function Login(props) {
                 const loginLink = window.location.href
                 const { email } = resetPswCookie;
                 const emailBodyConfig = {
-                    heading: `Hello, Boogalu User we wanted to let you know that your password was changed.`,
+                    heading: `Hello, Boogaluu User we wanted to let you know that your password was changed.`,
                     content: `<div>
                     <p>To access your account just click the link bellow and try to login using your new password.</p>
                     <div class="action-btn-wrap">
@@ -659,10 +659,10 @@ export default function Login(props) {
                             <ArrowBackIcon />
                         </p>
                         <a href="/" className="logo" title="Back to Home">
-                            <img src={boogaluLogo} alt="Boogalu" />
+                            <img src={boogaluLogo} alt="Boogaluu" />
                         </a>
                         <div className="heading1">Welcome Back!</div>
-                        <div className="heading2">Login to your existing Boogalu account.</div>
+                        <div className="heading2">Login to your existing Boogaluu account.</div>
                     </div>
                     <div className="form-outer clearfix">
                         <div className="input-wrap">
@@ -746,7 +746,7 @@ export default function Login(props) {
                         </div>
                     </div>
                     <div className="singupLink">
-                        New to Boogalu? <Link to="/register" className="registerLink" title="Register to Boogalu">Sign Up</Link>
+                        New to Boogaluu? <Link to="/register" className="registerLink" title="Register to Boogaluu">Sign Up</Link>
                     </div>
                 </form>
                 <div className="image-wrap">
@@ -754,7 +754,7 @@ export default function Login(props) {
                     <div className="singup-details">
                         <div className="already-login-wrap">
                             <div className="text-wrap">
-                                New to Boogalu?
+                                New to Boogaluu?
                                 <p className="sub-text">Singup and get a chance to enroll on different competitions and win awesome prizes!</p>
                             </div>
                             <Button className="singup-btn" color="primary" onClick={() => history.push('/register')}>SIGN UP</Button>
@@ -773,7 +773,7 @@ export default function Login(props) {
                     isResetClicked ?
                         <div className="forgotPwdBox">
                             <div className="logoWrap">
-                                <img src={boogaluLogo} alt="Boogalu" />
+                                <img src={boogaluLogo} alt="Boogaluu" />
                             </div>
                             <p className="closeModal" onClick={() => togglePwdResetLayer(false)}></p>
                             <h2>Enter email for reset link</h2>
@@ -798,7 +798,7 @@ export default function Login(props) {
                     isResetPasswordViewOpen ?
                         <div className="forgotPwdBox resetPwdBox">
                             <div className="logoWrap">
-                                <img src={boogaluLogo} alt="Boogalu" />
+                                <img src={boogaluLogo} alt="Boogaluu" />
                             </div>
                             <p className="closeModal" onClick={() => togglePwdResetLayer(false)}></p>
                             <h2>Reset your password</h2>

@@ -310,7 +310,7 @@ export default function Subscription() {
                 </Link>
             </nav>
             <div className="logoWrap">
-                <img src={boogaluLogo} alt="Boogalu" />
+                <img src={boogaluLogo} alt="Boogaluu" />
             </div>
             {
                 isAdminLoggedIn || checkAdminLogIn ?

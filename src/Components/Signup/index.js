@@ -421,7 +421,7 @@ export default function Signup(props) {
             <ArrowBackIcon />
           </i>
           <a href="/" className="logo" title="Back to Home">
-            <img src={boogaluLogo} alt="Boogalu" />
+            <img src={boogaluLogo} alt="Boogaluu" />
           </a>
         </div>
         {activeStep !== 6 && (

@@ -52,7 +52,7 @@ function Subscriptions(props) {
             <h4>Time To Express Your Talent on Our Platform during this Lockdown</h4>`;
         let payload = {
             mailTo: loggedInUser.email,
-            title: 'Boogalu subscription successfull',
+            title: 'Boogaluu subscription successfull',
             content: emailBody
         }
         sendEmail(payload).subscribe((res) => {
