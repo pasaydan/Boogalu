@@ -140,7 +140,7 @@ export const EmailTemplate = (emailConfig) => {
             <div class="emailHead">
                 <img src="https://i.imgur.com/IBHgHPF.jpeg" alt="dance image" />
                 <div class="logoWrap">
-                    <img src="https://boogalusite.web.app/static/media/Boogalu-logo.cb3774a0.svg" alt="Boogaluu" />
+                    <img src="https://firebasestorage.googleapis.com/v0/b/boogalusite.appspot.com/o/uploads%2FBoogaluu-logo.png?alt=media&token=03b530e5-b292-493f-baaa-0229fc3c7694" alt="Boogaluu" />
                 </div>
             </div>
             <div class="innerEmailWrap">
