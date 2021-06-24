@@ -105,7 +105,7 @@ function Comments({
       const iRequestedFollow = clickedUser.followRequestedBy.filter(
         (requestUserId) => requestUserId === loggedInUser.key
       );
-      if (iRequestedFollow) {
+      if (iRequestedFollow && iRequestedFollow.length > 0) {
         setFollowStatus("requested");
       }
     } else if (
@@ -116,7 +116,18 @@ function Comments({
       const iAmFollowing = clickedUser.following.filter(
         (followUserId) => followUserId === loggedInUser.key
       );
-      if (iAmFollowing) {
+      if (iAmFollowing && iAmFollowing.length > 0) {
+        setFollowStatus("following");
+      }
+    } else if (
+      clickedUser &&
+      clickedUser.followedBy &&
+      clickedUser.followedBy.length > 0
+    ) {
+      const iAmFollowing = clickedUser.followedBy.filter(
+        (followUserId) => followUserId === loggedInUser.key
+      );
+      if (iAmFollowing && iAmFollowing.length > 0) {
         setFollowStatus("following");
       }
     } else {
