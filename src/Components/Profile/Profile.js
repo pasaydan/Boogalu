@@ -356,10 +356,6 @@ function Profile() {
                     (followRequestedByUserId) =>
                       followRequestedByUserId === loggedInUser.key
                   );
-                console.log(
-                  "checkIfUserRequestedToFollowVideoCreator",
-                  checkIfUserRequestedToFollowVideoCreator
-                );
                 if (
                   checkIfUserRequestedToFollowVideoCreator &&
                   checkIfUserRequestedToFollowVideoCreator.length > 0
@@ -381,10 +377,6 @@ function Profile() {
             const checkIfUserFollowingVideoCreator = user?.followedBy.filter(
               (followedByUserId) => followedByUserId === loggedInUser.key
             );
-            console.log(
-              "checkIfUserFollowingVideoCreator",
-              checkIfUserFollowingVideoCreator
-            );
             if (
               checkIfUserFollowingVideoCreator &&
               checkIfUserFollowingVideoCreator.length > 0
@@ -400,10 +392,6 @@ function Profile() {
                 (followRequestedByUserId) =>
                   followRequestedByUserId === loggedInUser.key
               );
-            console.log(
-              "checkIfUserRequestedToFollowVideoCreator",
-              checkIfUserRequestedToFollowVideoCreator
-            );
             if (
               checkIfUserRequestedToFollowVideoCreator &&
               checkIfUserRequestedToFollowVideoCreator.length > 0

@@ -109,7 +109,6 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
         competitionDetails?.userSubmitedDetails?.ageGroup,
       status: "Submitted",
     };
-    console.log(competitionObj);
     if (competitionDetails.isUserEnrolled) {
       if (competitionDetails?.userSubmitedDetails?.vdo?.key) {
         const previousObj = Object.assign(
@@ -152,7 +151,6 @@ function EnrollCompetition({ handleClose, changeSelectedVdo }) {
                 toggleLoading(false);
                 sendEmailToAdmin();
                 sendEmailToUser();
-                console.log("vdo uploaded for competition suceess");
                 history.push("/profile");
               });
             } catch (e) {

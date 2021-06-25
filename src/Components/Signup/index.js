@@ -190,7 +190,6 @@ export default function Signup(props) {
               tempUserDetails.profileImage = downloadableUrl;
               registerUser(tempUserDetails).subscribe((data) => {
                 toggleLoading(false);
-                console.log("user registered success", data);
                 res(data.key);
               });
             }
@@ -202,7 +201,6 @@ export default function Signup(props) {
           };
           registerUser(tempUserDetails).subscribe((data) => {
             toggleLoading(false);
-            console.log("user registered success", data);
             res(data.key);
           });
         }
@@ -432,7 +430,6 @@ export default function Signup(props) {
     event.stopPropagation();
     event.preventDefault();
     var file = event.target.files[0];
-    console.log(file);
     if (file) {
       setUserDetails({ ...userDetails, profileImage: null });
       const reader = new FileReader();

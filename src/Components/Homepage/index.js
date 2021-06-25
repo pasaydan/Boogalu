@@ -58,7 +58,6 @@ export default function Homepage() {
                 setUserUploadedVideoList(videos);
             });
         } catch (e) {
-            console.log('Something wrong in video loading!');
             toggleLoading(false);
             dispatch(displayNotification({
                 msg: "Something went wrong! Please reload and try again!",

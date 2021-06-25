@@ -202,7 +202,6 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
         dispatch(disableLoginFlow());
       //set active route name
     });
-    console.log("Route change handler: ", listenRouteChange);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -274,7 +273,6 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
         time: 3000,
       })
     );
-    console.log("logout success");
     dispatch(logoutUser());
     setShowProfileTab(false);
     enableProfileTabMenu(false);
@@ -643,7 +641,6 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
       user.key = user.userKey;
       user.name = user.username;
       acceptFollowRequest(loggedInUser, user).subscribe((response) => {
-        console.log("response", response);
         event.target.classList.remove("loading");
         if (response) {
           let notificationData = {};
@@ -658,7 +655,6 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
           if (notificationData && Object.keys(notificationData).length > 0) {
             // Updating Nofification for user who accepted request
             updateNotification(notificationData).subscribe((response) => {
-              console.log("response", response);
               if (response && response.notified) {
                 // Updating Nofification for user whose request accepted
                 notificationData = {
@@ -669,7 +665,6 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
                 };
 
                 updateNotification(notificationData).subscribe((reponse) => {
-                  console.log("reponse", reponse);
                   fetchNotifications();
                 });
               }
@@ -690,7 +685,6 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
       user.key = user.userKey;
       user.name = user.username;
       rejectFollowRequest(loggedInUser, user).subscribe((response) => {
-        console.log("response", response);
         event.target.classList.remove("loading");
         if (response) {
           let notificationData = {};
@@ -705,7 +699,6 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
           if (notificationData && Object.keys(notificationData).length > 0) {
             // Updating Nofification for user who accepted request
             updateNotification(notificationData).subscribe((response) => {
-              console.log("response", response);
               fetchNotifications();
             });
           }
@@ -724,7 +717,6 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
       user.key = user.userKey;
       user.name = user.username;
       blockUser(loggedInUser, user).subscribe((response) => {
-        console.log("response", response);
         event.target.classList.remove("loading");
         if (response) {
           let notificationData = {};
@@ -739,7 +731,6 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
           if (notificationData && Object.keys(notificationData).length > 0) {
             // Updating Nofification for user who accepted request
             updateNotification(notificationData).subscribe((response) => {
-              console.log("response", response);
               fetchNotifications();
             });
           }
@@ -758,7 +749,6 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
       user.key = user.userKey;
       user.name = user.username;
       unFollowUser(loggedInUser, user).subscribe((response) => {
-        console.log("response", response);
         event.target.classList.remove("loading");
         if (response) {
           let notificationData = {};
@@ -773,7 +763,6 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
           if (notificationData && Object.keys(notificationData).length > 0) {
             // Updating Nofification for user who accepted request
             updateNotification(notificationData).subscribe((response) => {
-              console.log("response", response);
               fetchNotifications();
             });
           }

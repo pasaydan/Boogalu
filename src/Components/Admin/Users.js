@@ -161,7 +161,6 @@ export default function UsersInfo() {
     toggleUserFetchModalVisiblity(true);
     toggleUserDataLoading(true);
     getUploadedVideosByUserId(userKey).subscribe((list) => {
-      console.log("User Video List: ", list);
       setUsersVideoList(list);
       toggleUserDataLoading(false);
     });
@@ -222,15 +221,12 @@ export default function UsersInfo() {
       toggleLoading(true);
       // Delete Video Thumbnail
       deleteImage(thumbnailURL).subscribe((response) => {
-        console.log("response", response);
         if (response && (response.deleted || response.success)) {
           // Delete Video
           deleteVideo(videoURL).subscribe((response) => {
-            console.log("response", response);
             if (response && response.deleted) {
               // Delete Video record from `uploadedVideos` collection
               deleteUploadedVideoByVideoKey(videoKey).subscribe((response) => {
-                console.log("response", response);
                 if (response && response.deleted) {
                   sendEmailToUser(adminComment, userKey);
                 }
@@ -239,7 +235,6 @@ export default function UsersInfo() {
           });
         }
       });
-      console.log("Video delete call will go here");
     } else if (action === "userDeactivate" && confirmed) {
       console.log("User deactivate call will go here");
     }
@@ -259,11 +254,9 @@ export default function UsersInfo() {
     };
     sendEmail(payload).subscribe((res) => {
       if (!("error" in res)) {
-        console.log("User Email Send Successfully.");
         toggleLoading(false);
       } else {
         toggleLoading(false);
-        console.log("User Email Send Failed.");
       }
       fetchUsersVideoDetails(null, userKey);
     });

@@ -21,8 +21,8 @@ import { uploadImage } from "../../Services/Upload.service";
 import { FaPlus, FaEdit } from 'react-icons/fa';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import { displayNotification, removeNotification } from "../../Actions/Notification";
-import { MALE_PROFILE_DEFAULT_IMAGE, NOTIFICATION_ERROR, NOTIFICATION_SUCCCESS } from "../../Constants";
+import { displayNotification } from "../../Actions/Notification";
+import { MALE_PROFILE_DEFAULT_IMAGE, NOTIFICATION_ERROR } from "../../Constants";
 import { enableLoading, disableLoading } from "../../Actions/Loader";
 import { FormControlLabel, FormLabel, Radio, RadioGroup } from '@material-ui/core';
 import { getUserByEmail } from "../../Services/User.service";
@@ -33,7 +33,6 @@ export default function EditProfile() {
     const { state, dispatch } = useStoreConsumer();
     const history = useHistory();
     let loggedInUser = state.loggedInUser;
-    console.log("loggedInUser", loggedInUser)
     // get data from history props if redirected through google or facebook login
     if (history.location.state && (history.location.state.source === 'Facebook' || history.location.state.source === 'Google')) {
         loggedInUser.email = history.location.state.email;
@@ -49,7 +48,6 @@ export default function EditProfile() {
 
     const handleChange = (prop) => (event) => {
         setUserDetails({ ...userDetails, [prop]: event.target.value });
-        console.log(userDetails)
     };
 
     const handleClickShowPassword = (prop) => {
@@ -80,9 +78,9 @@ export default function EditProfile() {
 
     const validateNumber = () => {
         return new Promise((res, rej) => {
-            if (loggedInUser.phone != userDetails.phone) {
+            if (loggedInUser.phone !== userDetails.phone) {
                 getUserByPhone(userDetails.phone).subscribe((userData) => {
-                    if (userData?.length != 0 && userData[0].email != loggedInUser.email) {
+                    if (userData?.length !== 0 && userData[0].email !== loggedInUser.email) {
                         rej(false);
                     } else {
                         res(true);
@@ -166,7 +164,6 @@ export default function EditProfile() {
         event.stopPropagation();
         event.preventDefault();
         var file = event.target.files[0];
-        console.log(file);
         if (file) {
             setUserDetails({ ...userDetails, profileImage: null });
             const reader = new FileReader();

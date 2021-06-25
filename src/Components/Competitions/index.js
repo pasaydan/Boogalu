@@ -137,7 +137,6 @@ function Competitions() {
     if (event) {
       event.stopPropagation();
     }
-    // console.log('event data: ', event);
     if (data?.id) {
       setEventData(data);
       toggleEventModal(true);
@@ -191,7 +190,6 @@ function Competitions() {
     }
   };
   const afterPaymentResponse = (response) => {
-    // console.log("response", response);
     let updatedUserData = {
       ...loggedInUser,
     };
@@ -265,7 +263,6 @@ function Competitions() {
             time: 4000,
           })
         );
-        // console.log('updateUser updatedUserData>>>>>> ', updatedUserData);
       });
     } catch (e) {
       console.log("Error: ", e);
@@ -305,7 +302,6 @@ function Competitions() {
             loggedInUser,
             afterPaymentResponse
           ).subscribe((response) => {
-            // console.log('postOrder response >>>>>', response);
             toggleButtonLoading("");
           });
         } catch (e) {

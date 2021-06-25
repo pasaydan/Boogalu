@@ -330,9 +330,6 @@ function Feeds() {
       }, 5000);
     }
   };
-  useEffect(() => {
-    console.log("clickedUserDetails", clickedUserDetails);
-  }, [clickedUserDetails]);
   return (
     <div className="userDashBoardAfterLogin paddingTop90">
       <Loader value={isLoaderActive} />

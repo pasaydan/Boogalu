@@ -126,7 +126,6 @@ export default function Login(props) {
             bodyFooterText: `<div>Please do not reply to this email with your password. We will never ask for your password, and we strongly discourage you from sharing it with anyone.</div>`
         }
         const emailTemplate = EmailTemplate(emailBodyConfig);
-        console.log(emailTemplate);
     }
 
     function shouldCloseInfoModal(navigationValue) {
@@ -168,8 +167,7 @@ export default function Login(props) {
             }
             setThirdPartyResponse(loginResponse);
         } else {
-            setLoginError('Sorry there was a problem with your facebook login request.')
-            console.log("facebook login error", response);
+            setLoginError('Sorry there was a problem with your facebook login request.');
         }
     }
 

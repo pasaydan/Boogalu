@@ -247,7 +247,6 @@ export default function Competition() {
                 toggleSaveLoading(false);
                 setFormMessageClass("success");
                 setFormMessage("Competition created successfully!");
-                console.log("competition success", response);
                 setCompetitionData(initialCompetitionData);
               });
             }

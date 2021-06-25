@@ -138,7 +138,6 @@ function Profile() {
     let data = {};
     updateUser(userObj.key, userObj).subscribe((response) => {
       if (response.updated) {
-        console.log("Follow Request Approved by logged in user updated");
         if (requestRaisedByUser) {
           if (!requestRaisedByUser.following) {
             data = { ...requestRaisedByUser, following: [loggedInUser.key] };
@@ -162,7 +161,6 @@ function Profile() {
     setShowProfileTab(false);
     setOpenUploadCompModalFor(null);
   });
-  console.log("loggedInUser", loggedInUser);
   useEffect(() => {
     if (!loggedInUser || !loggedInUser.email) history.push("/login");
     if (loggedInUser && loggedInUser.email) {
@@ -173,6 +171,7 @@ function Profile() {
         const userNameFromPath =
           history.location.pathname.split("/profile/")[1];
         if (loggedInUserName !== userNameFromPath) {
+          // eslint-disable-next-line no-unused-vars
           const emailFromPath = window.atob(userNameFromPath);
           // const createEmailFromUserName
         }
@@ -257,7 +256,6 @@ function Profile() {
             }
           });
           toggleLoading(false);
-          console.log("userVdoCopy", userVdoCopy);
           setUserUploadedVideoList(userVdoCopy);
         });
       } else toggleLoading(false);

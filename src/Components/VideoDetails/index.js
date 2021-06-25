@@ -56,7 +56,6 @@ function Comments({
   };
 
   const redirectToProfile = (path) => {
-    console.log("path", path);
     history.push(path);
   };
 

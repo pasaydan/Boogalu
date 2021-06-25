@@ -25,7 +25,6 @@ function Subscriptions(props) {
   const [buttonLoadingClass, toggleButtonLoading] = useState("");
   const [activeStep, setActiveStep] = useState(1);
   const [isLoaderActive, toggleLoading] = useState(false);
-  console.log(" loggedInUser >>>>>", loggedInUser);
   const sendEmailToAdmin = () => {
     let emailBody = `<div>
             <h6 style="font-size: 17px;margin-bottom: 26px;">User subscribed for ${state.activeSubscription.name}</h6>
@@ -99,7 +98,6 @@ function Subscriptions(props) {
           dispatch(disableLoginFlow());
           setActiveStep(1);
           setShowSubscriptionDetails(true);
-          console.log(subscriptionsList);
         }
       });
     } catch (e) {
@@ -180,11 +178,8 @@ function Subscriptions(props) {
   };
 
   const handlerFn = (response, planType, isRenew) => {
-    console.log("response", response);
     try {
       updatePayment(response).subscribe((res) => {
-        // const responseData = res.data;
-        console.log("postOrder response >>>>>", response);
         const userDetails = {
           ...loggedInUser,
           subscribed: true,
@@ -210,7 +205,6 @@ function Subscriptions(props) {
         } else userDetails.subscriptions = [userSub];
         updateUser(userDetails.key, userDetails).subscribe(() => {
           dispatch(loginUser(userDetails));
-          console.log("updateUser userDetails>>>>>> ", userDetails);
           if (userDetails.subscribed) {
             setActiveStep(2);
             setShowSubscriptionDetails(true);
@@ -243,7 +237,6 @@ function Subscriptions(props) {
         handlerFn,
         isRenew
       ).subscribe((response) => {
-        console.log("postOrder response >>>>>", response);
         toggleButtonLoading("");
       });
     } catch (e) {

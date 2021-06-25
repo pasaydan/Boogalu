@@ -51,10 +51,8 @@ export default function BuySubsription({
       ageGroup: competitionDetails.ageGroup,
       status: "Submitted",
     };
-    console.log(competitionObj);
     saveCompetition(competitionObj).subscribe((response) => {
       toggleLoading(false);
-      console.log("vdo uploaded for competition suceess");
       dispatch(enableLoginFlow({ type: "profile-competition" }));
       history.push("/profile");
     });

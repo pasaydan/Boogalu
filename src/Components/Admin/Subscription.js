@@ -169,7 +169,6 @@ export default function Subscription() {
     }
 
     async function saveDetails(e) {
-        console.log(Subscription)
         // upload Subscription image to bucket
         setSubmitFormMessage('');
         try {

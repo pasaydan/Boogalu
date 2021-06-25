@@ -1,11 +1,8 @@
 import {
   Button,
   ClickAwayListener,
-  Grow,
   MenuItem,
-  MenuList,
-  Paper,
-  Popper,
+  MenuList
 } from "@material-ui/core";
 import React, { useState } from "react";
 import {
@@ -91,7 +88,6 @@ const FollowButton = (props) => {
           }
           if (notificationData && Object.keys(notificationData).length > 0) {
             updateNotification(notificationData).subscribe((reponse) => {
-              console.log("reponse", reponse);
               // callback here
               onClickHandler();
             });
@@ -107,7 +103,6 @@ const FollowButton = (props) => {
     // user.name = user.username;
     toggleLoading(true);
     blockUser(loggedInUser, user).subscribe((response) => {
-      console.log("response", response);
       if (response) {
         let notificationData = {};
         if (response && response.blocked) {
@@ -134,7 +129,6 @@ const FollowButton = (props) => {
     // user.name = user.username;
     toggleLoading(true);
     unFollowUser(loggedInUser, user).subscribe((response) => {
-      console.log("response", response);
       if (response) {
         let notificationData = {};
         if (response && response.unfollowed) {
@@ -148,7 +142,6 @@ const FollowButton = (props) => {
         if (notificationData && Object.keys(notificationData).length > 0) {
           // Updating Nofification for user who accepted request
           updateNotification(notificationData).subscribe((response) => {
-            console.log("response", response);
             onClickHandler();
           });
         }
@@ -162,7 +155,6 @@ const FollowButton = (props) => {
     // user.name = user.username;
     toggleLoading(true);
     cancelFollowRequest(loggedInUser, user).subscribe((response) => {
-      console.log("response", response);
       if (response) {
         let notificationData = {};
         if (response && response.cancelled) {
@@ -176,7 +168,6 @@ const FollowButton = (props) => {
         if (notificationData && Object.keys(notificationData).length > 0) {
           // Updating Nofification for user who accepted request
           updateNotification(notificationData).subscribe((response) => {
-            console.log("response", response);
             onClickHandler();
           });
         }
@@ -235,49 +226,6 @@ const FollowButton = (props) => {
               </ClickAwayListener>
             </div> : ''
           }
-          {/* <Popper
-            open={open}
-            anchorEl={anchorRef.current}
-            role={undefined}
-            transition
-            disablePortal
-            placement='bottom'
-            style={{ zIndex: 15 }}
-          >
-            {({ TransitionProps, placement }) => (
-              <Grow
-                {...TransitionProps}
-                style={{
-                  transformOrigin: "center bottom"
-                }}
-              >
-                <Paper>
-                  <ClickAwayListener onClickAway={handleClose}>
-                    <MenuList
-                      autoFocusItem={open}
-                      id="menu-list-grow"
-                      onKeyDown={handleListKeyDown}
-                    >
-                      {status === "requested" && (
-                        <MenuItem id="cancelrequest" onClick={handleClose}>
-                          Cancel Request
-                        </MenuItem>
-                      )}
-
-                      {status === "following" && (
-                        <MenuItem id="unfollow" onClick={handleClose}>
-                          Unfollow
-                        </MenuItem>
-                      )}
-                      <MenuItem id="block" onClick={handleClose}>
-                        Block
-                      </MenuItem>
-                    </MenuList>
-                  </ClickAwayListener>
-                </Paper>
-              </Grow>
-            )}
-          </Popper> */}
         </div>
       )}
     </>

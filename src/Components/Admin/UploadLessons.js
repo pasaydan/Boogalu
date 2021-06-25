@@ -264,12 +264,12 @@ export default function UploadLessons() {
           view === "rearView" ||
           view === "rearMirrorView" ||
           view === "vrView") &&
-        file.size > 220000000
+        file.size > 420000000
       ) {
-        // TODO: currently upload limit is 200 MB will need to increase to 500 MB for admin
+        // TODO: currently upload limit is 400 MB will need to increase to 500 MB for admin
         dispatch(
           displayNotification({
-            msg: "Video file size is too big, should not exceed 200 MB!",
+            msg: "Video file size is too big, should not exceed 400 MB!",
             type: NOTIFICATION_ERROR,
             time: 5000,
           })
@@ -384,7 +384,6 @@ export default function UploadLessons() {
 
   const getLessonByNameCall = (name) => {
     getLessonByName(name).subscribe((response) => {
-      console.log(" response received from get LessonByName", response);
       if (Object.keys(response).length === 0) {
         uploadLessonVideos();
       } else {
@@ -400,7 +399,6 @@ export default function UploadLessons() {
     try {
       toggleLoading(true);
       getAllLessons().subscribe((lessons) => {
-        console.log("LESSONS LISTS: ", lessons);
         toggleLoading(false);
         if (lessons.length) {
           setLessonsList(lessons);
@@ -474,7 +472,6 @@ export default function UploadLessons() {
 
   const saveLessonToDB = (lessonObj) => {
     saveLesson(lessonObj).subscribe((response) => {
-      console.log("vedio data saved to db", response);
       setSelectedVideoData(lessonFormDetails);
       setVideosToUpload(initialVideosToUploadData);
       setVideoUploadProgess(initialVideoUploadProgress);
@@ -733,7 +730,7 @@ export default function UploadLessons() {
                     Lesson Videos
                     <sup className="mandatAsterisk">*</sup>
                     <span className="infoMessage">
-                      ( Maximum size of each video should be 200 MB )
+                      ( Maximum size of each video should be 400 MB )
                     </span>
                   </label>
                   <div className="uploadContainer">

@@ -34,7 +34,6 @@ export default function CompetitionsDetails({
   const uploaderRef = useRef(null);
   const history = useHistory();
   const competitionDetails = state.activeCompetition;
-  console.log(competitionDetails);
   const loggedInUser = state.loggedInUser;
   const [userUploadedVdos, setUserUploadedVideoList] = useState([]);
   const tncRef = useRef();
@@ -208,7 +207,6 @@ export default function CompetitionsDetails({
   async function onChangeFile(event) {
     event.preventDefault();
     var file = event.target.files[0];
-    console.log(file);
     if (file) {
       if (file.size > 52428800) {
         alert("File is too big!");

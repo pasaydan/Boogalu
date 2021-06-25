@@ -159,7 +159,6 @@ export default function VideoUploader({
       setShowVdoUploadProgress(true);
       if (response.donePercentage) {
         setProgress(response.donePercentage);
-        console.log("Upload is " + response.donePercentage + "% done");
       }
       if (response.downloadURL && !UploadedVdoUrl) {
         sendEmailToAdmin(response.downloadURL);
@@ -175,7 +174,6 @@ export default function VideoUploader({
           thumbnail: thumbnailImage,
         };
         saveUploadedVideo(uploadObj).subscribe((response) => {
-          console.log("vedio data saved to db", response);
           toggleLoading(false);
           const pathName = history?.location?.pathname.split("/")[1];
           pathName.includes("profile") &&
@@ -187,8 +185,6 @@ export default function VideoUploader({
         });
       }
     });
-    console.log(SelectedVideo);
-    console.log(loggedInUser);
   }
 
   const onThumbnailImgSelect = (picture) => {
