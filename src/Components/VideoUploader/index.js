@@ -24,6 +24,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Loader from "../Loader";
+import { logAnalyticsEvent } from "../../Services/analytics.service";
 
 export default function VideoUploader({
   selectedVdo,
@@ -50,6 +51,15 @@ export default function VideoUploader({
   //         clearInterval(timer);
   //     };
   // }, []);
+
+
+  useEffect(() => {
+    logAnalyticsEvent('page_view', {
+      page_location: window.location.href,
+      page_path: 'upload-video',
+      page_title: 'HomePage' + '-' + window.location.href
+    });
+  }, [])
 
   useEffect(() => {
     dispatch(disableLoginFlow());
@@ -259,9 +269,8 @@ export default function VideoUploader({
               ( Video size should not exceed 200 MB )
             </span>
             <div
-              className={`uploader-wrap ${
-                SelectedVideo.file ? "selected-file" : ""
-              }`}
+              className={`uploader-wrap ${SelectedVideo.file ? "selected-file" : ""
+                }`}
             >
               {!SelectedVideo.file ? (
                 <div className="upload-input-wrap">

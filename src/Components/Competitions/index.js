@@ -20,6 +20,7 @@ import { displayNotification } from "../../Actions/Notification";
 import { NOTIFICATION_INFO, NOTIFICATION_SUCCCESS } from "../../Constants";
 import { EmailTemplate } from "../EmailTemplate/Emailer";
 import { sendEmail } from "../../Services/Email.service";
+import { logAnalyticsEvent } from "../../Services/analytics.service";
 import Loader from "../Loader";
 const eventsList = require("../../Data/events.json");
 
@@ -56,6 +57,14 @@ function Competitions() {
       });
     });
   };
+
+  useEffect(() => {
+    logAnalyticsEvent('page_view', {
+      page_location: window.location.href,
+      page_path: 'competitions',
+      page_title: 'HomePage' + '-' + window.location.href
+    });
+  }, [])
 
   useEffect(() => {
     $("html,body").animate(

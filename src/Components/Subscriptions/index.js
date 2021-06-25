@@ -12,6 +12,7 @@ import { timeStampToNewDate } from "../../Services/Utils";
 import { postOrder, updatePayment } from "./../../Services/Razorpay.service";
 import { updateUser } from "../../Services/User.service";
 import { loginUser } from "../../Actions/User/index";
+import { logAnalyticsEvent } from "../../Services/analytics.service";
 import * as $ from "jquery";
 import Loader from "../Loader";
 
@@ -25,6 +26,15 @@ function Subscriptions(props) {
   const [buttonLoadingClass, toggleButtonLoading] = useState("");
   const [activeStep, setActiveStep] = useState(1);
   const [isLoaderActive, toggleLoading] = useState(false);
+
+  useEffect(() => {
+    logAnalyticsEvent('page_view', {
+      page_location: window.location.href,
+      page_path: 'subscriptions',
+      page_title: `HomePage-${window.location.href}` 
+    });
+  }, [])
+
   const sendEmailToAdmin = () => {
     let emailBody = `<div>
             <h6 style="font-size: 17px;margin-bottom: 26px;">User subscribed for ${state.activeSubscription.name}</h6>
@@ -137,10 +147,10 @@ function Subscriptions(props) {
 
             if (
               subDateAfter1Month.getDate() >= new Date().getDate() && //if plan date is grater than today
-              subDateAfter1Month.getMonth() ===
+                subDateAfter1Month.getMonth() ===
                 twoDaysAfterCurrentDate.getMonth()
                 ? subDateAfter1Month.getDate() <=
-                  twoDaysAfterCurrentDate.getDate()
+                twoDaysAfterCurrentDate.getDate()
                 : subDateAfter1Month <= twoDaysAfterCurrentDate
             ) {
               //if same month then check only dayes other wise check full date month (check is runs only in 2 days condition for testing)
@@ -313,9 +323,8 @@ function Subscriptions(props) {
               AvailableSubscriptions.map((subscription) => {
                 return (
                   <div
-                    className={`flex-2 plan ${subscription.planType} ${
-                      subscription.isSubscribed ? "alreadySubscribed" : ""
-                    }`}
+                    className={`flex-2 plan ${subscription.planType} ${subscription.isSubscribed ? "alreadySubscribed" : ""
+                      }`}
                     onClick={() => setSubscription(subscription)}
                     key={subscription.key}
                   >
@@ -380,9 +389,8 @@ function Subscriptions(props) {
                       </div>
                     ) : (
                       <div
-                        className={`btn primary-light ${
-                          subscription.isSubscribed ? "subscribed" : ""
-                        }`}
+                        className={`btn primary-light ${subscription.isSubscribed ? "subscribed" : ""
+                          }`}
                       >
                         {subscription.isSubscribed
                           ? "Already subscribed"

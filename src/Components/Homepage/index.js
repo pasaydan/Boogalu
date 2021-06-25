@@ -13,6 +13,7 @@ import { useStoreConsumer } from '../../Providers/StateProvider';
 import { displayNotification, removeNotification } from "../../Actions/Notification";
 import { NOTIFICATION_ERROR } from "../../Constants";
 import { isElementInViewport } from '../../helpers';
+import { logAnalyticsEvent } from "../../Services/analytics.service";
 
 const isAppAlreadyLoaded = JSON.parse(localStorage.getItem('isAppLoaded'));
 
@@ -51,6 +52,11 @@ export default function Homepage() {
     const cardLessonRef = useRef(null);
 
     useEffect(() => {
+        logAnalyticsEvent('page_view', {
+            page_location: window.location.href,
+            page_path: '/',
+            page_title: 'HomePage' + '-' + window.location.href
+        });
         toggleLoading(true);
         try {
             getUploadedVideosList().subscribe((videos) => {
@@ -114,7 +120,7 @@ export default function Homepage() {
         // } else {
         //     toggleMobile(true);
         // }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     function onWindowScroll(event) {
@@ -181,7 +187,7 @@ export default function Homepage() {
             behavior: 'smooth'
         });
     }
-    
+
     function scrollToNextSection(event, nextSection) {
         event.stopPropagation();
         if (nextSection.current) {
@@ -196,9 +202,9 @@ export default function Homepage() {
         <div className="homepage clearfix">
             {
                 isLoaderActive ?
-                <Loader /> : ''
+                    <Loader /> : ''
             }
-            <div className={`homepage-display-1 ${firstImageLoaded} ${loadImageClass} ${!UserUploadedVideoList.length ? 'no-video': ''}`}>
+            <div className={`homepage-display-1 ${firstImageLoaded} ${loadImageClass} ${!UserUploadedVideoList.length ? 'no-video' : ''}`}>
                 <section className={`main-bg-message ${defaultFirstMessageLoaded} ${firstMessageLoaded} ${loadMessageBox}`}>
                     <div className="boxContent">
                         <h2>Compete, learn &amp; perform</h2>
@@ -215,7 +221,7 @@ export default function Homepage() {
                         history.push('/login');
                     }}>Get Started</button>
                     <div className={`flex-container video-main-wrap ${firstVideoAnimateLoaded} ${videoAnimateClass}`}> */}
-                        {/* {UserUploadedVideoList.length !== 0 ?
+                    {/* {UserUploadedVideoList.length !== 0 ?
                             <div className="feed-wrap">
                                 {UserUploadedVideoList && UserUploadedVideoList.map((vdo) => {
                                     return <div key={vdo.key} className="vdo-card">
@@ -236,8 +242,8 @@ export default function Homepage() {
                             :
                             ''}
                     </div> */}
-                    <div 
-                        className="scrollToNexBtn" 
+                    <div
+                        className="scrollToNexBtn"
                         title="Scroll to Showcase"
                         onClick={(e) => scrollToNextSection(e, sectionServiceRef)}
                     >
@@ -260,7 +266,7 @@ export default function Homepage() {
                             <p className="title">Showcase</p>
                             <p className="para">An opportunity to showcase your talent and get visibility and fame by uploading your dance videos.</p>
                             <button title="login and explore" onClick={(e) => history.push('/login')}>
-                                Let's explore 
+                                Let's explore
                                 <i><BsArrowRight /></i>
                             </button>
                         </div>
@@ -302,7 +308,7 @@ export default function Homepage() {
                     <div className="othersInnerSection">
                         <div className="childs">
                             <div className="imgWrap">
-                                <img src={LessonsImg} alt="lessons"/>
+                                <img src={LessonsImg} alt="lessons" />
                             </div>
                         </div>
                         <div className="childs">
@@ -345,7 +351,7 @@ export default function Homepage() {
                         </div>
                         <div className="childs">
                             <div className="imgWrap">
-                                <img src={CompImg} alt="competition"/>
+                                <img src={CompImg} alt="competition" />
                             </div>
                         </div>
                     </div>

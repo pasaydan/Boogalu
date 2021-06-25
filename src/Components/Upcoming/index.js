@@ -16,6 +16,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import * as $ from "jquery";
 import Loader from "../Loader";
+import { logAnalyticsEvent } from "../../Services/analytics.service";
 
 const FILTER_BY = require("../../Data/lessonFilters.json");
 
@@ -42,6 +43,14 @@ function Upcoming() {
   const paidFilterBtnRef = useRef();
   const otherFiltersBtnRef = useRef();
   const premiumFilterBtnRef = useRef();
+
+  useEffect(() => {
+    logAnalyticsEvent('page_view', {
+      page_location: window.location.href,
+      page_path: '/events',
+      page_title: 'HomePage' + '-' + window.location.href
+    });
+  }, [])
 
   useEffect(() => {
     $("html,body").animate(
@@ -305,9 +314,8 @@ function Upcoming() {
 
   return (
     <div
-      className={`lessons lessons-wrap ${
-        !isDataPresentAndFilterApplied ? "flexBox" : ""
-      }`}
+      className={`lessons lessons-wrap ${!isDataPresentAndFilterApplied ? "flexBox" : ""
+        }`}
       id="upcomingLessons"
     >
       <Loader value={isLoaderActive} />
@@ -402,41 +410,41 @@ function Upcoming() {
               <div className="filterInnerWrap">
                 {FILTER_BY && FILTER_BY?.filterBy.length
                   ? FILTER_BY?.filterBy.map((filterItem) => {
-                      return (
-                        <div className="filterItem" key={filterItem?.id}>
-                          <p className="filterTitle">{filterItem?.name}</p>
-                          <div className="optionsWrap">
-                            <RadioGroup
-                              className="radioGroupControls"
-                              aria-label={`aria label for ${filterItem?.name}`}
-                              name={filterItem?.id}
-                              value={
-                                filterItem?.id === "expertiseLevel"
-                                  ? levelFilterValue
-                                  : styleFilterValue
-                              }
-                              defaultValue={filterItem?.values[0]?.id}
-                              onChange={(e) =>
-                                handleOtherFilters(e, filterItem?.id)
-                              }
-                            >
-                              {filterItem?.values && filterItem?.values.length
-                                ? filterItem.values.map((option) => {
-                                    return (
-                                      <FormControlLabel
-                                        key={option?.id}
-                                        value={option?.id}
-                                        control={<Radio />}
-                                        label={option?.label}
-                                      />
-                                    );
-                                  })
-                                : ""}
-                            </RadioGroup>
-                          </div>
+                    return (
+                      <div className="filterItem" key={filterItem?.id}>
+                        <p className="filterTitle">{filterItem?.name}</p>
+                        <div className="optionsWrap">
+                          <RadioGroup
+                            className="radioGroupControls"
+                            aria-label={`aria label for ${filterItem?.name}`}
+                            name={filterItem?.id}
+                            value={
+                              filterItem?.id === "expertiseLevel"
+                                ? levelFilterValue
+                                : styleFilterValue
+                            }
+                            defaultValue={filterItem?.values[0]?.id}
+                            onChange={(e) =>
+                              handleOtherFilters(e, filterItem?.id)
+                            }
+                          >
+                            {filterItem?.values && filterItem?.values.length
+                              ? filterItem.values.map((option) => {
+                                return (
+                                  <FormControlLabel
+                                    key={option?.id}
+                                    value={option?.id}
+                                    control={<Radio />}
+                                    label={option?.label}
+                                  />
+                                );
+                              })
+                              : ""}
+                          </RadioGroup>
                         </div>
-                      );
-                    })
+                      </div>
+                    );
+                  })
                   : ""}
               </div>
               <div className="filterActionWrap">
