@@ -77,19 +77,19 @@ function Footer() {
                     </ul>
                     <ul className="menu-lists menu-lists-2">
                         <li>
-                            <a href="https://www.instagram.com/choreo_culture/?hl=en" title="Follow us on Insta" target="_blank" rel="noreferrer">
+                            <a href="https://www.instagram.com/boogaluapp/" title="Follow us on Insta" target="_blank" rel="noreferrer">
                                 <i><FaInstagramSquare /></i>
                                 <span>Instagram</span>
                             </a>
                         </li>
                         <li>
-                            <a href="https://www.youtube.com/user/anjanevents" title="Subscribe our channel" target="_blank" rel="noreferrer">
+                            <a href="https://www.youtube.com/channel/UCne7xnq9qwMsDUNg5lzNnmw" title="Subscribe our channel" target="_blank" rel="noreferrer">
                                 <i><FaYoutube /></i>
                                 <span>Youtube</span>
                             </a>
                         </li>
                         <li>
-                            <a href="https://www.facebook.com/choreocultureindia/" title="Like our FB page" target="_blank" rel="noreferrer">
+                            <a href="https://www.facebook.com/profile.php?id=100069963219467" title="Like our FB page" target="_blank" rel="noreferrer">
                                 <i><FaFacebookSquare /></i>
                                 <span>Facebook</span>
                             </a>
@@ -98,9 +98,8 @@ function Footer() {
                 </div>
                 <div className="copyright-wrap">
                     &#169; 2021 &nbsp;  
-                    <a href="https://www.choreoculture.com/" target="_blank" rel="noreferrer">
-                        CHOREOCULTURE STUDIO.
-                    </a> ALL RIGHTS RESERVED
+                    BOOGALUU,&nbsp;
+                    ALL RIGHTS RESERVED
                 </div>
             </footer>
         </div>

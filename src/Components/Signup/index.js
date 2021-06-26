@@ -71,7 +71,6 @@ export default function Signup(props) {
   ) {
     loggedInUser.email = history.location.state.email;
     loggedInUser.name = history.location.state.name;
-    // setNeedToRegisterError('You are not registered yet, Please register with Choreoculture.')
   }
   const [userDetails, setUserDetails] = useState(loggedInUser);
   const [SignUpError, setSignUpError] = useState(null);
@@ -754,7 +753,7 @@ export default function Signup(props) {
             <div className="heading-outer">
               <div className="heading1">Let's Get Started!</div>
               <div className="heading2">
-                Create an account to Choreoculture to get all features.
+                Create an account to Boogaluu to get all features.
               </div>
             </div>
             {/* {NeedToRegisterError && <div className="login-error">
