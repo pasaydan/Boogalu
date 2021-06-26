@@ -125,6 +125,7 @@ export default function Login(props) {
         </div>`,
             bodyFooterText: `<div>Please do not reply to this email with your password. We will never ask for your password, and we strongly discourage you from sharing it with anyone.</div>`
         }
+        // eslint-disable-next-line no-unused-vars
         const emailTemplate = EmailTemplate(emailBodyConfig);
     }
 

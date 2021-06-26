@@ -95,7 +95,7 @@ export default function Signup(props) {
     logAnalyticsEvent('page_view', {
       page_location: window.location.href,
       page_path: '/',
-      page_title: 'HomePage' + '-' + window.location.href
+      page_title: `HomePage-${window.location.href}`
     });
   }, [])
   function setDateOfBirth(date) {

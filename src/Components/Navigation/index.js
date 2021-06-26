@@ -167,6 +167,7 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
   }, [isMobile]);
 
   useEffect(() => {
+    // eslint-disable-next-line no-unused-vars
     const listenRouteChange = history.listen((location, action) => {
       const pathName = location?.pathname.split("/")[1];
       if (

@@ -2,9 +2,12 @@
     min-height: calc(100vh - 80px);
     .container {
         padding: 40px;
-        h1 {
+        h1, h2 {
             margin: 0 0 20px 0;
             text-align: center;
+        }
+        h2 {
+            text-transform: uppercase;
         }
         p {
             font-size: 14px;

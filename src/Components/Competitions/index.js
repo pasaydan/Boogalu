@@ -62,7 +62,7 @@ function Competitions() {
     logAnalyticsEvent('page_view', {
       page_location: window.location.href,
       page_path: 'competitions',
-      page_title: 'HomePage' + '-' + window.location.href
+      page_title: `HomePage-${window.location.href}`
     });
   }, [])
 
