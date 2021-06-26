@@ -5,12 +5,10 @@ import * as $ from 'jquery';
 
 function Footer() {
     const history = useHistory();
-    
     useEffect(() => {
         setTimeout(() => {
             const pathName = history?.location?.pathname.split('/')[1];
             const footerLinks = document.querySelectorAll('.js-page-links li');
-
             if (footerLinks && footerLinks.length) {
                 footerLinks.forEach((ele) => {
                     const getData = ele.getAttribute('data-name').toLocaleLowerCase();
@@ -19,7 +17,6 @@ function Footer() {
                     }
                 });
             }
-
         }, 1000);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
