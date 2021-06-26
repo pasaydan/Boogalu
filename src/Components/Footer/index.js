@@ -98,7 +98,7 @@ function Footer() {
                 </div>
                 <div className="copyright-wrap">
                     &#169; 2021 &nbsp;  
-                    BOOGALUU,&nbsp;
+                    BOOGALUU PVT. LTD.&nbsp;
                     ALL RIGHTS RESERVED
                 </div>
             </footer>
