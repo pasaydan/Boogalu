@@ -5,18 +5,19 @@ export default function RefundPolicy() {
         <div className="terms-page charcoal-bg paddingTop90">
             <div className="container">
                 <h1>Cancellation/Refund Policy</h1>
-
-                CANCELLATION<br/>
                 <p>
-                    Our policy lasts 10 days. If 10 days have gone by since your purchase, unfortunately we can’t offer you a refund or your subscription cannot be cancelled.
+                    Students who register for a training course occasionally change their mind for one reason or another. Regardless of the reason, we believe there should be a definite refund policy for students who decide not to take the course. Refunds for online courses are only given under the following circumstances:
                 </p>
+                <ul>
+                    <li>
+                        The student/user did not access any portion of the online course AND the student/user requests a refund, in writing via email within three business days from the date of the registration (email notification sent). There will be no refunds for any online courses (or curricula) once a course has been accessed in any manner.
+                    </li>
+                    <li>
+                        A full refund will be issued less an administrative fee of 50%. 
+                    </li>
+                </ul>
                 <p>
-                    To complete your cacnellation and refund, we require a receipt or proof of purchase.
-                </p>
-
-                REFUNDS (if applicable)<br/>
-                <p>
-                    Once your receipt is confirmed and valid and that is following the 10 days limit you are eligible for refund.
+                    Please understand that with the enrollment and accessing of your online course, you have read and agree to the aforementioned refund policy.
                 </p>
                 <p>
                     If you’ve done all of this and you still have not received your refund yet, please contact us at <a href="mailto:info@boogaluu.com">info@boogaluu.com</a>.
