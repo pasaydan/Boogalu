@@ -824,13 +824,14 @@ export default function UsersInfo() {
                                 >
                                   <FiEye />
                                 </p>
-                                <p
+                                {/* TODO: need to add this feature to deactivate users */}
+                                {/* <p
                                   className="blockUserIcon"
                                   title="De-activate user"
                                   onClick={(e) => deactivateUser(e, item.key)}
                                 >
                                   <FiUserX />
-                                </p>
+                                </p> */}
                                 <p
                                   className="provideGift"
                                   title="Give offer to user"
