@@ -286,4 +286,3 @@ export function updateLessonPlayTime(id, playedTimeData) {
         });
     });
 }
-

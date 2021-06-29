@@ -21,6 +21,7 @@ import {
   getUserByPhone,
   getUserByEmail,
   updateUser,
+  getUsersLessonsOnly
 } from "../../Services/User.service";
 import { displayNotification } from "../../Actions/Notification";
 import { MdDeleteForever, MdSearch, MdRefresh } from "react-icons/md";
@@ -48,6 +49,7 @@ export default function UsersInfo() {
   const [userListData, setUsersList] = useState(null);
   const [isUserDataLoading, toggleUserDataLoading] = useState(false);
   const [userVideoDataList, setUsersVideoList] = useState(null);
+  const [userLessonsList, setUserLessonsList] = useState(null);
   const [loadingText, setLoadingText] = useState("");
   const [isFetchUserModalActive, toggleUserFetchModalVisiblity] =
     useState(false);
@@ -76,6 +78,11 @@ export default function UsersInfo() {
     useState(false);
   const [isPageLoaderActive, togglePageLoader] = useState(false);
   const [isLoaderActive, toggleLoading] = useState(false);
+  const [isUsersTabsVisible, toggleUserModalTabs] = useState(false);
+  const [isUserLessonLoading, togglUserLessonData] = useState(false);
+
+  const userVideoTabRef = useRef(null);
+  const userLessonTabRef = useRef(null);
   const userSearchInputRef = useRef(null);
 
   useEffect(() => {
@@ -157,12 +164,20 @@ export default function UsersInfo() {
 
   function fetchUsersVideoDetails(event, userKey) {
     if (event) event.stopPropagation();
+    toggleUserModalTabs(false);
     setLoadingText("Fetching videos...");
+    setUserKey(userKey);
     toggleUserFetchModalVisiblity(true);
     toggleUserDataLoading(true);
+    togglUserLessonData(false);
     getUploadedVideosByUserId(userKey).subscribe((list) => {
       setUsersVideoList(list);
+      toggleUserModalTabs(true);
       toggleUserDataLoading(false);
+      if (userVideoTabRef.current && userLessonTabRef.current) {
+        userLessonTabRef.current.classList.remove('active');
+        userVideoTabRef.current.classList.add('active');
+      }
     });
   }
 
@@ -492,6 +507,30 @@ export default function UsersInfo() {
     }
   }
 
+  function getUserDataInModal(event, action) {
+    event.stopPropagation();
+    if (action === 'videos') {
+      fetchUsersVideoDetails(event, userIdKey);
+    } else {
+      togglUserLessonData(true);
+      toggleUserModalTabs(false);
+      setLoadingText("Fetching lessons...");
+      toggleUserFetchModalVisiblity(true);
+      toggleUserDataLoading(true);
+      getUsersLessonsOnly(userIdKey).subscribe( resp => {
+        console.log('resp: ', resp);
+        toggleUserModalTabs(true);
+        setLoadingText("");
+        toggleUserDataLoading(false);
+        setUserLessonsList(resp?.myLessons);
+        if (userLessonTabRef.current) {
+          userVideoTabRef.current.classList.remove('active');
+          userLessonTabRef.current.classList.add('active');
+        }
+      });
+    }
+  }
+
   return (
     <div className="adminPanelSection">
       <Loader value={isLoaderActive} />
@@ -514,6 +553,13 @@ export default function UsersInfo() {
       {isFetchUserModalActive ? (
         <div className="fetchUserDetailModal">
           <div className="fetchUserDetailsInner">
+            {
+              isUsersTabsVisible ? 
+              <div className="userModalTabination">
+                <button className="active" ref={userVideoTabRef} onClick={(e) => getUserDataInModal(e, 'videos')}>Videos</button>
+                <button ref={userLessonTabRef} onClick={(e) => getUserDataInModal(e, 'lessons')}>Lessons</button>
+              </div> : ''
+            }
             <p
               className="closeUserModal"
               title="close modal"
@@ -524,7 +570,7 @@ export default function UsersInfo() {
                 <div className="loader"></div>
                 <span>{loadingText}</span>
               </div>
-            ) : userVideoDataList && userVideoDataList.length ? (
+            ) : !isUserLessonLoading && userVideoDataList && userVideoDataList.length ? (
               <div className="usersVideoListWrap">
                 {userVideoDataList.map((item, index) => {
                   return (
@@ -554,9 +600,33 @@ export default function UsersInfo() {
                   );
                 })}
               </div>
+            ) : isUserLessonLoading && userLessonsList && userLessonsList.length ? (
+              <div className="usersLessonsListWrap">
+                {userLessonsList.map((item, index) => {
+                  return (
+                    <div className="lessonDetails" key={`userLesson-id-${index}`}>
+                      <img src={item.thumbNail} alt="lesson-th" />
+                      <div class="lessonInfoWrap">
+                        <h4>{item.title}</h4>
+                        <p class="subTexts">
+                          <span>Art form: <strong>{item.artForm}</strong></span>
+                        </p>
+                        <p class="subTexts">
+                          <span>Amount: <strong>{item.isPaid}</strong></span>
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             ) : (
               <p className="noVideoMessage">
-                There is no videos uploaded by this user!
+                {
+                  isUserLessonLoading ?
+                  'There is no lessons taken by this user!'
+                  : 
+                  'There is no videos uploaded by this user!'
+                }
               </p>
             )}
           </div>

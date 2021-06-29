@@ -887,6 +887,40 @@
         transform: translate(-50%, -50%);
         box-sizing: border-box;
         box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.3);
+        .userModalTabination {
+            display: flex;
+            margin-bottom: 10px;
+            padding: 0 30px;
+            position: relative;
+            &:after {
+                position: absolute;
+                content: '';
+                height: 1px;
+                width: 100%;
+                background: var(--footer-list-text-grey);
+                left: 0;
+                bottom: 0;
+            }
+            button {
+                background: transparent;
+                color: var(--footer-list-text-grey);
+                font-size: 12px;
+                padding: 5px 10px;
+                text-transform: uppercase;
+                border: 1px solid transparent;
+                border-radius: 5px 5px 0 0;
+                outline: none;
+                position: relative;
+                z-index: 1;
+                cursor: pointer;
+                &.active {
+                    border-color: var(--secondary-color);
+                    border-bottom: none;
+                    color: var(--primary-white);
+                    background: var(--secondary-color);
+                }
+            }
+        }
         .noVideoMessage {
             font-size: 18px;
             text-align: center;
@@ -915,13 +949,13 @@
                 transform: rotate(-45deg);
             }
         }
-        .usersVideoListWrap {
+        .usersVideoListWrap, .usersLessonsListWrap {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
             overflow-y: auto;
             max-height: 480px;
-            .videoDetails {
+            .videoDetails, .lessonDetails {
                 flex-basis: calc(100% / 2 - 20px);
                 min-height: 120px;
                 font-size: 14px;
@@ -962,6 +996,40 @@
                     min-width: 230px;
                     background: var(--footer-background-grey);
                     border-radius: 5px;
+                }
+            }
+            .lessonDetails {
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+                .lessonInfoWrap {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    padding: 10px;
+                    width: 100%;
+                    z-index: 12;
+                    box-sizing: border-box;
+                    border-radius: 0 0 5px 5px;
+                    transition: all 0.8s ease-in-out;
+                    color: var(--primary-white);
+                    background: linear-gradient(to top, var(--box-dark-bg) 45%, transparent);
+                    h4 {
+                        font-size: 14px;
+                        margin: 0 0 5px 0;
+                        line-height: 20px;
+                        font-weight: 500;
+                    }
+                    .subTexts {
+                        display: flex !important;
+                        justify-content: flex-start !important;
+                        font-size: 12px !important;
+                        line-height: 14px !important;
+                        margin: 0 !important;
+                        color: var(--primary-white);
+                    }
                 }
             }
         }
@@ -1351,8 +1419,8 @@
     }
     .fetchUserDetailModal {
         .fetchUserDetailsInner {
-            .usersVideoListWrap {
-                .videoDetails {
+            .usersVideoListWrap, .usersLessonsListWrap {
+                .videoDetails, .lessonDetails {
                     margin: 10px auto;
                     flex-basis: 90%;
                     .deleteVideoIcon {

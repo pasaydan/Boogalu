@@ -7,6 +7,8 @@ import { useHistory } from "react-router-dom";
 import { enableLoginFlow } from "../../Actions/LoginFlow";
 import { isObjectEmpty } from '../../helpers';
 import { updateLessonPlayTime } from '../../Services/Lessons.service';
+import { updateLessonsTaken } from '../../Services/User.service';
+import { loginUser } from '../../Actions/User/index';
 
 function LessonsVideoContainer({
     lessonKey,
@@ -154,6 +156,23 @@ function LessonsVideoContainer({
             videoBack.currentTime = videoCurrentPlayTime;
             videoBackMirror.currentTime = videoCurrentPlayTime;
         }
+        
+        // saving lessons data in users object
+        const userLesson = {
+            "lessonKey": lessonKey,
+            "title": title,
+            "artForm": artForm,
+            "isPaid": isPaid,
+            "thumbNail": thumbNail,
+        };
+        if (loggedInUser?.myLessons && loggedInUser?.myLessons?.length) {
+            if (loggedInUser.myLessons.indexOf(lessonKey) < 0) {
+                setLessonsDataInUser(loggedInUser.key, userLesson);
+            }
+        } else {
+            setLessonsDataInUser(loggedInUser.key, userLesson);
+        }
+
         setTimeout(() => {
             if (activeVideoState === 'front') {
                 videoFrontMirror.play().then(_ => {
@@ -423,6 +442,16 @@ function LessonsVideoContainer({
                 previewVideoItem.currentTime = 0;
                 previewVideoItem.pause();
             }
+        }
+    }
+
+    function setLessonsDataInUser(userKey, lessonData) {
+        try {
+            updateLessonsTaken(userKey, lessonData).subscribe( resp => {
+                dispatch(loginUser(resp));
+            });
+        }catch(e) {
+            console.log('lesson saved error!: ', e);
         }
     }
 
