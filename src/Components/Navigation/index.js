@@ -142,17 +142,17 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
       toggleNavHidden(false);
     }
     setTimeout(() => {
+      const navLinks = document.querySelectorAll(".nav-ul a");
       if (navLinks && navLinks.length) {
         navLinks.forEach((ele) => {
           const getHref = ele.getAttribute("href").toLocaleLowerCase();
+          ele.classList.remove("active");
           if (pathName?.length && getHref.includes(pathName)) {
             ele.classList.add("active");
           }
           if (pathName === "") {
-            if (loggedInUser.username) {
-              if (ele.getAttribute("href") === "#Dashboard") {
-                ele.classList.add("active");
-              }
+            if (ele.getAttribute("href") === "#Dashboard" || ele.getAttribute("href") === "/") {
+              ele.classList.add("active");
             }
           }
         });

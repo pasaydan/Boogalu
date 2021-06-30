@@ -209,7 +209,9 @@ export default function Homepage() {
                     <div className="boxContent">
                         <h2>Compete, learn &amp; perform</h2>
                         <p>Innovative and comprehensive learning to enlighten your journey of dance and fitness to make your dream come true.</p>
-                        <button className={`btn primary-light get_started ${firstStartButtonLoaded} ${startButtonAnimateClass}`} onClick={(e) => scrollToNextSection(e, sectionServiceRef)}>Learn more</button>
+                        {/* This get start button if we'll use for scroll to next section */}
+                        {/* <button className={`btn primary-light get_started ${firstStartButtonLoaded} ${startButtonAnimateClass}`} onClick={(e) => scrollToNextSection(e, sectionServiceRef)}>Start learning now</button> */}
+                        <a href="/lessons" className={`btn primary-light get_started ${firstStartButtonLoaded} ${startButtonAnimateClass}`} title="goto lessons">Start learning now</a>
                     </div>
                     {/* <h4 className={`${firstHeadingLoaded} ${headingAnimateClass1}`}>
                         The world’s best <span className="color-text-yellow">Dance</span> learning tools,

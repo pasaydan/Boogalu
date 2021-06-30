@@ -265,11 +265,14 @@
                 }
             }
         }
-        button.get_started {
+        .get_started {
             margin: 10px auto;
+            padding: 5px 10px;
             min-width: 150px;
             max-width: 170px;
             display: block;
+            text-decoration: none;
+            text-align: center;
             &.firstButtonLoaded {
                 transition: all 0.8s ease-in-out;
                 opacity: 0;
