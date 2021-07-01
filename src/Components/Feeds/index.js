@@ -39,6 +39,8 @@ function Feeds() {
   const [commentModal, setCommentModal] = useState(false);
   const [isLoaderActive, toggleLoading] = useState(false);
   const { state, dispatch } = useStoreConsumer();
+  // eslint-disable-next-line no-unused-vars
+  const [shoulEnableComment, toggleCommentEnable] = useState(false);
   const loggedInUser = state.loggedInUser;
 
 
@@ -416,13 +418,17 @@ function Feeds() {
                         {feed.isLiked && (
                           <Favorite
                             title="Like"
+                            className="likedColor"
                             onClick={() => handleLikes(feed, "unliked")}
                           />
                         )}
-                        <CommentOutlined
-                          title="comment"
-                          onClick={() => handleCommentClick(feed)}
-                        />
+                        {
+                          shoulEnableComment ?
+                          <CommentOutlined
+                            title="comment"
+                            onClick={() => handleCommentClick(feed)}
+                          /> : ''
+                        }
                       </div>
                     </div>
                   </div>

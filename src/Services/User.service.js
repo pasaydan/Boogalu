@@ -275,27 +275,13 @@ export function updatePassword(id, password) {
 
 }
 
-export function updateLessonsTaken(id, lessonsData) {
+export function updateLessonsTaken(id, data) {
+    data.modifiedOn = new Date();
     return new Observable((observer) => {
-        userRef.doc(id).get().then((doc) => {
-            let data = doc.data();
-            if (data && !data?.myLessons) {
-                data = {...data, 'myLessons': [lessonsData]};
-            } else {
-                if (data?.myLessons?.length) {
-                    data.myLessons.forEach( item => {
-                        if (item.lessonKey !== lessonsData.lessonKey) {
-                            data.myLessons.push(lessonsData);
-                        }
-                    });
-                }
-            }
-            userRef.doc(id).set(data).then(() => {
-                observer.next(data);
-            });
+        userRef.doc(id).set(data).then(() => {
+            observer.next();
         });
     });
-
 }
 
 export function getUsersLessonsOnly(id) {

@@ -42,6 +42,8 @@ function Comments({
   const [userDetails, setUserDetails] = useState();
   // eslint-disable-next-line no-unused-vars
   const [privacyToggle, setPrivacyToggle] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [shoulEnableComment, toggleCommentEnable] = useState(false);
   const { privacy } = videoObj || "public";
 
   const handleCommentClick = () => {
@@ -229,43 +231,53 @@ function Comments({
                     )}
                     {videoObj.isLiked && (
                       <Favorite
+                        className="likedColor"
                         onClick={() => handleLikes(videoObj, "unliked")}
                       />
                     )}
                   </div>
                 </div>
               </div>
+              
+              {
+                shoulEnableComment ?
+                videoObj.comments && videoObj.comments.length > 0 && (
+                  <div className="comments-count">
+                    {videoObj.comments.length} Comments
+                  </div>
+                ) : ''
+              }
 
-              {videoObj.comments && videoObj.comments.length > 0 && (
-                <div className="comments-count">
-                  {videoObj.comments.length} Comments
-                </div>
-              )}
+              {
+                shoulEnableComment ?
+                <div className="comment-outer-wrap">
+                  {videoObj.comments &&
+                    videoObj.comments.map((comment, index) => {
+                      return (
+                        <div className="comment-wrap" key={index}>
+                          <ProfileImage src={comment.profileImage} />
+                          <span className="username">{comment.username}</span>
+                          <span>{comment.value}</span>
+                        </div>
+                      );
+                    })}
+                </div> : ''
+              }
 
-              <div className="comment-outer-wrap">
-                {videoObj.comments &&
-                  videoObj.comments.map((comment, index) => {
-                    return (
-                      <div className="comment-wrap" key={index}>
-                        <ProfileImage src={comment.profileImage} />
-                        <span className="username">{comment.username}</span>
-                        <span>{comment.value}</span>
-                      </div>
-                    );
-                  })}
-              </div>
-
-              <div className="commnet-input-wrap">
-                <TextField
-                  id="standard-basic"
-                  label="Add Comments"
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                />
-                <SendOutlined
-                  onClick={() => handleCommentClick(videoObj, "liked")}
-                />
-              </div>
+              {
+                shoulEnableComment ? 
+                <div className="commnet-input-wrap">
+                  <TextField
+                    id="standard-basic"
+                    label="Add Comments"
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                  />
+                  <SendOutlined
+                    onClick={() => handleCommentClick(videoObj, "liked")}
+                  />
+                </div> : ''
+              }
             </div>
           </div>
         </Fade>

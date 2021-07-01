@@ -97,6 +97,7 @@ function Profile() {
   const ref = useRef();
   const headerWrapRef = useRef();
   const [isLoaderActive, toggleLoading] = useState(false);
+  const [shoulEnableComment, toggleCommentEnable] = useState(false);
 
   const fetchUserDetailsByEmail = (email, responseType) => {
     let loggedUser = loggedInUser;
@@ -627,10 +628,13 @@ function Profile() {
                                       }
                                     />
                                   )}
-                                  <CommentOutlined
-                                    title="comment"
-                                    onClick={() => handleCommentClick(vdo)}
-                                  />
+                                  {
+                                    shoulEnableComment ?
+                                    <CommentOutlined
+                                      title="comment"
+                                      onClick={() => handleCommentClick(vdo)}
+                                    /> : ''
+                                  }
                                 </div>
                               </div>
                             </div>

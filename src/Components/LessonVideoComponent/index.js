@@ -165,12 +165,14 @@ function LessonsVideoContainer({
             "isPaid": isPaid,
             "thumbNail": thumbNail,
         };
+        
         if (loggedInUser?.myLessons && loggedInUser?.myLessons?.length) {
-            if (loggedInUser.myLessons.indexOf(lessonKey) < 0) {
-                setLessonsDataInUser(loggedInUser.key, userLesson);
+            const isLessonPresent = loggedInUser.myLessons.some( item => item.lessonKey === lessonKey);
+            if (!isLessonPresent) {
+                setLessonsDataInUser(loggedInUser, userLesson);
             }
         } else {
-            setLessonsDataInUser(loggedInUser.key, userLesson);
+            setLessonsDataInUser(loggedInUser, userLesson);
         }
 
         setTimeout(() => {
@@ -445,10 +447,16 @@ function LessonsVideoContainer({
         }
     }
 
-    function setLessonsDataInUser(userKey, lessonData) {
+    function setLessonsDataInUser(user, data) {
+        if (user?.key && user?.myLessons) {
+            user.myLessons.push(data);
+        } else {
+            user['myLessons'] = [data];
+        }
+        dispatch(loginUser(user));
         try {
-            updateLessonsTaken(userKey, lessonData).subscribe( resp => {
-                dispatch(loginUser(resp));
+            updateLessonsTaken(user.key, user).subscribe( resp => {
+                console.log("User: ", resp);
             });
         }catch(e) {
             console.log('lesson saved error!: ', e);

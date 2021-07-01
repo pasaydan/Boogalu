@@ -135,9 +135,12 @@
         .like-comment {
             display: flex;
             align-items: center;
-            >svg{
+            svg {
                 cursor: pointer;
                 margin-left: 10px;
+                &.likedColor {
+                    color: var(--light-pink-bg);
+                }
             }
         }
         .likes-count {
