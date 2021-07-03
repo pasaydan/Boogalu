@@ -7,7 +7,7 @@ import { useHistory } from "react-router-dom";
 import { enableLoginFlow } from "../../Actions/LoginFlow";
 import { isObjectEmpty } from '../../helpers';
 import { updateLessonPlayTime } from '../../Services/Lessons.service';
-import { updateLessonsTaken } from '../../Services/User.service';
+import { updateLessonsTaken, getUsersLessonsOnly } from '../../Services/User.service';
 import { loginUser } from '../../Actions/User/index';
 
 function LessonsVideoContainer({
@@ -39,7 +39,7 @@ function LessonsVideoContainer({
     const [isSubscribedUser, setSubscribedUser] = useState(false);
     const [videoCurrentPlayTime, setCurrentVideoPlayTime] = useState(null);
     const [isVideoPlayed, toggleVideoPlayedValue] = useState(false);
-
+    
     const thumbNailOverlayRef = useRef(null);
 
     useEffect(() => {
@@ -150,12 +150,12 @@ function LessonsVideoContainer({
     }
 
     function playVideo(params) {
-        if (videoCurrentPlayTime) {
-            videoFront.currentTime = videoCurrentPlayTime;
-            videoFrontMirror.currentTime = videoCurrentPlayTime;
-            videoBack.currentTime = videoCurrentPlayTime;
-            videoBackMirror.currentTime = videoCurrentPlayTime;
-        }
+        // if (videoCurrentPlayTime) {
+        //     videoFront.currentTime = videoCurrentPlayTime;
+        //     videoFrontMirror.currentTime = videoCurrentPlayTime;
+        //     videoBack.currentTime = videoCurrentPlayTime;
+        //     videoBackMirror.currentTime = videoCurrentPlayTime;
+        // }
         
         // saving lessons data in users object
         const userLesson = {
@@ -313,6 +313,7 @@ function LessonsVideoContainer({
         }
         if (isVideoPlayed) {
             setVideoCurrentTimeToDB();
+            toggleVideoPlayedValue(false);
         }
     }
 
@@ -359,6 +360,7 @@ function LessonsVideoContainer({
                 if (overlayItem.classList.contains('activeOverlay')) {
                     toggleisVideoOverlayActive(false);
                     videoFront.pause();
+                    toggleVideoPlayedValue(false);
                     if (thumbNailOverlayRef.current) {
                         thumbNailOverlayRef.current.classList.remove('activeOverlay');
                     }
@@ -375,6 +377,7 @@ function LessonsVideoContainer({
             } else if (isPaid === 'paid' && isSubscribedUser) {
                 if (overlayItem.classList.contains('activeOverlay')) {
                     toggleisVideoOverlayActive(false);
+                    toggleVideoPlayedValue(false);
                     videoFront.pause();
                     if (thumbNailOverlayRef.current) {
                         thumbNailOverlayRef.current.classList.remove('activeOverlay');
@@ -384,6 +387,7 @@ function LessonsVideoContainer({
                     toggleisVideoOverlayActive(true);
                     toggleVideoPlayedValue(true);
                     videoFront.play();
+                    toggleVideoPlayedValue(true);
                     if (thumbNailOverlayRef.current) {
                         thumbNailOverlayRef.current.classList.add('activeOverlay');
                     }
@@ -455,8 +459,19 @@ function LessonsVideoContainer({
         }
         dispatch(loginUser(user));
         try {
-            updateLessonsTaken(user.key, user).subscribe( resp => {
-                console.log("User: ", resp);
+            getUsersLessonsOnly(user.key).subscribe( resp => {
+                if (resp?.myLessons?.length) {
+                    const isLessonPresent = resp?.myLessons.some( item => item.lessonKey === data.lessonKey);
+                    if (!isLessonPresent) {
+                        updateLessonsTaken(user.key, user).subscribe( resp => {
+                            console.log("User: ", resp);
+                        });
+                    }
+                } else {
+                    updateLessonsTaken(user.key, user).subscribe( resp => {
+                        console.log("User: ", resp);
+                    });
+                }
             });
         }catch(e) {
             console.log('lesson saved error!: ', e);

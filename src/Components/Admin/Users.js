@@ -519,7 +519,6 @@ export default function UsersInfo() {
       toggleUserFetchModalVisiblity(true);
       toggleUserDataLoading(true);
       getUsersLessonsOnly(userIdKey).subscribe( resp => {
-        console.log('resp: ', resp);
         toggleUserModalTabs(true);
         setLoadingText("");
         toggleUserDataLoading(false);
