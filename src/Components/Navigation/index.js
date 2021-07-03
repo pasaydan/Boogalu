@@ -417,21 +417,30 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
     if (loggedInUser?.key) {
       /**
        * NOTE: this function need to call to fetch the users video list,
-       * so that we can put a check of video upload count to user. Currently, limit is 4.
+       * so that we can put a check of video upload count to user. Currently, limit is 2.
        */
-      getUsersVideoList(loggedInUser.key).then(res => {
-        if (res && res.length < VIDEO_LIMIT_COUNT.monthly) {
-          setOpenVdoUploadModal(true);
-        } else {
-          const pathName = history?.location?.pathname.split('/')[1];
-          if (!pathName.includes('profile')) {
-            setInfoModalNavigateLink('/profile');
+      if (loggedInUser?.subscribed && loggedInUser?.subscriptions?.length) {
+        getUsersVideoList(loggedInUser.key).then(res => {
+          if (res && res.length < VIDEO_LIMIT_COUNT.monthly) {
+            setOpenVdoUploadModal(true);
+          } else {
+            const pathName = history?.location?.pathname.split('/')[1];
+            if (!pathName.includes('profile')) {
+              setInfoModalNavigateLink('/profile');
+            }
+            setInfoModalMessage(`You have reached your maximum video upload limit of ${VIDEO_LIMIT_COUNT.monthly}, please delete some videos to upload another one!`);
+            setInfoModalStatus('error');
+            toggleInfoModal(true);
           }
-          setInfoModalMessage(`You have reached your maximum video upload limit of ${state?.userVideosList?.length || VIDEO_LIMIT_COUNT.monthly}, please delete some videos to upload another one!`);
-          setInfoModalStatus('error');
+        });
+      } else {
+          const pathName = history?.location?.pathname.split('/')[1];
+          if (!pathName.includes('subscription')) {
+            setInfoModalNavigateLink('/subscription');
+          }
+          setInfoModalMessage('To avail the uploading video feature, please subscribe to our Start-up subscription!');
           toggleInfoModal(true);
-        }
-      });
+      }
     } else {
       dispatch(enableLoginFlow({ type: "upload-video" }));
       history.push({

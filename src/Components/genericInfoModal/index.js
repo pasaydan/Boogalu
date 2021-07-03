@@ -33,7 +33,7 @@ export default function GenericInfoModal(props) {
                     <a 
                         href={navigateUrl} 
                         className="navigateLink btn primary-dark" 
-                        title={`navigate to ${navigateUrl.split('/')[1]} page`}>Let's goto Profile!</a> : ''
+                        title={`navigate to ${navigateUrl.split('/')[1]} page`}>{navigateUrl.split('/')[1] === 'profile' ? "Let's goto profile" : "Let's subscribe"}</a> : ''
                 }
                 {
                     shouldHaveAction ?

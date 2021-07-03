@@ -86,6 +86,6 @@ export const GET_UPLOADED_VIDEOS_BY_USER = 'GET_UPLOADED_VIDEOS_BY_USER';
 
 // Video Upload Limit Count
 export const VIDEO_LIMIT_COUNT = {
-    monthly: 4,
+    monthly: 2,
     yearly: 48
 }

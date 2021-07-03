@@ -25,7 +25,7 @@ import {
 } from "../../Services/User.service";
 import { displayNotification } from "../../Actions/Notification";
 import { MdDeleteForever, MdSearch, MdRefresh } from "react-icons/md";
-import { FiGift, FiEye, FiUserX } from "react-icons/fi";
+import { FiGift, FiEye } from "react-icons/fi";
 import {
   getUploadedVideosByUserId,
   deleteUploadedVideoByVideoKey,
@@ -215,6 +215,7 @@ export default function UsersInfo() {
   //     event.stopPropagation();
   // }
 
+  // eslint-disable-next-line no-unused-vars
   function deactivateUser(event, userKey) {
     event.stopPropagation();
     toggleDeletVideModal(true);

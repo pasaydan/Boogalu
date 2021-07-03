@@ -380,7 +380,7 @@ export default function Login(props) {
     }
 
     function setVideoLimitParameters() {
-        setInfoModalMessage(`You have reached your maximum video upload limit of ${state?.userVideosList?.length || VIDEO_LIMIT_COUNT.monthly}, please delete some videos to upload another one!`);
+        setInfoModalMessage(`You have reached your maximum video upload limit of ${VIDEO_LIMIT_COUNT.monthly}, please delete some videos to upload another one!`);
         setInfoModalStatus('error');
         toggleInfoModal(true);
         setInfoModalNavigateLink('/profile');

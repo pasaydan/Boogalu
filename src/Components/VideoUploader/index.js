@@ -43,6 +43,7 @@ export default function VideoUploader({
   const [progress, setProgress] = useState(0);
   const [ShowVdoUploadProgress, setShowVdoUploadProgress] = useState(false);
   const [isLoaderActive, toggleLoading] = useState(false);
+  const [loadingClass, setLoadingClass] = useState('');
   // useEffect(() => {
   //     const timer = setInterval(() => {
   //         setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
@@ -113,15 +114,20 @@ export default function VideoUploader({
       return;
     }
     var thumbnailImage = THUMBNAIL_URL;
+    setLoadingClass('loading');
     if (ThumbnailImage && ThumbnailImage[0]) {
       const reader = new FileReader();
       reader.readAsDataURL(ThumbnailImage[0]);
       reader.onload = () => {
-        uploadImage(reader.result, "thumbnail", "small").subscribe(
-          (downloadableUrl) => {
-            thumbnailImage = downloadableUrl;
-          }
-        );
+        try {
+          uploadImage(reader.result, "thumbnail", "small").subscribe(
+            (downloadableUrl) => {
+              thumbnailImage = downloadableUrl;
+            }
+          );
+        } catch (e) {
+          console.log('video upload error: ', e);
+        }
       };
       reader.onerror = (error) => console.error(error);
     }
@@ -185,6 +191,7 @@ export default function VideoUploader({
         };
         saveUploadedVideo(uploadObj).subscribe((response) => {
           toggleLoading(false);
+          setLoadingClass('');
           const pathName = history?.location?.pathname.split("/")[1];
           pathName.includes("profile") &&
             dispatch(setDataRefetchModuleName("user-uploaded-video"));
@@ -298,12 +305,12 @@ export default function VideoUploader({
                       uploaderRef.current.click();
                     }}
                   >
-                    Upload Video
+                    Upload video
                   </Button>
                 </div>
               ) : (
                 <div className="video-information-wrap">
-                  <video width="400" controls>
+                  <video controls>
                     <source src={SelectedVideo.file} />
                   </video>
                   <div className="change-video-btn">
@@ -314,7 +321,7 @@ export default function VideoUploader({
                         uploaderRef.current.click();
                       }}
                     >
-                      Change vdo
+                      Change video
                     </Button>
                   </div>
                   <div className="input-form-wrap">
@@ -359,6 +366,7 @@ export default function VideoUploader({
                       <Button
                         variant="contained"
                         color="secondary"
+                        className={loadingClass}
                         onClick={(e) => uploadSelectedVideo(e)}
                       >
                         Upload
