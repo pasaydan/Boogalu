@@ -131,12 +131,12 @@ function Profile() {
   const headerWrapRef = useRef();
 
   useEffect(() => {
-    logAnalyticsEvent('page_view', {
+    logAnalyticsEvent("page_view", {
       page_location: window.location.href,
-      page_path: 'profile',
-      page_title: `HomePage-${window.location.href}`
+      page_path: "profile",
+      page_title: `HomePage-${window.location.href}`,
     });
-  }, [])
+  }, []);
 
   function shouldCloseInfoModal(navigationValue) {
     setUserVideoSelectionForRemove({});
@@ -340,7 +340,7 @@ function Profile() {
                 vdoObj.userEmail = userData[0]?.email;
                 vdoObj.privacy = userData[0]?.privacy || "Public";
               }
-              let user = userData && userData[0];
+              let user = userData ? userData[0] : [];
               if (user?.followedBy && user?.followedBy.length > 0) {
                 const checkIfUserFollowingVideoCreator =
                   user?.followedBy.filter(
@@ -356,7 +356,8 @@ function Profile() {
                   vdoObj.following = false;
                   setFollowStatus("");
                 }
-              } else if (
+              }
+              if (
                 user?.followRequestedBy &&
                 user?.followRequestedBy.length > 0
               ) {
@@ -933,9 +934,9 @@ function Profile() {
       </div>
       <div className="profile-content-wrap">
         {followStatus === "following" ||
-          userData.privacy === "public" ||
-          userData.privacy === "Public" ||
-          (userData && loggedInUser && userData.key === loggedInUser.key) ? (
+        userData.privacy === "public" ||
+        userData.privacy === "Public" ||
+        (userData && loggedInUser && userData.key === loggedInUser.key) ? (
           <div className="headers-wrap" ref={headerWrapRef}>
             <div className="user-tabs-wrap" ref={userTabsRef}>
               <Tabs
