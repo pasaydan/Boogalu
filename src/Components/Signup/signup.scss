@@ -69,7 +69,18 @@
                 display: inline-block !important;
             }
         }
-        
+        .heading1, .heading2 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            line-height: 22px;
+            padding: 0;
+            font-weight: 500;
+            color: var(--footer-text-grey);
+        }
+        .heading1 {
+            font-size: 20px;
+            line-height: 26px;
+        }
     }
 }
 
@@ -389,6 +400,16 @@
                     margin-bottom: 10px;
                 }
             }
+            .heading1 {
+                font-size: 18px;
+                line-height: 22px;
+                padding: 0;
+                margin: 5px 0;
+            }
+            .heading2 {
+                font-size: 14px;
+                line-height: 20px;
+            }
         }
         .final-registration-block {
             width: 100%;
@@ -426,16 +447,6 @@
             position: relative;
             overflow: hidden;
             top: 10px;
-        }
-        .heading1 {
-            font-size: 18px;
-            line-height: 22px;
-            padding: 0;
-            margin: 15px 0 10px;
-        }
-        .heading2 {
-            font-size: 14px;
-            line-height: 20px;
         }
         .list-content {
             padding: 0;

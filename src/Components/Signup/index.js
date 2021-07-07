@@ -808,7 +808,7 @@ export default function Signup(props) {
                   className="input-field"
                   required
                   id="outlined-required-Username"
-                  label="Username"
+                  label="Username/Profile name"
                   onChange={handleChange("username")}
                   value={userDetails.username}
                   variant="outlined"
@@ -838,7 +838,7 @@ export default function Signup(props) {
                   variant="outlined"
                 />
               </div>
-              <div className="input-wrap">
+              {/* <div className="input-wrap">
                 <TextField
                   className="input-field"
                   required
@@ -848,8 +848,8 @@ export default function Signup(props) {
                   value={userDetails.country}
                   variant="outlined"
                 />
-              </div>
-              <div className="input-wrap">
+              </div> */}
+              {/* <div className="input-wrap">
                 <TextField
                   className="input-field"
                   required
@@ -859,7 +859,7 @@ export default function Signup(props) {
                   value={userDetails.state}
                   variant="outlined"
                 />
-              </div>
+              </div> */}
               <div className="input-wrap">
                 <FormControl className="" variant="outlined">
                   <InputLabel htmlFor="outlined-adornment-password">
@@ -928,7 +928,7 @@ export default function Signup(props) {
                   />
                 </FormControl>
               </div>
-              <div className="input-wrap">
+              {/* <div className="input-wrap">
                 <div className="dob-wrap">
                   <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <KeyboardDatePicker
@@ -946,8 +946,8 @@ export default function Signup(props) {
                     />
                   </MuiPickersUtilsProvider>
                 </div>
-              </div>
-              <div className="input-wrap">
+              </div> */}
+              {/* <div className="input-wrap">
                 <FormControl variant="outlined" className="input-field">
                   <InputLabel id="select-outlined-label">Gender</InputLabel>
                   <Select
@@ -962,8 +962,8 @@ export default function Signup(props) {
                     <MenuItem value="Other">Other</MenuItem>
                   </Select>
                 </FormControl>
-              </div>
-              <div className="input-wrap bio-wrap">
+              </div> */}
+              {/* <div className="input-wrap bio-wrap">
                 <TextField
                   className="input-field bio-input"
                   id="outlined-required-bio"
@@ -972,7 +972,7 @@ export default function Signup(props) {
                   onChange={handleChange("bio")}
                   variant="outlined"
                 />
-              </div>
+              </div> */}
               <div className="input-wrap">
                 <FormControl component="fieldset">
                   <FormLabel component="legend" className="static-label">
