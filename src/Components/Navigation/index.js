@@ -113,7 +113,6 @@ function Navigation({ routeChangeTrigger, isUserLoggedIn }) {
     };
 
     const pathName = history?.location?.pathname.split("/")[1];
-    const navLinks = document.querySelectorAll(".nav-ul a");
     if (pathName === "") {
       togglHomeRouteValue(true);
       toggleNavAnimation("");

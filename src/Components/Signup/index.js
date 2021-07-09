@@ -15,7 +15,9 @@ import TextField from "@material-ui/core/TextField";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import Checkbox from "@material-ui/core/Checkbox";
+// eslint-disable-next-line no-unused-vars
 import MenuItem from "@material-ui/core/MenuItem";
+// eslint-disable-next-line no-unused-vars
 import Select from "@material-ui/core/Select";
 import { FaPlus, FaEdit } from "react-icons/fa";
 import stepListData from "../../Data/RegistrationStepData";
@@ -26,11 +28,10 @@ import {
   getUserByPhone,
 } from "../../Services/User.service";
 import { displayNotification } from "../../Actions/Notification";
+// eslint-disable-next-line no-unused-vars
 import DateFnsUtils from "@date-io/date-fns";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
+// eslint-disable-next-line no-unused-vars
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import {
   NOTIFICATION_SUCCCESS,
   MALE_PROFILE_DEFAULT_IMAGE,
@@ -98,6 +99,8 @@ export default function Signup(props) {
       page_title: `HomePage-${window.location.href}`
     });
   }, [])
+
+  // eslint-disable-next-line no-unused-vars
   function setDateOfBirth(date) {
     try {
       setUserDetails({ ...userDetails, dob: date });
@@ -106,6 +109,7 @@ export default function Signup(props) {
     }
   }
 
+  // eslint-disable-next-line no-unused-vars
   function setMinDateSelectionYear() {
     const d = new Date();
     const year = d.getFullYear();
