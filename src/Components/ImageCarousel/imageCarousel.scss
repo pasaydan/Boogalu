@@ -1,4 +1,5 @@
 .carouselWrap {
+    min-height: 380px;
     max-height: 380px;
     padding: 10px;
     box-sizing: border-box;
@@ -32,7 +33,11 @@
                     border-radius: 10px;
                     width: 100%;
                     object-fit: cover;
+                    min-height: 380px;
                     max-height: 380px;
+                    &.loading {
+                        background: url('../../Images/img-loader.gif') no-repeat center/60px;
+                    }
                 }
             }
         }
@@ -71,6 +76,9 @@
                     img {
                         max-height: 300px;
                         min-height: 300px;
+                        &.loading {
+                            background: url('../../Images/img-loader.gif') no-repeat center/60px;
+                        }
                     }    
                 }
             }
@@ -102,6 +110,9 @@
                         max-height: 300px;
                         min-height: 300px;
                         border-radius: 0;
+                        &.loading {
+                            background: url('../../Images/img-loader.gif') no-repeat center/60px;
+                        }
                     }    
                 }
             }

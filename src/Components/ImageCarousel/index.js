@@ -32,9 +32,9 @@ const ImageCarousel = (props) => {
                                     >
                                         {
                                             viewportWidth <= 640 ?
-                                                <img src={item?.imgUrlMobile} alt={`${item.id}-mobile`} />
+                                                <img className="loading" src={item?.imgUrlMobile} alt={`${item.id}-mobile`} />
                                                 :
-                                                <img src={item?.imgUrl} alt={`${item.id}-desktop`} />
+                                                <img className="loading" src={item?.imgUrl} alt={`${item.id}-desktop`} />
                                         }
                                         {
                                             item?.amount ?
